@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { registerSchema } from "@/lib/validations/auth.schema";
+import type { RegisterFormValues } from "@/types/auth";
 import {
     Loader2,
     Mail,
@@ -28,20 +29,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
-
-const registerSchema = z
-    .object({
-        name: z.string().min(2, { message: "Nama minimal 2 karakter" }),
-        email: z.string().email({ message: "Email tidak valid" }),
-        password: z.string().min(8, { message: "Password minimal 8 karakter" }),
-        confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Konfirmasi password tidak cocok",
-        path: ["confirmPassword"],
-    });
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
     const router = useRouter();

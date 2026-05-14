@@ -21,22 +21,19 @@ import {
 } from "@/components/ui/sheet";
 import { AdminNav } from "./admin-nav";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client"; // I will create this file next
 import { useRouter } from "next/navigation";
+import { LogoutDialog } from "./logout-dialog";
 
-export function AdminTopbar({ user }: { user: any }) {
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+}
+
+export function AdminTopbar({ user }: { user: User }) {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const router = useRouter();
-
-    const handleLogout = async () => {
-        await authClient.signOut({
-            fetchOptions: {
-                onSuccess: () => {
-                    router.push("/login");
-                },
-            },
-        });
-    };
 
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
@@ -54,8 +51,8 @@ export function AdminTopbar({ user }: { user: any }) {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] p-0">
                     <SheetHeader className="h-16 flex items-center px-6 border-b">
-                        <SheetTitle className="text-left font-bold text-xl">
-                            Hyperlocal
+                        <SheetTitle className="text-left font-bold text-xl font-heading">
+                            HalalAdmin
                         </SheetTitle>
                     </SheetHeader>
                     <div className="py-2">
@@ -67,8 +64,8 @@ export function AdminTopbar({ user }: { user: any }) {
             {/* Logo for mobile only */}
             <div className="flex lg:hidden items-center gap-2 mr-4">
                 <div className="h-7 w-7 rounded bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground text-[10px]">
-                        H
+                    <span className="text-primary-foreground text-[10px] font-heading">
+                        HA
                     </span>
                 </div>
             </div>
@@ -112,7 +109,7 @@ export function AdminTopbar({ user }: { user: any }) {
                         >
                             <Avatar className="h-9 w-9 border shadow-sm transition-transform hover:scale-105">
                                 <AvatarImage
-                                    src={user?.image}
+                                    src={user?.image ?? undefined}
                                     alt={user?.name}
                                 />
                                 <AvatarFallback className="bg-primary/10 text-primary text-xs">
@@ -121,11 +118,7 @@ export function AdminTopbar({ user }: { user: any }) {
                             </Avatar>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        className="w-56"
-                        align="end"
-                        forceMount
-                    >
+                    <DropdownMenuContent className="w-56" align="end">
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
                                 <p className="text-sm font-semibold leading-none">
@@ -146,13 +139,15 @@ export function AdminTopbar({ user }: { user: any }) {
                             <span>Pengaturan Akun</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
-                            onClick={handleLogout}
-                        >
-                            <LogOut className="h-4 w-4" />
-                            <span>Keluar</span>
-                        </DropdownMenuItem>
+                        <LogoutDialog>
+                            <DropdownMenuItem
+                                className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                onSelect={(e) => e.preventDefault()}
+                            >
+                                <LogOut className="h-4 w-4" />
+                                <span>Keluar</span>
+                            </DropdownMenuItem>
+                        </LogoutDialog>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

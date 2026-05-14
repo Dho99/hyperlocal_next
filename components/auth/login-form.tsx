@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { loginSchema } from "@/lib/validations/auth.schema";
+import type { LoginFormValues } from "@/types/auth";
 import { Loader2, Mail, Lock, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,13 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
-
-const loginSchema = z.object({
-    email: z.string().email({ message: "Email tidak valid" }),
-    password: z.string().min(1, { message: "Password wajib diisi" }),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
     const router = useRouter();
