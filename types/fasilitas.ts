@@ -3,6 +3,8 @@ export interface Facility {
     name: string;
     description: string | null;
     facilityType: string | null;
+    latitude: number | string | null;
+    longitude: number | string | null;
     createdAt: Date;
     updatedAt: Date;
 }

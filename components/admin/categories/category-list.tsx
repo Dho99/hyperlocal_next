@@ -41,12 +41,12 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { CategoryForm } from "./category-form";
 import type { Category } from "@/types/destinasi-kategori";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
-interface CategoryListProps {
-    initialCategories: Category[];
-}
+interface CategoryListProps {}
 
-export function CategoryList({ initialCategories }: CategoryListProps) {
+export function CategoryList({}: CategoryListProps) {
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null,
     );
@@ -55,6 +55,10 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
     );
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
+
+    const { data: categories, isLoading, hasMore, loadMore, refresh } = useCursorPagination<Category>({
+        url: "/api/categories",
+    });
 
     async function handleDelete() {
         if (!categoryToDelete) {
@@ -66,7 +70,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
             await deleteCategory(categoryToDelete.id);
             toast.success("Kategori berhasil dihapus");
             setCategoryToDelete(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -74,7 +78,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
         }
     }
 
-    if (initialCategories.length === 0) {
+    if (categories.length === 0 && !isLoading) {
         return (
             <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
                 <p className="text-sm text-muted-foreground">
@@ -100,7 +104,7 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {initialCategories.map((category) => (
+                    {categories.map((category) => (
                         <TableRow key={category.id}>
                             <TableCell className="font-medium">
                                 <div className="flex items-center gap-2">
@@ -157,6 +161,11 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
                     ))}
                 </TableBody>
             </Table>
+            <InfiniteScroll
+                hasMore={hasMore}
+                isLoading={isLoading}
+                next={loadMore}
+            />
 
             <Dialog
                 open={Boolean(selectedCategory)}

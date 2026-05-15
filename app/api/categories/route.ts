@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { getCategories, createCategory } from "@/lib/services/category-service";
+import { getPaginatedCategories, createCategory } from "@/lib/services/category-service";
 import { categorySchema } from "@/lib/validations/destinasi-kategori.schema";
 import { getErrorMessage } from "@/lib/api-error";
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const categories = await getCategories();
-        return NextResponse.json({ data: categories }, { status: 200 });
+        const { searchParams } = new URL(request.url);
+        const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
+        const cursor = searchParams.get("cursor") || undefined;
+        const search = searchParams.get("search") || undefined;
+
+        const result = await getPaginatedCategories({ limit, cursor, search });
+        return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
         return NextResponse.json(
             { error: getErrorMessage(error) },

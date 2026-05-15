@@ -16,12 +16,10 @@ import type { Facility } from "@/types/fasilitas";
 import type { Destination } from "@/types/destination";
 
 interface FacilitiesContentProps {
-    initialFacilities: Facility[];
     destinations: Destination[];
 }
 
 export function FacilitiesContent({
-    initialFacilities,
     destinations,
 }: FacilitiesContentProps) {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -76,7 +74,6 @@ export function FacilitiesContent({
                 </CardHeader>
                 <CardContent>
                     <FacilityList
-                        initialFacilities={initialFacilities}
                         onEdit={handleEdit}
                     />
                 </CardContent>

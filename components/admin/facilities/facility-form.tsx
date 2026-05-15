@@ -33,6 +33,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Facility } from "@/types/fasilitas";
 import type { Destination } from "@/types/destination";
+import { MapPicker } from "@/components/maps";
 
 interface FacilityFormProps {
     open: boolean;
@@ -55,6 +56,8 @@ export function FacilityForm({
             name: "",
             description: "",
             facilityType: "",
+            latitude: undefined,
+            longitude: undefined,
         },
     });
 
@@ -64,12 +67,16 @@ export function FacilityForm({
                 name: facility.name,
                 description: facility.description || "",
                 facilityType: facility.facilityType || "",
+                latitude: facility.latitude ? Number(facility.latitude) : undefined,
+                longitude: facility.longitude ? Number(facility.longitude) : undefined,
             });
         } else {
             form.reset({
                 name: "",
                 description: "",
                 facilityType: "",
+                latitude: undefined,
+                longitude: undefined,
             });
         }
     }, [facility, form, open]);
@@ -81,6 +88,8 @@ export function FacilityForm({
                 ...data,
                 description: data.description ?? null,
                 facilityType: data.facilityType ?? null,
+                latitude: data.latitude ?? null,
+                longitude: data.longitude ?? null,
             };
             if (facility) {
                 await updateFacility(facility.id, payload);
@@ -100,7 +109,7 @@ export function FacilityForm({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="font-heading">
                         {facility ? "Edit Fasilitas" : "Tambah Fasilitas"}
@@ -111,41 +120,44 @@ export function FacilityForm({
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-4 pt-4"
                     >
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nama Fasilitas</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Contoh: Musholla"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="facilityType"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Tipe Fasilitas (Optional)
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Contoh: Ibadah, Sanitasi"
-                                            {...field}
-                                            value={field.value || ""}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nama Fasilitas</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Contoh: Musholla"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="facilityType"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Tipe Fasilitas (Optional)
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Contoh: Ibadah, Sanitasi"
+                                                {...field}
+                                                value={field.value || ""}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
                         <FormField
                             control={form.control}
                             name="description"
@@ -156,6 +168,7 @@ export function FacilityForm({
                                         <Textarea
                                             placeholder="Penjelasan singkat fasilitas"
                                             className="resize-none"
+                                            rows={2}
                                             {...field}
                                             value={field.value || ""}
                                         />
@@ -164,6 +177,61 @@ export function FacilityForm({
                                 </FormItem>
                             )}
                         />
+
+                        <div className="space-y-3">
+                            <Label>Lokasi Fasilitas</Label>
+                            <MapPicker 
+                                latitude={form.watch("latitude") || null}
+                                longitude={form.watch("longitude") || null}
+                                onChange={(lat, lng) => {
+                                    form.setValue("latitude", lat);
+                                    form.setValue("longitude", lng);
+                                }}
+                            />
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="latitude"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-xs">Latitude</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    step="any"
+                                                    placeholder="-6.2088"
+                                                    {...field}
+                                                    value={field.value ?? ""}
+                                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="longitude"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-xs">Longitude</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    step="any"
+                                                    placeholder="106.8456"
+                                                    {...field}
+                                                    value={field.value ?? ""}
+                                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
                         <DialogFooter className="pt-4">
                             <Button
                                 type="button"

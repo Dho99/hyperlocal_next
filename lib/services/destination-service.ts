@@ -1,22 +1,64 @@
 import { prisma } from "@/lib/prisma";
 import type { Destination, DestinationFormValues } from "@/types/destination";
+import {
+    withCursorPagination,
+    CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
-type DestinationRow = any;
-
-function serializeDestination(destination: any): Destination {
+function serializeDestination(destination: Destination): Destination {
     const { destinationHalalFacilities, ...rest } = destination;
     return {
         ...rest,
         latitude:
-            destination.latitude === null
-                ? ""
-                : destination.latitude.toString(),
+            destination.latitude === null ? "" : String(destination.latitude),
         longitude:
-            destination.longitude === null
-                ? ""
-                : destination.longitude.toString(),
-        facilities: destinationHalalFacilities?.map((df: any) => df.facility) || [],
+            destination.longitude === null ? "" : String(destination.longitude),
+        destinationHalalFacilities: destinationHalalFacilities,
     };
+}
+
+export async function getPaginatedDestinations(
+    params: CursorPaginationParams & {
+        categoryId?: string;
+        search?: string;
+        status?: string;
+    },
+) {
+    return withCursorPagination(
+        async (take, cursor, skip) => {
+            const destinations = await prisma.destination.findMany({
+                take,
+                skip,
+                cursor: cursor ? { id: cursor } : undefined,
+                where: {
+                    ...(params.categoryId && { categoryId: params.categoryId }),
+                    ...(params.status && {
+                        status: params.status as
+                            | "PENDING"
+                            | "APPROVED"
+                            | "REJECTED",
+                    }),
+                    ...(params.search && {
+                        name: { contains: params.search, mode: "insensitive" },
+                    }),
+                },
+                include: {
+                    category: true,
+                    destinationHalalFacilities: {
+                        include: {
+                            facility: true,
+                        },
+                    },
+                    images: true,
+                },
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            });
+
+            return destinations.map((d) => serializeDestination(d));
+        },
+        params,
+        "Destinations fetched successfully",
+    );
 }
 
 export async function getDestinations() {
@@ -46,6 +88,7 @@ export async function getDestination(id: string) {
                     facility: true,
                 },
             },
+            images: true,
         },
     });
 
@@ -58,6 +101,12 @@ export async function createDestination(values: DestinationFormValues) {
     const destination = await prisma.destination.create({
         data: {
             ...data,
+            images: {
+                create:
+                    values.images?.map((url) => ({
+                        imageUrl: url,
+                    })) || [],
+            },
             destinationHalalFacilities: {
                 create: facilityIds?.map((id) => ({
                     facilityId: id,
@@ -88,6 +137,9 @@ export async function updateDestination(
             where: { destinationId: id },
         });
 
+        // console.log(data);
+        data.description = JSON.stringify(data.description);
+
         return await tx.destination.update({
             where: { id },
             data: {
@@ -96,6 +148,13 @@ export async function updateDestination(
                     create: facilityIds?.map((facilityId) => ({
                         facilityId,
                     })),
+                },
+                images: {
+                    deleteMany: {}, // Hapus semua gambar lama
+                    create:
+                        values.images?.map((url) => ({
+                            imageUrl: url,
+                        })) || [],
                 },
             },
             include: {

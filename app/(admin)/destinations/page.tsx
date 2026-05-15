@@ -1,10 +1,8 @@
-import { getDestinations } from "@/lib/services/destination-service";
 import { getCategories } from "@/lib/services/category-service";
 import { DestinationList } from "@/components/admin/destinations/destination-list";
 import { AddDestinationButton } from "@/components/admin/destinations/add-destination-button";
 
 export default async function DestinationsPage() {
-    const destinations = await getDestinations();
     const categories = await getCategories();
 
     return (
@@ -22,7 +20,6 @@ export default async function DestinationsPage() {
             </div>
 
             <DestinationList
-                initialDestinations={destinations}
                 categories={categories}
             />
         </div>

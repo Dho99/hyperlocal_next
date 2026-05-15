@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/card";
 
 export default async function CategoriesPage() {
-    const categories = await getCategories();
-
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
@@ -40,7 +38,7 @@ export default async function CategoriesPage() {
                             <CardDescription>Daftar semua kategori yang tersedia dalam sistem.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <CategoryList initialCategories={categories} />
+                            <CategoryList />
                         </CardContent>
                     </Card>
                 </div>

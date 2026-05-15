@@ -34,18 +34,23 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { Facility } from "@/types/fasilitas";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 interface FacilityListProps {
-    initialFacilities: Facility[];
     onEdit: (facility: Facility) => void;
 }
 
-export function FacilityList({ initialFacilities, onEdit }: FacilityListProps) {
+export function FacilityList({ onEdit }: FacilityListProps) {
     const [selectedFacility, setSelectedFacility] = useState<Facility | null>(
         null,
     );
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
+
+    const { data: facilities, isLoading, hasMore, loadMore, refresh } = useCursorPagination<Facility>({
+        url: "/api/facilities",
+    });
 
     async function handleDelete() {
         if (!selectedFacility) {
@@ -57,7 +62,7 @@ export function FacilityList({ initialFacilities, onEdit }: FacilityListProps) {
             await deleteFacility(selectedFacility.id);
             toast.success("Fasilitas berhasil dihapus");
             setSelectedFacility(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -65,7 +70,7 @@ export function FacilityList({ initialFacilities, onEdit }: FacilityListProps) {
         }
     }
 
-    if (initialFacilities.length === 0) {
+    if (facilities.length === 0 && !isLoading) {
         return (
             <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
                 <p className="text-sm text-muted-foreground">
@@ -92,7 +97,7 @@ export function FacilityList({ initialFacilities, onEdit }: FacilityListProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {initialFacilities.map((facility) => (
+                    {facilities.map((facility) => (
                         <TableRow key={facility.id}>
                             <TableCell className="font-medium">
                                 {facility.name}
@@ -153,6 +158,11 @@ export function FacilityList({ initialFacilities, onEdit }: FacilityListProps) {
                     ))}
                 </TableBody>
             </Table>
+            <InfiniteScroll
+                hasMore={hasMore}
+                isLoading={isLoading}
+                next={loadMore}
+            />
 
             <AlertDialog
                 open={Boolean(selectedFacility)}

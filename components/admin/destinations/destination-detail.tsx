@@ -14,20 +14,22 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-    MapPin, 
-    ArrowLeft, 
-    Calendar, 
-    Clock, 
-    Tag, 
-    Navigation, 
-    ShieldCheck, 
+import {
+    MapPin,
+    ArrowLeft,
+    Calendar,
+    Clock,
+    Tag,
+    Navigation,
+    ShieldCheck,
     Image as ImageIcon,
     Loader2,
-    AlertCircle
+    AlertCircle,
 } from "lucide-react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { ReadonlyMap } from "@/components/maps";
+import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 
 interface DestinationDetailProps {
     id: string;
@@ -44,6 +46,7 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
             try {
                 setIsLoading(true);
                 const data = await getDestination(id);
+                console.log(data);
                 setDestination(data);
             } catch (err: unknown) {
                 setError(getApiErrorMessage(err));
@@ -68,11 +71,13 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
             <Card className="border-destructive/50 bg-destructive/5">
                 <CardContent className="flex flex-col items-center justify-center p-10 text-center">
                     <AlertCircle className="h-10 w-10 text-destructive mb-4" />
-                    <h3 className="text-lg font-bold text-destructive">Gagal Memuat Data</h3>
+                    <h3 className="text-lg font-bold text-destructive">
+                        Gagal Memuat Data
+                    </h3>
                     <p className="text-muted-foreground mt-2">{error}</p>
-                    <Button 
-                        variant="outline" 
-                        className="mt-6" 
+                    <Button
+                        variant="outline"
+                        className="mt-6"
                         onClick={() => router.push("/destinations")}
                     >
                         Kembali ke Daftar
@@ -86,7 +91,11 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
         return (
             <div className="text-center p-20">
                 <h3 className="text-lg font-bold">Destinasi tidak ditemukan</h3>
-                <Button variant="ghost" className="mt-4" onClick={() => router.push("/destinations")}>
+                <Button
+                    variant="ghost"
+                    className="mt-4"
+                    onClick={() => router.push("/destinations")}
+                >
                     Kembali
                 </Button>
             </div>
@@ -111,17 +120,21 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => router.push("/destinations")}
                     className="h-8 w-8"
                 >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight font-heading">Detail Destinasi</h1>
-                    <p className="text-sm text-muted-foreground">Melihat informasi lengkap mengenai {destination.name}</p>
+                    <h1 className="text-2xl font-bold tracking-tight font-heading">
+                        Detail Destinasi
+                    </h1>
+                    <p className="text-sm text-muted-foreground">
+                        Melihat informasi lengkap mengenai {destination.name}
+                    </p>
                 </div>
             </div>
 
@@ -129,7 +142,8 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                 <div className="md:col-span-2 space-y-6">
                     <Card className="overflow-hidden border-none shadow-sm ring-1 ring-border/50">
                         <div className="relative aspect-video bg-muted">
-                            {destination.images && destination.images.length > 0 ? (
+                            {destination.images &&
+                            destination.images.length > 0 ? (
                                 <Image
                                     src={destination.images[0].imageUrl}
                                     alt={destination.name}
@@ -150,13 +164,21 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <CardTitle className="text-2xl font-bold font-heading">{destination.name}</CardTitle>
+                                    <CardTitle className="text-2xl font-bold font-heading">
+                                        {destination.name}
+                                    </CardTitle>
                                     <div className="flex items-center gap-2 mt-2 text-muted-foreground text-sm">
                                         <MapPin className="h-4 w-4" />
-                                        <span>{destination.city}, {destination.province}</span>
+                                        <span>
+                                            {destination.city},{" "}
+                                            {destination.province}
+                                        </span>
                                     </div>
                                 </div>
-                                <Badge variant="success" className="px-3 py-1 font-bold">
+                                <Badge
+                                    variant="success"
+                                    className="px-3 py-1 font-bold"
+                                >
                                     Terverifikasi
                                 </Badge>
                             </div>
@@ -167,9 +189,9 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                     <Tag className="h-4 w-4 text-primary" />
                                     Deskripsi
                                 </h3>
-                                <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                                    {destination.description || "Tidak ada deskripsi tersedia."}
-                                </p>
+                                <RichTextRenderer
+                                    content={destination.description}
+                                />
                             </div>
 
                             <Separator />
@@ -181,14 +203,45 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-2">
                                     <div className="space-y-1 p-3 rounded-lg bg-muted/30">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">Alamat</p>
-                                        <p className="text-sm">{destination.address || "-"}</p>
+                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                                            Alamat
+                                        </p>
+                                        <p className="text-sm">
+                                            {destination.address || "-"}
+                                        </p>
                                     </div>
                                     <div className="space-y-1 p-3 rounded-lg bg-muted/30">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">Koordinat</p>
-                                        <p className="text-sm">{destination.latitude}, {destination.longitude}</p>
+                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                                            Koordinat
+                                        </p>
+                                        <p className="text-sm">
+                                            {destination?.latitude as string},{" "}
+                                            {destination?.longitude as string}
+                                        </p>
                                     </div>
                                 </div>
+
+                                {String(destination?.latitude) &&
+                                    String(destination?.longitude) && (
+                                        <ReadonlyMap
+                                            markers={[
+                                                {
+                                                    id: destination.id,
+                                                    latitude: Number(
+                                                        destination.latitude,
+                                                    ),
+                                                    longitude: Number(
+                                                        destination.longitude,
+                                                    ),
+                                                    title: destination.name,
+                                                    subtitle:
+                                                        destination.category
+                                                            ?.name,
+                                                },
+                                            ]}
+                                            className="h-[300px] w-full rounded-lg border shadow-inner mt-4"
+                                        />
+                                    )}
                             </div>
                         </CardContent>
                     </Card>
@@ -201,12 +254,16 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {destination.images && destination.images.length > 0 ? (
+                            {destination.images &&
+                            destination.images.length > 0 ? (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                     {destination.images.map((image, idx) => (
-                                        <div key={idx} className="relative aspect-square rounded-md overflow-hidden bg-muted group cursor-pointer border">
-                                            <Image 
-                                                src={image.imageUrl} 
+                                        <div
+                                            key={idx}
+                                            className="relative aspect-square rounded-md overflow-hidden bg-muted group cursor-pointer border"
+                                        >
+                                            <Image
+                                                src={image.imageUrl}
                                                 alt={`${destination.name} ${idx + 1}`}
                                                 fill
                                                 className="object-cover transition-transform group-hover:scale-105"
@@ -215,7 +272,9 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-lg">Belum ada foto galeri.</p>
+                                <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-lg">
+                                    Belum ada foto galeri.
+                                </p>
                             )}
                         </CardContent>
                     </Card>
@@ -228,18 +287,31 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                 <ShieldCheck className="h-5 w-5 text-primary" />
                                 Fasilitas Halal
                             </CardTitle>
-                            <CardDescription>Fasilitas yang tersedia di lokasi ini.</CardDescription>
+                            <CardDescription>
+                                Fasilitas yang tersedia di lokasi ini.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-wrap gap-2">
-                                {destination.facilities && destination.facilities.length > 0 ? (
-                                    destination.facilities.map((facility, idx) => (
-                                        <Badge key={idx} variant="secondary" className="px-3 py-1 bg-primary/5 text-primary hover:bg-primary/10 border-none">
-                                            {facility.name}
-                                        </Badge>
-                                    ))
+                                {destination?.destinationHalalFacilities &&
+                                destination.destinationHalalFacilities.length >
+                                    0 ? (
+                                    destination.destinationHalalFacilities.map(
+                                        (facility, idx) => (
+                                            <Badge
+                                                key={idx}
+                                                variant="secondary"
+                                                className="px-3 py-1 bg-primary/5 text-primary hover:bg-primary/10 border-none"
+                                            >
+                                                {facility.facility?.name}
+                                            </Badge>
+                                        ),
+                                    )
                                 ) : (
-                                    <p className="text-sm text-muted-foreground italic">Belum ada fasilitas halal yang terdaftar.</p>
+                                    <p className="text-sm text-muted-foreground italic">
+                                        Belum ada fasilitas halal yang
+                                        terdaftar.
+                                    </p>
                                 )}
                             </div>
                         </CardContent>
@@ -247,7 +319,9 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
 
                     <Card className="border-none shadow-sm ring-1 ring-border/50">
                         <CardHeader>
-                            <CardTitle className="text-lg font-heading">Metadata</CardTitle>
+                            <CardTitle className="text-lg font-heading">
+                                Metadata
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between text-sm">
@@ -255,18 +329,24 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                     <Calendar className="h-4 w-4" />
                                     <span>Ditambahkan</span>
                                 </div>
-                                <span className="font-medium">{formatDate(destination.updatedAt)}</span>
+                                <span className="font-medium">
+                                    {formatDate(destination.updatedAt)}
+                                </span>
                             </div>
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Clock className="h-4 w-4" />
                                     <span>Pembaruan Terakhir</span>
                                 </div>
-                                <span className="font-medium">{formatTime(destination.updatedAt)}</span>
+                                <span className="font-medium">
+                                    {formatTime(destination.updatedAt)}
+                                </span>
                             </div>
                             <Separator />
                             <div className="space-y-2">
-                                <p className="text-xs font-bold text-muted-foreground uppercase">Slug URL</p>
+                                <p className="text-xs font-bold text-muted-foreground uppercase">
+                                    Slug URL
+                                </p>
                                 <div className="bg-muted p-2 rounded text-xs font-mono break-all">
                                     {destination.slug}
                                 </div>
@@ -275,14 +355,18 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                     </Card>
 
                     <div className="flex flex-col gap-3">
-                        <Button 
-                            className="w-full" 
-                            onClick={() => router.push(`/destinations/${destination.id}/edit`)}
+                        <Button
+                            className="w-full"
+                            onClick={() =>
+                                router.push(
+                                    `/destinations/${destination.id}/edit`,
+                                )
+                            }
                         >
                             Edit Destinasi
                         </Button>
-                        <Button 
-                            variant="outline" 
+                        <Button
+                            variant="outline"
                             className="w-full"
                             onClick={() => router.push("/destinations")}
                         >

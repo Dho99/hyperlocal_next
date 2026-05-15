@@ -16,6 +16,13 @@ export interface DestinationImage {
     imageUrl: string;
 }
 
+export interface DestinationHalalFacility {
+    destinationId: string;
+    facilityId: string;
+    destination?: Destination;
+    facility?: HalalFacility;
+}
+
 export interface Destination {
     id: string;
     name: string;
@@ -25,10 +32,11 @@ export interface Destination {
     address: string | null;
     city: string | null;
     province: string | null;
-    latitude: string;
-    longitude: string;
+    latitude: string | unknown;
+    longitude: string | unknown;
     updatedAt: Date | string;
     category?: Category | null;
     images?: DestinationImage[];
-    facilities?: HalalFacility[];
+    destinationHalalFacilities?: DestinationHalalFacility[];
+    status: "PENDING" | "APPROVED" | "REJECTED";
 }

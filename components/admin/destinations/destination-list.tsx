@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { deleteDestination } from "@/lib/api/destination";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
@@ -38,40 +38,53 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type { Destination, Category } from "@/types/destination";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 interface DestinationListProps {
-    initialDestinations: Destination[];
     categories: Category[];
 }
 
-export function DestinationList({
-    initialDestinations,
-    categories,
-}: DestinationListProps) {
+export function DestinationList({ categories }: DestinationListProps) {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
-    const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [selectedDestination, setSelectedDestination] =
+        useState<Destination | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    const filteredDestinations = initialDestinations.filter((d) => {
-        const matchesSearch = d.name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-        const matchesCategory =
-            categoryFilter === "all" || d.categoryId === categoryFilter;
-        return matchesSearch && matchesCategory;
+    const params = useMemo(
+        () => ({
+            search: search || undefined,
+            categoryId: categoryFilter === "all" ? undefined : categoryFilter,
+            status: statusFilter === "all" ? undefined : statusFilter,
+        }),
+        [search, categoryFilter, statusFilter],
+    );
+
+    const {
+        data: destinations,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Destination>({
+        url: "/api/destinations",
+        params,
     });
 
     async function handleDelete() {
         if (!selectedDestination) return;
-        
+
         setIsDeleting(true);
         try {
             await deleteDestination(selectedDestination.id);
-            toast.success(`Destinasi ${selectedDestination.name} berhasil dihapus`);
+            toast.success(
+                `Destinasi ${selectedDestination.name} berhasil dihapus`,
+            );
             setSelectedDestination(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -107,11 +120,13 @@ export function DestinationList({
                         </select>
                         <select
                             className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                            defaultValue="all"
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
                         >
                             <option value="all">Semua Status</option>
-                            <option value="verified">Terverifikasi</option>
-                            <option value="pending">Pending</option>
+                            <option value="APPROVED">Terverifikasi</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="REJECTED">Ditolak</option>
                         </select>
                     </div>
                 </CardContent>
@@ -134,7 +149,7 @@ export function DestinationList({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredDestinations.length === 0 ? (
+                        {destinations.length === 0 && !isLoading ? (
                             <TableRow>
                                 <TableCell
                                     colSpan={6}
@@ -144,7 +159,7 @@ export function DestinationList({
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredDestinations.map((destination) => (
+                            destinations.map((destination) => (
                                 <TableRow
                                     key={destination.id}
                                     className="group hover:bg-muted/50 transition-colors"
@@ -205,12 +220,30 @@ export function DestinationList({
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge
-                                            variant="success"
-                                            className="text-[10px] font-bold"
-                                        >
-                                            Terverifikasi
-                                        </Badge>
+                                        {destination.status === "APPROVED" && (
+                                            <Badge
+                                                variant="success"
+                                                className="text-[10px] font-bold"
+                                            >
+                                                Terverifikasi
+                                            </Badge>
+                                        )}
+                                        {destination.status === "PENDING" && (
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-[10px] font-bold"
+                                            >
+                                                Pending
+                                            </Badge>
+                                        )}
+                                        {destination.status === "REJECTED" && (
+                                            <Badge
+                                                variant="destructive"
+                                                className="text-[10px] font-bold"
+                                            >
+                                                Ditolak
+                                            </Badge>
+                                        )}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -241,7 +274,9 @@ export function DestinationList({
                                                 size="icon-sm"
                                                 className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                                 onClick={() =>
-                                                    setSelectedDestination(destination)
+                                                    setSelectedDestination(
+                                                        destination,
+                                                    )
                                                 }
                                             >
                                                 <Trash2 className="h-4 w-4" />
@@ -256,19 +291,16 @@ export function DestinationList({
                         )}
                     </TableBody>
                 </Table>
+                <InfiniteScroll
+                    hasMore={hasMore}
+                    isLoading={isLoading}
+                    next={loadMore}
+                />
             </div>
             <div className="flex items-center justify-between px-2 text-xs text-muted-foreground">
-                <p>
-                    Menampilkan {filteredDestinations.length} dari{" "}
-                    {/* {destinations.length} entri */}
-                </p>
+                <p>Menampilkan {destinations.length} entri</p>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="xs" disabled>
-                        Sebelumnya
-                    </Button>
-                    <Button variant="outline" size="xs" disabled>
-                        Selanjutnya
-                    </Button>
+                    {/* Pagination control could go here if using page numbers, but with cursor we use InfiniteScroll or Load More */}
                 </div>
             </div>
 

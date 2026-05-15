@@ -1,5 +1,28 @@
 import { prisma } from "@/lib/prisma";
 import type { CategoryFormValues } from "@/types/destinasi-kategori";
+import { withCursorPagination, CursorPaginationParams } from "@/lib/pagination/cursorPagination";
+
+export async function getPaginatedCategories(
+    params: CursorPaginationParams & { search?: string }
+) {
+    return withCursorPagination(
+        async (take, cursor, skip) => {
+            return await prisma.category.findMany({
+                take,
+                skip,
+                cursor: cursor ? { id: cursor } : undefined,
+                where: {
+                    ...(params.search && {
+                        name: { contains: params.search, mode: "insensitive" },
+                    }),
+                },
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            });
+        },
+        params,
+        "Categories fetched successfully"
+    );
+}
 
 export async function getCategories() {
     return await prisma.category.findMany({
