@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Bell, User, LogOut, Menu, Plus, Settings } from "lucide-react";
+import { Search, Bell, User, LogOut, Menu, Settings, HelpCircle, Grid3X3 } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,9 +34,10 @@ interface User {
 export function AdminTopbar({ user }: { user: User }) {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const router = useRouter();
+    void router;
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
+        <header className="sticky top-0 z-30 flex h-20 items-center border-b border-[#cbc4d2] bg-[#fdf7ff] px-6">
             {/* Mobile Sidebar */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
                 <SheetTrigger asChild>
@@ -70,44 +71,50 @@ export function AdminTopbar({ user }: { user: User }) {
                 </div>
             </div>
 
+            <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">
+                Pariwisata Halal
+            </h2>
+
             {/* Desktop Search */}
-            <div className="hidden md:flex flex-1 max-w-md items-center relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="relative hidden max-w-[560px] flex-1 items-center md:flex">
+                <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-[#494551]" />
                 <Input
                     type="search"
-                    placeholder="Cari destinasi, UMKM, atau data..."
-                    className="w-full bg-muted/40 pl-9 rounded-full focus-visible:ring-primary/20"
+                    placeholder="Cari destinasi, UMKM..."
+                    className="h-12 w-full rounded-full border-[#cbc4d2] bg-[#f2ecf4] pl-14 text-lg text-[#494551] shadow-none focus-visible:ring-primary/20"
                 />
             </div>
 
-            <div className="flex items-center gap-3 ml-auto">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="hidden sm:flex gap-2 rounded-full px-4 border-dashed border-primary/50 text-primary hover:bg-primary/5"
-                >
-                    <Plus className="h-4 w-4" />
-                    <span className="text-xs font-semibold">Data Baru</span>
-                </Button>
-
+            <div className="ml-auto flex items-center gap-4">
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="relative rounded-full hover:bg-muted"
+                    className="relative rounded-full hover:bg-[#f2ecf4]"
                 >
-                    <Bell className="h-5 w-5 text-muted-foreground" />
-                    <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive" />
+                    <Bell className="h-6 w-6 text-[#1d1b20]" />
                 </Button>
-
-                <div className="h-8 w-px bg-border mx-1" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full hover:bg-[#f2ecf4]"
+                >
+                    <HelpCircle className="h-6 w-6 text-[#1d1b20]" />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full hover:bg-[#f2ecf4]"
+                >
+                    <Grid3X3 className="h-6 w-6 text-[#1d1b20]" />
+                </Button>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="ghost"
-                            className="relative h-10 w-10 rounded-full p-0"
+                            className="relative h-11 w-11 rounded-full p-0"
                         >
-                            <Avatar className="h-9 w-9 border shadow-sm transition-transform hover:scale-105">
+                            <Avatar className="h-10 w-10 border border-[#cbc4d2] shadow-sm transition-transform hover:scale-105">
                                 <AvatarImage
                                     src={user?.image ?? undefined}
                                     alt={user?.name}

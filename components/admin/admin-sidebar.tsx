@@ -10,31 +10,29 @@ import { LogoutDialog } from "./logout-dialog";
 
 export function AdminSidebar() {
     return (
-        <aside className="hidden border-r bg-card/50 backdrop-blur-sm lg:block lg:w-72 lg:flex-none">
+        <aside className="hidden bg-[#24005d] text-white lg:block lg:w-80 lg:flex-none">
             <div className="flex h-full flex-col">
-                <div className="flex h-16 items-center px-6">
+                <div className="flex h-24 items-start px-8 pt-10">
                     <Link
                         href="/dashboard"
-                        className="flex items-center gap-2 font-bold text-xl tracking-tight"
+                        className="flex flex-col font-heading tracking-tight"
                     >
-                        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground text-xs font-heading">
-                                HA
-                            </span>
-                        </div>
-                        <span className="font-heading text-foreground">
+                        <span className="text-[40px] font-bold leading-none">
                             HalalAdmin
+                        </span>
+                        <span className="mt-4 font-sans text-lg font-normal text-white/55">
+                            Local Intelligence
                         </span>
                     </Link>
                 </div>
-                <Separator />
+                <Separator className="bg-white/10" />
                 <ScrollArea className="flex-1">
-                    <div className="py-2">
+                    <div className="px-3 py-8">
                         <AdminNav />
                     </div>
                 </ScrollArea>
-                <div className="p-4 mt-auto border-t bg-muted/30 space-y-4">
-                    <div className="flex items-center gap-3 px-2 py-1.5 text-xs text-muted-foreground">
+                <div className="mt-auto space-y-4 border-t border-white/20 p-5">
+                    <div className="flex items-center gap-3 px-2 py-1.5 text-xs text-white/55">
                         <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                         <span>Admin System Active</span>
                     </div>
@@ -42,7 +40,7 @@ export function AdminSidebar() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            className="w-full justify-start gap-3 text-white/55 hover:bg-white/10 hover:text-white"
                         >
                             <LogOut className="h-4 w-4" />
                             <span>Keluar</span>
