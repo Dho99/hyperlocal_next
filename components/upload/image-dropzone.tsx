@@ -44,7 +44,7 @@ export function ImageDropzone({
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
-            const newFiles = acceptedFiles.map((file) => ({
+            const newFiles: UploadingFile[] = acceptedFiles.map((file) => ({
                 id: Math.random().toString(36).substring(7),
                 file,
                 preview: URL.createObjectURL(file),
@@ -69,7 +69,9 @@ export function ImageDropzone({
 
         setFiles((prev) =>
             prev.map((f) =>
-                f.id === fileObj.id ? { ...f, status: "uploading" } : f,
+                f.id === fileObj.id
+                    ? { ...f, status: "uploading" as const }
+                    : f,
             ),
         );
 
@@ -99,7 +101,12 @@ export function ImageDropzone({
                 setFiles((prev) => {
                     const updated = prev.map((f) =>
                         f.id === fileObj.id
-                            ? { ...f, status: "success", url, progress: 100 }
+                            ? {
+                                  ...f,
+                                  status: "success" as const,
+                                  url,
+                                  progress: 100,
+                              }
                             : f,
                     );
 
@@ -119,7 +126,7 @@ export function ImageDropzone({
                     f.id === fileObj.id
                         ? {
                               ...f,
-                              status: "error",
+                              status: "error" as const,
                               error:
                                   (error as Error).message || "Upload failed",
                           }

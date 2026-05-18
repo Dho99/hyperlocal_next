@@ -18,6 +18,11 @@ export async function createDestination(values: DestinationFormValues) {
         const destination = await prisma.destination.create({
             data: {
                 ...data,
+                images: {
+                    createMany: {
+                        data: data.images.map((url) => ({ imageUrl: url })),
+                    },
+                },
                 destinationHalalFacilities: {
                     create: facilityIds?.map((id) => ({
                         facilityId: id,
@@ -65,6 +70,12 @@ export async function updateDestination(
             where: { id },
             data: {
                 ...data,
+                images: {
+                    deleteMany: {},
+                    create: (data.images ?? []).map((image) => ({
+                        imageUrl: image,
+                    })),
+                },
                 destinationHalalFacilities: {
                     create: facilityIds?.map((fid) => ({ facilityId: fid })),
                 },

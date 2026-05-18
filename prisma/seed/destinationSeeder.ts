@@ -6,14 +6,16 @@ import { upsertExternalSource } from "./externalSourceSeeder";
 import { linkFacilities } from "./facilitySeeder";
 import { ValidationStatus } from "../../lib/generated/prisma/client";
 
-export async function processDestination(row: any, db: any = prisma) {
+export async function processDestination(row: Destination, db: any = prisma) {
     const categoryId = await resolveCategory(row.CATEGORY);
     const slug = slugify(row.NAME);
 
     // Map status
     let status = ValidationStatus.PENDING;
-    if (row.STATUS === "APPROVED") status = ValidationStatus.APPROVED;
-    if (row.STATUS === "REJECTED") status = ValidationStatus.REJECTED;
+    if (row.STATUS === "APPROVED")
+        status = ValidationStatus.APPROVED as ValidationStatus;
+    if (row.STATUS === "REJECTED")
+        status = ValidationStatus.REJECTED as ValidationStatus;
 
     const destination = await db.destination.upsert({
         where: { slug },

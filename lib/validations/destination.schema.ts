@@ -17,7 +17,7 @@ export const destinationSchema = z.object({
     latitude: z.number().optional(),
     longitude: z.number().optional(),
     facilityIds: z.array(z.string().uuid()).default([]),
-    images: z.array(z.string()).default([]),
+    images: z.array(z.string()),
 });
 
 export type DestinationFormValues = z.infer<typeof destinationSchema>;

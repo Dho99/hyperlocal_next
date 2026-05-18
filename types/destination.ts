@@ -38,5 +38,6 @@ export interface Destination {
     category?: Category | null;
     images?: DestinationImage[];
     destinationHalalFacilities?: DestinationHalalFacility[];
+    facilities?: HalalFacility[];
     status: "PENDING" | "APPROVED" | "REJECTED";
 }
