@@ -43,9 +43,13 @@ import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 interface DestinationListProps {
     categories: Category[];
+    initialDestinations?: Destination[];
 }
 
-export function DestinationList({ categories }: DestinationListProps) {
+export function DestinationList({
+    categories,
+    initialDestinations,
+}: DestinationListProps) {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
