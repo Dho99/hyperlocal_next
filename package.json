@@ -7,13 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:tourism": "tsx prisma/seed/seed.ts"
+    "seed:tourism": "tsx prisma/seed/seed.ts",
+    "seed:dev": "tsx prisma/seed.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed/seed.ts"
-  },
-  "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
