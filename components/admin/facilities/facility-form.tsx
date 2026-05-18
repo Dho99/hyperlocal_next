@@ -67,8 +67,12 @@ export function FacilityForm({
                 name: facility.name,
                 description: facility.description || "",
                 facilityType: facility.facilityType || "",
-                latitude: facility.latitude ? Number(facility.latitude) : undefined,
-                longitude: facility.longitude ? Number(facility.longitude) : undefined,
+                latitude: facility.latitude
+                    ? Number(facility.latitude)
+                    : undefined,
+                longitude: facility.longitude
+                    ? Number(facility.longitude)
+                    : undefined,
             });
         } else {
             form.reset({
@@ -179,8 +183,8 @@ export function FacilityForm({
                         />
 
                         <div className="space-y-3">
-                            <Label>Lokasi Fasilitas</Label>
-                            <MapPicker 
+                            <FormLabel>Lokasi Fasilitas</FormLabel>
+                            <MapPicker
                                 latitude={form.watch("latitude") || null}
                                 longitude={form.watch("longitude") || null}
                                 onChange={(lat, lng) => {
@@ -194,7 +198,9 @@ export function FacilityForm({
                                     name="latitude"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-xs">Latitude</FormLabel>
+                                            <FormLabel className="text-xs">
+                                                Latitude
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     type="number"
@@ -202,7 +208,17 @@ export function FacilityForm({
                                                     placeholder="-6.2088"
                                                     {...field}
                                                     value={field.value ?? ""}
-                                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target.value ===
+                                                                ""
+                                                                ? undefined
+                                                                : parseFloat(
+                                                                      e.target
+                                                                          .value,
+                                                                  ),
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -214,7 +230,9 @@ export function FacilityForm({
                                     name="longitude"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="text-xs">Longitude</FormLabel>
+                                            <FormLabel className="text-xs">
+                                                Longitude
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     type="number"
@@ -222,7 +240,17 @@ export function FacilityForm({
                                                     placeholder="106.8456"
                                                     {...field}
                                                     value={field.value ?? ""}
-                                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target.value ===
+                                                                ""
+                                                                ? undefined
+                                                                : parseFloat(
+                                                                      e.target
+                                                                          .value,
+                                                                  ),
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
