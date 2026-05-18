@@ -5,15 +5,19 @@ import {
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 
-function serializeDestination(destination: Destination): Destination {
+function serializeDestination(destination: any): Destination {
     const { destinationHalalFacilities, ...rest } = destination;
     return {
         ...rest,
-        latitude:
-            destination.latitude === null ? "" : String(destination.latitude),
-        longitude:
-            destination.longitude === null ? "" : String(destination.longitude),
-        destinationHalalFacilities: destinationHalalFacilities,
+        latitude: destination.latitude ? destination.latitude.toString() : "",
+        longitude: destination.longitude ? destination.longitude.toString() : "",
+        createdAt: destination.createdAt?.toISOString(),
+        updatedAt: destination.updatedAt?.toISOString(),
+        facilities: destinationHalalFacilities?.map((df: any) => ({
+            ...df.facility,
+            createdAt: df.facility.createdAt?.toISOString(),
+            updatedAt: df.facility.updatedAt?.toISOString(),
+        })) || [],
     };
 }
 
@@ -138,7 +142,7 @@ export async function updateDestination(
         });
 
         // console.log(data);
-        data.description = JSON.stringify(data.description);
+        // data.description = JSON.stringify(data.description);
 
         return await tx.destination.update({
             where: { id },

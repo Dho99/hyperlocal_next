@@ -4,7 +4,7 @@ import { DestinationForm } from "@/components/admin/destinations/destination-for
 import { notFound } from "next/navigation";
 
 interface EditDestinationPageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function EditDestinationPage({

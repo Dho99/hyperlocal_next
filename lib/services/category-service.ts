@@ -25,9 +25,15 @@ export async function getPaginatedCategories(
 }
 
 export async function getCategories() {
-    return await prisma.category.findMany({
+    const categories = await prisma.category.findMany({
         orderBy: { createdAt: "desc" },
     });
+    
+    return categories.map(cat => ({
+        ...cat,
+        createdAt: cat.createdAt.toISOString(),
+        updatedAt: cat.updatedAt.toISOString(),
+    }));
 }
 
 export async function createCategory(data: CategoryFormValues) {
