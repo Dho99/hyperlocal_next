@@ -1,0 +1,276 @@
+import { subDays, startOfDay, startOfMonth, startOfWeek } from "date-fns";
+import { prisma } from "@/lib/prisma";
+
+const DAY_LABELS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+function percent(value: number, total: number) {
+    if (!total) return 0;
+    return Math.round((value / total) * 100);
+}
+
+function normalizeScore(value: number | null | undefined) {
+    if (!value) return 0;
+    return Math.min(100, Math.round((value / 3) * 100));
+}
+
+function activityLabel(type: string) {
+    const labels: Record<string, string> = {
+        VIEW: "Dilihat wisatawan",
+        SEARCH: "Muncul dari pencarian",
+        CLICK: "Dibuka dari listing",
+        SAVE: "Disimpan ke rencana",
+        SHARE: "Dibagikan",
+        ROUTE: "Rute diminta",
+    };
+
+    return labels[type] || "Aktivitas baru";
+}
+
+export async function getDashboardOverview() {
+    const now = new Date();
+    const monthStart = startOfMonth(now);
+    const weekStart = startOfWeek(now);
+    const sevenDaysAgo = startOfDay(subDays(now, 6));
+
+    const [
+        totalDestinations,
+        approvedDestinations,
+        pendingDestinations,
+        totalUmkms,
+        newDestinationsThisMonth,
+        newUmkmsThisWeek,
+        pendingValidations,
+        validCertifications,
+        totalFacilities,
+        readinessScores,
+        recentValidations,
+        latestDestinations,
+        topDestinations,
+        recentInteractions,
+        interactionWindow,
+        mapDestinations,
+    ] = await Promise.all([
+        prisma.destination.count(),
+        prisma.destination.count({ where: { status: "APPROVED" } }),
+        prisma.destination.count({ where: { status: "PENDING" } }),
+        prisma.umkm.count(),
+        prisma.destination.count({ where: { createdAt: { gte: monthStart } } }),
+        prisma.umkm.count({ where: { createdAt: { gte: weekStart } } }),
+        prisma.halalValidation.count({ where: { status: "PENDING" } }),
+        prisma.halalCertification.count({ where: { status: "VALID" } }),
+        prisma.halalFacility.count(),
+        prisma.halalReadinessScore.findMany({
+            where: { regionType: "city" },
+            orderBy: { totalScore: "desc" },
+            take: 5,
+        }),
+        prisma.halalValidation.findMany({
+            take: 5,
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            include: {
+                certification: {
+                    include: {
+                        umkm: {
+                            include: {
+                                category: true,
+                            },
+                        },
+                    },
+                },
+                validator: true,
+            },
+        }),
+        prisma.destination.findMany({
+            take: 5,
+            orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+            include: {
+                category: true,
+            },
+        }),
+        prisma.destination.findMany({
+            take: 5,
+            orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
+            include: {
+                category: true,
+                images: {
+                    take: 1,
+                    orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+                },
+                _count: {
+                    select: {
+                        interactions: true,
+                        reviews: true,
+                    },
+                },
+            },
+        }),
+        prisma.destinationInteraction.findMany({
+            take: 6,
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            include: {
+                destination: {
+                    select: {
+                        name: true,
+                        city: true,
+                    },
+                },
+            },
+        }),
+        prisma.destinationInteraction.findMany({
+            where: { createdAt: { gte: sevenDaysAgo } },
+            select: {
+                type: true,
+                createdAt: true,
+            },
+        }),
+        prisma.destination.findMany({
+            take: 9,
+            where: {
+                latitude: { not: null },
+                longitude: { not: null },
+            },
+            orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+            include: {
+                category: true,
+            },
+        }),
+    ]);
+
+    const chartDays = Array.from({ length: 7 }, (_, index) => {
+        const date = startOfDay(subDays(now, 6 - index));
+        return {
+            key: date.toISOString().slice(0, 10),
+            label: DAY_LABELS[date.getDay()],
+            views: 0,
+            searches: 0,
+            saves: 0,
+        };
+    });
+
+    for (const interaction of interactionWindow) {
+        const key = startOfDay(interaction.createdAt).toISOString().slice(0, 10);
+        const day = chartDays.find((item) => item.key === key);
+        if (!day) continue;
+
+        if (interaction.type === "VIEW") day.views += 1;
+        if (interaction.type === "SEARCH") day.searches += 1;
+        if (interaction.type === "SAVE") day.saves += 1;
+    }
+
+    const maxChartValue = Math.max(
+        1,
+        ...chartDays.map((day) => day.views + day.searches + day.saves),
+    );
+
+    const readinessAverage =
+        readinessScores.reduce(
+            (acc, score) => ({
+                facility: acc.facility + score.halalFacilityScore,
+                food: acc.food + score.halalFoodScore,
+                worship: acc.worship + score.worshipAccessScore,
+                total: acc.total + score.totalScore,
+            }),
+            { facility: 0, food: 0, worship: 0, total: 0 },
+        );
+
+    const readinessCount = readinessScores.length || 1;
+    const readiness = [
+        {
+            label: "Fasilitas Halal",
+            value: readinessScores.length
+                ? normalizeScore(readinessAverage.facility / readinessCount)
+                : percent(totalFacilities, Math.max(totalDestinations, 1) * 2),
+        },
+        {
+            label: "Kuliner Tersertifikasi",
+            value: readinessScores.length
+                ? normalizeScore(readinessAverage.food / readinessCount)
+                : percent(validCertifications, Math.max(totalUmkms, 1)),
+        },
+        {
+            label: "Akses Ibadah",
+            value: readinessScores.length
+                ? normalizeScore(readinessAverage.worship / readinessCount)
+                : percent(approvedDestinations, Math.max(totalDestinations, 1)),
+        },
+    ];
+
+    const overallReadiness = readinessScores.length
+        ? normalizeScore(readinessAverage.total / readinessCount)
+        : Math.round(
+              readiness.reduce((sum, item) => sum + item.value, 0) /
+                  readiness.length,
+          );
+
+    return {
+        stats: {
+            totalDestinations,
+            approvedDestinations,
+            pendingDestinations,
+            totalUmkms,
+            newDestinationsThisMonth,
+            newUmkmsThisWeek,
+            pendingValidations,
+            verifiedPercent: percent(approvedDestinations, totalDestinations),
+            validCertifications,
+        },
+        readiness,
+        overallReadiness,
+        chart: {
+            days: chartDays.map((day) => ({
+                ...day,
+                total: day.views + day.searches + day.saves,
+                height: Math.max(
+                    8,
+                    Math.round(
+                        ((day.views + day.searches + day.saves) /
+                            maxChartValue) *
+                            100,
+                    ),
+                ),
+            })),
+        },
+        recentValidations: recentValidations.map((validation) => ({
+            id: validation.id,
+            name: validation.certification.umkm.name,
+            category: validation.certification.umkm.category?.name || "UMKM",
+            date: validation.createdAt,
+            status: validation.status,
+            validator: validation.validator?.name || "Belum ditugaskan",
+        })),
+        latestDestinations: latestDestinations.map((destination) => ({
+            id: destination.id,
+            name: destination.name,
+            category: destination.category?.name || "Destinasi",
+            date: destination.updatedAt,
+            status: destination.status,
+            city: destination.city || destination.province || "Tanpa wilayah",
+        })),
+        topDestinations: topDestinations.map((destination) => ({
+            id: destination.id,
+            name: destination.name,
+            category: destination.category?.name || "Destinasi",
+            city: destination.city || destination.province || "Tanpa wilayah",
+            rating: destination.rating || 0,
+            reviewCount: destination.reviewCount || 0,
+            engagement: destination._count.interactions,
+            imageUrl: destination.images[0]?.imageUrl || null,
+        })),
+        recentActivities: recentInteractions.map((interaction) => ({
+            id: interaction.id,
+            title: activityLabel(interaction.type),
+            destination: interaction.destination.name,
+            city: interaction.destination.city || "Hyperlocal",
+            createdAt: interaction.createdAt,
+            type: interaction.type,
+        })),
+        mapDestinations: mapDestinations.map((destination, index) => ({
+            id: destination.id,
+            name: destination.name,
+            category: destination.category?.name || "Destinasi",
+            status: destination.status,
+            x: 18 + ((index * 29) % 68),
+            y: 20 + ((index * 37) % 58),
+        })),
+    };
+}
