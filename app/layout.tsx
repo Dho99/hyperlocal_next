@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "HalalMap Admin - Hyperlocal Intelligence",
+    title: "Hyperlocal - Eksplorasi Halal Indonesia",
     description:
-        "Advanced analytics and management for Halal tourism and UMKM.",
+        "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis data hyperlocal.",
 };
 
 export default function RootLayout({
