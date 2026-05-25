@@ -27,6 +27,7 @@ import { toast } from "sonner";
 
 import { MapPicker } from "@/components/maps";
 import { DEFAULT_CENTER } from "@/lib/maps/geo-utils";
+import { ImageDropzone } from "@/components/upload/image-dropzone";
 
 interface UmkmFormProps {
     initialData?: Umkm;
@@ -54,6 +55,7 @@ export function UmkmForm({
             phone: initialData?.phone || "",
             latitude: initialData?.latitude ? Number(initialData.latitude) : null,
             longitude: initialData?.longitude ? Number(initialData.longitude) : null,
+            images: initialData?.images?.map(img => img.imageUrl) || [],
         },
     });
 
@@ -349,15 +351,17 @@ export function UmkmForm({
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center space-y-2 bg-muted/5">
-                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <Upload className="h-5 w-5 text-primary" />
-                                </div>
-                                <div className="text-xs">
-                                    <p className="font-bold">Klik untuk unggah</p>
-                                    <p className="text-muted-foreground">Maksimal 3 foto (PNG, JPG)</p>
-                                </div>
-                            </div>
+                            <ImageDropzone 
+                                folder="umkm"
+                                multiple={true}
+                                maxFiles={3}
+                                onUploadComplete={(urls) => {
+                                    form.setValue("images", urls);
+                                }}
+                            />
+                            <p className="text-[10px] text-muted-foreground mt-4 text-center">
+                                Unggah foto terbaik untuk menarik minat pengunjung. Maksimal 3 foto.
+                            </p>
                         </CardContent>
                     </Card>
 

@@ -17,6 +17,7 @@ export const umkmSchema = z.object({
     phone: z.string().min(10, "Nomor telepon minimal 10 karakter").optional().nullable(),
     latitude: z.number().optional().nullable(),
     longitude: z.number().optional().nullable(),
+    images: z.array(z.string()).optional(),
 });
 
 export type UmkmFormValues = z.infer<typeof umkmSchema>;

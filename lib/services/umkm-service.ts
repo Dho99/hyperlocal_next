@@ -109,30 +109,62 @@ export async function getUmkm(id: string) {
 }
 
 export async function createUmkm(values: UmkmFormValues) {
-  const umkm = await prisma.umkm.create({
-    data: values as any,
-    include: {
-      category: true,
-      destination: true,
-    },
-  });
+    const { images, ...data } = values;
 
-  return serializeUmkm(umkm);
+    const umkm = await prisma.umkm.create({
+        data: {
+            ...data as any,
+            images: images ? {
+                create: images.map((url, idx) => ({
+                    imageUrl: url,
+                    isPrimary: idx === 0,
+                    caption: `Foto ${idx + 1}`
+                }))
+            } : undefined
+        },
+        include: {
+            category: true,
+            destination: true,
+            images: true
+        },
+    });
+
+    return serializeUmkm(umkm);
 }
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
-  const umkm = await prisma.umkm.update({
-    where: { id },
-    data: values as any,
-    include: {
-      category: true,
-      destination: true,
-    },
-  });
+    const { images, ...data } = values;
 
-  return serializeUmkm(umkm);
+    const umkm = await prisma.$transaction(async (tx) => {
+        // Delete old images if new ones are provided
+        if (images) {
+            await tx.umkmImage.deleteMany({
+                where: { umkmId: id }
+            });
+        }
+
+        return await tx.umkm.update({
+            where: { id },
+            data: {
+                ...data as any,
+                images: images ? {
+                    create: images.map((url, idx) => ({
+                        imageUrl: url,
+                        isPrimary: idx === 0,
+                        caption: `Foto ${idx + 1}`
+                    }))
+                } : undefined
+            },
+            include: {
+                category: true,
+                destination: true,
+                images: true
+            },
+        });
+    });
+
+    return serializeUmkm(umkm);
 }
-
 export async function deleteUmkm(id: string) {
   return await prisma.umkm.delete({
     where: { id },

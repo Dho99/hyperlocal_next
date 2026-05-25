@@ -1,7 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { 
+    createUmkm as createUmkmService, 
+    updateUmkm as updateUmkmService, 
+    deleteUmkm as deleteUmkmService 
+} from "@/lib/services/umkm-service";
 import { umkmSchema, type UmkmFormValues } from "@/lib/validations/umkm.schema";
 
 export async function createUmkm(values: UmkmFormValues) {
@@ -12,13 +16,7 @@ export async function createUmkm(values: UmkmFormValues) {
     }
 
     try {
-        const umkm = await prisma.umkm.create({
-            data: validatedFields.data as any,
-            include: {
-                category: true,
-                destination: true,
-            },
-        });
+        const umkm = await createUmkmService(validatedFields.data);
 
         revalidatePath("/umkms");
         return { success: true, data: umkm };
@@ -40,14 +38,7 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
     }
 
     try {
-        const umkm = await prisma.umkm.update({
-            where: { id },
-            data: validatedFields.data as any,
-            include: {
-                category: true,
-                destination: true,
-            },
-        });
+        const umkm = await updateUmkmService(id, validatedFields.data);
 
         revalidatePath("/umkms");
         return { success: true, data: umkm };
@@ -63,9 +54,7 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
 
 export async function deleteUmkm(id: string) {
     try {
-        await prisma.umkm.delete({
-            where: { id },
-        });
+        await deleteUmkmService(id);
 
         revalidatePath("/umkms");
         return { success: true };
