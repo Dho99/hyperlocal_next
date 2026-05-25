@@ -10,7 +10,6 @@ datasource db {
 enum UserRole {
   user
   admin
-  umkm_owner
 }
 
 enum CertificationStatus {
@@ -41,7 +40,6 @@ model User {
   sessions                Session[]
   accounts                Account[]
   reviews                 Review[]
-  umkms                   Umkm[]
   halalValidations        HalalValidation[]
   destinationInteractions DestinationInteraction[]
   itineraries             Itinerary[]
@@ -338,7 +336,6 @@ model HalalReadinessScore {
 
 model Umkm {
   id             String   @id @default(uuid())
-  ownerId        String?  @map("owner_id")
   destinationId  String?  @map("destination_id")
   categoryId     String?  @map("category_id")
   name           String
@@ -355,15 +352,14 @@ model Umkm {
   externalSource String?  @map("external_source")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
+  owner          String
 
-  owner          User?                @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   destination    Destination?         @relation(fields: [destinationId], references: [id], onDelete: SetNull)
   category       Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images         UmkmImage[]
   reviews        Review[]
   certifications HalalCertification[]
 
-  @@index([ownerId])
   @@index([destinationId])
   @@index([categoryId])
   @@index([externalId])
