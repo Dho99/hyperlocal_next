@@ -25,6 +25,9 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { MapPicker } from "@/components/maps";
+import { DEFAULT_CENTER } from "@/lib/maps/geo-utils";
+
 interface UmkmFormProps {
     initialData?: Umkm;
     categories: Category[];
@@ -280,10 +283,20 @@ export function UmkmForm({
                                 )}
                             </div>
 
-                            <div className="pt-4 border-t">
+                            <div className="pt-4 border-t space-y-4">
                                 <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                    Koordinat Peta (Opsional)
+                                    Lokasi di Peta
                                 </Label>
+                                
+                                <MapPicker 
+                                    latitude={form.watch("latitude")}
+                                    longitude={form.watch("longitude")}
+                                    onChange={(lat, lng) => {
+                                        form.setValue("latitude", lat);
+                                        form.setValue("longitude", lng);
+                                    }}
+                                />
+                                
                                 <div className="grid gap-4 md:grid-cols-2 mt-2">
                                     <div className="space-y-2">
                                         <Label htmlFor="latitude">Latitude</Label>
@@ -293,6 +306,7 @@ export function UmkmForm({
                                             step="any"
                                             placeholder="-6.2088"
                                             {...form.register("latitude", { valueAsNumber: true })}
+                                            onChange={(e) => form.setValue("latitude", parseFloat(e.target.value))}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -303,9 +317,25 @@ export function UmkmForm({
                                             step="any"
                                             placeholder="106.8456"
                                             {...form.register("longitude", { valueAsNumber: true })}
+                                            onChange={(e) => form.setValue("longitude", parseFloat(e.target.value))}
                                         />
                                     </div>
                                 </div>
+                                {!form.watch("latitude") && (
+                                    <Button 
+                                        type="button" 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="w-full text-xs"
+                                        onClick={() => {
+                                            form.setValue("latitude", DEFAULT_CENTER[0]);
+                                            form.setValue("longitude", DEFAULT_CENTER[1]);
+                                        }}
+                                    >
+                                        <MapPin className="mr-2 h-3 w-3" />
+                                        Gunakan Lokasi Default
+                                    </Button>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

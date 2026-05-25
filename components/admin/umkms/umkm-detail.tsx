@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { ReadonlyMap } from "@/components/maps";
 
 interface UmkmDetailProps {
   id: string;
@@ -223,6 +224,23 @@ export function UmkmDetail({ id }: UmkmDetailProps) {
                       <MapPin className="h-3 w-3 text-primary" />
                       {umkm.destination?.name || "Mandiri (Tidak Terikat)"}
                     </div>
+                  </div>
+                  <div className="space-y-1 p-3 rounded-lg bg-muted/30 col-span-full">
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground mb-2">Peta Lokasi</p>
+                    <ReadonlyMap 
+                      className="h-[300px] w-full rounded-lg"
+                      markers={
+                        umkm.latitude && umkm.longitude 
+                          ? [{
+                              id: umkm.id,
+                              latitude: Number(umkm.latitude),
+                              longitude: Number(umkm.longitude),
+                              title: umkm.name,
+                              subtitle: umkm.address || ""
+                            }] 
+                          : []
+                      }
+                    />
                   </div>
                   <div className="space-y-1 p-3 rounded-lg bg-muted/30 col-span-full">
                     <p className="text-[10px] uppercase font-bold text-muted-foreground">Koordinat Peta</p>
