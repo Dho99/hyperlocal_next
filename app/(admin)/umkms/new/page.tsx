@@ -1,10 +1,8 @@
 import { getCategories } from "@/lib/services/category-service";
-import { getUmkmOwners } from "@/lib/services/user-service";
 import { UmkmForm } from "@/components/admin/umkms/umkm-form";
 
 export default async function NewUmkmPage() {
   const categories = await getCategories();
-  const owners = await getUmkmOwners();
 
   return (
     <div className="space-y-6">
@@ -17,7 +15,7 @@ export default async function NewUmkmPage() {
         </p>
       </div>
 
-      <UmkmForm categories={categories} users={owners} />
+      <UmkmForm categories={categories} />
     </div>
   );
 }

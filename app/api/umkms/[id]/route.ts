@@ -43,8 +43,8 @@ export async function PATCH(
       return NextResponse.json({ error: "UMKM tidak ditemukan" }, { status: 404 });
     }
 
-    // Authorization: Admin or Owner
-    if (session.user.role !== "admin" && existingUmkm.ownerId !== session.user.id) {
+    // Authorization: Admin only
+    if (session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -87,8 +87,8 @@ export async function DELETE(
       return NextResponse.json({ error: "UMKM tidak ditemukan" }, { status: 404 });
     }
 
-    // Authorization: Admin or Owner
-    if (session.user.role !== "admin" && existingUmkm.ownerId !== session.user.id) {
+    // Authorization: Admin only
+    if (session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

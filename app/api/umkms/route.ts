@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       headers: await headers(),
     });
 
-    if (!session || (session.user.role !== "admin" && session.user.role !== "umkm_owner")) {
+    if (!session || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -28,13 +28,11 @@ import { toast } from "sonner";
 interface UmkmFormProps {
     initialData?: Umkm;
     categories: Category[];
-    users?: { id: string; name: string; email: string }[];
 }
 
 export function UmkmForm({
     initialData,
     categories,
-    users = [],
 }: UmkmFormProps) {
     const [isPending, startTransition] = useTransition();
     const [destinations, setDestinations] = useState<Destination[]>([]);
@@ -45,7 +43,7 @@ export function UmkmForm({
         defaultValues: {
             name: initialData?.name || "",
             slug: initialData?.slug || "",
-            ownerId: initialData?.ownerId || null,
+            owner: initialData?.owner || "",
             destinationId: initialData?.destinationId || null,
             categoryId: initialData?.categoryId || null,
             description: initialData?.description || "",
@@ -136,25 +134,19 @@ export function UmkmForm({
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="ownerId">Pemilik UMKM</Label>
+                                    <Label htmlFor="owner">Nama Pemilik</Label>
                                     <div className="relative">
                                         <UserIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <select
-                                            id="ownerId"
-                                            className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background pl-9 pr-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                            {...form.register("ownerId")}
-                                        >
-                                            <option value="">Pilih Pemilik (Opsional)</option>
-                                            {users.map((user) => (
-                                                <option key={user.id} value={user.id}>
-                                                    {user.name} ({user.email})
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <Input
+                                            id="owner"
+                                            placeholder="Contoh: Bpk. Slamet"
+                                            className="pl-9"
+                                            {...form.register("owner")}
+                                        />
                                     </div>
-                                    {form.formState.errors.ownerId && (
+                                    {form.formState.errors.owner && (
                                         <p className="text-xs text-destructive">
-                                            {form.formState.errors.ownerId.message}
+                                            {form.formState.errors.owner.message}
                                         </p>
                                     )}
                                 </div>

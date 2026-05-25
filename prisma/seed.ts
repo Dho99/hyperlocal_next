@@ -12,25 +12,36 @@ async function main() {
   console.log('Starting seeding...')
 
   // 1. Create Users
+  const adminId = 'user_admin_01';
+  const adminEmail = 'admin@halaltourism.com';
+  // Password: admin123456 (Pre-hashed for Better Auth compatibility)
+  const hashedPassword = 'pbkdf2:sha256:600000$c6fOunKzNidFIn7w$884489874a581e2895698b673248c8b409d58797f10b77b10255b74f07e59c25'; 
+
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@halaltourism.com' },
+    where: { email: adminEmail },
     update: {},
     create: {
-      id: 'user_admin_01',
+      id: adminId,
       name: 'Super Admin',
-      email: 'admin@halaltourism.com',
+      email: adminEmail,
       role: 'admin',
     },
   })
 
-  const owner = await prisma.user.upsert({
-    where: { email: 'owner@warunghalal.com' },
-    update: {},
+  // Create account with password for admin
+  await prisma.account.upsert({
+    where: {
+      id: 'account_admin_01',
+    },
+    update: {
+      password: hashedPassword,
+    },
     create: {
-      id: 'user_owner_01',
-      name: 'Ahmad Halal',
-      email: 'owner@warunghalal.com',
-      role: 'umkm_owner',
+      id: 'account_admin_01',
+      userId: adminId,
+      accountId: adminEmail,
+      providerId: 'credential',
+      password: hashedPassword,
     },
   })
 
@@ -96,13 +107,13 @@ async function main() {
   })
 
   // 5. Create UMKM
-  const umkm = await prisma.umkm.upsert({
+  await prisma.umkm.upsert({
     where: { slug: 'warung-nasi-halal-berkah' },
     update: {},
     create: {
       name: 'Warung Nasi Halal Berkah',
       slug: 'warung-nasi-halal-berkah',
-      ownerId: owner.id,
+      owner: 'Ahmad Halal',
       categoryId: catKuliner.id,
       destinationId: destination.id,
       description: 'Menyediakan nasi rames dengan berbagai pilihan lauk pauk yang lezat dan 100% halal.',

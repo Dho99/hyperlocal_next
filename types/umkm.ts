@@ -54,7 +54,7 @@ export interface HalalCertification {
 
 export interface Umkm {
     id: string;
-    ownerId: string | null;
+    owner: string;
     destinationId: string | null;
     categoryId: string | null;
     name: string;
@@ -68,7 +68,6 @@ export interface Umkm {
     updatedAt: Date | string;
     
     // Relations
-    owner?: { id: string; name: string; email: string } | null;
     category?: Category | null;
     destination?: Destination | null;
     images?: UmkmImage[];
