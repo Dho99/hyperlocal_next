@@ -27,6 +27,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { getDashboardOverview } from "@/lib/services/dashboard-service";
 import { cn } from "@/lib/utils";
+import type { ValidationStatus } from "@/lib/generated/prisma";
 
 function formatDate(date: Date) {
     return new Intl.DateTimeFormat("id-ID", {
@@ -316,7 +317,9 @@ export default async function DashboardPage() {
                                 </thead>
                                 <tbody>
                                     {recentRows.slice(0, 3).map((row) => {
-                                        const badge = statusBadge(row.status);
+                                        const badge = statusBadge(
+                                            row.status as ValidationStatus,
+                                        );
                                         return (
                                             <tr
                                                 key={row.id}
@@ -417,8 +420,9 @@ export default async function DashboardPage() {
                         <BarChart3 className="h-5 w-5 text-[#4f378a]" />
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        {dashboard.topDestinations.slice(0, 3).map(
-                            (destination, index) => (
+                        {dashboard.topDestinations
+                            .slice(0, 3)
+                            .map((destination, index) => (
                                 <div
                                     key={destination.id}
                                     className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-3"
@@ -452,8 +456,7 @@ export default async function DashboardPage() {
                                         {destination.rating.toFixed(1)}
                                     </span>
                                 </div>
-                            ),
-                        )}
+                            ))}
                     </CardContent>
                 </Card>
 
@@ -467,8 +470,9 @@ export default async function DashboardPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        {dashboard.recentActivities.slice(0, 3).map(
-                            (activity) => (
+                        {dashboard.recentActivities
+                            .slice(0, 3)
+                            .map((activity) => (
                                 <div
                                     key={activity.id}
                                     className="flex gap-3 rounded-lg border border-[#e6e0e9] p-3"
@@ -493,8 +497,7 @@ export default async function DashboardPage() {
                                         </p>
                                     </div>
                                 </div>
-                            ),
-                        )}
+                            ))}
                     </CardContent>
                 </Card>
             </section>

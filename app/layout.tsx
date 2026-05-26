@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -47,6 +48,7 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <body className="min-h-full flex flex-col">
+                <NextTopLoader />
                 {children} <Toaster richColors position="top-right" />
             </body>
         </html>

@@ -20,9 +20,6 @@ export function AdminSidebar() {
                         <span className="text-[40px] font-bold leading-none">
                             HalalAdmin
                         </span>
-                        <span className="mt-4 font-sans text-lg font-normal text-white/55">
-                            Local Intelligence
-                        </span>
                     </Link>
                 </div>
                 <Separator className="bg-white/10" />

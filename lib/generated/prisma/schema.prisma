@@ -183,6 +183,7 @@ model HalalFacility {
   externalSource String?  @map("external_source")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
+  weight         Int?     @default(0)
 
   destinationHalalFacilities DestinationHalalFacility[]
 
@@ -391,6 +392,7 @@ model HalalCertification {
   documentUrl   String?             @map("document_url")
   createdAt     DateTime            @default(now()) @map("created_at")
   updatedAt     DateTime            @updatedAt @map("updated_at")
+  notes         String?
 
   umkm        Umkm              @relation(fields: [umkmId], references: [id], onDelete: Cascade)
   validations HalalValidation[]
@@ -400,14 +402,12 @@ model HalalCertification {
 }
 
 model HalalValidation {
-  id              String           @id @default(uuid())
-  certificationId String           @map("certification_id")
-  validatorId     String?          @map("validator_id")
-  status          ValidationStatus @default(PENDING)
-  notes           String?
-  validatedAt     DateTime?        @map("validated_at")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  id              String    @id @default(uuid())
+  certificationId String    @map("certification_id")
+  validatorId     String?   @map("validator_id")
+  validatedAt     DateTime? @map("validated_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   certification HalalCertification   @relation(fields: [certificationId], references: [id], onDelete: Cascade)
   validator     User?                @relation(fields: [validatorId], references: [id], onDelete: SetNull)

@@ -1,10 +1,9 @@
 {
     "mcpServers": {
-        "stitch-mcp-localhyper": {
-            "url": "https://stitch.googleapis.com/mcp",
+        "stitch": {
             "type": "http",
+            "url": "https://stitch.googleapis.com/mcp",
             "headers": {
-                "Accept": "application/json",
                 "X-Goog-Api-Key": "AQ.Ab8RN6L7v_ojTHQceBxLoc2VYeRBOdy0xg6kIrMMpD1OAl0tSA"
             }
         }

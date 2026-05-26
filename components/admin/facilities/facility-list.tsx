@@ -46,9 +46,14 @@ export function FacilityList({ onEdit }: FacilityListProps) {
         null,
     );
     const [isDeleting, setIsDeleting] = useState(false);
-    const router = useRouter();
 
-    const { data: facilities, isLoading, hasMore, loadMore, refresh } = useCursorPagination<Facility>({
+    const {
+        data: facilities,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Facility>({
         url: "/api/facilities",
     });
 

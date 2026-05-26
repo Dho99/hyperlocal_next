@@ -1,5 +1,6 @@
 import { subDays, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { prisma } from "@/lib/prisma";
+import type { CertificationStatus } from "../generated/prisma";
 
 const DAY_LABELS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
@@ -32,6 +33,107 @@ export async function getDashboardOverview() {
     const weekStart = startOfWeek(now);
     const sevenDaysAgo = startOfDay(subDays(now, 6));
 
+    const pTotalDestinations = prisma.destination.count();
+
+    const pApprovedDestinations = prisma.halalCertification.count({
+        where: {
+            status: "VALID" as CertificationStatus,
+        },
+    });
+
+    const pPendingDestinations = prisma.destination.count({
+        where: { status: "PENDING" },
+    });
+    const pTotalUmkms = prisma.umkm.count();
+    const pNewDestinationsThisMonth = prisma.destination.count({
+        where: { createdAt: { gte: monthStart } },
+    });
+    const pNewUmkmsThisWeek = prisma.umkm.count({
+        where: { createdAt: { gte: weekStart } },
+    });
+    const pPendingValidations = prisma.halalCertification.count({
+        where: { status: "PENDING" as CertificationStatus },
+    });
+    const pValidCertifications = prisma.halalCertification.count({
+        where: { status: "VALID" as CertificationStatus },
+    });
+    const pTotalFacilities = prisma.halalFacility.count();
+
+    const pReadinessScores = prisma.halalReadinessScore.findMany({
+        where: { regionType: "city" },
+        orderBy: { totalScore: "desc" },
+        take: 5,
+    });
+
+    const pLatestDestinations = prisma.destination.findMany({
+        take: 5,
+        orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        include: {
+            category: true,
+        },
+    });
+
+    const pTopDestinations = prisma.destination.findMany({
+        take: 5,
+        orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
+        include: {
+            category: true,
+            images: {
+                take: 1,
+                orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+            },
+            _count: {
+                select: {
+                    interactions: true,
+                    reviews: true,
+                },
+            },
+        },
+    });
+
+    const pRecentInteractions = prisma.destinationInteraction.findMany({
+        take: 6,
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        include: {
+            destination: {
+                select: {
+                    name: true,
+                    city: true,
+                },
+            },
+        },
+    });
+
+    const pInteractionWindow = prisma.destinationInteraction.findMany({
+        where: { createdAt: { gte: sevenDaysAgo } },
+        select: {
+            type: true,
+            createdAt: true,
+        },
+    });
+
+    const pMapDestinations = prisma.destination.findMany({
+        take: 9,
+        where: {
+            latitude: { not: null },
+            longitude: { not: null },
+        },
+        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+        include: {
+            category: true,
+        },
+    });
+
+    const pRecentValidations = prisma.halalCertification.findMany({
+        include: {
+            umkm: {
+                include: {
+                    category: true,
+                },
+            },
+        },
+    });
+
     const [
         totalDestinations,
         approvedDestinations,
@@ -43,97 +145,29 @@ export async function getDashboardOverview() {
         validCertifications,
         totalFacilities,
         readinessScores,
-        recentValidations,
         latestDestinations,
         topDestinations,
         recentInteractions,
         interactionWindow,
         mapDestinations,
+        recentValidations,
     ] = await Promise.all([
-        prisma.destination.count(),
-        prisma.destination.count({ where: { status: "APPROVED" } }),
-        prisma.destination.count({ where: { status: "PENDING" } }),
-        prisma.umkm.count(),
-        prisma.destination.count({ where: { createdAt: { gte: monthStart } } }),
-        prisma.umkm.count({ where: { createdAt: { gte: weekStart } } }),
-        prisma.halalValidation.count({ where: { status: "PENDING" } }),
-        prisma.halalCertification.count({ where: { status: "VALID" } }),
-        prisma.halalFacility.count(),
-        prisma.halalReadinessScore.findMany({
-            where: { regionType: "city" },
-            orderBy: { totalScore: "desc" },
-            take: 5,
-        }),
-        prisma.halalValidation.findMany({
-            take: 5,
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: {
-                certification: {
-                    include: {
-                        umkm: {
-                            include: {
-                                category: true,
-                            },
-                        },
-                    },
-                },
-                validator: true,
-            },
-        }),
-        prisma.destination.findMany({
-            take: 5,
-            orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
-            include: {
-                category: true,
-            },
-        }),
-        prisma.destination.findMany({
-            take: 5,
-            orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
-            include: {
-                category: true,
-                images: {
-                    take: 1,
-                    orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
-                },
-                _count: {
-                    select: {
-                        interactions: true,
-                        reviews: true,
-                    },
-                },
-            },
-        }),
-        prisma.destinationInteraction.findMany({
-            take: 6,
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: {
-                destination: {
-                    select: {
-                        name: true,
-                        city: true,
-                    },
-                },
-            },
-        }),
-        prisma.destinationInteraction.findMany({
-            where: { createdAt: { gte: sevenDaysAgo } },
-            select: {
-                type: true,
-                createdAt: true,
-            },
-        }),
-        prisma.destination.findMany({
-            take: 9,
-            where: {
-                latitude: { not: null },
-                longitude: { not: null },
-            },
-            orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-            include: {
-                category: true,
-            },
-        }),
+        pTotalDestinations,
+        pApprovedDestinations,
+        pPendingDestinations,
+        pTotalUmkms,
+        pNewDestinationsThisMonth,
+        pNewUmkmsThisWeek,
+        pPendingValidations,
+        pValidCertifications,
+        pTotalFacilities,
+        pReadinessScores,
+        pLatestDestinations,
+        pTopDestinations,
+        pRecentInteractions,
+        pInteractionWindow,
+        pMapDestinations,
+        pRecentValidations,
     ]);
 
     const chartDays = Array.from({ length: 7 }, (_, index) => {
@@ -148,7 +182,9 @@ export async function getDashboardOverview() {
     });
 
     for (const interaction of interactionWindow) {
-        const key = startOfDay(interaction.createdAt).toISOString().slice(0, 10);
+        const key = startOfDay(interaction.createdAt)
+            .toISOString()
+            .slice(0, 10);
         const day = chartDays.find((item) => item.key === key);
         if (!day) continue;
 
@@ -162,16 +198,15 @@ export async function getDashboardOverview() {
         ...chartDays.map((day) => day.views + day.searches + day.saves),
     );
 
-    const readinessAverage =
-        readinessScores.reduce(
-            (acc, score) => ({
-                facility: acc.facility + score.halalFacilityScore,
-                food: acc.food + score.halalFoodScore,
-                worship: acc.worship + score.worshipAccessScore,
-                total: acc.total + score.totalScore,
-            }),
-            { facility: 0, food: 0, worship: 0, total: 0 },
-        );
+    const readinessAverage = readinessScores.reduce(
+        (acc, score) => ({
+            facility: acc.facility + score.halalFacilityScore,
+            food: acc.food + score.halalFoodScore,
+            worship: acc.worship + score.worshipAccessScore,
+            total: acc.total + score.totalScore,
+        }),
+        { facility: 0, food: 0, worship: 0, total: 0 },
+    );
 
     const readinessCount = readinessScores.length || 1;
     const readiness = [
@@ -232,11 +267,11 @@ export async function getDashboardOverview() {
         },
         recentValidations: recentValidations.map((validation) => ({
             id: validation.id,
-            name: validation.certification.umkm.name,
-            category: validation.certification.umkm.category?.name || "UMKM",
+            name: validation.umkm.name,
+            category: validation.umkm.category?.name || "UMKM",
             date: validation.createdAt,
             status: validation.status,
-            validator: validation.validator?.name || "Belum ditugaskan",
+            validator: validation.issuer || "Belum ditugaskan",
         })),
         latestDestinations: latestDestinations.map((destination) => ({
             id: destination.id,

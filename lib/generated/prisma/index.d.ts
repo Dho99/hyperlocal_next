@@ -12518,11 +12518,13 @@ export namespace Prisma {
   export type HalalFacilityAvgAggregateOutputType = {
     latitude: Decimal | null
     longitude: Decimal | null
+    weight: number | null
   }
 
   export type HalalFacilitySumAggregateOutputType = {
     latitude: Decimal | null
     longitude: Decimal | null
+    weight: number | null
   }
 
   export type HalalFacilityMinAggregateOutputType = {
@@ -12537,6 +12539,7 @@ export namespace Prisma {
     externalSource: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    weight: number | null
   }
 
   export type HalalFacilityMaxAggregateOutputType = {
@@ -12551,6 +12554,7 @@ export namespace Prisma {
     externalSource: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    weight: number | null
   }
 
   export type HalalFacilityCountAggregateOutputType = {
@@ -12565,6 +12569,7 @@ export namespace Prisma {
     externalSource: number
     createdAt: number
     updatedAt: number
+    weight: number
     _all: number
   }
 
@@ -12572,11 +12577,13 @@ export namespace Prisma {
   export type HalalFacilityAvgAggregateInputType = {
     latitude?: true
     longitude?: true
+    weight?: true
   }
 
   export type HalalFacilitySumAggregateInputType = {
     latitude?: true
     longitude?: true
+    weight?: true
   }
 
   export type HalalFacilityMinAggregateInputType = {
@@ -12591,6 +12598,7 @@ export namespace Prisma {
     externalSource?: true
     createdAt?: true
     updatedAt?: true
+    weight?: true
   }
 
   export type HalalFacilityMaxAggregateInputType = {
@@ -12605,6 +12613,7 @@ export namespace Prisma {
     externalSource?: true
     createdAt?: true
     updatedAt?: true
+    weight?: true
   }
 
   export type HalalFacilityCountAggregateInputType = {
@@ -12619,6 +12628,7 @@ export namespace Prisma {
     externalSource?: true
     createdAt?: true
     updatedAt?: true
+    weight?: true
     _all?: true
   }
 
@@ -12720,6 +12730,7 @@ export namespace Prisma {
     externalSource: string | null
     createdAt: Date
     updatedAt: Date
+    weight: number | null
     _count: HalalFacilityCountAggregateOutputType | null
     _avg: HalalFacilityAvgAggregateOutputType | null
     _sum: HalalFacilitySumAggregateOutputType | null
@@ -12753,6 +12764,7 @@ export namespace Prisma {
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    weight?: boolean
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["halalFacility"]>
@@ -12769,6 +12781,7 @@ export namespace Prisma {
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    weight?: boolean
   }, ExtArgs["result"]["halalFacility"]>
 
   export type HalalFacilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12783,6 +12796,7 @@ export namespace Prisma {
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    weight?: boolean
   }, ExtArgs["result"]["halalFacility"]>
 
   export type HalalFacilitySelectScalar = {
@@ -12797,9 +12811,10 @@ export namespace Prisma {
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    weight?: boolean
   }
 
-  export type HalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "facilityType" | "address" | "latitude" | "longitude" | "externalId" | "externalSource" | "createdAt" | "updatedAt", ExtArgs["result"]["halalFacility"]>
+  export type HalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "facilityType" | "address" | "latitude" | "longitude" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "weight", ExtArgs["result"]["halalFacility"]>
   export type HalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
@@ -12824,6 +12839,7 @@ export namespace Prisma {
       externalSource: string | null
       createdAt: Date
       updatedAt: Date
+      weight: number | null
     }, ExtArgs["result"]["halalFacility"]>
     composites: {}
   }
@@ -13259,6 +13275,7 @@ export namespace Prisma {
     readonly externalSource: FieldRef<"HalalFacility", 'String'>
     readonly createdAt: FieldRef<"HalalFacility", 'DateTime'>
     readonly updatedAt: FieldRef<"HalalFacility", 'DateTime'>
+    readonly weight: FieldRef<"HalalFacility", 'Int'>
   }
     
 
@@ -24314,6 +24331,7 @@ export namespace Prisma {
     documentUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    notes: string | null
   }
 
   export type HalalCertificationMaxAggregateOutputType = {
@@ -24327,6 +24345,7 @@ export namespace Prisma {
     documentUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    notes: string | null
   }
 
   export type HalalCertificationCountAggregateOutputType = {
@@ -24340,6 +24359,7 @@ export namespace Prisma {
     documentUrl: number
     createdAt: number
     updatedAt: number
+    notes: number
     _all: number
   }
 
@@ -24355,6 +24375,7 @@ export namespace Prisma {
     documentUrl?: true
     createdAt?: true
     updatedAt?: true
+    notes?: true
   }
 
   export type HalalCertificationMaxAggregateInputType = {
@@ -24368,6 +24389,7 @@ export namespace Prisma {
     documentUrl?: true
     createdAt?: true
     updatedAt?: true
+    notes?: true
   }
 
   export type HalalCertificationCountAggregateInputType = {
@@ -24381,6 +24403,7 @@ export namespace Prisma {
     documentUrl?: true
     createdAt?: true
     updatedAt?: true
+    notes?: true
     _all?: true
   }
 
@@ -24467,6 +24490,7 @@ export namespace Prisma {
     documentUrl: string | null
     createdAt: Date
     updatedAt: Date
+    notes: string | null
     _count: HalalCertificationCountAggregateOutputType | null
     _min: HalalCertificationMinAggregateOutputType | null
     _max: HalalCertificationMaxAggregateOutputType | null
@@ -24497,6 +24521,7 @@ export namespace Prisma {
     documentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    notes?: boolean
     umkm?: boolean | UmkmDefaultArgs<ExtArgs>
     validations?: boolean | HalalCertification$validationsArgs<ExtArgs>
     _count?: boolean | HalalCertificationCountOutputTypeDefaultArgs<ExtArgs>
@@ -24513,6 +24538,7 @@ export namespace Prisma {
     documentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    notes?: boolean
     umkm?: boolean | UmkmDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["halalCertification"]>
 
@@ -24527,6 +24553,7 @@ export namespace Prisma {
     documentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    notes?: boolean
     umkm?: boolean | UmkmDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["halalCertification"]>
 
@@ -24541,9 +24568,10 @@ export namespace Prisma {
     documentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    notes?: boolean
   }
 
-  export type HalalCertificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "umkmId" | "certificateNo" | "issuer" | "issuedAt" | "expiredAt" | "status" | "documentUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["halalCertification"]>
+  export type HalalCertificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "umkmId" | "certificateNo" | "issuer" | "issuedAt" | "expiredAt" | "status" | "documentUrl" | "createdAt" | "updatedAt" | "notes", ExtArgs["result"]["halalCertification"]>
   export type HalalCertificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     umkm?: boolean | UmkmDefaultArgs<ExtArgs>
     validations?: boolean | HalalCertification$validationsArgs<ExtArgs>
@@ -24573,6 +24601,7 @@ export namespace Prisma {
       documentUrl: string | null
       createdAt: Date
       updatedAt: Date
+      notes: string | null
     }, ExtArgs["result"]["halalCertification"]>
     composites: {}
   }
@@ -25008,6 +25037,7 @@ export namespace Prisma {
     readonly documentUrl: FieldRef<"HalalCertification", 'String'>
     readonly createdAt: FieldRef<"HalalCertification", 'DateTime'>
     readonly updatedAt: FieldRef<"HalalCertification", 'DateTime'>
+    readonly notes: FieldRef<"HalalCertification", 'String'>
   }
     
 
@@ -25465,8 +25495,6 @@ export namespace Prisma {
     id: string | null
     certificationId: string | null
     validatorId: string | null
-    status: $Enums.ValidationStatus | null
-    notes: string | null
     validatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25476,8 +25504,6 @@ export namespace Prisma {
     id: string | null
     certificationId: string | null
     validatorId: string | null
-    status: $Enums.ValidationStatus | null
-    notes: string | null
     validatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25487,8 +25513,6 @@ export namespace Prisma {
     id: number
     certificationId: number
     validatorId: number
-    status: number
-    notes: number
     validatedAt: number
     createdAt: number
     updatedAt: number
@@ -25500,8 +25524,6 @@ export namespace Prisma {
     id?: true
     certificationId?: true
     validatorId?: true
-    status?: true
-    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25511,8 +25533,6 @@ export namespace Prisma {
     id?: true
     certificationId?: true
     validatorId?: true
-    status?: true
-    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25522,8 +25542,6 @@ export namespace Prisma {
     id?: true
     certificationId?: true
     validatorId?: true
-    status?: true
-    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25606,8 +25624,6 @@ export namespace Prisma {
     id: string
     certificationId: string
     validatorId: string | null
-    status: $Enums.ValidationStatus
-    notes: string | null
     validatedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -25634,8 +25650,6 @@ export namespace Prisma {
     id?: boolean
     certificationId?: boolean
     validatorId?: boolean
-    status?: boolean
-    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -25649,8 +25663,6 @@ export namespace Prisma {
     id?: boolean
     certificationId?: boolean
     validatorId?: boolean
-    status?: boolean
-    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -25662,8 +25674,6 @@ export namespace Prisma {
     id?: boolean
     certificationId?: boolean
     validatorId?: boolean
-    status?: boolean
-    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -25675,14 +25685,12 @@ export namespace Prisma {
     id?: boolean
     certificationId?: boolean
     validatorId?: boolean
-    status?: boolean
-    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type HalalValidationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "certificationId" | "validatorId" | "status" | "notes" | "validatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["halalValidation"]>
+  export type HalalValidationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "certificationId" | "validatorId" | "validatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["halalValidation"]>
   export type HalalValidationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
@@ -25709,8 +25717,6 @@ export namespace Prisma {
       id: string
       certificationId: string
       validatorId: string | null
-      status: $Enums.ValidationStatus
-      notes: string | null
       validatedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -26143,8 +26149,6 @@ export namespace Prisma {
     readonly id: FieldRef<"HalalValidation", 'String'>
     readonly certificationId: FieldRef<"HalalValidation", 'String'>
     readonly validatorId: FieldRef<"HalalValidation", 'String'>
-    readonly status: FieldRef<"HalalValidation", 'ValidationStatus'>
-    readonly notes: FieldRef<"HalalValidation", 'String'>
     readonly validatedAt: FieldRef<"HalalValidation", 'DateTime'>
     readonly createdAt: FieldRef<"HalalValidation", 'DateTime'>
     readonly updatedAt: FieldRef<"HalalValidation", 'DateTime'>
@@ -28839,7 +28843,8 @@ export namespace Prisma {
     externalId: 'externalId',
     externalSource: 'externalSource',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    weight: 'weight'
   };
 
   export type HalalFacilityScalarFieldEnum = (typeof HalalFacilityScalarFieldEnum)[keyof typeof HalalFacilityScalarFieldEnum]
@@ -28996,7 +29001,8 @@ export namespace Prisma {
     status: 'status',
     documentUrl: 'documentUrl',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    notes: 'notes'
   };
 
   export type HalalCertificationScalarFieldEnum = (typeof HalalCertificationScalarFieldEnum)[keyof typeof HalalCertificationScalarFieldEnum]
@@ -29006,8 +29012,6 @@ export namespace Prisma {
     id: 'id',
     certificationId: 'certificationId',
     validatorId: 'validatorId',
-    status: 'status',
-    notes: 'notes',
     validatedAt: 'validatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -29895,6 +29899,7 @@ export namespace Prisma {
     externalSource?: StringNullableFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeFilter<"HalalFacility"> | Date | string
+    weight?: IntNullableFilter<"HalalFacility"> | number | null
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
   }
 
@@ -29910,6 +29915,7 @@ export namespace Prisma {
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    weight?: SortOrderInput | SortOrder
     destinationHalalFacilities?: DestinationHalalFacilityOrderByRelationAggregateInput
   }
 
@@ -29928,6 +29934,7 @@ export namespace Prisma {
     externalSource?: StringNullableFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeFilter<"HalalFacility"> | Date | string
+    weight?: IntNullableFilter<"HalalFacility"> | number | null
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
   }, "id">
 
@@ -29943,6 +29950,7 @@ export namespace Prisma {
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    weight?: SortOrderInput | SortOrder
     _count?: HalalFacilityCountOrderByAggregateInput
     _avg?: HalalFacilityAvgOrderByAggregateInput
     _max?: HalalFacilityMaxOrderByAggregateInput
@@ -29965,6 +29973,7 @@ export namespace Prisma {
     externalSource?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HalalFacility"> | Date | string
+    weight?: IntNullableWithAggregatesFilter<"HalalFacility"> | number | null
   }
 
   export type ReviewWhereInput = {
@@ -30726,6 +30735,7 @@ export namespace Prisma {
     documentUrl?: StringNullableFilter<"HalalCertification"> | string | null
     createdAt?: DateTimeFilter<"HalalCertification"> | Date | string
     updatedAt?: DateTimeFilter<"HalalCertification"> | Date | string
+    notes?: StringNullableFilter<"HalalCertification"> | string | null
     umkm?: XOR<UmkmScalarRelationFilter, UmkmWhereInput>
     validations?: HalalValidationListRelationFilter
   }
@@ -30741,6 +30751,7 @@ export namespace Prisma {
     documentUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    notes?: SortOrderInput | SortOrder
     umkm?: UmkmOrderByWithRelationInput
     validations?: HalalValidationOrderByRelationAggregateInput
   }
@@ -30759,6 +30770,7 @@ export namespace Prisma {
     documentUrl?: StringNullableFilter<"HalalCertification"> | string | null
     createdAt?: DateTimeFilter<"HalalCertification"> | Date | string
     updatedAt?: DateTimeFilter<"HalalCertification"> | Date | string
+    notes?: StringNullableFilter<"HalalCertification"> | string | null
     umkm?: XOR<UmkmScalarRelationFilter, UmkmWhereInput>
     validations?: HalalValidationListRelationFilter
   }, "id" | "certificateNo">
@@ -30774,6 +30786,7 @@ export namespace Prisma {
     documentUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    notes?: SortOrderInput | SortOrder
     _count?: HalalCertificationCountOrderByAggregateInput
     _max?: HalalCertificationMaxOrderByAggregateInput
     _min?: HalalCertificationMinOrderByAggregateInput
@@ -30793,6 +30806,7 @@ export namespace Prisma {
     documentUrl?: StringNullableWithAggregatesFilter<"HalalCertification"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"HalalCertification"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HalalCertification"> | Date | string
+    notes?: StringNullableWithAggregatesFilter<"HalalCertification"> | string | null
   }
 
   export type HalalValidationWhereInput = {
@@ -30802,8 +30816,6 @@ export namespace Prisma {
     id?: StringFilter<"HalalValidation"> | string
     certificationId?: StringFilter<"HalalValidation"> | string
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
-    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
-    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
@@ -30816,8 +30828,6 @@ export namespace Prisma {
     id?: SortOrder
     certificationId?: SortOrder
     validatorId?: SortOrderInput | SortOrder
-    status?: SortOrder
-    notes?: SortOrderInput | SortOrder
     validatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30833,8 +30843,6 @@ export namespace Prisma {
     NOT?: HalalValidationWhereInput | HalalValidationWhereInput[]
     certificationId?: StringFilter<"HalalValidation"> | string
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
-    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
-    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
@@ -30847,8 +30855,6 @@ export namespace Prisma {
     id?: SortOrder
     certificationId?: SortOrder
     validatorId?: SortOrderInput | SortOrder
-    status?: SortOrder
-    notes?: SortOrderInput | SortOrder
     validatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30864,8 +30870,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"HalalValidation"> | string
     certificationId?: StringWithAggregatesFilter<"HalalValidation"> | string
     validatorId?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
-    status?: EnumValidationStatusWithAggregatesFilter<"HalalValidation"> | $Enums.ValidationStatus
-    notes?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableWithAggregatesFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HalalValidation"> | Date | string
@@ -31721,6 +31725,7 @@ export namespace Prisma {
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    weight?: number | null
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutFacilityInput
   }
 
@@ -31736,6 +31741,7 @@ export namespace Prisma {
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    weight?: number | null
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
   }
 
@@ -31751,6 +31757,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput
   }
 
@@ -31766,6 +31773,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
   }
 
@@ -31781,6 +31789,7 @@ export namespace Prisma {
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    weight?: number | null
   }
 
   export type HalalFacilityUpdateManyMutationInput = {
@@ -31795,6 +31804,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type HalalFacilityUncheckedUpdateManyInput = {
@@ -31809,6 +31819,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ReviewCreateInput = {
@@ -32626,6 +32637,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
     umkm: UmkmCreateNestedOneWithoutCertificationsInput
     validations?: HalalValidationCreateNestedManyWithoutCertificationInput
   }
@@ -32641,6 +32653,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
     validations?: HalalValidationUncheckedCreateNestedManyWithoutCertificationInput
   }
 
@@ -32654,6 +32667,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     umkm?: UmkmUpdateOneRequiredWithoutCertificationsNestedInput
     validations?: HalalValidationUpdateManyWithoutCertificationNestedInput
   }
@@ -32669,6 +32683,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validations?: HalalValidationUncheckedUpdateManyWithoutCertificationNestedInput
   }
 
@@ -32683,6 +32698,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
   }
 
   export type HalalCertificationUpdateManyMutationInput = {
@@ -32695,6 +32711,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalCertificationUncheckedUpdateManyInput = {
@@ -32708,12 +32725,11 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalValidationCreateInput = {
     id?: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32726,8 +32742,6 @@ export namespace Prisma {
     id?: string
     certificationId: string
     validatorId?: string | null
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32736,8 +32750,6 @@ export namespace Prisma {
 
   export type HalalValidationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32750,8 +32762,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     certificationId?: StringFieldUpdateOperationsInput | string
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32762,8 +32772,6 @@ export namespace Prisma {
     id?: string
     certificationId: string
     validatorId?: string | null
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32771,8 +32779,6 @@ export namespace Prisma {
 
   export type HalalValidationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32782,8 +32788,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     certificationId?: StringFieldUpdateOperationsInput | string
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33660,11 +33664,13 @@ export namespace Prisma {
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    weight?: SortOrder
   }
 
   export type HalalFacilityAvgOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
+    weight?: SortOrder
   }
 
   export type HalalFacilityMaxOrderByAggregateInput = {
@@ -33679,6 +33685,7 @@ export namespace Prisma {
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    weight?: SortOrder
   }
 
   export type HalalFacilityMinOrderByAggregateInput = {
@@ -33693,11 +33700,13 @@ export namespace Prisma {
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    weight?: SortOrder
   }
 
   export type HalalFacilitySumOrderByAggregateInput = {
     latitude?: SortOrder
     longitude?: SortOrder
+    weight?: SortOrder
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -34296,6 +34305,7 @@ export namespace Prisma {
     documentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    notes?: SortOrder
   }
 
   export type HalalCertificationMaxOrderByAggregateInput = {
@@ -34309,6 +34319,7 @@ export namespace Prisma {
     documentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    notes?: SortOrder
   }
 
   export type HalalCertificationMinOrderByAggregateInput = {
@@ -34322,6 +34333,7 @@ export namespace Prisma {
     documentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    notes?: SortOrder
   }
 
   export type EnumCertificationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -34353,8 +34365,6 @@ export namespace Prisma {
     id?: SortOrder
     certificationId?: SortOrder
     validatorId?: SortOrder
-    status?: SortOrder
-    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -34364,8 +34374,6 @@ export namespace Prisma {
     id?: SortOrder
     certificationId?: SortOrder
     validatorId?: SortOrder
-    status?: SortOrder
-    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -34375,8 +34383,6 @@ export namespace Prisma {
     id?: SortOrder
     certificationId?: SortOrder
     validatorId?: SortOrder
-    status?: SortOrder
-    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -36367,8 +36373,6 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutValidatorInput = {
     id?: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36379,8 +36383,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedCreateWithoutValidatorInput = {
     id?: string
     certificationId: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36580,8 +36582,6 @@ export namespace Prisma {
     id?: StringFilter<"HalalValidation"> | string
     certificationId?: StringFilter<"HalalValidation"> | string
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
-    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
-    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
@@ -37677,6 +37677,7 @@ export namespace Prisma {
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    weight?: number | null
   }
 
   export type HalalFacilityUncheckedCreateWithoutDestinationHalalFacilitiesInput = {
@@ -37691,6 +37692,7 @@ export namespace Prisma {
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    weight?: number | null
   }
 
   export type HalalFacilityCreateOrConnectWithoutDestinationHalalFacilitiesInput = {
@@ -37786,6 +37788,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type HalalFacilityUncheckedUpdateWithoutDestinationHalalFacilitiesInput = {
@@ -37800,6 +37803,7 @@ export namespace Prisma {
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type DestinationHalalFacilityCreateWithoutFacilityInput = {
@@ -39088,6 +39092,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
     validations?: HalalValidationCreateNestedManyWithoutCertificationInput
   }
 
@@ -39101,6 +39106,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
     validations?: HalalValidationUncheckedCreateNestedManyWithoutCertificationInput
   }
 
@@ -39284,6 +39290,7 @@ export namespace Prisma {
     documentUrl?: StringNullableFilter<"HalalCertification"> | string | null
     createdAt?: DateTimeFilter<"HalalCertification"> | Date | string
     updatedAt?: DateTimeFilter<"HalalCertification"> | Date | string
+    notes?: StringNullableFilter<"HalalCertification"> | string | null
   }
 
   export type UmkmCreateWithoutImagesInput = {
@@ -39447,8 +39454,6 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutCertificationInput = {
     id?: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39459,8 +39464,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedCreateWithoutCertificationInput = {
     id?: string
     validatorId?: string | null
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39560,6 +39563,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
     umkm: UmkmCreateNestedOneWithoutCertificationsInput
   }
 
@@ -39574,6 +39578,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
   }
 
   export type HalalCertificationCreateOrConnectWithoutValidationsInput = {
@@ -39669,6 +39674,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     umkm?: UmkmUpdateOneRequiredWithoutCertificationsNestedInput
   }
 
@@ -39683,6 +39689,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUpsertWithoutHalalValidationsInput = {
@@ -39763,8 +39770,6 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutEvidencesInput = {
     id?: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39776,8 +39781,6 @@ export namespace Prisma {
     id?: string
     certificationId: string
     validatorId?: string | null
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39801,8 +39804,6 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutEvidencesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39814,8 +39815,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     certificationId?: StringFieldUpdateOperationsInput | string
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39860,8 +39859,6 @@ export namespace Prisma {
   export type HalalValidationCreateManyValidatorInput = {
     id?: string
     certificationId: string
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40000,8 +39997,6 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40012,8 +40007,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedUpdateWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     certificationId?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40023,8 +40016,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedUpdateManyWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     certificationId?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40667,6 +40658,7 @@ export namespace Prisma {
     documentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    notes?: string | null
   }
 
   export type UmkmImageUpdateWithoutUmkmInput = {
@@ -40735,6 +40727,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validations?: HalalValidationUpdateManyWithoutCertificationNestedInput
   }
 
@@ -40748,6 +40741,7 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validations?: HalalValidationUncheckedUpdateManyWithoutCertificationNestedInput
   }
 
@@ -40761,13 +40755,12 @@ export namespace Prisma {
     documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalValidationCreateManyCertificationInput = {
     id?: string
     validatorId?: string | null
-    status?: $Enums.ValidationStatus
-    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40775,8 +40768,6 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40787,8 +40778,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedUpdateWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40798,8 +40787,6 @@ export namespace Prisma {
   export type HalalValidationUncheckedUpdateManyWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
