@@ -30,11 +30,14 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
 
-export function RegisterForm() {
+export function RegisterForm({ role = "user" }: { role?: "admin" | "user" }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    const is_admin = role === "admin";
+    const loginPath = is_admin ? "/admin/login" : "/user/login";
 
     const form = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -55,11 +58,12 @@ export function RegisterForm() {
             email: values.email,
             password: values.password,
             name: values.name,
+            role: role as "admin" | "user",
             fetchOptions: {
                 onSuccess: () => {
                     setIsSuccess(true);
                     setTimeout(() => {
-                        router.push("/login");
+                        router.push(loginPath);
                     }, 2000);
                 },
                 onError: (ctx) => {
@@ -86,8 +90,9 @@ export function RegisterForm() {
                         Pendaftaran Berhasil!
                     </CardTitle>
                     <CardDescription className="text-base">
-                        Akun Anda telah berhasil dibuat. Anda akan diarahkan ke
-                        halaman masuk dalam beberapa detik...
+                        Akun {is_admin ? "Admin" : "User"} Anda telah berhasil
+                        dibuat. Anda akan diarahkan ke halaman masuk dalam
+                        beberapa detik...
                     </CardDescription>
                 </CardContent>
             </Card>
@@ -98,10 +103,12 @@ export function RegisterForm() {
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold">
-                    Daftar Akun
+                    Daftar Akun {is_admin ? "Admin" : "Traveller"}
                 </CardTitle>
                 <CardDescription>
-                    Buat akun baru untuk mulai mengelola data pariwisata halal.
+                    {is_admin
+                        ? "Buat akun admin untuk mengelola data pariwisata halal."
+                        : "Buat akun baru untuk mulai menjelajahi destinasi halal."}
                 </CardDescription>
             </CardHeader>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -121,7 +128,9 @@ export function RegisterForm() {
                             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id="name"
-                                placeholder="Admin Baru"
+                                placeholder={
+                                    is_admin ? "Admin Baru" : "Nama Anda"
+                                }
                                 className="pl-10 focus-visible:ring-primary/20"
                                 disabled={isLoading}
                                 {...form.register("name")}
@@ -140,7 +149,11 @@ export function RegisterForm() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="nama@perusahaan.com"
+                                placeholder={
+                                    is_admin
+                                        ? "nama@perusahaan.com"
+                                        : "email@anda.com"
+                                }
                                 className="pl-10 focus-visible:ring-primary/20"
                                 disabled={isLoading}
                                 {...form.register("email")}
@@ -208,7 +221,7 @@ export function RegisterForm() {
                     <div className="text-center text-sm text-muted-foreground">
                         Sudah punya akun?{" "}
                         <Link
-                            href="/login"
+                            href={loginPath}
                             className="font-semibold text-primary hover:underline"
                         >
                             Masuk

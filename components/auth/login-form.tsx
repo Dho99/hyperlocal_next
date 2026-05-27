@@ -23,10 +23,13 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
 
-export function LoginForm() {
+export function LoginForm({ role = "user" }: { role?: "admin" | "user" }) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const is_admin = role === "admin";
+    const registerPath = is_admin ? "/admin/register" : "/user/register";
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -65,9 +68,11 @@ export function LoginForm() {
     return (
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold">Masuk</CardTitle>
+                <CardTitle className="text-2xl font-bold">Masuk {is_admin ? "Admin" : "User"}</CardTitle>
                 <CardDescription>
-                    Masukkan email dan password Anda untuk mengakses dashboard.
+                    {is_admin 
+                        ? "Masukkan email dan password admin Anda untuk mengakses dashboard."
+                        : "Masukkan email dan password Anda untuk mulai menjelajah."}
                 </CardDescription>
             </CardHeader>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -85,7 +90,7 @@ export function LoginForm() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="nama@perusahaan.com"
+                                placeholder={is_admin ? "admin@perusahaan.com" : "user@email.com"}
                                 className="pl-10 focus-visible:ring-primary/20"
                                 disabled={isLoading}
                                 {...form.register("email")}
@@ -135,7 +140,7 @@ export function LoginForm() {
                     </Button>
                     <div className="text-center text-sm text-muted-foreground">
                         Belum punya akun?{" "}
-                        <Link href="/register" className="font-semibold text-primary hover:underline">
+                        <Link href={registerPath} className="font-semibold text-primary hover:underline">
                             Daftar Gratis
                         </Link>
                     </div>

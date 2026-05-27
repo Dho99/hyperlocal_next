@@ -1,25 +1,23 @@
 import { prisma } from "@/lib/prisma";
-import type { Destination, DestinationFormValues } from "@/types/destination";
+import type { DestinationFormValues } from "@/types/destination";
+import type { Destination } from "@/types/destination";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
+import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
+import { haversineDistance } from "@/lib/utils/haversine-distance";
 
-function serializeDestination(destination: any): Destination {
-    const { destinationHalalFacilities, ...rest } = destination;
-    return {
-        ...rest,
-        latitude: destination.latitude ? destination.latitude.toString() : "",
-        longitude: destination.longitude ? destination.longitude.toString() : "",
-        createdAt: destination.createdAt?.toISOString(),
-        updatedAt: destination.updatedAt?.toISOString(),
-        facilities: destinationHalalFacilities?.map((df: any) => ({
-            ...df.facility,
-            createdAt: df.facility.createdAt?.toISOString(),
-            updatedAt: df.facility.updatedAt?.toISOString(),
-        })) || [],
-    };
-}
+const destinationIncludes = {
+    category: true,
+    destinationHalalFacilities: {
+        include: {
+            facility: true,
+            evidences: true,
+        },
+    },
+    images: true,
+} as const;
 
 export async function getPaginatedDestinations(
     params: CursorPaginationParams & {
@@ -46,132 +44,202 @@ export async function getPaginatedDestinations(
                         name: { contains: params.search, mode: "insensitive" },
                     }),
                 },
-                include: {
-                    category: true,
-                    destinationHalalFacilities: {
-                        include: {
-                            facility: true,
-                        },
-                    },
-                    images: true,
-                },
+                include: destinationIncludes,
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
             });
 
-            return destinations.map((d) => serializeDestination(d));
+            return destinations as unknown as typeof destinations;
         },
         params,
         "Destinations fetched successfully",
     );
 }
 
-export async function getDestinations() {
-    const destinations = await prisma.destination.findMany({
-        include: {
-            category: true,
-            destinationHalalFacilities: {
-                include: {
-                    facility: true,
-                },
-            },
-            images: true,
-        },
+export async function getDestinations(): Promise<Destination[]> {
+    const data = await prisma.destination.findMany({
+        include: destinationIncludes,
         orderBy: { createdAt: "desc" },
     });
-
-    return destinations.map((destination) => serializeDestination(destination));
+    return data as unknown as Destination[];
 }
 
-export async function getDestination(id: string) {
-    const destination = await prisma.destination.findUnique({
+export async function getDestination(id: string): Promise<Destination | null> {
+    const data = await prisma.destination.findUnique({
         where: { id },
-        include: {
-            category: true,
-            destinationHalalFacilities: {
-                include: {
-                    facility: true,
-                },
-            },
-            images: true,
-        },
+        include: destinationIncludes,
     });
-
-    return destination ? serializeDestination(destination) : null;
+    return data as unknown as Destination | null;
 }
 
 export async function createDestination(values: DestinationFormValues) {
-    const { facilityIds, ...data } = values;
+    const { facilities, images, ...data } = values;
 
-    const destination = await prisma.destination.create({
-        data: {
-            ...data,
-            images: {
-                create:
-                    values.images?.map((url) => ({
-                        imageUrl: url,
-                    })) || [],
-            },
-            destinationHalalFacilities: {
-                create: facilityIds?.map((id) => ({
-                    facilityId: id,
-                })),
-            },
-        },
-        include: {
-            destinationHalalFacilities: {
-                include: {
-                    facility: true,
+    const destination = await prisma.$transaction(async (tx) => {
+        const facilityIds = facilities?.map((f) => f.facilityId) || [];
+
+        const masterFacilities = await tx.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+
+        if (data.latitude != null && data.longitude != null) {
+            for (const f of facilities ?? []) {
+                if (f.latitude == null || f.longitude == null) continue;
+                const mf = masterFacilities.find((m) => m.id === f.facilityId);
+                if (!mf) continue;
+                const dist = haversineDistance(
+                    data.latitude,
+                    data.longitude,
+                    f.latitude,
+                    f.longitude,
+                );
+                if (dist > mf.maxDistance) {
+                    throw new Error(
+                        `Fasilitas "${mf.name}" berjarak ${Math.round(dist * 100) / 100} km — melebihi batas maksimal ${mf.maxDistance} km dari destinasi`,
+                    );
+                }
+            }
+        }
+
+        const facilityWeights = masterFacilities.map((mf) => ({
+            facilityType: mf.facilityType,
+            weight: mf.weight ?? 0,
+        }));
+        const halalScore = calculateHalalScoreFromWeights(facilityWeights);
+
+        const destination = await tx.destination.create({
+            data: {
+                ...data,
+                description: data.description ?? undefined,
+                status: "PENDING",
+                halalScore,
+                images: {
+                    create:
+                        images?.map((image) => ({
+                            imageUrl: image.imageUrl,
+                        })) || [],
+                },
+                destinationHalalFacilities: {
+                    create:
+                        facilities?.map((f) => ({
+                            facilityId: f.facilityId,
+                            latitude: f.latitude,
+                            longitude: f.longitude,
+                            evidences: {
+                                create:
+                                    f.evidenceUrls?.map((url) => ({
+                                        imageUrl: url,
+                                    })) || [],
+                            },
+                        })) || [],
                 },
             },
-        },
+            include: destinationIncludes,
+        });
+
+        await tx.halalValidation.create({
+            data: {
+                destinationId: destination.id,
+                status: "PENDING",
+            },
+        });
+
+        return destination;
     });
 
-    return serializeDestination(destination);
+    return destination as unknown as Destination;
 }
 
 export async function updateDestination(
     id: string,
     values: DestinationFormValues,
 ) {
-    const { facilityIds, ...data } = values;
+    const { facilities, images, ...data } = values;
 
     const destination = await prisma.$transaction(async (tx) => {
-        // Sync facilities
+        const facilityIds = facilities?.map((f) => f.facilityId) || [];
+
+        const masterFacilities = await tx.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+
+        if (data.latitude != null && data.longitude != null) {
+            for (const f of facilities ?? []) {
+                if (f.latitude == null || f.longitude == null) continue;
+                const mf = masterFacilities.find((m) => m.id === f.facilityId);
+                if (!mf) continue;
+                const dist = haversineDistance(
+                    data.latitude,
+                    data.longitude,
+                    f.latitude,
+                    f.longitude,
+                );
+                if (dist > mf.maxDistance) {
+                    throw new Error(
+                        `Fasilitas "${mf.name}" berjarak ${Math.round(dist * 100) / 100} km — melebihi batas maksimal ${mf.maxDistance} km dari destinasi`,
+                    );
+                }
+            }
+        }
+
+        const facilityWeights = masterFacilities.map((mf) => ({
+            facilityType: mf.facilityType,
+            weight: mf.weight ?? 0,
+        }));
+        const halalScore = calculateHalalScoreFromWeights(facilityWeights);
+
         await tx.destinationHalalFacility.deleteMany({
             where: { destinationId: id },
         });
 
-        // console.log(data);
-        // data.description = JSON.stringify(data.description);
-
-        return await tx.destination.update({
+        const destination = await tx.destination.update({
             where: { id },
             data: {
                 ...data,
+                description: data.description ?? undefined,
+                status: "PENDING",
+                halalScore,
                 destinationHalalFacilities: {
-                    create: facilityIds?.map((facilityId) => ({
-                        facilityId,
-                    })),
+                    create:
+                        facilities?.map((f) => ({
+                            facilityId: f.facilityId,
+                            latitude: f.latitude,
+                            longitude: f.longitude,
+                            evidences: {
+                                create:
+                                    f.evidenceUrls?.map((url) => ({
+                                        imageUrl: url,
+                                    })) || [],
+                            },
+                        })) || [],
                 },
                 images: {
-                    deleteMany: {}, // Hapus semua gambar lama
+                    deleteMany: {},
                     create:
-                        values.images?.map((url) => ({
-                            imageUrl: url,
+                        images?.map((image) => ({
+                            imageUrl: image.imageUrl,
                         })) || [],
                 },
             },
-            include: {
-                destinationHalalFacilities: {
-                    include: {
-                        facility: true,
-                    },
-                },
-            },
+            include: destinationIncludes,
         });
+
+        const existingValidation = await tx.halalValidation.findFirst({
+            where: { destinationId: id, status: "PENDING" },
+        });
+
+        if (!existingValidation) {
+            await tx.halalValidation.create({
+                data: {
+                    destinationId: id,
+                    status: "PENDING",
+                },
+            });
+        }
+
+        return destination;
     });
 
-    return serializeDestination(destination);
+    return destination as unknown as Destination;
 }
 
 export async function deleteDestination(id: string) {

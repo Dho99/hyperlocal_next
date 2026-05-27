@@ -54,7 +54,7 @@ export interface HalalCertification {
 
 export interface Umkm {
     id: string;
-    ownerId: string | null;
+    owner: string;
     destinationId: string | null;
     categoryId: string | null;
     name: string;
@@ -62,18 +62,26 @@ export interface Umkm {
     description: string | null;
     address: string | null;
     phone: string | null;
-    latitude: string | number | null;
-    longitude: string | number | null;
+    latitude: number | null;
+    longitude: number | null;
     createdAt: Date | string;
     updatedAt: Date | string;
-    
+
     // Relations
-    owner?: { id: string; name: string; email: string } | null;
     category?: Category | null;
     destination?: Destination | null;
     images?: UmkmImage[];
     certifications?: HalalCertification[];
 }
 
-export type CreateUmkmInput = Omit<Umkm, "id" | "createdAt" | "updatedAt" | "category" | "destination" | "images" | "certifications">;
+export type CreateUmkmInput = Omit<
+    Umkm,
+    | "id"
+    | "createdAt"
+    | "updatedAt"
+    | "category"
+    | "destination"
+    | "images"
+    | "certifications"
+>;
 export type UpdateUmkmInput = Partial<CreateUmkmInput>;

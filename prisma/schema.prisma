@@ -10,7 +10,6 @@ datasource db {
 enum UserRole {
   user
   admin
-  umkm_owner
 }
 
 enum CertificationStatus {
@@ -41,7 +40,6 @@ model User {
   sessions                Session[]
   accounts                Account[]
   reviews                 Review[]
-  umkms                   Umkm[]
   halalValidations        HalalValidation[]
   destinationInteractions DestinationInteraction[]
   itineraries             Itinerary[]
@@ -114,30 +112,34 @@ model Category {
 }
 
 model Destination {
-  id             String           @id @default(uuid())
-  categoryId     String           @map("category_id")
-  name           String
-  slug           String           @unique
-  description    Json?
-  address        String?
-  city           String?
-  province       String?
-  latitude       Decimal?         @db.Decimal(10, 7)
-  longitude      Decimal?         @db.Decimal(10, 7)
-  status         ValidationStatus @default(PENDING)
-  rating         Float?           @default(0)
-  reviewCount    Int?             @default(0) @map("review_count")
-  openingHours   Json?            @map("opening_hours")
-  externalId     String?          @map("external_id")
-  externalSource String?          @map("external_source")
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @updatedAt @map("updated_at")
+  id              String           @id @default(uuid())
+  categoryId      String           @map("category_id")
+  name            String
+  slug            String           @unique
+  description     Json?
+  address         String?
+  city            String?
+  province        String?
+  latitude        Decimal?         @db.Decimal(10, 7)
+  longitude       Decimal?         @db.Decimal(10, 7)
+  status          ValidationStatus @default(PENDING)
+  rating          Float?           @default(0)
+  reviewCount     Int?             @default(0) @map("review_count")
+  openingHours    Json?            @map("opening_hours")
+  halalScore      Int?             @map("halal_score")
+  validatedScore  Int?             @map("validated_score")
+  categoryScores  Json?            @map("category_scores")
+  externalId      String?          @map("external_id")
+  externalSource  String?          @map("external_source")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
 
   category                   Category                   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images                     DestinationImage[]
   reviews                    Review[]
   umkms                      Umkm[]
   destinationHalalFacilities DestinationHalalFacility[]
+  halalValidations           HalalValidation[]
   interactions               DestinationInteraction[]
   trends                     DestinationTrend[]
   itineraryItems             ItineraryItem[]
@@ -162,15 +164,31 @@ model DestinationImage {
 }
 
 model DestinationHalalFacility {
-  destinationId String @map("destination_id")
-  facilityId    String @map("facility_id")
+  id            String                       @id @default(uuid())
+  destinationId String                       @map("destination_id")
+  facilityId    String                       @map("facility_id")
+  latitude      Float?
+  longitude     Float?
 
-  destination Destination   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  facility    HalalFacility @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+  destination Destination                   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  facility    HalalFacility                 @relation(fields: [facilityId], references: [id], onDelete: Restrict)
+  evidences   DestinationFacilityEvidence[]
 
-  @@id([destinationId, facilityId])
+  @@index([destinationId])
   @@index([facilityId])
   @@map("destination_halal_facilities")
+}
+
+model DestinationFacilityEvidence {
+  id             String                   @id @default(uuid())
+  destFacilityId String                   @map("dest_facility_id")
+  imageUrl       String                   @map("image_url")
+  createdAt      DateTime                 @default(now()) @map("created_at")
+
+  destFacility   DestinationHalalFacility @relation(fields: [destFacilityId], references: [id], onDelete: Cascade)
+
+  @@index([destFacilityId])
+  @@map("destination_facility_evidences")
 }
 
 model HalalFacility {
@@ -178,13 +196,12 @@ model HalalFacility {
   name           String
   description    String?
   facilityType   String?  @map("facility_type")
-  address        String?
-  latitude       Decimal? @db.Decimal(10, 7)
-  longitude      Decimal? @db.Decimal(10, 7)
   externalId     String?  @map("external_id")
   externalSource String?  @map("external_source")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
+  weight         Int?     @default(0)
+  maxDistance    Float    @default(5.0) @map("max_distance")
 
   destinationHalalFacilities DestinationHalalFacility[]
 
@@ -338,7 +355,6 @@ model HalalReadinessScore {
 
 model Umkm {
   id             String   @id @default(uuid())
-  ownerId        String?  @map("owner_id")
   destinationId  String?  @map("destination_id")
   categoryId     String?  @map("category_id")
   name           String
@@ -355,15 +371,14 @@ model Umkm {
   externalSource String?  @map("external_source")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
+  owner          String
 
-  owner          User?                @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   destination    Destination?         @relation(fields: [destinationId], references: [id], onDelete: SetNull)
   category       Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images         UmkmImage[]
   reviews        Review[]
   certifications HalalCertification[]
 
-  @@index([ownerId])
   @@index([destinationId])
   @@index([categoryId])
   @@index([externalId])
@@ -395,6 +410,7 @@ model HalalCertification {
   documentUrl   String?             @map("document_url")
   createdAt     DateTime            @default(now()) @map("created_at")
   updatedAt     DateTime            @updatedAt @map("updated_at")
+  notes         String?
 
   umkm        Umkm              @relation(fields: [umkmId], references: [id], onDelete: Cascade)
   validations HalalValidation[]
@@ -405,19 +421,24 @@ model HalalCertification {
 
 model HalalValidation {
   id              String           @id @default(uuid())
-  certificationId String           @map("certification_id")
+  certificationId String?          @map("certification_id")
+  destinationId   String?          @map("destination_id")
   validatorId     String?          @map("validator_id")
   status          ValidationStatus @default(PENDING)
+  adminScore      Int?             @map("admin_score")
+  categoryScores  Json?            @map("category_scores")
   notes           String?
   validatedAt     DateTime?        @map("validated_at")
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
 
-  certification HalalCertification   @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  certification HalalCertification?  @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  destination   Destination?         @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   validator     User?                @relation(fields: [validatorId], references: [id], onDelete: SetNull)
   evidences     ValidationEvidence[]
 
   @@index([certificationId])
+  @@index([destinationId])
   @@index([validatorId])
   @@map("halal_validations")
 }

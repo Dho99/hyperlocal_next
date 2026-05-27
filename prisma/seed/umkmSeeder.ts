@@ -21,6 +21,7 @@ export async function processUmkm(row: any, db: any = prisma) {
     },
     create: {
       name: row.NAME,
+      owner: "Admin",
       slug,
       categoryId,
       address: row.ADDRESS,

@@ -46,6 +46,12 @@ export const navItems = [
         title: "UMKM",
         href: "/umkms",
         icon: Store,
+        subItems: [
+            {
+                title: "Daftar UMKM",
+                href: "/umkms",
+            },
+        ],
     },
     {
         title: "Validasi",

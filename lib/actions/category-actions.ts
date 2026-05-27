@@ -23,8 +23,9 @@ export async function createCategory(values: CategoryFormValues) {
 
     revalidatePath("/categories");
     return { success: true, data: category };
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    const prismaError = error as { code?: string };
+    if (prismaError.code === "P2002") {
       return { error: "Slug sudah digunakan" };
     }
     return { error: "Gagal membuat kategori" };
@@ -50,8 +51,9 @@ export async function updateCategory(id: string, values: CategoryFormValues) {
 
     revalidatePath("/categories");
     return { success: true, data: category };
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    const prismaError = error as { code?: string };
+    if (prismaError.code === "P2002") {
       return { error: "Slug sudah digunakan" };
     }
     return { error: "Gagal memperbarui kategori" };

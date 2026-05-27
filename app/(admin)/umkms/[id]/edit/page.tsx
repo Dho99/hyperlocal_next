@@ -1,5 +1,4 @@
 import { getCategories } from "@/lib/services/category-service";
-import { getUmkmOwners } from "@/lib/services/user-service";
 import { getUmkm } from "@/lib/services/umkm-service";
 import { UmkmForm } from "@/components/admin/umkms/umkm-form";
 import { notFound } from "next/navigation";
@@ -14,7 +13,6 @@ export default async function EditUmkmPage({ params }: EditUmkmPageProps) {
   const { id } = await params;
   const umkm = await getUmkm(id);
   const categories = await getCategories();
-  const owners = await getUmkmOwners();
 
   if (!umkm) {
     notFound();
@@ -31,7 +29,7 @@ export default async function EditUmkmPage({ params }: EditUmkmPageProps) {
         </p>
       </div>
 
-      <UmkmForm initialData={umkm} categories={categories} users={owners} />
+      <UmkmForm initialData={umkm} categories={categories} />
     </div>
   );
 }
