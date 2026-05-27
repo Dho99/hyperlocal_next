@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { createValidationSchema } from "@/lib/validations/halal-validation.schema";
 import { withCursorPagination } from "@/lib/pagination/cursorPagination";
 import { ZodError } from "zod";
+import { ValidationStatus } from "@/lib/generated/prisma";
 
 export async function GET(request: Request) {
     try {
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
             ? Number(searchParams.get("limit"))
             : undefined;
         const cursor = searchParams.get("cursor") || undefined;
-        const status = searchParams.get("status") || undefined;
+        const status = searchParams.get("status") as ValidationStatus | undefined;
 
         const result = await withCursorPagination(
             async (take, cursor, skip) => {
@@ -19,10 +20,26 @@ export async function GET(request: Request) {
                     take,
                     skip,
                     ...(cursor && { cursor: { id: cursor } }),
-                    where: status ? { status: status as string } : undefined,
+                    where: status && status !== ("ALL" as any) ? { status } : undefined,
                     orderBy: { createdAt: "desc" },
                     include: {
-                        certification: true,
+                        certification: {
+                            include: {
+                                umkm: true,
+                            },
+                        },
+                        destination: {
+                            include: {
+                                category: true,
+                                images: true,
+                                destinationHalalFacilities: {
+                                    include: {
+                                        facility: true,
+                                        evidences: true,
+                                    },
+                                },
+                            },
+                        },
                         validator: {
                             select: { id: true, name: true, email: true },
                         },

@@ -51,10 +51,6 @@ export const navItems = [
                 title: "Daftar UMKM",
                 href: "/umkms",
             },
-            {
-                title: "Sertifikasi Halal",
-                href: "/umkms/certifications",
-            },
         ],
     },
     {

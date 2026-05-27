@@ -1,111 +1,138 @@
 import { prisma } from "@/lib/prisma";
-import type { Umkm, UmkmFormValues } from "@/types/umkm";
-import { withCursorPagination, CursorPaginationParams } from "@/lib/pagination/cursorPagination";
+import type { Destination } from "@/types/destination";
+import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import {
+    withCursorPagination,
+    CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
-function serializeUmkm(umkm: any): Umkm {
-  return {
-    ...umkm,
-    latitude: umkm.latitude ? umkm.latitude.toString() : null,
-    longitude: umkm.longitude ? umkm.longitude.toString() : null,
-    createdAt: umkm.createdAt?.toISOString(),
-    updatedAt: umkm.updatedAt?.toISOString(),
-    destination: umkm.destination ? {
-      ...umkm.destination,
-      latitude: umkm.destination.latitude ? umkm.destination.latitude.toString() : null,
-      longitude: umkm.destination.longitude ? umkm.destination.longitude.toString() : null,
-      createdAt: umkm.destination.createdAt?.toISOString(),
-      updatedAt: umkm.destination.updatedAt?.toISOString(),
-    } : null,
-    certifications: umkm.certifications?.map((cert: any) => ({
-      ...cert,
-      issuedAt: cert.issuedAt?.toISOString() || null,
-      expiredAt: cert.expiredAt?.toISOString() || null,
-      createdAt: cert.createdAt?.toISOString(),
-      updatedAt: cert.updatedAt?.toISOString(),
-      validations: cert.validations?.map((val: any) => ({
-        ...val,
-        validatedAt: val.validatedAt?.toISOString() || null,
-        createdAt: val.createdAt?.toISOString(),
-        updatedAt: val.updatedAt?.toISOString(),
-      }))
-    }))
-  };
+function serializeUmkm(raw: unknown): Umkm {
+    const umkm = raw as Umkm & {
+        latitude: unknown | null;
+        longitude: unknown | null;
+        destination: (Destination & {
+            latitude: unknown | null;
+            longitude: unknown | null;
+        }) | null;
+        certifications?: Array<Record<string, unknown>>;
+    };
+    return {
+        ...umkm,
+        latitude: umkm.latitude ? Number(umkm.latitude) : null,
+        longitude: umkm.longitude ? Number(umkm.longitude) : null,
+        createdAt: umkm.createdAt,
+        updatedAt: umkm.updatedAt,
+        destination: umkm.destination
+            ? {
+                  ...umkm.destination,
+                  latitude: umkm.destination.latitude
+                      ? Number(umkm.destination.latitude)
+                      : null,
+                  longitude: umkm.destination.longitude
+                      ? Number(umkm.destination.longitude)
+                      : null,
+                  createdAt: umkm.destination.createdAt,
+                  updatedAt: umkm.destination.updatedAt,
+              }
+            : null,
+        certifications: umkm.certifications?.map(
+            (cert: HalalCertification) => ({
+                ...cert,
+                issuedAt: cert.issuedAt,
+                expiredAt: cert.expiredAt,
+                createdAt: cert.createdAt,
+                updatedAt: cert.updatedAt,
+                validations: cert.validations?.map((val) => ({
+                    ...val,
+                    validatedAt: val.validatedAt,
+                    createdAt: val.createdAt,
+                    updatedAt: val.updatedAt,
+                })),
+            }),
+        ),
+    };
 }
 
 export async function getPaginatedUmkms(
-  params: CursorPaginationParams & { categoryId?: string; destinationId?: string; search?: string }
-) {
-  return withCursorPagination(
-    async (take, cursor, skip) => {
-      const umkms = await prisma.umkms.findMany({
-        take,
-        skip,
-        cursor: cursor ? { id: cursor } : undefined,
-        where: {
-          ...(params.categoryId && { categoryId: params.categoryId }),
-          ...(params.destinationId && { destinationId: params.destinationId }),
-          ...(params.search && {
-            name: { contains: params.search, mode: "insensitive" },
-          }),
-        },
-        include: {
-          category: true,
-          destination: true,
-          images: true,
-          certifications: {
-            include: {
-              validations: true
-            }
-          },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-
-      return umkms.map(u => serializeUmkm(u));
+    params: CursorPaginationParams & {
+        categoryId?: string;
+        destinationId?: string;
+        search?: string;
     },
-    params,
-    "UMKMs fetched successfully"
-  );
+) {
+    return withCursorPagination(
+        async (take, cursor, skip) => {
+            const umkms = await prisma.umkm.findMany({
+                take,
+                skip,
+                cursor: cursor ? { id: cursor } : undefined,
+                where: {
+                    ...(params.categoryId && { categoryId: params.categoryId }),
+                    ...(params.destinationId && {
+                        destinationId: params.destinationId,
+                    }),
+                    ...(params.search && {
+                        name: { contains: params.search, mode: "insensitive" },
+                    }),
+                },
+                include: {
+                    category: true,
+                    destination: true,
+                    images: true,
+                    certifications: {
+                        include: {
+                            validations: true,
+                        },
+                    },
+                },
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            });
+
+            return umkms.map((u) => serializeUmkm(u));
+        },
+        params,
+        "UMKMs fetched successfully",
+    );
 }
 
 export async function getUmkms() {
-  const umkms = await prisma.umkm.findMany({
-    include: {
-      category: true,
-      destination: true,
-      images: true,
-      certifications: {
+    const umkms = await prisma.umkm.findMany({
         include: {
-          validations: true
-        }
-      }
-    },
-    orderBy: { createdAt: "desc" },
-  });
+            category: true,
+            destination: true,
+            images: true,
+            certifications: {
+                include: {
+                    validations: true,
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
 
-  return umkms.map((umkm) => serializeUmkm(umkm));
+    return umkms.map((umkm) => serializeUmkm(umkm));
 }
 
 export async function getUmkm(id: string) {
-  const umkm = await prisma.umkm.findUnique({
-    where: { id },
-    include: {
-      category: true,
-      destination: true,
-      images: true,
-      certifications: {
+    const umkm = await prisma.umkm.findUnique({
+        where: { id },
         include: {
-          validations: {
-            include: {
-              evidences: true
-            }
-          }
-        }
-      }
-    },
-  });
+            category: true,
+            destination: true,
+            images: true,
+            certifications: {
+                include: {
+                    validations: {
+                        include: {
+                            evidences: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
 
-  return umkm ? serializeUmkm(umkm) : null;
+    return umkm ? serializeUmkm(umkm) : null;
 }
 
 export async function createUmkm(values: UmkmFormValues) {
@@ -113,19 +140,21 @@ export async function createUmkm(values: UmkmFormValues) {
 
     const umkm = await prisma.umkm.create({
         data: {
-            ...data as any,
-            images: images ? {
-                create: images.map((url, idx) => ({
-                    imageUrl: url,
-                    isPrimary: idx === 0,
-                    caption: `Foto ${idx + 1}`
-                }))
-            } : undefined
+            ...data,
+            images: images
+                ? {
+                      create: images.map((img, idx) => ({
+                          imageUrl: img.imageUrl,
+                          isPrimary: idx === 0,
+                          caption: `Foto ${idx + 1}`,
+                      })),
+                  }
+                : undefined,
         },
         include: {
             category: true,
             destination: true,
-            images: true
+            images: true,
         },
     });
 
@@ -139,26 +168,28 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
         // Delete old images if new ones are provided
         if (images) {
             await tx.umkmImage.deleteMany({
-                where: { umkmId: id }
+                where: { umkmId: id },
             });
         }
 
         return await tx.umkm.update({
             where: { id },
             data: {
-                ...data as any,
-                images: images ? {
-                    create: images.map((url, idx) => ({
-                        imageUrl: url,
-                        isPrimary: idx === 0,
-                        caption: `Foto ${idx + 1}`
-                    }))
-                } : undefined
+                ...data,
+                images: images
+                    ? {
+                              create: images.map((img, idx) => ({
+                                  imageUrl: img.imageUrl,
+                                  isPrimary: idx === 0,
+                                  caption: `Foto ${idx + 1}`,
+                              })),
+                      }
+                    : undefined,
             },
             include: {
                 category: true,
                 destination: true,
-                images: true
+                images: true,
             },
         });
     });
@@ -166,7 +197,7 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
     return serializeUmkm(umkm);
 }
 export async function deleteUmkm(id: string) {
-  return await prisma.umkm.delete({
-    where: { id },
-  });
+    return await prisma.umkm.delete({
+        where: { id },
+    });
 }

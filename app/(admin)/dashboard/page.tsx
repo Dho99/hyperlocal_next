@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import {
     Activity,
     AlertCircle,
@@ -15,6 +14,7 @@ import {
     Star,
     Utensils,
 } from "lucide-react";
+import { DashboardMapSection } from "@/components/admin/dashboard/dashboard-map-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -184,49 +184,7 @@ export default async function DashboardPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="relative h-[480px] overflow-hidden bg-[#d8d5db]">
-                            <div className="absolute inset-0 opacity-55 [background-image:linear-gradient(22deg,rgba(73,69,81,.18)_1px,transparent_1px),linear-gradient(112deg,rgba(73,69,81,.16)_1px,transparent_1px)] [background-size:42px_42px]" />
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_45%,rgba(255,255,255,.9),transparent_9%),radial-gradient(circle_at_55%_52%,rgba(255,255,255,.8),transparent_12%),linear-gradient(120deg,transparent_0_38%,rgba(255,255,255,.35)_39%_42%,transparent_43%_100%)]" />
-                            <div className="absolute inset-0 grayscale [background-image:url('https://tile.openstreetmap.org/2/2/1.png')] bg-cover bg-center opacity-20" />
-
-                            {dashboard.mapDestinations.length === 0 ? (
-                                <>
-                                    <MapPinMarker
-                                        className="left-[41%] top-[30%]"
-                                        label="Masjid Agung"
-                                        tone="bg-[#6750a4]"
-                                    />
-                                    <MapPinMarker
-                                        className="left-[57%] top-[55%]"
-                                        label="Resto Halal"
-                                        tone="bg-[#765b00]"
-                                    />
-                                </>
-                            ) : (
-                                dashboard.mapDestinations
-                                    .slice(0, 5)
-                                    .map((point, index) => (
-                                        <MapPinMarker
-                                            key={point.id}
-                                            className=""
-                                            label={
-                                                index === 0
-                                                    ? point.name
-                                                    : undefined
-                                            }
-                                            tone={
-                                                index % 2 === 0
-                                                    ? "bg-[#6750a4]"
-                                                    : "bg-[#765b00]"
-                                            }
-                                            style={{
-                                                left: `${point.x}%`,
-                                                top: `${point.y}%`,
-                                            }}
-                                        />
-                                    ))
-                            )}
-                        </div>
+                        <DashboardMapSection />
                     </CardContent>
                 </Card>
 
@@ -505,34 +463,4 @@ export default async function DashboardPage() {
     );
 }
 
-function MapPinMarker({
-    className,
-    label,
-    tone,
-    style,
-}: {
-    className?: string;
-    label?: string;
-    tone: string;
-    style?: CSSProperties;
-}) {
-    return (
-        <div className={cn("absolute", className)} style={style}>
-            <div className="relative">
-                <div
-                    className={cn(
-                        "flex h-11 w-11 items-center justify-center rounded-full border-2 border-white text-white shadow-md",
-                        tone,
-                    )}
-                >
-                    <MapPin className="h-5 w-5" />
-                </div>
-                {label && (
-                    <div className="absolute left-1/2 top-[48px] -translate-x-1/2 whitespace-nowrap rounded bg-white px-3 py-1 text-base font-semibold text-[#1d1b20] shadow-sm">
-                        {label}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
+

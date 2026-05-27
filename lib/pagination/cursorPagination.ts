@@ -51,9 +51,10 @@ export async function withCursorPagination<T extends { id: string }>(
                 has_more: hasMore,
             },
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Handle Prisma "Record not found" error for invalid cursor
-        if (error.code === "P2025" && cursor) {
+        const prismaError = error as { code?: string };
+        if (prismaError.code === "P2025" && cursor) {
             console.warn(
                 `Cursor pagination fallback: Cursor ${cursor} not found. Returning first page.`,
             );

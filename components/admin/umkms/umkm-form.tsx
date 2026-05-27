@@ -55,7 +55,7 @@ export function UmkmForm({
             phone: initialData?.phone || "",
             latitude: initialData?.latitude ? Number(initialData.latitude) : null,
             longitude: initialData?.longitude ? Number(initialData.longitude) : null,
-            images: initialData?.images?.map(img => img.imageUrl) || [],
+            images: initialData?.images?.map(img => ({ imageUrl: img.imageUrl })) || [],
         },
     });
 
@@ -291,8 +291,8 @@ export function UmkmForm({
                                 </Label>
                                 
                                 <MapPicker 
-                                    latitude={form.watch("latitude")}
-                                    longitude={form.watch("longitude")}
+                                    latitude={form.watch("latitude") ?? null}
+                                    longitude={form.watch("longitude") ?? null}
                                     onChange={(lat, lng) => {
                                         form.setValue("latitude", lat);
                                         form.setValue("longitude", lng);
@@ -356,7 +356,7 @@ export function UmkmForm({
                                 multiple={true}
                                 maxFiles={3}
                                 onUploadComplete={(urls) => {
-                                    form.setValue("images", urls);
+                                    form.setValue("images", urls.map(url => ({ imageUrl: url })));
                                 }}
                             />
                             <p className="text-[10px] text-muted-foreground mt-4 text-center">

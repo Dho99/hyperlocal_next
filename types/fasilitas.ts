@@ -3,15 +3,11 @@ export interface Facility {
     name: string;
     description: string | null;
     facilityType: string | null;
-    latitude: number | string | null;
-    longitude: number | string | null;
+    weight: number | null;
+    maxDistance: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
-export type CreateFacilityInput = Omit<
-    Facility,
-    "id" | "createdAt" | "updatedAt"
->;
-
+export type CreateFacilityInput = Omit<Facility, "id" | "createdAt" | "updatedAt">;
 export type UpdateFacilityInput = Partial<CreateFacilityInput>;

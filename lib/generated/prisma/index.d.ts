@@ -54,6 +54,11 @@ export type DestinationImage = $Result.DefaultSelection<Prisma.$DestinationImage
  */
 export type DestinationHalalFacility = $Result.DefaultSelection<Prisma.$DestinationHalalFacilityPayload>
 /**
+ * Model DestinationFacilityEvidence
+ * 
+ */
+export type DestinationFacilityEvidence = $Result.DefaultSelection<Prisma.$DestinationFacilityEvidencePayload>
+/**
  * Model HalalFacility
  * 
  */
@@ -397,6 +402,16 @@ export class PrismaClient<
     * ```
     */
   get destinationHalalFacility(): Prisma.DestinationHalalFacilityDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.destinationFacilityEvidence`: Exposes CRUD operations for the **DestinationFacilityEvidence** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DestinationFacilityEvidences
+    * const destinationFacilityEvidences = await prisma.destinationFacilityEvidence.findMany()
+    * ```
+    */
+  get destinationFacilityEvidence(): Prisma.DestinationFacilityEvidenceDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.halalFacility`: Exposes CRUD operations for the **HalalFacility** model.
@@ -979,6 +994,7 @@ export namespace Prisma {
     Destination: 'Destination',
     DestinationImage: 'DestinationImage',
     DestinationHalalFacility: 'DestinationHalalFacility',
+    DestinationFacilityEvidence: 'DestinationFacilityEvidence',
     HalalFacility: 'HalalFacility',
     Review: 'Review',
     DestinationInteraction: 'DestinationInteraction',
@@ -1008,7 +1024,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "destinationImage" | "destinationHalalFacility" | "halalFacility" | "review" | "destinationInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
+      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1601,6 +1617,80 @@ export namespace Prisma {
           count: {
             args: Prisma.DestinationHalalFacilityCountArgs<ExtArgs>
             result: $Utils.Optional<DestinationHalalFacilityCountAggregateOutputType> | number
+          }
+        }
+      }
+      DestinationFacilityEvidence: {
+        payload: Prisma.$DestinationFacilityEvidencePayload<ExtArgs>
+        fields: Prisma.DestinationFacilityEvidenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DestinationFacilityEvidenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DestinationFacilityEvidenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          findFirst: {
+            args: Prisma.DestinationFacilityEvidenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DestinationFacilityEvidenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          findMany: {
+            args: Prisma.DestinationFacilityEvidenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>[]
+          }
+          create: {
+            args: Prisma.DestinationFacilityEvidenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          createMany: {
+            args: Prisma.DestinationFacilityEvidenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DestinationFacilityEvidenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>[]
+          }
+          delete: {
+            args: Prisma.DestinationFacilityEvidenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          update: {
+            args: Prisma.DestinationFacilityEvidenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          deleteMany: {
+            args: Prisma.DestinationFacilityEvidenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DestinationFacilityEvidenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DestinationFacilityEvidenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>[]
+          }
+          upsert: {
+            args: Prisma.DestinationFacilityEvidenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DestinationFacilityEvidencePayload>
+          }
+          aggregate: {
+            args: Prisma.DestinationFacilityEvidenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDestinationFacilityEvidence>
+          }
+          groupBy: {
+            args: Prisma.DestinationFacilityEvidenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DestinationFacilityEvidenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DestinationFacilityEvidenceCountArgs<ExtArgs>
+            result: $Utils.Optional<DestinationFacilityEvidenceCountAggregateOutputType> | number
           }
         }
       }
@@ -2756,6 +2846,7 @@ export namespace Prisma {
     destination?: DestinationOmit
     destinationImage?: DestinationImageOmit
     destinationHalalFacility?: DestinationHalalFacilityOmit
+    destinationFacilityEvidence?: DestinationFacilityEvidenceOmit
     halalFacility?: HalalFacilityOmit
     review?: ReviewOmit
     destinationInteraction?: DestinationInteractionOmit
@@ -2970,6 +3061,7 @@ export namespace Prisma {
     reviews: number
     umkms: number
     destinationHalalFacilities: number
+    halalValidations: number
     interactions: number
     trends: number
     itineraryItems: number
@@ -2980,6 +3072,7 @@ export namespace Prisma {
     reviews?: boolean | DestinationCountOutputTypeCountReviewsArgs
     umkms?: boolean | DestinationCountOutputTypeCountUmkmsArgs
     destinationHalalFacilities?: boolean | DestinationCountOutputTypeCountDestinationHalalFacilitiesArgs
+    halalValidations?: boolean | DestinationCountOutputTypeCountHalalValidationsArgs
     interactions?: boolean | DestinationCountOutputTypeCountInteractionsArgs
     trends?: boolean | DestinationCountOutputTypeCountTrendsArgs
     itineraryItems?: boolean | DestinationCountOutputTypeCountItineraryItemsArgs
@@ -3027,6 +3120,13 @@ export namespace Prisma {
   /**
    * DestinationCountOutputType without action
    */
+  export type DestinationCountOutputTypeCountHalalValidationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HalalValidationWhereInput
+  }
+
+  /**
+   * DestinationCountOutputType without action
+   */
   export type DestinationCountOutputTypeCountInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DestinationInteractionWhereInput
   }
@@ -3043,6 +3143,37 @@ export namespace Prisma {
    */
   export type DestinationCountOutputTypeCountItineraryItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ItineraryItemWhereInput
+  }
+
+
+  /**
+   * Count Type DestinationHalalFacilityCountOutputType
+   */
+
+  export type DestinationHalalFacilityCountOutputType = {
+    evidences: number
+  }
+
+  export type DestinationHalalFacilityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    evidences?: boolean | DestinationHalalFacilityCountOutputTypeCountEvidencesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DestinationHalalFacilityCountOutputType without action
+   */
+  export type DestinationHalalFacilityCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationHalalFacilityCountOutputType
+     */
+    select?: DestinationHalalFacilityCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DestinationHalalFacilityCountOutputType without action
+   */
+  export type DestinationHalalFacilityCountOutputTypeCountEvidencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DestinationFacilityEvidenceWhereInput
   }
 
 
@@ -8944,6 +9075,8 @@ export namespace Prisma {
     longitude: Decimal | null
     rating: number | null
     reviewCount: number | null
+    halalScore: number | null
+    validatedScore: number | null
   }
 
   export type DestinationSumAggregateOutputType = {
@@ -8951,6 +9084,8 @@ export namespace Prisma {
     longitude: Decimal | null
     rating: number | null
     reviewCount: number | null
+    halalScore: number | null
+    validatedScore: number | null
   }
 
   export type DestinationMinAggregateOutputType = {
@@ -8966,6 +9101,8 @@ export namespace Prisma {
     status: $Enums.ValidationStatus | null
     rating: number | null
     reviewCount: number | null
+    halalScore: number | null
+    validatedScore: number | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date | null
@@ -8985,6 +9122,8 @@ export namespace Prisma {
     status: $Enums.ValidationStatus | null
     rating: number | null
     reviewCount: number | null
+    halalScore: number | null
+    validatedScore: number | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date | null
@@ -9006,6 +9145,9 @@ export namespace Prisma {
     rating: number
     reviewCount: number
     openingHours: number
+    halalScore: number
+    validatedScore: number
+    categoryScores: number
     externalId: number
     externalSource: number
     createdAt: number
@@ -9019,6 +9161,8 @@ export namespace Prisma {
     longitude?: true
     rating?: true
     reviewCount?: true
+    halalScore?: true
+    validatedScore?: true
   }
 
   export type DestinationSumAggregateInputType = {
@@ -9026,6 +9170,8 @@ export namespace Prisma {
     longitude?: true
     rating?: true
     reviewCount?: true
+    halalScore?: true
+    validatedScore?: true
   }
 
   export type DestinationMinAggregateInputType = {
@@ -9041,6 +9187,8 @@ export namespace Prisma {
     status?: true
     rating?: true
     reviewCount?: true
+    halalScore?: true
+    validatedScore?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
@@ -9060,6 +9208,8 @@ export namespace Prisma {
     status?: true
     rating?: true
     reviewCount?: true
+    halalScore?: true
+    validatedScore?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
@@ -9081,6 +9231,9 @@ export namespace Prisma {
     rating?: true
     reviewCount?: true
     openingHours?: true
+    halalScore?: true
+    validatedScore?: true
+    categoryScores?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
@@ -9189,6 +9342,9 @@ export namespace Prisma {
     rating: number | null
     reviewCount: number | null
     openingHours: JsonValue | null
+    halalScore: number | null
+    validatedScore: number | null
+    categoryScores: JsonValue | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date
@@ -9229,6 +9385,9 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     openingHours?: boolean
+    halalScore?: boolean
+    validatedScore?: boolean
+    categoryScores?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
@@ -9238,6 +9397,7 @@ export namespace Prisma {
     reviews?: boolean | Destination$reviewsArgs<ExtArgs>
     umkms?: boolean | Destination$umkmsArgs<ExtArgs>
     destinationHalalFacilities?: boolean | Destination$destinationHalalFacilitiesArgs<ExtArgs>
+    halalValidations?: boolean | Destination$halalValidationsArgs<ExtArgs>
     interactions?: boolean | Destination$interactionsArgs<ExtArgs>
     trends?: boolean | Destination$trendsArgs<ExtArgs>
     itineraryItems?: boolean | Destination$itineraryItemsArgs<ExtArgs>
@@ -9259,6 +9419,9 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     openingHours?: boolean
+    halalScore?: boolean
+    validatedScore?: boolean
+    categoryScores?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
@@ -9281,6 +9444,9 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     openingHours?: boolean
+    halalScore?: boolean
+    validatedScore?: boolean
+    categoryScores?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
@@ -9303,19 +9469,23 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     openingHours?: boolean
+    halalScore?: boolean
+    validatedScore?: boolean
+    categoryScores?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DestinationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "categoryId" | "name" | "slug" | "description" | "address" | "city" | "province" | "latitude" | "longitude" | "status" | "rating" | "reviewCount" | "openingHours" | "externalId" | "externalSource" | "createdAt" | "updatedAt", ExtArgs["result"]["destination"]>
+  export type DestinationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "categoryId" | "name" | "slug" | "description" | "address" | "city" | "province" | "latitude" | "longitude" | "status" | "rating" | "reviewCount" | "openingHours" | "halalScore" | "validatedScore" | "categoryScores" | "externalId" | "externalSource" | "createdAt" | "updatedAt", ExtArgs["result"]["destination"]>
   export type DestinationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | CategoryDefaultArgs<ExtArgs>
     images?: boolean | Destination$imagesArgs<ExtArgs>
     reviews?: boolean | Destination$reviewsArgs<ExtArgs>
     umkms?: boolean | Destination$umkmsArgs<ExtArgs>
     destinationHalalFacilities?: boolean | Destination$destinationHalalFacilitiesArgs<ExtArgs>
+    halalValidations?: boolean | Destination$halalValidationsArgs<ExtArgs>
     interactions?: boolean | Destination$interactionsArgs<ExtArgs>
     trends?: boolean | Destination$trendsArgs<ExtArgs>
     itineraryItems?: boolean | Destination$itineraryItemsArgs<ExtArgs>
@@ -9336,6 +9506,7 @@ export namespace Prisma {
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       umkms: Prisma.$UmkmPayload<ExtArgs>[]
       destinationHalalFacilities: Prisma.$DestinationHalalFacilityPayload<ExtArgs>[]
+      halalValidations: Prisma.$HalalValidationPayload<ExtArgs>[]
       interactions: Prisma.$DestinationInteractionPayload<ExtArgs>[]
       trends: Prisma.$DestinationTrendPayload<ExtArgs>[]
       itineraryItems: Prisma.$ItineraryItemPayload<ExtArgs>[]
@@ -9355,6 +9526,9 @@ export namespace Prisma {
       rating: number | null
       reviewCount: number | null
       openingHours: Prisma.JsonValue | null
+      halalScore: number | null
+      validatedScore: number | null
+      categoryScores: Prisma.JsonValue | null
       externalId: string | null
       externalSource: string | null
       createdAt: Date
@@ -9758,6 +9932,7 @@ export namespace Prisma {
     reviews<T extends Destination$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     umkms<T extends Destination$umkmsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$umkmsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     destinationHalalFacilities<T extends Destination$destinationHalalFacilitiesArgs<ExtArgs> = {}>(args?: Subset<T, Destination$destinationHalalFacilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    halalValidations<T extends Destination$halalValidationsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$halalValidationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HalalValidationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     interactions<T extends Destination$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     trends<T extends Destination$trendsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$trendsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationTrendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     itineraryItems<T extends Destination$itineraryItemsArgs<ExtArgs> = {}>(args?: Subset<T, Destination$itineraryItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItineraryItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9804,6 +9979,9 @@ export namespace Prisma {
     readonly rating: FieldRef<"Destination", 'Float'>
     readonly reviewCount: FieldRef<"Destination", 'Int'>
     readonly openingHours: FieldRef<"Destination", 'Json'>
+    readonly halalScore: FieldRef<"Destination", 'Int'>
+    readonly validatedScore: FieldRef<"Destination", 'Int'>
+    readonly categoryScores: FieldRef<"Destination", 'Json'>
     readonly externalId: FieldRef<"Destination", 'String'>
     readonly externalSource: FieldRef<"Destination", 'String'>
     readonly createdAt: FieldRef<"Destination", 'DateTime'>
@@ -10302,6 +10480,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DestinationHalalFacilityScalarFieldEnum | DestinationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * Destination.halalValidations
+   */
+  export type Destination$halalValidationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HalalValidation
+     */
+    select?: HalalValidationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HalalValidation
+     */
+    omit?: HalalValidationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HalalValidationInclude<ExtArgs> | null
+    where?: HalalValidationWhereInput
+    orderBy?: HalalValidationOrderByWithRelationInput | HalalValidationOrderByWithRelationInput[]
+    cursor?: HalalValidationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HalalValidationScalarFieldEnum | HalalValidationScalarFieldEnum[]
   }
 
   /**
@@ -11477,40 +11679,80 @@ export namespace Prisma {
 
   export type AggregateDestinationHalalFacility = {
     _count: DestinationHalalFacilityCountAggregateOutputType | null
+    _avg: DestinationHalalFacilityAvgAggregateOutputType | null
+    _sum: DestinationHalalFacilitySumAggregateOutputType | null
     _min: DestinationHalalFacilityMinAggregateOutputType | null
     _max: DestinationHalalFacilityMaxAggregateOutputType | null
   }
 
+  export type DestinationHalalFacilityAvgAggregateOutputType = {
+    latitude: number | null
+    longitude: number | null
+  }
+
+  export type DestinationHalalFacilitySumAggregateOutputType = {
+    latitude: number | null
+    longitude: number | null
+  }
+
   export type DestinationHalalFacilityMinAggregateOutputType = {
+    id: string | null
     destinationId: string | null
     facilityId: string | null
+    latitude: number | null
+    longitude: number | null
   }
 
   export type DestinationHalalFacilityMaxAggregateOutputType = {
+    id: string | null
     destinationId: string | null
     facilityId: string | null
+    latitude: number | null
+    longitude: number | null
   }
 
   export type DestinationHalalFacilityCountAggregateOutputType = {
+    id: number
     destinationId: number
     facilityId: number
+    latitude: number
+    longitude: number
     _all: number
   }
 
 
+  export type DestinationHalalFacilityAvgAggregateInputType = {
+    latitude?: true
+    longitude?: true
+  }
+
+  export type DestinationHalalFacilitySumAggregateInputType = {
+    latitude?: true
+    longitude?: true
+  }
+
   export type DestinationHalalFacilityMinAggregateInputType = {
+    id?: true
     destinationId?: true
     facilityId?: true
+    latitude?: true
+    longitude?: true
   }
 
   export type DestinationHalalFacilityMaxAggregateInputType = {
+    id?: true
     destinationId?: true
     facilityId?: true
+    latitude?: true
+    longitude?: true
   }
 
   export type DestinationHalalFacilityCountAggregateInputType = {
+    id?: true
     destinationId?: true
     facilityId?: true
+    latitude?: true
+    longitude?: true
     _all?: true
   }
 
@@ -11552,6 +11794,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: DestinationHalalFacilityAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DestinationHalalFacilitySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: DestinationHalalFacilityMinAggregateInputType
@@ -11582,14 +11836,21 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DestinationHalalFacilityCountAggregateInputType | true
+    _avg?: DestinationHalalFacilityAvgAggregateInputType
+    _sum?: DestinationHalalFacilitySumAggregateInputType
     _min?: DestinationHalalFacilityMinAggregateInputType
     _max?: DestinationHalalFacilityMaxAggregateInputType
   }
 
   export type DestinationHalalFacilityGroupByOutputType = {
+    id: string
     destinationId: string
     facilityId: string
+    latitude: number | null
+    longitude: number | null
     _count: DestinationHalalFacilityCountAggregateOutputType | null
+    _avg: DestinationHalalFacilityAvgAggregateOutputType | null
+    _sum: DestinationHalalFacilitySumAggregateOutputType | null
     _min: DestinationHalalFacilityMinAggregateOutputType | null
     _max: DestinationHalalFacilityMaxAggregateOutputType | null
   }
@@ -11609,35 +11870,51 @@ export namespace Prisma {
 
 
   export type DestinationHalalFacilitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     destinationId?: boolean
     facilityId?: boolean
+    latitude?: boolean
+    longitude?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+    evidences?: boolean | DestinationHalalFacility$evidencesArgs<ExtArgs>
+    _count?: boolean | DestinationHalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["destinationHalalFacility"]>
 
   export type DestinationHalalFacilitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     destinationId?: boolean
     facilityId?: boolean
+    latitude?: boolean
+    longitude?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["destinationHalalFacility"]>
 
   export type DestinationHalalFacilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     destinationId?: boolean
     facilityId?: boolean
+    latitude?: boolean
+    longitude?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["destinationHalalFacility"]>
 
   export type DestinationHalalFacilitySelectScalar = {
+    id?: boolean
     destinationId?: boolean
     facilityId?: boolean
+    latitude?: boolean
+    longitude?: boolean
   }
 
-  export type DestinationHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"destinationId" | "facilityId", ExtArgs["result"]["destinationHalalFacility"]>
+  export type DestinationHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destinationId" | "facilityId" | "latitude" | "longitude", ExtArgs["result"]["destinationHalalFacility"]>
   export type DestinationHalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+    evidences?: boolean | DestinationHalalFacility$evidencesArgs<ExtArgs>
+    _count?: boolean | DestinationHalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DestinationHalalFacilityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
@@ -11653,10 +11930,14 @@ export namespace Prisma {
     objects: {
       destination: Prisma.$DestinationPayload<ExtArgs>
       facility: Prisma.$HalalFacilityPayload<ExtArgs>
+      evidences: Prisma.$DestinationFacilityEvidencePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       destinationId: string
       facilityId: string
+      latitude: number | null
+      longitude: number | null
     }, ExtArgs["result"]["destinationHalalFacility"]>
     composites: {}
   }
@@ -11740,8 +12021,8 @@ export namespace Prisma {
      * // Get first 10 DestinationHalalFacilities
      * const destinationHalalFacilities = await prisma.destinationHalalFacility.findMany({ take: 10 })
      * 
-     * // Only select the `destinationId`
-     * const destinationHalalFacilityWithDestinationIdOnly = await prisma.destinationHalalFacility.findMany({ select: { destinationId: true } })
+     * // Only select the `id`
+     * const destinationHalalFacilityWithIdOnly = await prisma.destinationHalalFacility.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends DestinationHalalFacilityFindManyArgs>(args?: SelectSubset<T, DestinationHalalFacilityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -11785,9 +12066,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many DestinationHalalFacilities and only return the `destinationId`
-     * const destinationHalalFacilityWithDestinationIdOnly = await prisma.destinationHalalFacility.createManyAndReturn({
-     *   select: { destinationId: true },
+     * // Create many DestinationHalalFacilities and only return the `id`
+     * const destinationHalalFacilityWithIdOnly = await prisma.destinationHalalFacility.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -11876,9 +12157,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more DestinationHalalFacilities and only return the `destinationId`
-     * const destinationHalalFacilityWithDestinationIdOnly = await prisma.destinationHalalFacility.updateManyAndReturn({
-     *   select: { destinationId: true },
+     * // Update zero or more DestinationHalalFacilities and only return the `id`
+     * const destinationHalalFacilityWithIdOnly = await prisma.destinationHalalFacility.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -12053,6 +12334,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     destination<T extends DestinationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DestinationDefaultArgs<ExtArgs>>): Prisma__DestinationClient<$Result.GetResult<Prisma.$DestinationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     facility<T extends HalalFacilityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacilityDefaultArgs<ExtArgs>>): Prisma__HalalFacilityClient<$Result.GetResult<Prisma.$HalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    evidences<T extends DestinationHalalFacility$evidencesArgs<ExtArgs> = {}>(args?: Subset<T, DestinationHalalFacility$evidencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12082,8 +12364,11 @@ export namespace Prisma {
    * Fields of the DestinationHalalFacility model
    */
   interface DestinationHalalFacilityFieldRefs {
+    readonly id: FieldRef<"DestinationHalalFacility", 'String'>
     readonly destinationId: FieldRef<"DestinationHalalFacility", 'String'>
     readonly facilityId: FieldRef<"DestinationHalalFacility", 'String'>
+    readonly latitude: FieldRef<"DestinationHalalFacility", 'Float'>
+    readonly longitude: FieldRef<"DestinationHalalFacility", 'Float'>
   }
     
 
@@ -12485,6 +12770,30 @@ export namespace Prisma {
   }
 
   /**
+   * DestinationHalalFacility.evidences
+   */
+  export type DestinationHalalFacility$evidencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    where?: DestinationFacilityEvidenceWhereInput
+    orderBy?: DestinationFacilityEvidenceOrderByWithRelationInput | DestinationFacilityEvidenceOrderByWithRelationInput[]
+    cursor?: DestinationFacilityEvidenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DestinationFacilityEvidenceScalarFieldEnum | DestinationFacilityEvidenceScalarFieldEnum[]
+  }
+
+  /**
    * DestinationHalalFacility without action
    */
   export type DestinationHalalFacilityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12504,6 +12813,1056 @@ export namespace Prisma {
 
 
   /**
+   * Model DestinationFacilityEvidence
+   */
+
+  export type AggregateDestinationFacilityEvidence = {
+    _count: DestinationFacilityEvidenceCountAggregateOutputType | null
+    _min: DestinationFacilityEvidenceMinAggregateOutputType | null
+    _max: DestinationFacilityEvidenceMaxAggregateOutputType | null
+  }
+
+  export type DestinationFacilityEvidenceMinAggregateOutputType = {
+    id: string | null
+    destFacilityId: string | null
+    imageUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type DestinationFacilityEvidenceMaxAggregateOutputType = {
+    id: string | null
+    destFacilityId: string | null
+    imageUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type DestinationFacilityEvidenceCountAggregateOutputType = {
+    id: number
+    destFacilityId: number
+    imageUrl: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DestinationFacilityEvidenceMinAggregateInputType = {
+    id?: true
+    destFacilityId?: true
+    imageUrl?: true
+    createdAt?: true
+  }
+
+  export type DestinationFacilityEvidenceMaxAggregateInputType = {
+    id?: true
+    destFacilityId?: true
+    imageUrl?: true
+    createdAt?: true
+  }
+
+  export type DestinationFacilityEvidenceCountAggregateInputType = {
+    id?: true
+    destFacilityId?: true
+    imageUrl?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DestinationFacilityEvidenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DestinationFacilityEvidence to aggregate.
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DestinationFacilityEvidences to fetch.
+     */
+    orderBy?: DestinationFacilityEvidenceOrderByWithRelationInput | DestinationFacilityEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DestinationFacilityEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DestinationFacilityEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DestinationFacilityEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DestinationFacilityEvidences
+    **/
+    _count?: true | DestinationFacilityEvidenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DestinationFacilityEvidenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DestinationFacilityEvidenceMaxAggregateInputType
+  }
+
+  export type GetDestinationFacilityEvidenceAggregateType<T extends DestinationFacilityEvidenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateDestinationFacilityEvidence]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDestinationFacilityEvidence[P]>
+      : GetScalarType<T[P], AggregateDestinationFacilityEvidence[P]>
+  }
+
+
+
+
+  export type DestinationFacilityEvidenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DestinationFacilityEvidenceWhereInput
+    orderBy?: DestinationFacilityEvidenceOrderByWithAggregationInput | DestinationFacilityEvidenceOrderByWithAggregationInput[]
+    by: DestinationFacilityEvidenceScalarFieldEnum[] | DestinationFacilityEvidenceScalarFieldEnum
+    having?: DestinationFacilityEvidenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DestinationFacilityEvidenceCountAggregateInputType | true
+    _min?: DestinationFacilityEvidenceMinAggregateInputType
+    _max?: DestinationFacilityEvidenceMaxAggregateInputType
+  }
+
+  export type DestinationFacilityEvidenceGroupByOutputType = {
+    id: string
+    destFacilityId: string
+    imageUrl: string
+    createdAt: Date
+    _count: DestinationFacilityEvidenceCountAggregateOutputType | null
+    _min: DestinationFacilityEvidenceMinAggregateOutputType | null
+    _max: DestinationFacilityEvidenceMaxAggregateOutputType | null
+  }
+
+  type GetDestinationFacilityEvidenceGroupByPayload<T extends DestinationFacilityEvidenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DestinationFacilityEvidenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DestinationFacilityEvidenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DestinationFacilityEvidenceGroupByOutputType[P]>
+            : GetScalarType<T[P], DestinationFacilityEvidenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DestinationFacilityEvidenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    destFacilityId?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["destinationFacilityEvidence"]>
+
+  export type DestinationFacilityEvidenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    destFacilityId?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["destinationFacilityEvidence"]>
+
+  export type DestinationFacilityEvidenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    destFacilityId?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["destinationFacilityEvidence"]>
+
+  export type DestinationFacilityEvidenceSelectScalar = {
+    id?: boolean
+    destFacilityId?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+  }
+
+  export type DestinationFacilityEvidenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destFacilityId" | "imageUrl" | "createdAt", ExtArgs["result"]["destinationFacilityEvidence"]>
+  export type DestinationFacilityEvidenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type DestinationFacilityEvidenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type DestinationFacilityEvidenceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    destFacility?: boolean | DestinationHalalFacilityDefaultArgs<ExtArgs>
+  }
+
+  export type $DestinationFacilityEvidencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DestinationFacilityEvidence"
+    objects: {
+      destFacility: Prisma.$DestinationHalalFacilityPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      destFacilityId: string
+      imageUrl: string
+      createdAt: Date
+    }, ExtArgs["result"]["destinationFacilityEvidence"]>
+    composites: {}
+  }
+
+  type DestinationFacilityEvidenceGetPayload<S extends boolean | null | undefined | DestinationFacilityEvidenceDefaultArgs> = $Result.GetResult<Prisma.$DestinationFacilityEvidencePayload, S>
+
+  type DestinationFacilityEvidenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DestinationFacilityEvidenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DestinationFacilityEvidenceCountAggregateInputType | true
+    }
+
+  export interface DestinationFacilityEvidenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DestinationFacilityEvidence'], meta: { name: 'DestinationFacilityEvidence' } }
+    /**
+     * Find zero or one DestinationFacilityEvidence that matches the filter.
+     * @param {DestinationFacilityEvidenceFindUniqueArgs} args - Arguments to find a DestinationFacilityEvidence
+     * @example
+     * // Get one DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DestinationFacilityEvidenceFindUniqueArgs>(args: SelectSubset<T, DestinationFacilityEvidenceFindUniqueArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DestinationFacilityEvidence that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DestinationFacilityEvidenceFindUniqueOrThrowArgs} args - Arguments to find a DestinationFacilityEvidence
+     * @example
+     * // Get one DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DestinationFacilityEvidenceFindUniqueOrThrowArgs>(args: SelectSubset<T, DestinationFacilityEvidenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DestinationFacilityEvidence that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceFindFirstArgs} args - Arguments to find a DestinationFacilityEvidence
+     * @example
+     * // Get one DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DestinationFacilityEvidenceFindFirstArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceFindFirstArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DestinationFacilityEvidence that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceFindFirstOrThrowArgs} args - Arguments to find a DestinationFacilityEvidence
+     * @example
+     * // Get one DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DestinationFacilityEvidenceFindFirstOrThrowArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DestinationFacilityEvidences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DestinationFacilityEvidences
+     * const destinationFacilityEvidences = await prisma.destinationFacilityEvidence.findMany()
+     * 
+     * // Get first 10 DestinationFacilityEvidences
+     * const destinationFacilityEvidences = await prisma.destinationFacilityEvidence.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const destinationFacilityEvidenceWithIdOnly = await prisma.destinationFacilityEvidence.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DestinationFacilityEvidenceFindManyArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DestinationFacilityEvidence.
+     * @param {DestinationFacilityEvidenceCreateArgs} args - Arguments to create a DestinationFacilityEvidence.
+     * @example
+     * // Create one DestinationFacilityEvidence
+     * const DestinationFacilityEvidence = await prisma.destinationFacilityEvidence.create({
+     *   data: {
+     *     // ... data to create a DestinationFacilityEvidence
+     *   }
+     * })
+     * 
+     */
+    create<T extends DestinationFacilityEvidenceCreateArgs>(args: SelectSubset<T, DestinationFacilityEvidenceCreateArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DestinationFacilityEvidences.
+     * @param {DestinationFacilityEvidenceCreateManyArgs} args - Arguments to create many DestinationFacilityEvidences.
+     * @example
+     * // Create many DestinationFacilityEvidences
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DestinationFacilityEvidenceCreateManyArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DestinationFacilityEvidences and returns the data saved in the database.
+     * @param {DestinationFacilityEvidenceCreateManyAndReturnArgs} args - Arguments to create many DestinationFacilityEvidences.
+     * @example
+     * // Create many DestinationFacilityEvidences
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DestinationFacilityEvidences and only return the `id`
+     * const destinationFacilityEvidenceWithIdOnly = await prisma.destinationFacilityEvidence.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DestinationFacilityEvidenceCreateManyAndReturnArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DestinationFacilityEvidence.
+     * @param {DestinationFacilityEvidenceDeleteArgs} args - Arguments to delete one DestinationFacilityEvidence.
+     * @example
+     * // Delete one DestinationFacilityEvidence
+     * const DestinationFacilityEvidence = await prisma.destinationFacilityEvidence.delete({
+     *   where: {
+     *     // ... filter to delete one DestinationFacilityEvidence
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DestinationFacilityEvidenceDeleteArgs>(args: SelectSubset<T, DestinationFacilityEvidenceDeleteArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DestinationFacilityEvidence.
+     * @param {DestinationFacilityEvidenceUpdateArgs} args - Arguments to update one DestinationFacilityEvidence.
+     * @example
+     * // Update one DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DestinationFacilityEvidenceUpdateArgs>(args: SelectSubset<T, DestinationFacilityEvidenceUpdateArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DestinationFacilityEvidences.
+     * @param {DestinationFacilityEvidenceDeleteManyArgs} args - Arguments to filter DestinationFacilityEvidences to delete.
+     * @example
+     * // Delete a few DestinationFacilityEvidences
+     * const { count } = await prisma.destinationFacilityEvidence.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DestinationFacilityEvidenceDeleteManyArgs>(args?: SelectSubset<T, DestinationFacilityEvidenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DestinationFacilityEvidences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DestinationFacilityEvidences
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DestinationFacilityEvidenceUpdateManyArgs>(args: SelectSubset<T, DestinationFacilityEvidenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DestinationFacilityEvidences and returns the data updated in the database.
+     * @param {DestinationFacilityEvidenceUpdateManyAndReturnArgs} args - Arguments to update many DestinationFacilityEvidences.
+     * @example
+     * // Update many DestinationFacilityEvidences
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DestinationFacilityEvidences and only return the `id`
+     * const destinationFacilityEvidenceWithIdOnly = await prisma.destinationFacilityEvidence.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DestinationFacilityEvidenceUpdateManyAndReturnArgs>(args: SelectSubset<T, DestinationFacilityEvidenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DestinationFacilityEvidence.
+     * @param {DestinationFacilityEvidenceUpsertArgs} args - Arguments to update or create a DestinationFacilityEvidence.
+     * @example
+     * // Update or create a DestinationFacilityEvidence
+     * const destinationFacilityEvidence = await prisma.destinationFacilityEvidence.upsert({
+     *   create: {
+     *     // ... data to create a DestinationFacilityEvidence
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DestinationFacilityEvidence we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DestinationFacilityEvidenceUpsertArgs>(args: SelectSubset<T, DestinationFacilityEvidenceUpsertArgs<ExtArgs>>): Prisma__DestinationFacilityEvidenceClient<$Result.GetResult<Prisma.$DestinationFacilityEvidencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DestinationFacilityEvidences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceCountArgs} args - Arguments to filter DestinationFacilityEvidences to count.
+     * @example
+     * // Count the number of DestinationFacilityEvidences
+     * const count = await prisma.destinationFacilityEvidence.count({
+     *   where: {
+     *     // ... the filter for the DestinationFacilityEvidences we want to count
+     *   }
+     * })
+    **/
+    count<T extends DestinationFacilityEvidenceCountArgs>(
+      args?: Subset<T, DestinationFacilityEvidenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DestinationFacilityEvidenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DestinationFacilityEvidence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DestinationFacilityEvidenceAggregateArgs>(args: Subset<T, DestinationFacilityEvidenceAggregateArgs>): Prisma.PrismaPromise<GetDestinationFacilityEvidenceAggregateType<T>>
+
+    /**
+     * Group by DestinationFacilityEvidence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DestinationFacilityEvidenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DestinationFacilityEvidenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DestinationFacilityEvidenceGroupByArgs['orderBy'] }
+        : { orderBy?: DestinationFacilityEvidenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DestinationFacilityEvidenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDestinationFacilityEvidenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DestinationFacilityEvidence model
+   */
+  readonly fields: DestinationFacilityEvidenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DestinationFacilityEvidence.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DestinationFacilityEvidenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    destFacility<T extends DestinationHalalFacilityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DestinationHalalFacilityDefaultArgs<ExtArgs>>): Prisma__DestinationHalalFacilityClient<$Result.GetResult<Prisma.$DestinationHalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DestinationFacilityEvidence model
+   */
+  interface DestinationFacilityEvidenceFieldRefs {
+    readonly id: FieldRef<"DestinationFacilityEvidence", 'String'>
+    readonly destFacilityId: FieldRef<"DestinationFacilityEvidence", 'String'>
+    readonly imageUrl: FieldRef<"DestinationFacilityEvidence", 'String'>
+    readonly createdAt: FieldRef<"DestinationFacilityEvidence", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DestinationFacilityEvidence findUnique
+   */
+  export type DestinationFacilityEvidenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which DestinationFacilityEvidence to fetch.
+     */
+    where: DestinationFacilityEvidenceWhereUniqueInput
+  }
+
+  /**
+   * DestinationFacilityEvidence findUniqueOrThrow
+   */
+  export type DestinationFacilityEvidenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which DestinationFacilityEvidence to fetch.
+     */
+    where: DestinationFacilityEvidenceWhereUniqueInput
+  }
+
+  /**
+   * DestinationFacilityEvidence findFirst
+   */
+  export type DestinationFacilityEvidenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which DestinationFacilityEvidence to fetch.
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DestinationFacilityEvidences to fetch.
+     */
+    orderBy?: DestinationFacilityEvidenceOrderByWithRelationInput | DestinationFacilityEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DestinationFacilityEvidences.
+     */
+    cursor?: DestinationFacilityEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DestinationFacilityEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DestinationFacilityEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DestinationFacilityEvidences.
+     */
+    distinct?: DestinationFacilityEvidenceScalarFieldEnum | DestinationFacilityEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * DestinationFacilityEvidence findFirstOrThrow
+   */
+  export type DestinationFacilityEvidenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which DestinationFacilityEvidence to fetch.
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DestinationFacilityEvidences to fetch.
+     */
+    orderBy?: DestinationFacilityEvidenceOrderByWithRelationInput | DestinationFacilityEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DestinationFacilityEvidences.
+     */
+    cursor?: DestinationFacilityEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DestinationFacilityEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DestinationFacilityEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DestinationFacilityEvidences.
+     */
+    distinct?: DestinationFacilityEvidenceScalarFieldEnum | DestinationFacilityEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * DestinationFacilityEvidence findMany
+   */
+  export type DestinationFacilityEvidenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter, which DestinationFacilityEvidences to fetch.
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DestinationFacilityEvidences to fetch.
+     */
+    orderBy?: DestinationFacilityEvidenceOrderByWithRelationInput | DestinationFacilityEvidenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DestinationFacilityEvidences.
+     */
+    cursor?: DestinationFacilityEvidenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DestinationFacilityEvidences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DestinationFacilityEvidences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DestinationFacilityEvidences.
+     */
+    distinct?: DestinationFacilityEvidenceScalarFieldEnum | DestinationFacilityEvidenceScalarFieldEnum[]
+  }
+
+  /**
+   * DestinationFacilityEvidence create
+   */
+  export type DestinationFacilityEvidenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DestinationFacilityEvidence.
+     */
+    data: XOR<DestinationFacilityEvidenceCreateInput, DestinationFacilityEvidenceUncheckedCreateInput>
+  }
+
+  /**
+   * DestinationFacilityEvidence createMany
+   */
+  export type DestinationFacilityEvidenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DestinationFacilityEvidences.
+     */
+    data: DestinationFacilityEvidenceCreateManyInput | DestinationFacilityEvidenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DestinationFacilityEvidence createManyAndReturn
+   */
+  export type DestinationFacilityEvidenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many DestinationFacilityEvidences.
+     */
+    data: DestinationFacilityEvidenceCreateManyInput | DestinationFacilityEvidenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DestinationFacilityEvidence update
+   */
+  export type DestinationFacilityEvidenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DestinationFacilityEvidence.
+     */
+    data: XOR<DestinationFacilityEvidenceUpdateInput, DestinationFacilityEvidenceUncheckedUpdateInput>
+    /**
+     * Choose, which DestinationFacilityEvidence to update.
+     */
+    where: DestinationFacilityEvidenceWhereUniqueInput
+  }
+
+  /**
+   * DestinationFacilityEvidence updateMany
+   */
+  export type DestinationFacilityEvidenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DestinationFacilityEvidences.
+     */
+    data: XOR<DestinationFacilityEvidenceUpdateManyMutationInput, DestinationFacilityEvidenceUncheckedUpdateManyInput>
+    /**
+     * Filter which DestinationFacilityEvidences to update
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * Limit how many DestinationFacilityEvidences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DestinationFacilityEvidence updateManyAndReturn
+   */
+  export type DestinationFacilityEvidenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * The data used to update DestinationFacilityEvidences.
+     */
+    data: XOR<DestinationFacilityEvidenceUpdateManyMutationInput, DestinationFacilityEvidenceUncheckedUpdateManyInput>
+    /**
+     * Filter which DestinationFacilityEvidences to update
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * Limit how many DestinationFacilityEvidences to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DestinationFacilityEvidence upsert
+   */
+  export type DestinationFacilityEvidenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DestinationFacilityEvidence to update in case it exists.
+     */
+    where: DestinationFacilityEvidenceWhereUniqueInput
+    /**
+     * In case the DestinationFacilityEvidence found by the `where` argument doesn't exist, create a new DestinationFacilityEvidence with this data.
+     */
+    create: XOR<DestinationFacilityEvidenceCreateInput, DestinationFacilityEvidenceUncheckedCreateInput>
+    /**
+     * In case the DestinationFacilityEvidence was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DestinationFacilityEvidenceUpdateInput, DestinationFacilityEvidenceUncheckedUpdateInput>
+  }
+
+  /**
+   * DestinationFacilityEvidence delete
+   */
+  export type DestinationFacilityEvidenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+    /**
+     * Filter which DestinationFacilityEvidence to delete.
+     */
+    where: DestinationFacilityEvidenceWhereUniqueInput
+  }
+
+  /**
+   * DestinationFacilityEvidence deleteMany
+   */
+  export type DestinationFacilityEvidenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DestinationFacilityEvidences to delete
+     */
+    where?: DestinationFacilityEvidenceWhereInput
+    /**
+     * Limit how many DestinationFacilityEvidences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DestinationFacilityEvidence without action
+   */
+  export type DestinationFacilityEvidenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DestinationFacilityEvidence
+     */
+    select?: DestinationFacilityEvidenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DestinationFacilityEvidence
+     */
+    omit?: DestinationFacilityEvidenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationFacilityEvidenceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model HalalFacility
    */
 
@@ -12516,15 +13875,13 @@ export namespace Prisma {
   }
 
   export type HalalFacilityAvgAggregateOutputType = {
-    latitude: Decimal | null
-    longitude: Decimal | null
     weight: number | null
+    maxDistance: number | null
   }
 
   export type HalalFacilitySumAggregateOutputType = {
-    latitude: Decimal | null
-    longitude: Decimal | null
     weight: number | null
+    maxDistance: number | null
   }
 
   export type HalalFacilityMinAggregateOutputType = {
@@ -12532,14 +13889,12 @@ export namespace Prisma {
     name: string | null
     description: string | null
     facilityType: string | null
-    address: string | null
-    latitude: Decimal | null
-    longitude: Decimal | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date | null
     updatedAt: Date | null
     weight: number | null
+    maxDistance: number | null
   }
 
   export type HalalFacilityMaxAggregateOutputType = {
@@ -12547,14 +13902,12 @@ export namespace Prisma {
     name: string | null
     description: string | null
     facilityType: string | null
-    address: string | null
-    latitude: Decimal | null
-    longitude: Decimal | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date | null
     updatedAt: Date | null
     weight: number | null
+    maxDistance: number | null
   }
 
   export type HalalFacilityCountAggregateOutputType = {
@@ -12562,28 +13915,24 @@ export namespace Prisma {
     name: number
     description: number
     facilityType: number
-    address: number
-    latitude: number
-    longitude: number
     externalId: number
     externalSource: number
     createdAt: number
     updatedAt: number
     weight: number
+    maxDistance: number
     _all: number
   }
 
 
   export type HalalFacilityAvgAggregateInputType = {
-    latitude?: true
-    longitude?: true
     weight?: true
+    maxDistance?: true
   }
 
   export type HalalFacilitySumAggregateInputType = {
-    latitude?: true
-    longitude?: true
     weight?: true
+    maxDistance?: true
   }
 
   export type HalalFacilityMinAggregateInputType = {
@@ -12591,14 +13940,12 @@ export namespace Prisma {
     name?: true
     description?: true
     facilityType?: true
-    address?: true
-    latitude?: true
-    longitude?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
     updatedAt?: true
     weight?: true
+    maxDistance?: true
   }
 
   export type HalalFacilityMaxAggregateInputType = {
@@ -12606,14 +13953,12 @@ export namespace Prisma {
     name?: true
     description?: true
     facilityType?: true
-    address?: true
-    latitude?: true
-    longitude?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
     updatedAt?: true
     weight?: true
+    maxDistance?: true
   }
 
   export type HalalFacilityCountAggregateInputType = {
@@ -12621,14 +13966,12 @@ export namespace Prisma {
     name?: true
     description?: true
     facilityType?: true
-    address?: true
-    latitude?: true
-    longitude?: true
     externalId?: true
     externalSource?: true
     createdAt?: true
     updatedAt?: true
     weight?: true
+    maxDistance?: true
     _all?: true
   }
 
@@ -12723,14 +14066,12 @@ export namespace Prisma {
     name: string
     description: string | null
     facilityType: string | null
-    address: string | null
-    latitude: Decimal | null
-    longitude: Decimal | null
     externalId: string | null
     externalSource: string | null
     createdAt: Date
     updatedAt: Date
     weight: number | null
+    maxDistance: number
     _count: HalalFacilityCountAggregateOutputType | null
     _avg: HalalFacilityAvgAggregateOutputType | null
     _sum: HalalFacilitySumAggregateOutputType | null
@@ -12757,14 +14098,12 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     facilityType?: boolean
-    address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     weight?: boolean
+    maxDistance?: boolean
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["halalFacility"]>
@@ -12774,14 +14113,12 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     facilityType?: boolean
-    address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     weight?: boolean
+    maxDistance?: boolean
   }, ExtArgs["result"]["halalFacility"]>
 
   export type HalalFacilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12789,14 +14126,12 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     facilityType?: boolean
-    address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     weight?: boolean
+    maxDistance?: boolean
   }, ExtArgs["result"]["halalFacility"]>
 
   export type HalalFacilitySelectScalar = {
@@ -12804,17 +14139,15 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     facilityType?: boolean
-    address?: boolean
-    latitude?: boolean
-    longitude?: boolean
     externalId?: boolean
     externalSource?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     weight?: boolean
+    maxDistance?: boolean
   }
 
-  export type HalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "facilityType" | "address" | "latitude" | "longitude" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "weight", ExtArgs["result"]["halalFacility"]>
+  export type HalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "facilityType" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "weight" | "maxDistance", ExtArgs["result"]["halalFacility"]>
   export type HalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
@@ -12832,14 +14165,12 @@ export namespace Prisma {
       name: string
       description: string | null
       facilityType: string | null
-      address: string | null
-      latitude: Prisma.Decimal | null
-      longitude: Prisma.Decimal | null
       externalId: string | null
       externalSource: string | null
       createdAt: Date
       updatedAt: Date
       weight: number | null
+      maxDistance: number
     }, ExtArgs["result"]["halalFacility"]>
     composites: {}
   }
@@ -13268,14 +14599,12 @@ export namespace Prisma {
     readonly name: FieldRef<"HalalFacility", 'String'>
     readonly description: FieldRef<"HalalFacility", 'String'>
     readonly facilityType: FieldRef<"HalalFacility", 'String'>
-    readonly address: FieldRef<"HalalFacility", 'String'>
-    readonly latitude: FieldRef<"HalalFacility", 'Decimal'>
-    readonly longitude: FieldRef<"HalalFacility", 'Decimal'>
     readonly externalId: FieldRef<"HalalFacility", 'String'>
     readonly externalSource: FieldRef<"HalalFacility", 'String'>
     readonly createdAt: FieldRef<"HalalFacility", 'DateTime'>
     readonly updatedAt: FieldRef<"HalalFacility", 'DateTime'>
     readonly weight: FieldRef<"HalalFacility", 'Int'>
+    readonly maxDistance: FieldRef<"HalalFacility", 'Float'>
   }
     
 
@@ -25487,14 +26816,28 @@ export namespace Prisma {
 
   export type AggregateHalalValidation = {
     _count: HalalValidationCountAggregateOutputType | null
+    _avg: HalalValidationAvgAggregateOutputType | null
+    _sum: HalalValidationSumAggregateOutputType | null
     _min: HalalValidationMinAggregateOutputType | null
     _max: HalalValidationMaxAggregateOutputType | null
+  }
+
+  export type HalalValidationAvgAggregateOutputType = {
+    adminScore: number | null
+  }
+
+  export type HalalValidationSumAggregateOutputType = {
+    adminScore: number | null
   }
 
   export type HalalValidationMinAggregateOutputType = {
     id: string | null
     certificationId: string | null
+    destinationId: string | null
     validatorId: string | null
+    status: $Enums.ValidationStatus | null
+    adminScore: number | null
+    notes: string | null
     validatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25503,7 +26846,11 @@ export namespace Prisma {
   export type HalalValidationMaxAggregateOutputType = {
     id: string | null
     certificationId: string | null
+    destinationId: string | null
     validatorId: string | null
+    status: $Enums.ValidationStatus | null
+    adminScore: number | null
+    notes: string | null
     validatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -25512,7 +26859,12 @@ export namespace Prisma {
   export type HalalValidationCountAggregateOutputType = {
     id: number
     certificationId: number
+    destinationId: number
     validatorId: number
+    status: number
+    adminScore: number
+    categoryScores: number
+    notes: number
     validatedAt: number
     createdAt: number
     updatedAt: number
@@ -25520,10 +26872,22 @@ export namespace Prisma {
   }
 
 
+  export type HalalValidationAvgAggregateInputType = {
+    adminScore?: true
+  }
+
+  export type HalalValidationSumAggregateInputType = {
+    adminScore?: true
+  }
+
   export type HalalValidationMinAggregateInputType = {
     id?: true
     certificationId?: true
+    destinationId?: true
     validatorId?: true
+    status?: true
+    adminScore?: true
+    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25532,7 +26896,11 @@ export namespace Prisma {
   export type HalalValidationMaxAggregateInputType = {
     id?: true
     certificationId?: true
+    destinationId?: true
     validatorId?: true
+    status?: true
+    adminScore?: true
+    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25541,7 +26909,12 @@ export namespace Prisma {
   export type HalalValidationCountAggregateInputType = {
     id?: true
     certificationId?: true
+    destinationId?: true
     validatorId?: true
+    status?: true
+    adminScore?: true
+    categoryScores?: true
+    notes?: true
     validatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -25586,6 +26959,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: HalalValidationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: HalalValidationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: HalalValidationMinAggregateInputType
@@ -25616,18 +27001,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: HalalValidationCountAggregateInputType | true
+    _avg?: HalalValidationAvgAggregateInputType
+    _sum?: HalalValidationSumAggregateInputType
     _min?: HalalValidationMinAggregateInputType
     _max?: HalalValidationMaxAggregateInputType
   }
 
   export type HalalValidationGroupByOutputType = {
     id: string
-    certificationId: string
+    certificationId: string | null
+    destinationId: string | null
     validatorId: string | null
+    status: $Enums.ValidationStatus
+    adminScore: number | null
+    categoryScores: JsonValue | null
+    notes: string | null
     validatedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: HalalValidationCountAggregateOutputType | null
+    _avg: HalalValidationAvgAggregateOutputType | null
+    _sum: HalalValidationSumAggregateOutputType | null
     _min: HalalValidationMinAggregateOutputType | null
     _max: HalalValidationMaxAggregateOutputType | null
   }
@@ -25649,11 +27043,17 @@ export namespace Prisma {
   export type HalalValidationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     certificationId?: boolean
+    destinationId?: boolean
     validatorId?: boolean
+    status?: boolean
+    adminScore?: boolean
+    categoryScores?: boolean
+    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
     evidences?: boolean | HalalValidation$evidencesArgs<ExtArgs>
     _count?: boolean | HalalValidationCountOutputTypeDefaultArgs<ExtArgs>
@@ -25662,61 +27062,87 @@ export namespace Prisma {
   export type HalalValidationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     certificationId?: boolean
+    destinationId?: boolean
     validatorId?: boolean
+    status?: boolean
+    adminScore?: boolean
+    categoryScores?: boolean
+    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
   }, ExtArgs["result"]["halalValidation"]>
 
   export type HalalValidationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     certificationId?: boolean
+    destinationId?: boolean
     validatorId?: boolean
+    status?: boolean
+    adminScore?: boolean
+    categoryScores?: boolean
+    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
   }, ExtArgs["result"]["halalValidation"]>
 
   export type HalalValidationSelectScalar = {
     id?: boolean
     certificationId?: boolean
+    destinationId?: boolean
     validatorId?: boolean
+    status?: boolean
+    adminScore?: boolean
+    categoryScores?: boolean
+    notes?: boolean
     validatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type HalalValidationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "certificationId" | "validatorId" | "validatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["halalValidation"]>
+  export type HalalValidationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "certificationId" | "destinationId" | "validatorId" | "status" | "adminScore" | "categoryScores" | "notes" | "validatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["halalValidation"]>
   export type HalalValidationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
     evidences?: boolean | HalalValidation$evidencesArgs<ExtArgs>
     _count?: boolean | HalalValidationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type HalalValidationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
   }
   export type HalalValidationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    certification?: boolean | HalalCertificationDefaultArgs<ExtArgs>
+    certification?: boolean | HalalValidation$certificationArgs<ExtArgs>
+    destination?: boolean | HalalValidation$destinationArgs<ExtArgs>
     validator?: boolean | HalalValidation$validatorArgs<ExtArgs>
   }
 
   export type $HalalValidationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "HalalValidation"
     objects: {
-      certification: Prisma.$HalalCertificationPayload<ExtArgs>
+      certification: Prisma.$HalalCertificationPayload<ExtArgs> | null
+      destination: Prisma.$DestinationPayload<ExtArgs> | null
       validator: Prisma.$UserPayload<ExtArgs> | null
       evidences: Prisma.$ValidationEvidencePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      certificationId: string
+      certificationId: string | null
+      destinationId: string | null
       validatorId: string | null
+      status: $Enums.ValidationStatus
+      adminScore: number | null
+      categoryScores: Prisma.JsonValue | null
+      notes: string | null
       validatedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -26114,7 +27540,8 @@ export namespace Prisma {
    */
   export interface Prisma__HalalValidationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    certification<T extends HalalCertificationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HalalCertificationDefaultArgs<ExtArgs>>): Prisma__HalalCertificationClient<$Result.GetResult<Prisma.$HalalCertificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    certification<T extends HalalValidation$certificationArgs<ExtArgs> = {}>(args?: Subset<T, HalalValidation$certificationArgs<ExtArgs>>): Prisma__HalalCertificationClient<$Result.GetResult<Prisma.$HalalCertificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    destination<T extends HalalValidation$destinationArgs<ExtArgs> = {}>(args?: Subset<T, HalalValidation$destinationArgs<ExtArgs>>): Prisma__DestinationClient<$Result.GetResult<Prisma.$DestinationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     validator<T extends HalalValidation$validatorArgs<ExtArgs> = {}>(args?: Subset<T, HalalValidation$validatorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     evidences<T extends HalalValidation$evidencesArgs<ExtArgs> = {}>(args?: Subset<T, HalalValidation$evidencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ValidationEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -26148,7 +27575,12 @@ export namespace Prisma {
   interface HalalValidationFieldRefs {
     readonly id: FieldRef<"HalalValidation", 'String'>
     readonly certificationId: FieldRef<"HalalValidation", 'String'>
+    readonly destinationId: FieldRef<"HalalValidation", 'String'>
     readonly validatorId: FieldRef<"HalalValidation", 'String'>
+    readonly status: FieldRef<"HalalValidation", 'ValidationStatus'>
+    readonly adminScore: FieldRef<"HalalValidation", 'Int'>
+    readonly categoryScores: FieldRef<"HalalValidation", 'Json'>
+    readonly notes: FieldRef<"HalalValidation", 'String'>
     readonly validatedAt: FieldRef<"HalalValidation", 'DateTime'>
     readonly createdAt: FieldRef<"HalalValidation", 'DateTime'>
     readonly updatedAt: FieldRef<"HalalValidation", 'DateTime'>
@@ -26550,6 +27982,44 @@ export namespace Prisma {
      * Limit how many HalalValidations to delete.
      */
     limit?: number
+  }
+
+  /**
+   * HalalValidation.certification
+   */
+  export type HalalValidation$certificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HalalCertification
+     */
+    select?: HalalCertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HalalCertification
+     */
+    omit?: HalalCertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HalalCertificationInclude<ExtArgs> | null
+    where?: HalalCertificationWhereInput
+  }
+
+  /**
+   * HalalValidation.destination
+   */
+  export type HalalValidation$destinationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Destination
+     */
+    select?: DestinationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Destination
+     */
+    omit?: DestinationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DestinationInclude<ExtArgs> | null
+    where?: DestinationWhereInput
   }
 
   /**
@@ -28803,6 +30273,9 @@ export namespace Prisma {
     rating: 'rating',
     reviewCount: 'reviewCount',
     openingHours: 'openingHours',
+    halalScore: 'halalScore',
+    validatedScore: 'validatedScore',
+    categoryScores: 'categoryScores',
     externalId: 'externalId',
     externalSource: 'externalSource',
     createdAt: 'createdAt',
@@ -28825,11 +30298,24 @@ export namespace Prisma {
 
 
   export const DestinationHalalFacilityScalarFieldEnum: {
+    id: 'id',
     destinationId: 'destinationId',
-    facilityId: 'facilityId'
+    facilityId: 'facilityId',
+    latitude: 'latitude',
+    longitude: 'longitude'
   };
 
   export type DestinationHalalFacilityScalarFieldEnum = (typeof DestinationHalalFacilityScalarFieldEnum)[keyof typeof DestinationHalalFacilityScalarFieldEnum]
+
+
+  export const DestinationFacilityEvidenceScalarFieldEnum: {
+    id: 'id',
+    destFacilityId: 'destFacilityId',
+    imageUrl: 'imageUrl',
+    createdAt: 'createdAt'
+  };
+
+  export type DestinationFacilityEvidenceScalarFieldEnum = (typeof DestinationFacilityEvidenceScalarFieldEnum)[keyof typeof DestinationFacilityEvidenceScalarFieldEnum]
 
 
   export const HalalFacilityScalarFieldEnum: {
@@ -28837,14 +30323,12 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     facilityType: 'facilityType',
-    address: 'address',
-    latitude: 'latitude',
-    longitude: 'longitude',
     externalId: 'externalId',
     externalSource: 'externalSource',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    weight: 'weight'
+    weight: 'weight',
+    maxDistance: 'maxDistance'
   };
 
   export type HalalFacilityScalarFieldEnum = (typeof HalalFacilityScalarFieldEnum)[keyof typeof HalalFacilityScalarFieldEnum]
@@ -29011,7 +30495,12 @@ export namespace Prisma {
   export const HalalValidationScalarFieldEnum: {
     id: 'id',
     certificationId: 'certificationId',
+    destinationId: 'destinationId',
     validatorId: 'validatorId',
+    status: 'status',
+    adminScore: 'adminScore',
+    categoryScores: 'categoryScores',
+    notes: 'notes',
     validatedAt: 'validatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -29655,6 +31144,9 @@ export namespace Prisma {
     rating?: FloatNullableFilter<"Destination"> | number | null
     reviewCount?: IntNullableFilter<"Destination"> | number | null
     openingHours?: JsonNullableFilter<"Destination">
+    halalScore?: IntNullableFilter<"Destination"> | number | null
+    validatedScore?: IntNullableFilter<"Destination"> | number | null
+    categoryScores?: JsonNullableFilter<"Destination">
     externalId?: StringNullableFilter<"Destination"> | string | null
     externalSource?: StringNullableFilter<"Destination"> | string | null
     createdAt?: DateTimeFilter<"Destination"> | Date | string
@@ -29664,6 +31156,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     umkms?: UmkmListRelationFilter
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
+    halalValidations?: HalalValidationListRelationFilter
     interactions?: DestinationInteractionListRelationFilter
     trends?: DestinationTrendListRelationFilter
     itineraryItems?: ItineraryItemListRelationFilter
@@ -29684,6 +31177,9 @@ export namespace Prisma {
     rating?: SortOrderInput | SortOrder
     reviewCount?: SortOrderInput | SortOrder
     openingHours?: SortOrderInput | SortOrder
+    halalScore?: SortOrderInput | SortOrder
+    validatedScore?: SortOrderInput | SortOrder
+    categoryScores?: SortOrderInput | SortOrder
     externalId?: SortOrderInput | SortOrder
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -29693,6 +31189,7 @@ export namespace Prisma {
     reviews?: ReviewOrderByRelationAggregateInput
     umkms?: UmkmOrderByRelationAggregateInput
     destinationHalalFacilities?: DestinationHalalFacilityOrderByRelationAggregateInput
+    halalValidations?: HalalValidationOrderByRelationAggregateInput
     interactions?: DestinationInteractionOrderByRelationAggregateInput
     trends?: DestinationTrendOrderByRelationAggregateInput
     itineraryItems?: ItineraryItemOrderByRelationAggregateInput
@@ -29716,6 +31213,9 @@ export namespace Prisma {
     rating?: FloatNullableFilter<"Destination"> | number | null
     reviewCount?: IntNullableFilter<"Destination"> | number | null
     openingHours?: JsonNullableFilter<"Destination">
+    halalScore?: IntNullableFilter<"Destination"> | number | null
+    validatedScore?: IntNullableFilter<"Destination"> | number | null
+    categoryScores?: JsonNullableFilter<"Destination">
     externalId?: StringNullableFilter<"Destination"> | string | null
     externalSource?: StringNullableFilter<"Destination"> | string | null
     createdAt?: DateTimeFilter<"Destination"> | Date | string
@@ -29725,6 +31225,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     umkms?: UmkmListRelationFilter
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
+    halalValidations?: HalalValidationListRelationFilter
     interactions?: DestinationInteractionListRelationFilter
     trends?: DestinationTrendListRelationFilter
     itineraryItems?: ItineraryItemListRelationFilter
@@ -29745,6 +31246,9 @@ export namespace Prisma {
     rating?: SortOrderInput | SortOrder
     reviewCount?: SortOrderInput | SortOrder
     openingHours?: SortOrderInput | SortOrder
+    halalScore?: SortOrderInput | SortOrder
+    validatedScore?: SortOrderInput | SortOrder
+    categoryScores?: SortOrderInput | SortOrder
     externalId?: SortOrderInput | SortOrder
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -29774,6 +31278,9 @@ export namespace Prisma {
     rating?: FloatNullableWithAggregatesFilter<"Destination"> | number | null
     reviewCount?: IntNullableWithAggregatesFilter<"Destination"> | number | null
     openingHours?: JsonNullableWithAggregatesFilter<"Destination">
+    halalScore?: IntNullableWithAggregatesFilter<"Destination"> | number | null
+    validatedScore?: IntNullableWithAggregatesFilter<"Destination"> | number | null
+    categoryScores?: JsonNullableWithAggregatesFilter<"Destination">
     externalId?: StringNullableWithAggregatesFilter<"Destination"> | string | null
     externalSource?: StringNullableWithAggregatesFilter<"Destination"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Destination"> | Date | string
@@ -29844,44 +31351,113 @@ export namespace Prisma {
     AND?: DestinationHalalFacilityWhereInput | DestinationHalalFacilityWhereInput[]
     OR?: DestinationHalalFacilityWhereInput[]
     NOT?: DestinationHalalFacilityWhereInput | DestinationHalalFacilityWhereInput[]
+    id?: StringFilter<"DestinationHalalFacility"> | string
     destinationId?: StringFilter<"DestinationHalalFacility"> | string
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
+    latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
     destination?: XOR<DestinationScalarRelationFilter, DestinationWhereInput>
     facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
+    evidences?: DestinationFacilityEvidenceListRelationFilter
   }
 
   export type DestinationHalalFacilityOrderByWithRelationInput = {
+    id?: SortOrder
     destinationId?: SortOrder
     facilityId?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
     destination?: DestinationOrderByWithRelationInput
     facility?: HalalFacilityOrderByWithRelationInput
+    evidences?: DestinationFacilityEvidenceOrderByRelationAggregateInput
   }
 
   export type DestinationHalalFacilityWhereUniqueInput = Prisma.AtLeast<{
-    destinationId_facilityId?: DestinationHalalFacilityDestinationIdFacilityIdCompoundUniqueInput
+    id?: string
     AND?: DestinationHalalFacilityWhereInput | DestinationHalalFacilityWhereInput[]
     OR?: DestinationHalalFacilityWhereInput[]
     NOT?: DestinationHalalFacilityWhereInput | DestinationHalalFacilityWhereInput[]
     destinationId?: StringFilter<"DestinationHalalFacility"> | string
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
+    latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
     destination?: XOR<DestinationScalarRelationFilter, DestinationWhereInput>
     facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
-  }, "destinationId_facilityId">
+    evidences?: DestinationFacilityEvidenceListRelationFilter
+  }, "id">
 
   export type DestinationHalalFacilityOrderByWithAggregationInput = {
+    id?: SortOrder
     destinationId?: SortOrder
     facilityId?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
     _count?: DestinationHalalFacilityCountOrderByAggregateInput
+    _avg?: DestinationHalalFacilityAvgOrderByAggregateInput
     _max?: DestinationHalalFacilityMaxOrderByAggregateInput
     _min?: DestinationHalalFacilityMinOrderByAggregateInput
+    _sum?: DestinationHalalFacilitySumOrderByAggregateInput
   }
 
   export type DestinationHalalFacilityScalarWhereWithAggregatesInput = {
     AND?: DestinationHalalFacilityScalarWhereWithAggregatesInput | DestinationHalalFacilityScalarWhereWithAggregatesInput[]
     OR?: DestinationHalalFacilityScalarWhereWithAggregatesInput[]
     NOT?: DestinationHalalFacilityScalarWhereWithAggregatesInput | DestinationHalalFacilityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DestinationHalalFacility"> | string
     destinationId?: StringWithAggregatesFilter<"DestinationHalalFacility"> | string
     facilityId?: StringWithAggregatesFilter<"DestinationHalalFacility"> | string
+    latitude?: FloatNullableWithAggregatesFilter<"DestinationHalalFacility"> | number | null
+    longitude?: FloatNullableWithAggregatesFilter<"DestinationHalalFacility"> | number | null
+  }
+
+  export type DestinationFacilityEvidenceWhereInput = {
+    AND?: DestinationFacilityEvidenceWhereInput | DestinationFacilityEvidenceWhereInput[]
+    OR?: DestinationFacilityEvidenceWhereInput[]
+    NOT?: DestinationFacilityEvidenceWhereInput | DestinationFacilityEvidenceWhereInput[]
+    id?: StringFilter<"DestinationFacilityEvidence"> | string
+    destFacilityId?: StringFilter<"DestinationFacilityEvidence"> | string
+    imageUrl?: StringFilter<"DestinationFacilityEvidence"> | string
+    createdAt?: DateTimeFilter<"DestinationFacilityEvidence"> | Date | string
+    destFacility?: XOR<DestinationHalalFacilityScalarRelationFilter, DestinationHalalFacilityWhereInput>
+  }
+
+  export type DestinationFacilityEvidenceOrderByWithRelationInput = {
+    id?: SortOrder
+    destFacilityId?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+    destFacility?: DestinationHalalFacilityOrderByWithRelationInput
+  }
+
+  export type DestinationFacilityEvidenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DestinationFacilityEvidenceWhereInput | DestinationFacilityEvidenceWhereInput[]
+    OR?: DestinationFacilityEvidenceWhereInput[]
+    NOT?: DestinationFacilityEvidenceWhereInput | DestinationFacilityEvidenceWhereInput[]
+    destFacilityId?: StringFilter<"DestinationFacilityEvidence"> | string
+    imageUrl?: StringFilter<"DestinationFacilityEvidence"> | string
+    createdAt?: DateTimeFilter<"DestinationFacilityEvidence"> | Date | string
+    destFacility?: XOR<DestinationHalalFacilityScalarRelationFilter, DestinationHalalFacilityWhereInput>
+  }, "id">
+
+  export type DestinationFacilityEvidenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    destFacilityId?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+    _count?: DestinationFacilityEvidenceCountOrderByAggregateInput
+    _max?: DestinationFacilityEvidenceMaxOrderByAggregateInput
+    _min?: DestinationFacilityEvidenceMinOrderByAggregateInput
+  }
+
+  export type DestinationFacilityEvidenceScalarWhereWithAggregatesInput = {
+    AND?: DestinationFacilityEvidenceScalarWhereWithAggregatesInput | DestinationFacilityEvidenceScalarWhereWithAggregatesInput[]
+    OR?: DestinationFacilityEvidenceScalarWhereWithAggregatesInput[]
+    NOT?: DestinationFacilityEvidenceScalarWhereWithAggregatesInput | DestinationFacilityEvidenceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DestinationFacilityEvidence"> | string
+    destFacilityId?: StringWithAggregatesFilter<"DestinationFacilityEvidence"> | string
+    imageUrl?: StringWithAggregatesFilter<"DestinationFacilityEvidence"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"DestinationFacilityEvidence"> | Date | string
   }
 
   export type HalalFacilityWhereInput = {
@@ -29892,14 +31468,12 @@ export namespace Prisma {
     name?: StringFilter<"HalalFacility"> | string
     description?: StringNullableFilter<"HalalFacility"> | string | null
     facilityType?: StringNullableFilter<"HalalFacility"> | string | null
-    address?: StringNullableFilter<"HalalFacility"> | string | null
-    latitude?: DecimalNullableFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
-    longitude?: DecimalNullableFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
     externalId?: StringNullableFilter<"HalalFacility"> | string | null
     externalSource?: StringNullableFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeFilter<"HalalFacility"> | Date | string
     weight?: IntNullableFilter<"HalalFacility"> | number | null
+    maxDistance?: FloatFilter<"HalalFacility"> | number
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
   }
 
@@ -29908,14 +31482,12 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     facilityType?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    latitude?: SortOrderInput | SortOrder
-    longitude?: SortOrderInput | SortOrder
     externalId?: SortOrderInput | SortOrder
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     weight?: SortOrderInput | SortOrder
+    maxDistance?: SortOrder
     destinationHalalFacilities?: DestinationHalalFacilityOrderByRelationAggregateInput
   }
 
@@ -29927,14 +31499,12 @@ export namespace Prisma {
     name?: StringFilter<"HalalFacility"> | string
     description?: StringNullableFilter<"HalalFacility"> | string | null
     facilityType?: StringNullableFilter<"HalalFacility"> | string | null
-    address?: StringNullableFilter<"HalalFacility"> | string | null
-    latitude?: DecimalNullableFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
-    longitude?: DecimalNullableFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
     externalId?: StringNullableFilter<"HalalFacility"> | string | null
     externalSource?: StringNullableFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeFilter<"HalalFacility"> | Date | string
     weight?: IntNullableFilter<"HalalFacility"> | number | null
+    maxDistance?: FloatFilter<"HalalFacility"> | number
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
   }, "id">
 
@@ -29943,14 +31513,12 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     facilityType?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    latitude?: SortOrderInput | SortOrder
-    longitude?: SortOrderInput | SortOrder
     externalId?: SortOrderInput | SortOrder
     externalSource?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     weight?: SortOrderInput | SortOrder
+    maxDistance?: SortOrder
     _count?: HalalFacilityCountOrderByAggregateInput
     _avg?: HalalFacilityAvgOrderByAggregateInput
     _max?: HalalFacilityMaxOrderByAggregateInput
@@ -29966,14 +31534,12 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"HalalFacility"> | string
     description?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
     facilityType?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
-    address?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
-    latitude?: DecimalNullableWithAggregatesFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
-    longitude?: DecimalNullableWithAggregatesFilter<"HalalFacility"> | Decimal | DecimalJsLike | number | string | null
     externalId?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
     externalSource?: StringNullableWithAggregatesFilter<"HalalFacility"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"HalalFacility"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HalalFacility"> | Date | string
     weight?: IntNullableWithAggregatesFilter<"HalalFacility"> | number | null
+    maxDistance?: FloatWithAggregatesFilter<"HalalFacility"> | number
   }
 
   export type ReviewWhereInput = {
@@ -30814,24 +32380,36 @@ export namespace Prisma {
     OR?: HalalValidationWhereInput[]
     NOT?: HalalValidationWhereInput | HalalValidationWhereInput[]
     id?: StringFilter<"HalalValidation"> | string
-    certificationId?: StringFilter<"HalalValidation"> | string
+    certificationId?: StringNullableFilter<"HalalValidation"> | string | null
+    destinationId?: StringNullableFilter<"HalalValidation"> | string | null
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
+    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
+    adminScore?: IntNullableFilter<"HalalValidation"> | number | null
+    categoryScores?: JsonNullableFilter<"HalalValidation">
+    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
-    certification?: XOR<HalalCertificationScalarRelationFilter, HalalCertificationWhereInput>
+    certification?: XOR<HalalCertificationNullableScalarRelationFilter, HalalCertificationWhereInput> | null
+    destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     validator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evidences?: ValidationEvidenceListRelationFilter
   }
 
   export type HalalValidationOrderByWithRelationInput = {
     id?: SortOrder
-    certificationId?: SortOrder
+    certificationId?: SortOrderInput | SortOrder
+    destinationId?: SortOrderInput | SortOrder
     validatorId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    adminScore?: SortOrderInput | SortOrder
+    categoryScores?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     validatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     certification?: HalalCertificationOrderByWithRelationInput
+    destination?: DestinationOrderByWithRelationInput
     validator?: UserOrderByWithRelationInput
     evidences?: ValidationEvidenceOrderByRelationAggregateInput
   }
@@ -30841,26 +32419,39 @@ export namespace Prisma {
     AND?: HalalValidationWhereInput | HalalValidationWhereInput[]
     OR?: HalalValidationWhereInput[]
     NOT?: HalalValidationWhereInput | HalalValidationWhereInput[]
-    certificationId?: StringFilter<"HalalValidation"> | string
+    certificationId?: StringNullableFilter<"HalalValidation"> | string | null
+    destinationId?: StringNullableFilter<"HalalValidation"> | string | null
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
+    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
+    adminScore?: IntNullableFilter<"HalalValidation"> | number | null
+    categoryScores?: JsonNullableFilter<"HalalValidation">
+    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
-    certification?: XOR<HalalCertificationScalarRelationFilter, HalalCertificationWhereInput>
+    certification?: XOR<HalalCertificationNullableScalarRelationFilter, HalalCertificationWhereInput> | null
+    destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     validator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evidences?: ValidationEvidenceListRelationFilter
   }, "id">
 
   export type HalalValidationOrderByWithAggregationInput = {
     id?: SortOrder
-    certificationId?: SortOrder
+    certificationId?: SortOrderInput | SortOrder
+    destinationId?: SortOrderInput | SortOrder
     validatorId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    adminScore?: SortOrderInput | SortOrder
+    categoryScores?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
     validatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: HalalValidationCountOrderByAggregateInput
+    _avg?: HalalValidationAvgOrderByAggregateInput
     _max?: HalalValidationMaxOrderByAggregateInput
     _min?: HalalValidationMinOrderByAggregateInput
+    _sum?: HalalValidationSumOrderByAggregateInput
   }
 
   export type HalalValidationScalarWhereWithAggregatesInput = {
@@ -30868,8 +32459,13 @@ export namespace Prisma {
     OR?: HalalValidationScalarWhereWithAggregatesInput[]
     NOT?: HalalValidationScalarWhereWithAggregatesInput | HalalValidationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"HalalValidation"> | string
-    certificationId?: StringWithAggregatesFilter<"HalalValidation"> | string
+    certificationId?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
+    destinationId?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
     validatorId?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
+    status?: EnumValidationStatusWithAggregatesFilter<"HalalValidation"> | $Enums.ValidationStatus
+    adminScore?: IntNullableWithAggregatesFilter<"HalalValidation"> | number | null
+    categoryScores?: JsonNullableWithAggregatesFilter<"HalalValidation">
+    notes?: StringNullableWithAggregatesFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableWithAggregatesFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"HalalValidation"> | Date | string
@@ -31457,6 +33053,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -31466,6 +33065,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -31486,6 +33086,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -31494,6 +33097,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -31513,6 +33117,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31522,6 +33129,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -31542,6 +33150,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31550,6 +33161,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -31570,6 +33182,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -31590,6 +33205,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31611,6 +33229,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31680,37 +33301,109 @@ export namespace Prisma {
   }
 
   export type DestinationHalalFacilityCreateInput = {
+    id?: string
+    latitude?: number | null
+    longitude?: number | null
     destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
     facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
+    evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityUncheckedCreateInput = {
+    id?: string
     destinationId: string
     facilityId: string
+    latitude?: number | null
+    longitude?: number | null
+    evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
+    evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     destinationId?: StringFieldUpdateOperationsInput | string
     facilityId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityCreateManyInput = {
+    id?: string
     destinationId: string
     facilityId: string
+    latitude?: number | null
+    longitude?: number | null
   }
 
   export type DestinationHalalFacilityUpdateManyMutationInput = {
-
+    id?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type DestinationHalalFacilityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     destinationId?: StringFieldUpdateOperationsInput | string
     facilityId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type DestinationFacilityEvidenceCreateInput = {
+    id?: string
+    imageUrl: string
+    createdAt?: Date | string
+    destFacility: DestinationHalalFacilityCreateNestedOneWithoutEvidencesInput
+  }
+
+  export type DestinationFacilityEvidenceUncheckedCreateInput = {
+    id?: string
+    destFacilityId: string
+    imageUrl: string
+    createdAt?: Date | string
+  }
+
+  export type DestinationFacilityEvidenceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    destFacility?: DestinationHalalFacilityUpdateOneRequiredWithoutEvidencesNestedInput
+  }
+
+  export type DestinationFacilityEvidenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    destFacilityId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DestinationFacilityEvidenceCreateManyInput = {
+    id?: string
+    destFacilityId: string
+    imageUrl: string
+    createdAt?: Date | string
+  }
+
+  export type DestinationFacilityEvidenceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DestinationFacilityEvidenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    destFacilityId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HalalFacilityCreateInput = {
@@ -31718,14 +33411,12 @@ export namespace Prisma {
     name: string
     description?: string | null
     facilityType?: string | null
-    address?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     weight?: number | null
+    maxDistance?: number
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutFacilityInput
   }
 
@@ -31734,14 +33425,12 @@ export namespace Prisma {
     name: string
     description?: string | null
     facilityType?: string | null
-    address?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     weight?: number | null
+    maxDistance?: number
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
   }
 
@@ -31750,14 +33439,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput
   }
 
@@ -31766,14 +33453,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
   }
 
@@ -31782,14 +33467,12 @@ export namespace Prisma {
     name: string
     description?: string | null
     facilityType?: string | null
-    address?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     weight?: number | null
+    maxDistance?: number
   }
 
   export type HalalFacilityUpdateManyMutationInput = {
@@ -31797,14 +33480,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
   }
 
   export type HalalFacilityUncheckedUpdateManyInput = {
@@ -31812,14 +33493,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
   }
 
   export type ReviewCreateInput = {
@@ -32730,18 +34409,28 @@ export namespace Prisma {
 
   export type HalalValidationCreateInput = {
     id?: string
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    certification: HalalCertificationCreateNestedOneWithoutValidationsInput
+    certification?: HalalCertificationCreateNestedOneWithoutValidationsInput
+    destination?: DestinationCreateNestedOneWithoutHalalValidationsInput
     validator?: UserCreateNestedOneWithoutHalalValidationsInput
     evidences?: ValidationEvidenceCreateNestedManyWithoutValidationInput
   }
 
   export type HalalValidationUncheckedCreateInput = {
     id?: string
-    certificationId: string
+    certificationId?: string | null
+    destinationId?: string | null
     validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32750,18 +34439,28 @@ export namespace Prisma {
 
   export type HalalValidationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    certification?: HalalCertificationUpdateOneRequiredWithoutValidationsNestedInput
+    certification?: HalalCertificationUpdateOneWithoutValidationsNestedInput
+    destination?: DestinationUpdateOneWithoutHalalValidationsNestedInput
     validator?: UserUpdateOneWithoutHalalValidationsNestedInput
     evidences?: ValidationEvidenceUpdateManyWithoutValidationNestedInput
   }
 
   export type HalalValidationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    certificationId?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32770,8 +34469,13 @@ export namespace Prisma {
 
   export type HalalValidationCreateManyInput = {
     id?: string
-    certificationId: string
+    certificationId?: string | null
+    destinationId?: string | null
     validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32779,6 +34483,10 @@ export namespace Prisma {
 
   export type HalalValidationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32786,8 +34494,13 @@ export namespace Prisma {
 
   export type HalalValidationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    certificationId?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33453,6 +35166,9 @@ export namespace Prisma {
     rating?: SortOrder
     reviewCount?: SortOrder
     openingHours?: SortOrder
+    halalScore?: SortOrder
+    validatedScore?: SortOrder
+    categoryScores?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
@@ -33464,6 +35180,8 @@ export namespace Prisma {
     longitude?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
+    halalScore?: SortOrder
+    validatedScore?: SortOrder
   }
 
   export type DestinationMaxOrderByAggregateInput = {
@@ -33479,6 +35197,8 @@ export namespace Prisma {
     status?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
+    halalScore?: SortOrder
+    validatedScore?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
@@ -33498,6 +35218,8 @@ export namespace Prisma {
     status?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
+    halalScore?: SortOrder
+    validatedScore?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
@@ -33509,6 +35231,8 @@ export namespace Prisma {
     longitude?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
+    halalScore?: SortOrder
+    validatedScore?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -33632,24 +35356,85 @@ export namespace Prisma {
     isNot?: HalalFacilityWhereInput
   }
 
-  export type DestinationHalalFacilityDestinationIdFacilityIdCompoundUniqueInput = {
-    destinationId: string
-    facilityId: string
+  export type DestinationFacilityEvidenceListRelationFilter = {
+    every?: DestinationFacilityEvidenceWhereInput
+    some?: DestinationFacilityEvidenceWhereInput
+    none?: DestinationFacilityEvidenceWhereInput
+  }
+
+  export type DestinationFacilityEvidenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type DestinationHalalFacilityCountOrderByAggregateInput = {
+    id?: SortOrder
     destinationId?: SortOrder
     facilityId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type DestinationHalalFacilityAvgOrderByAggregateInput = {
+    latitude?: SortOrder
+    longitude?: SortOrder
   }
 
   export type DestinationHalalFacilityMaxOrderByAggregateInput = {
+    id?: SortOrder
     destinationId?: SortOrder
     facilityId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
   }
 
   export type DestinationHalalFacilityMinOrderByAggregateInput = {
+    id?: SortOrder
     destinationId?: SortOrder
     facilityId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type DestinationHalalFacilitySumOrderByAggregateInput = {
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type DestinationHalalFacilityScalarRelationFilter = {
+    is?: DestinationHalalFacilityWhereInput
+    isNot?: DestinationHalalFacilityWhereInput
+  }
+
+  export type DestinationFacilityEvidenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    destFacilityId?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DestinationFacilityEvidenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    destFacilityId?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DestinationFacilityEvidenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    destFacilityId?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type HalalFacilityCountOrderByAggregateInput = {
@@ -33657,20 +35442,17 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     facilityType?: SortOrder
-    address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     weight?: SortOrder
+    maxDistance?: SortOrder
   }
 
   export type HalalFacilityAvgOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
     weight?: SortOrder
+    maxDistance?: SortOrder
   }
 
   export type HalalFacilityMaxOrderByAggregateInput = {
@@ -33678,14 +35460,12 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     facilityType?: SortOrder
-    address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     weight?: SortOrder
+    maxDistance?: SortOrder
   }
 
   export type HalalFacilityMinOrderByAggregateInput = {
@@ -33693,20 +35473,33 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     facilityType?: SortOrder
-    address?: SortOrder
-    latitude?: SortOrder
-    longitude?: SortOrder
     externalId?: SortOrder
     externalSource?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     weight?: SortOrder
+    maxDistance?: SortOrder
   }
 
   export type HalalFacilitySumOrderByAggregateInput = {
-    latitude?: SortOrder
-    longitude?: SortOrder
     weight?: SortOrder
+    maxDistance?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -33845,17 +35638,6 @@ export namespace Prisma {
     _max?: NestedEnumInteractionTypeFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type DestinationTrendDestinationIdPeriodPeriodStartCompoundUniqueInput = {
     destinationId: string
     period: string
@@ -33928,22 +35710,6 @@ export namespace Prisma {
     shareCount?: SortOrder
     routeCount?: SortOrder
     trendScore?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumSentimentLabelFilter<$PrismaModel = never> = {
@@ -34346,9 +36112,9 @@ export namespace Prisma {
     _max?: NestedEnumCertificationStatusFilter<$PrismaModel>
   }
 
-  export type HalalCertificationScalarRelationFilter = {
-    is?: HalalCertificationWhereInput
-    isNot?: HalalCertificationWhereInput
+  export type HalalCertificationNullableScalarRelationFilter = {
+    is?: HalalCertificationWhereInput | null
+    isNot?: HalalCertificationWhereInput | null
   }
 
   export type ValidationEvidenceListRelationFilter = {
@@ -34364,16 +36130,29 @@ export namespace Prisma {
   export type HalalValidationCountOrderByAggregateInput = {
     id?: SortOrder
     certificationId?: SortOrder
+    destinationId?: SortOrder
     validatorId?: SortOrder
+    status?: SortOrder
+    adminScore?: SortOrder
+    categoryScores?: SortOrder
+    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
+  export type HalalValidationAvgOrderByAggregateInput = {
+    adminScore?: SortOrder
+  }
+
   export type HalalValidationMaxOrderByAggregateInput = {
     id?: SortOrder
     certificationId?: SortOrder
+    destinationId?: SortOrder
     validatorId?: SortOrder
+    status?: SortOrder
+    adminScore?: SortOrder
+    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -34382,10 +36161,18 @@ export namespace Prisma {
   export type HalalValidationMinOrderByAggregateInput = {
     id?: SortOrder
     certificationId?: SortOrder
+    destinationId?: SortOrder
     validatorId?: SortOrder
+    status?: SortOrder
+    adminScore?: SortOrder
+    notes?: SortOrder
     validatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type HalalValidationSumOrderByAggregateInput = {
+    adminScore?: SortOrder
   }
 
   export type HalalValidationScalarRelationFilter = {
@@ -34921,6 +36708,13 @@ export namespace Prisma {
     connect?: DestinationHalalFacilityWhereUniqueInput | DestinationHalalFacilityWhereUniqueInput[]
   }
 
+  export type HalalValidationCreateNestedManyWithoutDestinationInput = {
+    create?: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput> | HalalValidationCreateWithoutDestinationInput[] | HalalValidationUncheckedCreateWithoutDestinationInput[]
+    connectOrCreate?: HalalValidationCreateOrConnectWithoutDestinationInput | HalalValidationCreateOrConnectWithoutDestinationInput[]
+    createMany?: HalalValidationCreateManyDestinationInputEnvelope
+    connect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+  }
+
   export type DestinationInteractionCreateNestedManyWithoutDestinationInput = {
     create?: XOR<DestinationInteractionCreateWithoutDestinationInput, DestinationInteractionUncheckedCreateWithoutDestinationInput> | DestinationInteractionCreateWithoutDestinationInput[] | DestinationInteractionUncheckedCreateWithoutDestinationInput[]
     connectOrCreate?: DestinationInteractionCreateOrConnectWithoutDestinationInput | DestinationInteractionCreateOrConnectWithoutDestinationInput[]
@@ -34968,6 +36762,13 @@ export namespace Prisma {
     connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutDestinationInput | DestinationHalalFacilityCreateOrConnectWithoutDestinationInput[]
     createMany?: DestinationHalalFacilityCreateManyDestinationInputEnvelope
     connect?: DestinationHalalFacilityWhereUniqueInput | DestinationHalalFacilityWhereUniqueInput[]
+  }
+
+  export type HalalValidationUncheckedCreateNestedManyWithoutDestinationInput = {
+    create?: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput> | HalalValidationCreateWithoutDestinationInput[] | HalalValidationUncheckedCreateWithoutDestinationInput[]
+    connectOrCreate?: HalalValidationCreateOrConnectWithoutDestinationInput | HalalValidationCreateOrConnectWithoutDestinationInput[]
+    createMany?: HalalValidationCreateManyDestinationInputEnvelope
+    connect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
   }
 
   export type DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput = {
@@ -35083,6 +36884,20 @@ export namespace Prisma {
     deleteMany?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
   }
 
+  export type HalalValidationUpdateManyWithoutDestinationNestedInput = {
+    create?: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput> | HalalValidationCreateWithoutDestinationInput[] | HalalValidationUncheckedCreateWithoutDestinationInput[]
+    connectOrCreate?: HalalValidationCreateOrConnectWithoutDestinationInput | HalalValidationCreateOrConnectWithoutDestinationInput[]
+    upsert?: HalalValidationUpsertWithWhereUniqueWithoutDestinationInput | HalalValidationUpsertWithWhereUniqueWithoutDestinationInput[]
+    createMany?: HalalValidationCreateManyDestinationInputEnvelope
+    set?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    disconnect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    delete?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    connect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    update?: HalalValidationUpdateWithWhereUniqueWithoutDestinationInput | HalalValidationUpdateWithWhereUniqueWithoutDestinationInput[]
+    updateMany?: HalalValidationUpdateManyWithWhereWithoutDestinationInput | HalalValidationUpdateManyWithWhereWithoutDestinationInput[]
+    deleteMany?: HalalValidationScalarWhereInput | HalalValidationScalarWhereInput[]
+  }
+
   export type DestinationInteractionUpdateManyWithoutDestinationNestedInput = {
     create?: XOR<DestinationInteractionCreateWithoutDestinationInput, DestinationInteractionUncheckedCreateWithoutDestinationInput> | DestinationInteractionCreateWithoutDestinationInput[] | DestinationInteractionUncheckedCreateWithoutDestinationInput[]
     connectOrCreate?: DestinationInteractionCreateOrConnectWithoutDestinationInput | DestinationInteractionCreateOrConnectWithoutDestinationInput[]
@@ -35181,6 +36996,20 @@ export namespace Prisma {
     deleteMany?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
   }
 
+  export type HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput = {
+    create?: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput> | HalalValidationCreateWithoutDestinationInput[] | HalalValidationUncheckedCreateWithoutDestinationInput[]
+    connectOrCreate?: HalalValidationCreateOrConnectWithoutDestinationInput | HalalValidationCreateOrConnectWithoutDestinationInput[]
+    upsert?: HalalValidationUpsertWithWhereUniqueWithoutDestinationInput | HalalValidationUpsertWithWhereUniqueWithoutDestinationInput[]
+    createMany?: HalalValidationCreateManyDestinationInputEnvelope
+    set?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    disconnect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    delete?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    connect?: HalalValidationWhereUniqueInput | HalalValidationWhereUniqueInput[]
+    update?: HalalValidationUpdateWithWhereUniqueWithoutDestinationInput | HalalValidationUpdateWithWhereUniqueWithoutDestinationInput[]
+    updateMany?: HalalValidationUpdateManyWithWhereWithoutDestinationInput | HalalValidationUpdateManyWithWhereWithoutDestinationInput[]
+    deleteMany?: HalalValidationScalarWhereInput | HalalValidationScalarWhereInput[]
+  }
+
   export type DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput = {
     create?: XOR<DestinationInteractionCreateWithoutDestinationInput, DestinationInteractionUncheckedCreateWithoutDestinationInput> | DestinationInteractionCreateWithoutDestinationInput[] | DestinationInteractionUncheckedCreateWithoutDestinationInput[]
     connectOrCreate?: DestinationInteractionCreateOrConnectWithoutDestinationInput | DestinationInteractionCreateOrConnectWithoutDestinationInput[]
@@ -35249,6 +37078,20 @@ export namespace Prisma {
     connect?: HalalFacilityWhereUniqueInput
   }
 
+  export type DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput = {
+    create?: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput> | DestinationFacilityEvidenceCreateWithoutDestFacilityInput[] | DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput[]
+    connectOrCreate?: DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput | DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput[]
+    createMany?: DestinationFacilityEvidenceCreateManyDestFacilityInputEnvelope
+    connect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+  }
+
+  export type DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput = {
+    create?: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput> | DestinationFacilityEvidenceCreateWithoutDestFacilityInput[] | DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput[]
+    connectOrCreate?: DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput | DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput[]
+    createMany?: DestinationFacilityEvidenceCreateManyDestFacilityInputEnvelope
+    connect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+  }
+
   export type DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput = {
     create?: XOR<DestinationCreateWithoutDestinationHalalFacilitiesInput, DestinationUncheckedCreateWithoutDestinationHalalFacilitiesInput>
     connectOrCreate?: DestinationCreateOrConnectWithoutDestinationHalalFacilitiesInput
@@ -35265,6 +37108,48 @@ export namespace Prisma {
     update?: XOR<XOR<HalalFacilityUpdateToOneWithWhereWithoutDestinationHalalFacilitiesInput, HalalFacilityUpdateWithoutDestinationHalalFacilitiesInput>, HalalFacilityUncheckedUpdateWithoutDestinationHalalFacilitiesInput>
   }
 
+  export type DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput = {
+    create?: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput> | DestinationFacilityEvidenceCreateWithoutDestFacilityInput[] | DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput[]
+    connectOrCreate?: DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput | DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput[]
+    upsert?: DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput | DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput[]
+    createMany?: DestinationFacilityEvidenceCreateManyDestFacilityInputEnvelope
+    set?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    disconnect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    delete?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    connect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    update?: DestinationFacilityEvidenceUpdateWithWhereUniqueWithoutDestFacilityInput | DestinationFacilityEvidenceUpdateWithWhereUniqueWithoutDestFacilityInput[]
+    updateMany?: DestinationFacilityEvidenceUpdateManyWithWhereWithoutDestFacilityInput | DestinationFacilityEvidenceUpdateManyWithWhereWithoutDestFacilityInput[]
+    deleteMany?: DestinationFacilityEvidenceScalarWhereInput | DestinationFacilityEvidenceScalarWhereInput[]
+  }
+
+  export type DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput = {
+    create?: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput> | DestinationFacilityEvidenceCreateWithoutDestFacilityInput[] | DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput[]
+    connectOrCreate?: DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput | DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput[]
+    upsert?: DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput | DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput[]
+    createMany?: DestinationFacilityEvidenceCreateManyDestFacilityInputEnvelope
+    set?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    disconnect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    delete?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    connect?: DestinationFacilityEvidenceWhereUniqueInput | DestinationFacilityEvidenceWhereUniqueInput[]
+    update?: DestinationFacilityEvidenceUpdateWithWhereUniqueWithoutDestFacilityInput | DestinationFacilityEvidenceUpdateWithWhereUniqueWithoutDestFacilityInput[]
+    updateMany?: DestinationFacilityEvidenceUpdateManyWithWhereWithoutDestFacilityInput | DestinationFacilityEvidenceUpdateManyWithWhereWithoutDestFacilityInput[]
+    deleteMany?: DestinationFacilityEvidenceScalarWhereInput | DestinationFacilityEvidenceScalarWhereInput[]
+  }
+
+  export type DestinationHalalFacilityCreateNestedOneWithoutEvidencesInput = {
+    create?: XOR<DestinationHalalFacilityCreateWithoutEvidencesInput, DestinationHalalFacilityUncheckedCreateWithoutEvidencesInput>
+    connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutEvidencesInput
+    connect?: DestinationHalalFacilityWhereUniqueInput
+  }
+
+  export type DestinationHalalFacilityUpdateOneRequiredWithoutEvidencesNestedInput = {
+    create?: XOR<DestinationHalalFacilityCreateWithoutEvidencesInput, DestinationHalalFacilityUncheckedCreateWithoutEvidencesInput>
+    connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutEvidencesInput
+    upsert?: DestinationHalalFacilityUpsertWithoutEvidencesInput
+    connect?: DestinationHalalFacilityWhereUniqueInput
+    update?: XOR<XOR<DestinationHalalFacilityUpdateToOneWithWhereWithoutEvidencesInput, DestinationHalalFacilityUpdateWithoutEvidencesInput>, DestinationHalalFacilityUncheckedUpdateWithoutEvidencesInput>
+  }
+
   export type DestinationHalalFacilityCreateNestedManyWithoutFacilityInput = {
     create?: XOR<DestinationHalalFacilityCreateWithoutFacilityInput, DestinationHalalFacilityUncheckedCreateWithoutFacilityInput> | DestinationHalalFacilityCreateWithoutFacilityInput[] | DestinationHalalFacilityUncheckedCreateWithoutFacilityInput[]
     connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutFacilityInput | DestinationHalalFacilityCreateOrConnectWithoutFacilityInput[]
@@ -35277,6 +37162,14 @@ export namespace Prisma {
     connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutFacilityInput | DestinationHalalFacilityCreateOrConnectWithoutFacilityInput[]
     createMany?: DestinationHalalFacilityCreateManyFacilityInputEnvelope
     connect?: DestinationHalalFacilityWhereUniqueInput | DestinationHalalFacilityWhereUniqueInput[]
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput = {
@@ -35431,14 +37324,6 @@ export namespace Prisma {
     create?: XOR<DestinationCreateWithoutTrendsInput, DestinationUncheckedCreateWithoutTrendsInput>
     connectOrCreate?: DestinationCreateOrConnectWithoutTrendsInput
     connect?: DestinationWhereUniqueInput
-  }
-
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type DestinationUpdateOneRequiredWithoutTrendsNestedInput = {
@@ -35800,6 +37685,12 @@ export namespace Prisma {
     connect?: HalalCertificationWhereUniqueInput
   }
 
+  export type DestinationCreateNestedOneWithoutHalalValidationsInput = {
+    create?: XOR<DestinationCreateWithoutHalalValidationsInput, DestinationUncheckedCreateWithoutHalalValidationsInput>
+    connectOrCreate?: DestinationCreateOrConnectWithoutHalalValidationsInput
+    connect?: DestinationWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutHalalValidationsInput = {
     create?: XOR<UserCreateWithoutHalalValidationsInput, UserUncheckedCreateWithoutHalalValidationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutHalalValidationsInput
@@ -35820,12 +37711,24 @@ export namespace Prisma {
     connect?: ValidationEvidenceWhereUniqueInput | ValidationEvidenceWhereUniqueInput[]
   }
 
-  export type HalalCertificationUpdateOneRequiredWithoutValidationsNestedInput = {
+  export type HalalCertificationUpdateOneWithoutValidationsNestedInput = {
     create?: XOR<HalalCertificationCreateWithoutValidationsInput, HalalCertificationUncheckedCreateWithoutValidationsInput>
     connectOrCreate?: HalalCertificationCreateOrConnectWithoutValidationsInput
     upsert?: HalalCertificationUpsertWithoutValidationsInput
+    disconnect?: HalalCertificationWhereInput | boolean
+    delete?: HalalCertificationWhereInput | boolean
     connect?: HalalCertificationWhereUniqueInput
     update?: XOR<XOR<HalalCertificationUpdateToOneWithWhereWithoutValidationsInput, HalalCertificationUpdateWithoutValidationsInput>, HalalCertificationUncheckedUpdateWithoutValidationsInput>
+  }
+
+  export type DestinationUpdateOneWithoutHalalValidationsNestedInput = {
+    create?: XOR<DestinationCreateWithoutHalalValidationsInput, DestinationUncheckedCreateWithoutHalalValidationsInput>
+    connectOrCreate?: DestinationCreateOrConnectWithoutHalalValidationsInput
+    upsert?: DestinationUpsertWithoutHalalValidationsInput
+    disconnect?: DestinationWhereInput | boolean
+    delete?: DestinationWhereInput | boolean
+    connect?: DestinationWhereUniqueInput
+    update?: XOR<XOR<DestinationUpdateToOneWithWhereWithoutHalalValidationsInput, DestinationUpdateWithoutHalalValidationsInput>, DestinationUncheckedUpdateWithoutHalalValidationsInput>
   }
 
   export type UserUpdateOneWithoutHalalValidationsNestedInput = {
@@ -36150,6 +38053,33 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -36164,17 +38094,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumInteractionTypeFilter<$PrismaModel = never> = {
@@ -36192,22 +38111,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInteractionTypeFilter<$PrismaModel>
     _max?: NestedEnumInteractionTypeFilter<$PrismaModel>
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedEnumSentimentLabelFilter<$PrismaModel = never> = {
@@ -36373,16 +38276,26 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutValidatorInput = {
     id?: string
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    certification: HalalCertificationCreateNestedOneWithoutValidationsInput
+    certification?: HalalCertificationCreateNestedOneWithoutValidationsInput
+    destination?: DestinationCreateNestedOneWithoutHalalValidationsInput
     evidences?: ValidationEvidenceCreateNestedManyWithoutValidationInput
   }
 
   export type HalalValidationUncheckedCreateWithoutValidatorInput = {
     id?: string
-    certificationId: string
+    certificationId?: string | null
+    destinationId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36580,8 +38493,13 @@ export namespace Prisma {
     OR?: HalalValidationScalarWhereInput[]
     NOT?: HalalValidationScalarWhereInput | HalalValidationScalarWhereInput[]
     id?: StringFilter<"HalalValidation"> | string
-    certificationId?: StringFilter<"HalalValidation"> | string
+    certificationId?: StringNullableFilter<"HalalValidation"> | string | null
+    destinationId?: StringNullableFilter<"HalalValidation"> | string | null
     validatorId?: StringNullableFilter<"HalalValidation"> | string | null
+    status?: EnumValidationStatusFilter<"HalalValidation"> | $Enums.ValidationStatus
+    adminScore?: IntNullableFilter<"HalalValidation"> | number | null
+    categoryScores?: JsonNullableFilter<"HalalValidation">
+    notes?: StringNullableFilter<"HalalValidation"> | string | null
     validatedAt?: DateTimeNullableFilter<"HalalValidation"> | Date | string | null
     createdAt?: DateTimeFilter<"HalalValidation"> | Date | string
     updatedAt?: DateTimeFilter<"HalalValidation"> | Date | string
@@ -36846,6 +38764,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -36854,6 +38775,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -36873,6 +38795,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -36881,6 +38806,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -36986,6 +38912,9 @@ export namespace Prisma {
     rating?: FloatNullableFilter<"Destination"> | number | null
     reviewCount?: IntNullableFilter<"Destination"> | number | null
     openingHours?: JsonNullableFilter<"Destination">
+    halalScore?: IntNullableFilter<"Destination"> | number | null
+    validatedScore?: IntNullableFilter<"Destination"> | number | null
+    categoryScores?: JsonNullableFilter<"Destination">
     externalId?: StringNullableFilter<"Destination"> | string | null
     externalSource?: StringNullableFilter<"Destination"> | string | null
     createdAt?: DateTimeFilter<"Destination"> | Date | string
@@ -37172,11 +39101,19 @@ export namespace Prisma {
   }
 
   export type DestinationHalalFacilityCreateWithoutDestinationInput = {
+    id?: string
+    latitude?: number | null
+    longitude?: number | null
     facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
+    evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityUncheckedCreateWithoutDestinationInput = {
+    id?: string
     facilityId: string
+    latitude?: number | null
+    longitude?: number | null
+    evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityCreateOrConnectWithoutDestinationInput = {
@@ -37186,6 +39123,44 @@ export namespace Prisma {
 
   export type DestinationHalalFacilityCreateManyDestinationInputEnvelope = {
     data: DestinationHalalFacilityCreateManyDestinationInput | DestinationHalalFacilityCreateManyDestinationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HalalValidationCreateWithoutDestinationInput = {
+    id?: string
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    certification?: HalalCertificationCreateNestedOneWithoutValidationsInput
+    validator?: UserCreateNestedOneWithoutHalalValidationsInput
+    evidences?: ValidationEvidenceCreateNestedManyWithoutValidationInput
+  }
+
+  export type HalalValidationUncheckedCreateWithoutDestinationInput = {
+    id?: string
+    certificationId?: string | null
+    validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    evidences?: ValidationEvidenceUncheckedCreateNestedManyWithoutValidationInput
+  }
+
+  export type HalalValidationCreateOrConnectWithoutDestinationInput = {
+    where: HalalValidationWhereUniqueInput
+    create: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput>
+  }
+
+  export type HalalValidationCreateManyDestinationInputEnvelope = {
+    data: HalalValidationCreateManyDestinationInput | HalalValidationCreateManyDestinationInput[]
     skipDuplicates?: boolean
   }
 
@@ -37398,8 +39373,27 @@ export namespace Prisma {
     AND?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
     OR?: DestinationHalalFacilityScalarWhereInput[]
     NOT?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
+    id?: StringFilter<"DestinationHalalFacility"> | string
     destinationId?: StringFilter<"DestinationHalalFacility"> | string
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
+    latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+  }
+
+  export type HalalValidationUpsertWithWhereUniqueWithoutDestinationInput = {
+    where: HalalValidationWhereUniqueInput
+    update: XOR<HalalValidationUpdateWithoutDestinationInput, HalalValidationUncheckedUpdateWithoutDestinationInput>
+    create: XOR<HalalValidationCreateWithoutDestinationInput, HalalValidationUncheckedCreateWithoutDestinationInput>
+  }
+
+  export type HalalValidationUpdateWithWhereUniqueWithoutDestinationInput = {
+    where: HalalValidationWhereUniqueInput
+    data: XOR<HalalValidationUpdateWithoutDestinationInput, HalalValidationUncheckedUpdateWithoutDestinationInput>
+  }
+
+  export type HalalValidationUpdateManyWithWhereWithoutDestinationInput = {
+    where: HalalValidationScalarWhereInput
+    data: XOR<HalalValidationUpdateManyMutationInput, HalalValidationUncheckedUpdateManyWithoutDestinationInput>
   }
 
   export type DestinationInteractionUpsertWithWhereUniqueWithoutDestinationInput = {
@@ -37496,6 +39490,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37504,6 +39501,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -37524,6 +39522,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37531,6 +39532,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -37566,6 +39568,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37574,6 +39579,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -37594,6 +39600,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37601,6 +39610,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -37620,6 +39630,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37628,6 +39641,7 @@ export namespace Prisma {
     images?: DestinationImageCreateNestedManyWithoutDestinationInput
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -37648,6 +39662,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37655,6 +39672,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedCreateNestedManyWithoutDestinationInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -37670,14 +39688,12 @@ export namespace Prisma {
     name: string
     description?: string | null
     facilityType?: string | null
-    address?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     weight?: number | null
+    maxDistance?: number
   }
 
   export type HalalFacilityUncheckedCreateWithoutDestinationHalalFacilitiesInput = {
@@ -37685,19 +39701,39 @@ export namespace Prisma {
     name: string
     description?: string | null
     facilityType?: string | null
-    address?: string | null
-    latitude?: Decimal | DecimalJsLike | number | string | null
-    longitude?: Decimal | DecimalJsLike | number | string | null
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     weight?: number | null
+    maxDistance?: number
   }
 
   export type HalalFacilityCreateOrConnectWithoutDestinationHalalFacilitiesInput = {
     where: HalalFacilityWhereUniqueInput
     create: XOR<HalalFacilityCreateWithoutDestinationHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutDestinationHalalFacilitiesInput>
+  }
+
+  export type DestinationFacilityEvidenceCreateWithoutDestFacilityInput = {
+    id?: string
+    imageUrl: string
+    createdAt?: Date | string
+  }
+
+  export type DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput = {
+    id?: string
+    imageUrl: string
+    createdAt?: Date | string
+  }
+
+  export type DestinationFacilityEvidenceCreateOrConnectWithoutDestFacilityInput = {
+    where: DestinationFacilityEvidenceWhereUniqueInput
+    create: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput>
+  }
+
+  export type DestinationFacilityEvidenceCreateManyDestFacilityInputEnvelope = {
+    data: DestinationFacilityEvidenceCreateManyDestFacilityInput | DestinationFacilityEvidenceCreateManyDestFacilityInput[]
+    skipDuplicates?: boolean
   }
 
   export type DestinationUpsertWithoutDestinationHalalFacilitiesInput = {
@@ -37725,6 +39761,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37733,6 +39772,7 @@ export namespace Prisma {
     images?: DestinationImageUpdateManyWithoutDestinationNestedInput
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -37753,6 +39793,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37760,6 +39803,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedUpdateManyWithoutDestinationNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -37781,14 +39825,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
   }
 
   export type HalalFacilityUncheckedUpdateWithoutDestinationHalalFacilitiesInput = {
@@ -37796,22 +39838,102 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     facilityType?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput = {
+    where: DestinationFacilityEvidenceWhereUniqueInput
+    update: XOR<DestinationFacilityEvidenceUpdateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedUpdateWithoutDestFacilityInput>
+    create: XOR<DestinationFacilityEvidenceCreateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedCreateWithoutDestFacilityInput>
+  }
+
+  export type DestinationFacilityEvidenceUpdateWithWhereUniqueWithoutDestFacilityInput = {
+    where: DestinationFacilityEvidenceWhereUniqueInput
+    data: XOR<DestinationFacilityEvidenceUpdateWithoutDestFacilityInput, DestinationFacilityEvidenceUncheckedUpdateWithoutDestFacilityInput>
+  }
+
+  export type DestinationFacilityEvidenceUpdateManyWithWhereWithoutDestFacilityInput = {
+    where: DestinationFacilityEvidenceScalarWhereInput
+    data: XOR<DestinationFacilityEvidenceUpdateManyMutationInput, DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityInput>
+  }
+
+  export type DestinationFacilityEvidenceScalarWhereInput = {
+    AND?: DestinationFacilityEvidenceScalarWhereInput | DestinationFacilityEvidenceScalarWhereInput[]
+    OR?: DestinationFacilityEvidenceScalarWhereInput[]
+    NOT?: DestinationFacilityEvidenceScalarWhereInput | DestinationFacilityEvidenceScalarWhereInput[]
+    id?: StringFilter<"DestinationFacilityEvidence"> | string
+    destFacilityId?: StringFilter<"DestinationFacilityEvidence"> | string
+    imageUrl?: StringFilter<"DestinationFacilityEvidence"> | string
+    createdAt?: DateTimeFilter<"DestinationFacilityEvidence"> | Date | string
+  }
+
+  export type DestinationHalalFacilityCreateWithoutEvidencesInput = {
+    id?: string
+    latitude?: number | null
+    longitude?: number | null
+    destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
+    facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
+  }
+
+  export type DestinationHalalFacilityUncheckedCreateWithoutEvidencesInput = {
+    id?: string
+    destinationId: string
+    facilityId: string
+    latitude?: number | null
+    longitude?: number | null
+  }
+
+  export type DestinationHalalFacilityCreateOrConnectWithoutEvidencesInput = {
+    where: DestinationHalalFacilityWhereUniqueInput
+    create: XOR<DestinationHalalFacilityCreateWithoutEvidencesInput, DestinationHalalFacilityUncheckedCreateWithoutEvidencesInput>
+  }
+
+  export type DestinationHalalFacilityUpsertWithoutEvidencesInput = {
+    update: XOR<DestinationHalalFacilityUpdateWithoutEvidencesInput, DestinationHalalFacilityUncheckedUpdateWithoutEvidencesInput>
+    create: XOR<DestinationHalalFacilityCreateWithoutEvidencesInput, DestinationHalalFacilityUncheckedCreateWithoutEvidencesInput>
+    where?: DestinationHalalFacilityWhereInput
+  }
+
+  export type DestinationHalalFacilityUpdateToOneWithWhereWithoutEvidencesInput = {
+    where?: DestinationHalalFacilityWhereInput
+    data: XOR<DestinationHalalFacilityUpdateWithoutEvidencesInput, DestinationHalalFacilityUncheckedUpdateWithoutEvidencesInput>
+  }
+
+  export type DestinationHalalFacilityUpdateWithoutEvidencesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
+    facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
+  }
+
+  export type DestinationHalalFacilityUncheckedUpdateWithoutEvidencesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    destinationId?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type DestinationHalalFacilityCreateWithoutFacilityInput = {
+    id?: string
+    latitude?: number | null
+    longitude?: number | null
     destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
+    evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityUncheckedCreateWithoutFacilityInput = {
+    id?: string
     destinationId: string
+    latitude?: number | null
+    longitude?: number | null
+    evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
   export type DestinationHalalFacilityCreateOrConnectWithoutFacilityInput = {
@@ -37897,6 +40019,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37905,6 +40030,7 @@ export namespace Prisma {
     images?: DestinationImageCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -37925,6 +40051,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -37932,6 +40061,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -38090,6 +40220,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38098,6 +40231,7 @@ export namespace Prisma {
     images?: DestinationImageUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -38118,6 +40252,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38125,6 +40262,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -38230,6 +40368,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38239,6 +40380,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
   }
@@ -38258,6 +40400,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38266,6 +40411,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
   }
@@ -38343,6 +40489,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38352,6 +40501,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
   }
@@ -38371,6 +40521,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38379,6 +40532,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
   }
@@ -38446,6 +40600,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38455,6 +40612,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
   }
@@ -38474,6 +40632,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38482,6 +40643,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
   }
@@ -38516,6 +40678,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38525,6 +40690,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
   }
@@ -38544,6 +40710,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38552,6 +40721,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
   }
@@ -38795,6 +40965,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38804,6 +40977,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     umkms?: UmkmCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
   }
@@ -38823,6 +40997,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38831,6 +41008,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
   }
@@ -38900,6 +41078,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38909,6 +41090,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
   }
@@ -38928,6 +41110,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38936,6 +41121,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
   }
@@ -38954,6 +41140,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38962,6 +41151,7 @@ export namespace Prisma {
     images?: DestinationImageCreateNestedManyWithoutDestinationInput
     reviews?: ReviewCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
@@ -38982,6 +41172,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -38989,6 +41182,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedCreateNestedManyWithoutDestinationInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutDestinationInput
     interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
     trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
     itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
@@ -39145,6 +41339,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39153,6 +41350,7 @@ export namespace Prisma {
     images?: DestinationImageUpdateManyWithoutDestinationNestedInput
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -39173,6 +41371,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39180,6 +41381,7 @@ export namespace Prisma {
     images?: DestinationImageUncheckedUpdateManyWithoutDestinationNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -39454,16 +41656,26 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutCertificationInput = {
     id?: string
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    destination?: DestinationCreateNestedOneWithoutHalalValidationsInput
     validator?: UserCreateNestedOneWithoutHalalValidationsInput
     evidences?: ValidationEvidenceCreateNestedManyWithoutValidationInput
   }
 
   export type HalalValidationUncheckedCreateWithoutCertificationInput = {
     id?: string
+    destinationId?: string | null
     validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39586,6 +41798,73 @@ export namespace Prisma {
     create: XOR<HalalCertificationCreateWithoutValidationsInput, HalalCertificationUncheckedCreateWithoutValidationsInput>
   }
 
+  export type DestinationCreateWithoutHalalValidationsInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    status?: $Enums.ValidationStatus
+    rating?: number | null
+    reviewCount?: number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category: CategoryCreateNestedOneWithoutDestinationsInput
+    images?: DestinationImageCreateNestedManyWithoutDestinationInput
+    reviews?: ReviewCreateNestedManyWithoutDestinationInput
+    umkms?: UmkmCreateNestedManyWithoutDestinationInput
+    destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutDestinationInput
+    interactions?: DestinationInteractionCreateNestedManyWithoutDestinationInput
+    trends?: DestinationTrendCreateNestedManyWithoutDestinationInput
+    itineraryItems?: ItineraryItemCreateNestedManyWithoutDestinationInput
+  }
+
+  export type DestinationUncheckedCreateWithoutHalalValidationsInput = {
+    id?: string
+    categoryId: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    status?: $Enums.ValidationStatus
+    rating?: number | null
+    reviewCount?: number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: DestinationImageUncheckedCreateNestedManyWithoutDestinationInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutDestinationInput
+    umkms?: UmkmUncheckedCreateNestedManyWithoutDestinationInput
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutDestinationInput
+    interactions?: DestinationInteractionUncheckedCreateNestedManyWithoutDestinationInput
+    trends?: DestinationTrendUncheckedCreateNestedManyWithoutDestinationInput
+    itineraryItems?: ItineraryItemUncheckedCreateNestedManyWithoutDestinationInput
+  }
+
+  export type DestinationCreateOrConnectWithoutHalalValidationsInput = {
+    where: DestinationWhereUniqueInput
+    create: XOR<DestinationCreateWithoutHalalValidationsInput, DestinationUncheckedCreateWithoutHalalValidationsInput>
+  }
+
   export type UserCreateWithoutHalalValidationsInput = {
     id: string
     name: string
@@ -39692,6 +41971,79 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type DestinationUpsertWithoutHalalValidationsInput = {
+    update: XOR<DestinationUpdateWithoutHalalValidationsInput, DestinationUncheckedUpdateWithoutHalalValidationsInput>
+    create: XOR<DestinationCreateWithoutHalalValidationsInput, DestinationUncheckedCreateWithoutHalalValidationsInput>
+    where?: DestinationWhereInput
+  }
+
+  export type DestinationUpdateToOneWithWhereWithoutHalalValidationsInput = {
+    where?: DestinationWhereInput
+    data: XOR<DestinationUpdateWithoutHalalValidationsInput, DestinationUncheckedUpdateWithoutHalalValidationsInput>
+  }
+
+  export type DestinationUpdateWithoutHalalValidationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryUpdateOneRequiredWithoutDestinationsNestedInput
+    images?: DestinationImageUpdateManyWithoutDestinationNestedInput
+    reviews?: ReviewUpdateManyWithoutDestinationNestedInput
+    umkms?: UmkmUpdateManyWithoutDestinationNestedInput
+    destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
+    trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
+    itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
+  }
+
+  export type DestinationUncheckedUpdateWithoutHalalValidationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: DestinationImageUncheckedUpdateManyWithoutDestinationNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
+    umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
+    trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
+    itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
+  }
+
   export type UserUpsertWithoutHalalValidationsInput = {
     update: XOR<UserUpdateWithoutHalalValidationsInput, UserUncheckedUpdateWithoutHalalValidationsInput>
     create: XOR<UserCreateWithoutHalalValidationsInput, UserUncheckedCreateWithoutHalalValidationsInput>
@@ -39770,17 +42122,27 @@ export namespace Prisma {
 
   export type HalalValidationCreateWithoutEvidencesInput = {
     id?: string
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    certification: HalalCertificationCreateNestedOneWithoutValidationsInput
+    certification?: HalalCertificationCreateNestedOneWithoutValidationsInput
+    destination?: DestinationCreateNestedOneWithoutHalalValidationsInput
     validator?: UserCreateNestedOneWithoutHalalValidationsInput
   }
 
   export type HalalValidationUncheckedCreateWithoutEvidencesInput = {
     id?: string
-    certificationId: string
+    certificationId?: string | null
+    destinationId?: string | null
     validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39804,17 +42166,27 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutEvidencesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    certification?: HalalCertificationUpdateOneRequiredWithoutValidationsNestedInput
+    certification?: HalalCertificationUpdateOneWithoutValidationsNestedInput
+    destination?: DestinationUpdateOneWithoutHalalValidationsNestedInput
     validator?: UserUpdateOneWithoutHalalValidationsNestedInput
   }
 
   export type HalalValidationUncheckedUpdateWithoutEvidencesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    certificationId?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39858,7 +42230,12 @@ export namespace Prisma {
 
   export type HalalValidationCreateManyValidatorInput = {
     id?: string
-    certificationId: string
+    certificationId?: string | null
+    destinationId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39997,16 +42374,26 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    certification?: HalalCertificationUpdateOneRequiredWithoutValidationsNestedInput
+    certification?: HalalCertificationUpdateOneWithoutValidationsNestedInput
+    destination?: DestinationUpdateOneWithoutHalalValidationsNestedInput
     evidences?: ValidationEvidenceUpdateManyWithoutValidationNestedInput
   }
 
   export type HalalValidationUncheckedUpdateWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    certificationId?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40015,7 +42402,12 @@ export namespace Prisma {
 
   export type HalalValidationUncheckedUpdateManyWithoutValidatorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    certificationId?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40100,6 +42492,9 @@ export namespace Prisma {
     rating?: number | null
     reviewCount?: number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: number | null
+    validatedScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: string | null
     externalSource?: string | null
     createdAt?: Date | string
@@ -40140,6 +42535,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40148,6 +42546,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUpdateManyWithoutDestinationNestedInput
@@ -40167,6 +42566,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40175,6 +42577,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutDestinationNestedInput
     umkms?: UmkmUncheckedUpdateManyWithoutDestinationNestedInput
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutDestinationNestedInput
     interactions?: DestinationInteractionUncheckedUpdateManyWithoutDestinationNestedInput
     trends?: DestinationTrendUncheckedUpdateManyWithoutDestinationNestedInput
     itineraryItems?: ItineraryItemUncheckedUpdateManyWithoutDestinationNestedInput
@@ -40194,6 +42597,9 @@ export namespace Prisma {
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
     openingHours?: NullableJsonNullValueInput | InputJsonValue
+    halalScore?: NullableIntFieldUpdateOperationsInput | number | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
     externalId?: NullableStringFieldUpdateOperationsInput | string | null
     externalSource?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40305,7 +42711,23 @@ export namespace Prisma {
   }
 
   export type DestinationHalalFacilityCreateManyDestinationInput = {
+    id?: string
     facilityId: string
+    latitude?: number | null
+    longitude?: number | null
+  }
+
+  export type HalalValidationCreateManyDestinationInput = {
+    id?: string
+    certificationId?: string | null
+    validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type DestinationInteractionCreateManyDestinationInput = {
@@ -40465,15 +42887,67 @@ export namespace Prisma {
   }
 
   export type DestinationHalalFacilityUpdateWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
+    evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityUncheckedUpdateWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     facilityId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityUncheckedUpdateManyWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     facilityId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type HalalValidationUpdateWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    certification?: HalalCertificationUpdateOneWithoutValidationsNestedInput
+    validator?: UserUpdateOneWithoutHalalValidationsNestedInput
+    evidences?: ValidationEvidenceUpdateManyWithoutValidationNestedInput
+  }
+
+  export type HalalValidationUncheckedUpdateWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evidences?: ValidationEvidenceUncheckedUpdateManyWithoutValidationNestedInput
+  }
+
+  export type HalalValidationUncheckedUpdateManyWithoutDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    certificationId?: NullableStringFieldUpdateOperationsInput | string | null
+    validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DestinationInteractionUpdateWithoutDestinationInput = {
@@ -40578,20 +43052,58 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type DestinationFacilityEvidenceCreateManyDestFacilityInput = {
+    id?: string
+    imageUrl: string
+    createdAt?: Date | string
+  }
+
+  export type DestinationFacilityEvidenceUpdateWithoutDestFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DestinationFacilityEvidenceUncheckedUpdateWithoutDestFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DestinationHalalFacilityCreateManyFacilityInput = {
+    id?: string
     destinationId: string
+    latitude?: number | null
+    longitude?: number | null
   }
 
   export type DestinationHalalFacilityUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
+    evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityUncheckedUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
     destinationId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
   export type DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
     destinationId?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ItineraryItemCreateManyItineraryInput = {
@@ -40760,7 +43272,12 @@ export namespace Prisma {
 
   export type HalalValidationCreateManyCertificationInput = {
     id?: string
+    destinationId?: string | null
     validatorId?: string | null
+    status?: $Enums.ValidationStatus
+    adminScore?: number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: string | null
     validatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40768,16 +43285,26 @@ export namespace Prisma {
 
   export type HalalValidationUpdateWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: DestinationUpdateOneWithoutHalalValidationsNestedInput
     validator?: UserUpdateOneWithoutHalalValidationsNestedInput
     evidences?: ValidationEvidenceUpdateManyWithoutValidationNestedInput
   }
 
   export type HalalValidationUncheckedUpdateWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40786,7 +43313,12 @@ export namespace Prisma {
 
   export type HalalValidationUncheckedUpdateManyWithoutCertificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     validatorId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumValidationStatusFieldUpdateOperationsInput | $Enums.ValidationStatus
+    adminScore?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryScores?: NullableJsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

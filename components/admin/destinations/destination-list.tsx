@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type { Destination, Category } from "@/types/destination";
+import { cn } from "@/lib/utils";
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
@@ -214,15 +215,7 @@ export function DestinationList({
                                         {destination.province}
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <div className="h-2 w-16 bg-muted rounded-full overflow-hidden">
-                                                <div className="h-full bg-green-500 w-[85%]" />
-                                            </div>
-                                            <span className="text-xs font-bold text-green-600">
-                                                {/* {destination.halalScore} */}
-                                                85
-                                            </span>
-                                        </div>
+                                        <ScoreCell halalScore={destination.halalScore} validatedScore={destination.validatedScore} />
                                     </TableCell>
                                     <TableCell>
                                         {destination.status === "APPROVED" && (
@@ -350,6 +343,42 @@ export function DestinationList({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+        </div>
+    );
+}
+
+function ScoreCell({ halalScore, validatedScore }: { halalScore?: number | null; validatedScore?: number | null }) {
+    const score = validatedScore ?? halalScore ?? 0;
+    const isValidated = validatedScore != null;
+
+    const getColor = (s: number) => {
+        if (s >= 70) return "bg-green-500";
+        if (s >= 40) return "bg-yellow-500";
+        return "bg-red-500";
+    };
+
+    const getTextColor = (s: number) => {
+        if (s >= 70) return "text-green-600";
+        if (s >= 40) return "text-yellow-600";
+        return "text-red-600";
+    };
+
+    return (
+        <div className="flex items-center gap-2">
+            <div className="h-2 w-16 bg-muted rounded-full overflow-hidden">
+                <div
+                    className={cn("h-full transition-all", getColor(score))}
+                    style={{ width: `${Math.min(score, 100)}%` }}
+                />
+            </div>
+            <div className="flex flex-col items-start">
+                <span className={cn("text-xs font-bold", getTextColor(score))}>
+                    {score}
+                </span>
+                <span className="text-[9px] text-muted-foreground leading-tight">
+                    {isValidated ? "Tervalidasi" : "Otomatis"}
+                </span>
+            </div>
         </div>
     );
 }

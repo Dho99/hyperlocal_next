@@ -1,6 +1,7 @@
 import { getDestination } from "@/lib/services/destination-service";
 import { getCategories } from "@/lib/services/category-service";
-import { DestinationForm } from "@/components/admin/destinations/destination-form";
+import { DestinationForm } from "../../components/destination-form";
+import type { Destination } from "@/types/destination";
 import { notFound } from "next/navigation";
 
 interface EditDestinationPageProps {
@@ -32,11 +33,7 @@ export default async function EditDestinationPage({
             </div>
 
             <DestinationForm
-                initialData={
-                    destination as unknown as React.ComponentProps<
-                        typeof DestinationForm
-                    >["initialData"]
-                }
+                initialData={destination as Destination}
                 categories={categories}
             />
         </div>

@@ -137,3 +137,7 @@
         @apply scroll-smooth font-sans;
     }
 }
+
+.leaflet-container {
+    z-index: 0 !important;
+}

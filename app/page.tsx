@@ -16,19 +16,9 @@ import {
     Star,
     Utensils,
 } from "lucide-react";
-
-const stats = [
-    { label: "Total Destinasi", value: "1,345", icon: Map },
-    { label: "Total UMKM", value: "2,412", icon: Utensils },
-    { label: "Sertifikasi Halal", value: "88%", icon: ShieldCheck },
-];
-
-const categories = [
-    { label: "Wisata Alam", icon: Compass },
-    { label: "Kuliner Halal", icon: Utensils },
-    { label: "Masjid", icon: Landmark },
-    { label: "Penginapan", icon: Hotel },
-];
+import { HeroMapSection } from "@/components/public/home/hero-map-section";
+import { HeroSection } from "@/components/public/home/hero-section";
+import Navbar from "@/components/ui/navbar";
 
 const destinations = [
     {
@@ -123,9 +113,24 @@ const verifiedDestinations = [
 ];
 
 const nearbyPlaces = [
-    { title: "Masjid Agung Al-Ikhlas", distance: "0.4 km", type: "Masjid", icon: Landmark },
-    { title: "Dapur Sunda Halal", distance: "0.7 km", type: "Kuliner", icon: Utensils },
-    { title: "Villa Syariah Lestari", distance: "1.2 km", type: "Penginapan", icon: Hotel },
+    {
+        title: "Masjid Agung Al-Ikhlas",
+        distance: "0.4 km",
+        type: "Masjid",
+        icon: Landmark,
+    },
+    {
+        title: "Dapur Sunda Halal",
+        distance: "0.7 km",
+        type: "Kuliner",
+        icon: Utensils,
+    },
+    {
+        title: "Villa Syariah Lestari",
+        distance: "1.2 km",
+        type: "Penginapan",
+        icon: Hotel,
+    },
 ];
 
 const steps = [
@@ -171,140 +176,13 @@ const faqs = [
 export default function Home() {
     return (
         <main className="min-h-screen bg-[#fdf7ff] text-[#1d1b20]">
-            <header className="sticky top-0 z-50 border-b border-white/40 bg-white/65 shadow-sm backdrop-blur-xl">
-                <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <a className="font-heading text-xl font-bold text-[#4f378a]" href="#home">
-                        Hyperlocal
-                    </a>
-                    <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-[#494551] shadow-inner ring-1 ring-[#cbc4d2]/50 md:flex">
-                        {[
-                            ["Home", "#home"],
-                            ["Destinasi", "#popular"],
-                            ["Kuliner", "#facilities"],
-                            ["Penginapan", "#verified"],
-                            ["Peta", "#map"],
-                        ].map(([item, href]) => (
-                                <a
-                                    className={`rounded-full px-4 py-2 transition ${
-                                        item === "Home"
-                                            ? "bg-[#4f378a] text-white shadow-md"
-                                            : "hover:bg-[#f2ecf4] hover:text-[#4f378a]"
-                                    }`}
-                                    href={href}
-                                    key={item}
-                                >
-                                    {item}
-                                </a>
-                            ),
-                        )}
-                    </div>
-                    <div className="hidden items-center gap-4 text-[#494551] md:flex">
-                        <Bell className="size-4" />
-                        <Compass className="size-4" />
-                        <div className="size-8 overflow-hidden rounded-full bg-[#e1d4fd]">
-                            <Image
-                                alt="Profil pengguna"
-                                height={64}
-                                src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=128&q=80"
-                                width={64}
-                            />
-                        </div>
-                    </div>
-                    <a
-                        aria-label="Buka menu"
-                        className="rounded-full border border-[#cbc4d2] bg-white/70 p-2 text-[#4f378a] md:hidden"
-                        href="#popular"
-                    >
-                        <Menu className="size-5" />
-                    </a>
-                </nav>
-            </header>
+            <Navbar />
+            <HeroSection />
 
-            <section className="relative isolate scroll-mt-20 overflow-hidden" id="home">
-                <div className="absolute inset-0 -z-10">
-                    <Image
-                        alt="Peta kepulauan Indonesia"
-                        className="object-cover"
-                        fill
-                        priority
-                        sizes="100vw"
-                        src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2400&q=80"
-                    />
-                    <div className="absolute inset-0 bg-[#d7ecff]/35" />
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/5 to-[#fdf7ff]" />
-                </div>
-                <div className="mx-auto max-w-7xl px-4 pb-10 pt-9 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-4xl text-center">
-                        <p className="font-heading text-sm font-semibold text-[#6750a4]">
-                            Eksplorasi berbasis data halal dan hyperlocal
-                        </p>
-                        <h1 className="mt-3 font-heading text-4xl font-bold leading-tight text-[#4f378a] sm:text-5xl lg:text-6xl">
-                            Eksplorasi Halal Indonesia
-                        </h1>
-                        <form
-                            action="#popular"
-                            className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/85 p-2 shadow-xl shadow-[#0f172a]/10 ring-1 ring-white/70 backdrop-blur-xl"
-                        >
-                            <Search className="ml-3 size-5 shrink-0 text-[#7a7582]" />
-                            <input
-                                aria-label="Cari destinasi"
-                                name="q"
-                                className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7a7582]"
-                                placeholder="Cari destinasi, kuliner, atau UMKM halal..."
-                            />
-                            <button
-                                className="hidden h-12 rounded-xl bg-[#4f378a] px-6 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/25 transition hover:bg-[#3f2a78] sm:block"
-                                type="submit"
-                            >
-                                Cari Sekarang
-                            </button>
-                        </form>
-                        <div className="mt-5 flex flex-wrap justify-center gap-3">
-                            {categories.map((category) => (
-                                <a
-                                    className="inline-flex items-center gap-2 rounded-full bg-white/75 px-4 py-2 text-sm font-semibold text-[#1d1b20] shadow-sm ring-1 ring-white/80 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white"
-                                    href={
-                                        category.label === "Penginapan"
-                                            ? "#verified"
-                                            : category.label === "Masjid"
-                                              ? "#nearby"
-                                              : category.label === "Kuliner Halal"
-                                                ? "#facilities"
-                                                : "#popular"
-                                    }
-                                    key={category.label}
-                                >
-                                    <category.icon className="size-4 text-[#4f378a]" />
-                                    {category.label}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mt-28 grid gap-4 md:grid-cols-3">
-                        {stats.map((stat) => (
-                            <div
-                                className="flex items-center gap-4 rounded-xl border border-white/70 bg-white/75 p-5 shadow-lg shadow-[#0f172a]/10 backdrop-blur-xl"
-                                key={stat.label}
-                            >
-                                <div className="flex size-11 items-center justify-center rounded-xl bg-[#4f378a] text-white">
-                                    <stat.icon className="size-5" />
-                                </div>
-                                <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#494551]">
-                                        {stat.label}
-                                    </p>
-                                    <p className="font-heading text-xl font-bold text-[#1d1b20]">
-                                        {stat.value}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8" id="why">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8"
+                id="why"
+            >
                 <div className="text-center">
                     <h2 className="font-heading text-3xl font-semibold">
                         Kenapa Memilih Kami
@@ -334,7 +212,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-10 sm:px-6 lg:px-8" id="popular">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-10 sm:px-6 lg:px-8"
+                id="popular"
+            >
                 <SectionHeading
                     action="Lihat Semua"
                     actionHref="#verified"
@@ -385,7 +266,9 @@ export default function Home() {
                                     <span className="rounded bg-[#e9ddff] px-2 py-1 text-[#4f378a]">
                                         {destination.tag}
                                     </span>
-                                    <span className="text-[#4f378a]">{destination.grade}</span>
+                                    <span className="text-[#4f378a]">
+                                        {destination.grade}
+                                    </span>
                                 </div>
                             </div>
                         </article>
@@ -393,7 +276,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="verified">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="verified"
+            >
                 <SectionHeading
                     action="Lihat Verifikasi"
                     actionHref="#nearby"
@@ -436,7 +322,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="nearby">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="nearby"
+            >
                 <div className="grid gap-6 rounded-xl border border-[#cbc4d2]/60 bg-white/65 p-6 shadow-sm lg:grid-cols-[0.8fr_1.2fr] lg:p-8">
                     <div>
                         <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#4f378a]">
@@ -446,8 +335,9 @@ export default function Home() {
                             Fasilitas halal dekat tujuanmu
                         </h2>
                         <p className="mt-4 text-sm leading-7 text-[#494551]">
-                            Kombinasikan destinasi utama dengan masjid, kuliner halal,
-                            dan penginapan ramah muslim yang berada dalam radius dekat.
+                            Kombinasikan destinasi utama dengan masjid, kuliner
+                            halal, dan penginapan ramah muslim yang berada dalam
+                            radius dekat.
                         </p>
                     </div>
                     <div className="grid gap-4 md:grid-cols-3">
@@ -471,7 +361,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="routes">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="routes"
+            >
                 <SectionHeading
                     action="Jelajahi Semua Rute"
                     actionHref="#map"
@@ -493,7 +386,9 @@ export default function Home() {
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                             <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                                <h3 className="font-heading text-lg font-bold">{route.title}</h3>
+                                <h3 className="font-heading text-lg font-bold">
+                                    {route.title}
+                                </h3>
                                 <p className="mt-2 flex items-center gap-1 text-xs">
                                     <Compass className="size-3.5" />
                                     {route.meta}
@@ -503,63 +398,25 @@ export default function Home() {
                     ))}
                 </div>
             </section>
+            {/* 
+            <section
+                className="relative h-[100vh] scroll-mt-20 overflow-hidden"
+                id="map"
+            >
+                <HeroMapSection />
+            </section> */}
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="map">
-                <div className="grid overflow-hidden rounded-xl border border-[#cbc4d2]/70 bg-white shadow-lg shadow-[#0f172a]/5 lg:grid-cols-[1fr_1.1fr]">
-                    <div className="flex flex-col justify-center p-8 lg:p-12">
-                        <div className="flex size-10 items-center justify-center rounded-lg bg-[#e1d4fd] text-[#4f378a]">
-                            <Map className="size-5" />
-                        </div>
-                        <h2 className="mt-6 font-heading text-3xl font-semibold">
-                            Eksplorasi Peta Interaktif
-                        </h2>
-                        <p className="mt-4 max-w-xl text-sm leading-7 text-[#494551]">
-                            Temukan titik-titik lokasi wisata halal, restoran
-                            bersertifikat, dan masjid terdekat langsung dari
-                            pandangan udara. Rencanakan rute perjalanan Anda dengan
-                            mudah dan aman.
-                        </p>
-                        <a
-                            className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-[#4f378a] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/20"
-                            href="#map"
-                        >
-                            Buka Peta Penuh
-                            <ChevronRight className="size-4" />
-                        </a>
-                    </div>
-                    <div className="relative min-h-[360px] bg-[#0f4f45]">
-                        <Image
-                            alt="Ilustrasi peta interaktif"
-                            className="object-cover"
-                            fill
-                            sizes="(min-width: 1024px) 55vw, 100vw"
-                            src="https://images.unsplash.com/photo-1569336415962-a4bd9f69c07a?auto=format&fit=crop&w=1400&q=80"
-                        />
-                        <div className="absolute inset-0 bg-[#184b45]/25" />
-                        {[
-                            ["left-[28%] top-[34%]", Utensils, "bg-[#4f378a]"],
-                            ["left-[52%] top-[48%]", Landmark, "bg-[#00856f]"],
-                            ["left-[68%] top-[28%]", Hotel, "bg-[#765b00]"],
-                        ].map(([position, Icon, color], index) => (
-                            <div
-                                className={`absolute ${position} flex size-12 items-center justify-center rounded-full border-4 border-white text-white shadow-xl ${color}`}
-                                key={index}
-                            >
-                                <Icon className="size-5" />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="how-it-works">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="how-it-works"
+            >
                 <div className="text-center">
                     <h2 className="font-heading text-3xl font-semibold">
                         Cara Kerja Hyperlocal
                     </h2>
                     <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#494551]">
-                        Mulai dari pencarian sampai rencana perjalanan, semua dibuat
-                        ringkas agar keputusan wisata lebih percaya diri.
+                        Mulai dari pencarian sampai rencana perjalanan, semua
+                        dibuat ringkas agar keputusan wisata lebih percaya diri.
                     </p>
                 </div>
                 <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -585,7 +442,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="facilities">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="facilities"
+            >
                 <SectionHeading
                     action="Lihat Semua"
                     actionHref="#reviews"
@@ -607,7 +467,9 @@ export default function Home() {
                             <h3 className="mt-5 font-heading text-lg font-bold">
                                 {facility.title}
                             </h3>
-                            <p className="mt-1 text-sm text-[#494551]">{facility.count}</p>
+                            <p className="mt-1 text-sm text-[#494551]">
+                                {facility.count}
+                            </p>
                         </article>
                     ))}
                 </div>
@@ -635,21 +497,25 @@ export default function Home() {
                                         {name[0]}
                                     </div>
                                     <div>
-                                        <p className="font-heading text-sm font-bold">{name}</p>
+                                        <p className="font-heading text-sm font-bold">
+                                            {name}
+                                        </p>
                                         <div className="mt-1 flex text-[#c9a74d]">
-                                            {Array.from({ length: 5 }).map((_, index) => (
-                                                <Star
-                                                    className="size-3.5 fill-current"
-                                                    key={index}
-                                                />
-                                            ))}
+                                            {Array.from({ length: 5 }).map(
+                                                (_, index) => (
+                                                    <Star
+                                                        className="size-3.5 fill-current"
+                                                        key={index}
+                                                    />
+                                                ),
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                                 <p className="mt-5 text-sm italic leading-7 text-[#494551]">
-                                    &quot;Sangat membantu menemukan restoran halal saat
-                                    liburan. Informasinya akurat dan rekomendasinya
-                                    cocok untuk keluarga.&quot;
+                                    &quot;Sangat membantu menemukan restoran
+                                    halal saat liburan. Informasinya akurat dan
+                                    rekomendasinya cocok untuk keluarga.&quot;
                                 </p>
                             </article>
                         ))}
@@ -657,7 +523,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-4xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8" id="faq">
+            <section
+                className="mx-auto max-w-4xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8"
+                id="faq"
+            >
                 <div className="text-center">
                     <h2 className="font-heading text-3xl font-semibold">
                         FAQ Perjalanan Halal
@@ -684,25 +553,34 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8" id="newsletter">
+            <section
+                className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
+                id="newsletter"
+            >
                 <div className="rounded-xl border border-[#cbc4d2]/60 bg-white p-6 shadow-lg shadow-[#0f172a]/5 md:flex md:items-center md:justify-between md:gap-8 md:p-8">
                     <div>
                         <h2 className="font-heading text-2xl font-semibold">
                             Dapatkan rekomendasi halal terbaru
                         </h2>
                         <p className="mt-2 text-sm leading-6 text-[#494551]">
-                            Newsletter mingguan berisi destinasi baru, promo lokal,
-                            dan panduan fasilitas muslim-friendly.
+                            Newsletter mingguan berisi destinasi baru, promo
+                            lokal, dan panduan fasilitas muslim-friendly.
                         </p>
                     </div>
-                    <form action="#newsletter" className="mt-5 flex gap-2 md:mt-0 md:min-w-[420px]">
+                    <form
+                        action="#newsletter"
+                        className="mt-5 flex gap-2 md:mt-0 md:min-w-[420px]"
+                    >
                         <input
                             aria-label="Email newsletter"
                             className="h-12 min-w-0 flex-1 rounded-lg border border-[#cbc4d2] bg-[#fdf7ff] px-4 text-sm outline-none focus:border-[#4f378a] focus:ring-2 focus:ring-[#e1d4fd]"
                             placeholder="Email Anda"
                             type="email"
                         />
-                        <button className="h-12 rounded-lg bg-[#4f378a] px-5 text-sm font-bold text-white" type="submit">
+                        <button
+                            className="h-12 rounded-lg bg-[#4f378a] px-5 text-sm font-bold text-white"
+                            type="submit"
+                        >
                             Daftar
                         </button>
                     </form>
@@ -715,8 +593,8 @@ export default function Home() {
                         Siap mulai perjalanan yang lebih tenang?
                     </p>
                     <h2 className="mx-auto mt-3 max-w-3xl font-heading text-3xl font-bold leading-tight sm:text-4xl">
-                        Temukan destinasi halal, fasilitas terdekat, dan rute terbaik
-                        dalam satu tempat.
+                        Temukan destinasi halal, fasilitas terdekat, dan rute
+                        terbaik dalam satu tempat.
                     </h2>
                     <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
                         <a
@@ -746,8 +624,9 @@ export default function Home() {
                             Hyperlocal
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-7 text-[#494551]">
-                            Platform penemuan destinasi halal, fasilitas muslim-friendly,
-                            dan rekomendasi wisata berbasis insight lokal.
+                            Platform penemuan destinasi halal, fasilitas
+                            muslim-friendly, dan rekomendasi wisata berbasis
+                            insight lokal.
                         </p>
                     </div>
                     <FooterLinks
@@ -813,7 +692,11 @@ function FooterLinks({
             </h3>
             <div className="mt-4 grid gap-3 text-sm text-[#494551]">
                 {links.map(([label, href]) => (
-                    <a className="transition hover:text-[#4f378a]" href={href} key={label}>
+                    <a
+                        className="transition hover:text-[#4f378a]"
+                        href={href}
+                        key={label}
+                    >
                         {label}
                     </a>
                 ))}

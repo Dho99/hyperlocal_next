@@ -1,5 +1,5 @@
 import { getCategories } from "@/lib/services/category-service";
-import { DestinationForm } from "@/components/admin/destinations/destination-form";
+import { DestinationForm } from "../components/destination-form";
 
 export default async function NewDestinationPage() {
     const categories = await getCategories();

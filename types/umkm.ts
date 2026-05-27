@@ -62,11 +62,11 @@ export interface Umkm {
     description: string | null;
     address: string | null;
     phone: string | null;
-    latitude: string | number | null;
-    longitude: string | number | null;
+    latitude: number | null;
+    longitude: number | null;
     createdAt: Date | string;
     updatedAt: Date | string;
-    
+
     // Relations
     category?: Category | null;
     destination?: Destination | null;
@@ -74,5 +74,14 @@ export interface Umkm {
     certifications?: HalalCertification[];
 }
 
-export type CreateUmkmInput = Omit<Umkm, "id" | "createdAt" | "updatedAt" | "category" | "destination" | "images" | "certifications">;
+export type CreateUmkmInput = Omit<
+    Umkm,
+    | "id"
+    | "createdAt"
+    | "updatedAt"
+    | "category"
+    | "destination"
+    | "images"
+    | "certifications"
+>;
 export type UpdateUmkmInput = Partial<CreateUmkmInput>;

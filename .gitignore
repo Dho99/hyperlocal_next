@@ -43,3 +43,7 @@ next-env.d.ts
 # uploads
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+opencode.json
+.gemini/
+opencode.jsonc

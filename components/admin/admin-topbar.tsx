@@ -1,6 +1,15 @@
 "use client";
 
-import { Search, Bell, User, LogOut, Menu, Settings, HelpCircle, Grid3X3 } from "lucide-react";
+import {
+    Search,
+    Bell,
+    User,
+    LogOut,
+    Menu,
+    Settings,
+    HelpCircle,
+    Grid3X3,
+} from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -71,9 +80,9 @@ export function AdminTopbar({ user }: { user: User }) {
                 </div>
             </div>
 
-            <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">
+            {/* <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">
                 Pariwisata Halal
-            </h2>
+            </h2> */}
 
             {/* Desktop Search */}
             <div className="relative hidden max-w-[560px] flex-1 items-center md:flex">

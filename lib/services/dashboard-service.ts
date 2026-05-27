@@ -1,6 +1,25 @@
 import { subDays, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import type { CertificationStatus } from "../generated/prisma";
+import type { DashboardMapDestination } from "@/types/map-viewer";
+
+export async function getAllMapDestinations(): Promise<DashboardMapDestination[]> {
+    const destinations = await prisma.destination.findMany({
+        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+        include: {
+            category: true,
+        },
+    });
+
+    return destinations.map((d) => ({
+        id: d.id,
+        name: d.name,
+        category: d.category?.name || "Destinasi",
+        status: d.status,
+        latitude: d.latitude != null ? Number(d.latitude) : 0,
+        longitude: d.longitude != null ? Number(d.longitude) : 0,
+    }));
+}
 
 const DAY_LABELS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
@@ -112,18 +131,6 @@ export async function getDashboardOverview() {
         },
     });
 
-    const pMapDestinations = prisma.destination.findMany({
-        take: 9,
-        where: {
-            latitude: { not: null },
-            longitude: { not: null },
-        },
-        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-        include: {
-            category: true,
-        },
-    });
-
     const pRecentValidations = prisma.halalCertification.findMany({
         include: {
             umkm: {
@@ -149,7 +156,6 @@ export async function getDashboardOverview() {
         topDestinations,
         recentInteractions,
         interactionWindow,
-        mapDestinations,
         recentValidations,
     ] = await Promise.all([
         pTotalDestinations,
@@ -166,7 +172,6 @@ export async function getDashboardOverview() {
         pTopDestinations,
         pRecentInteractions,
         pInteractionWindow,
-        pMapDestinations,
         pRecentValidations,
     ]);
 
@@ -298,14 +303,6 @@ export async function getDashboardOverview() {
             city: interaction.destination.city || "Hyperlocal",
             createdAt: interaction.createdAt,
             type: interaction.type,
-        })),
-        mapDestinations: mapDestinations.map((destination, index) => ({
-            id: destination.id,
-            name: destination.name,
-            category: destination.category?.name || "Destinasi",
-            status: destination.status,
-            x: 18 + ((index * 29) % 68),
-            y: 20 + ((index * 37) % 58),
         })),
     };
 }
