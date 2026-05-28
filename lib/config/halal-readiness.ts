@@ -1,19 +1,30 @@
 export const FACILITY_WEIGHTS = {
     MOSQUE: 0.30,
     RESTAURANT: 0.40,
-    TOILET: 0.20,
-    GENERAL: 0.10,
+    ACCESSIBILITY: 0.10,
+    FAMILY: 0.10,
+    CLEANLINESS: 0.05,
+    ADDITIONAL: 0.05,
 } as const;
 
 export type FacilityType = keyof typeof FACILITY_WEIGHTS;
 
-export const FACILITY_TYPES: FacilityType[] = ["MOSQUE", "RESTAURANT", "TOILET", "GENERAL"];
+export const FACILITY_TYPES: FacilityType[] = [
+    "MOSQUE",
+    "RESTAURANT",
+    "ACCESSIBILITY",
+    "FAMILY",
+    "CLEANLINESS",
+    "ADDITIONAL",
+];
 
 export const FACILITY_LABELS: Record<FacilityType, string> = {
-    MOSQUE: "Masjid / Mushola",
-    RESTAURANT: "Restoran / Makanan Halal",
-    TOILET: "Toilet / Tempat Wudhu",
-    GENERAL: "Lingkungan Ramah Muslim",
+    MOSQUE: "Ketersediaan Musala",
+    RESTAURANT: "Ketersediaan Makanan Halal",
+    ACCESSIBILITY: "Aksesibilitas",
+    FAMILY: "Fasilitas Keluarga",
+    CLEANLINESS: "Kebersihan",
+    ADDITIONAL: "Indikator Tambahan",
 };
 
 export interface FacilityInput {
@@ -39,13 +50,15 @@ export function calculateHalalScore(facilities: FacilityInput[]): number {
 }
 
 export function getScoreColor(score: number): string {
-    if (score >= 70) return "text-green-600";
+    if (score > 80) return "text-green-600";
+    if (score >= 60) return "text-blue-600";
     if (score >= 40) return "text-yellow-600";
     return "text-red-600";
 }
 
 export function getScoreLabel(score: number): string {
-    if (score >= 70) return "Sangat Siap";
+    if (score > 80) return "Sangat Siap";
+    if (score >= 60) return "Siap";
     if (score >= 40) return "Cukup Siap";
-    return "Perlu Peningkatan";
+    return "Perlu Pengembangan";
 }

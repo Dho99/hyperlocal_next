@@ -127,8 +127,15 @@ export function DestinationValidationForm({
             };
         });
 
-        // Sort by predefined FACILITY_WEIGHTS order
-        const order = ["MOSQUE", "RESTAURANT", "TOILET", "GENERAL"];
+        // Sort by predefined FACILITY_TYPES order
+        const order = [
+            "MOSQUE",
+            "RESTAURANT",
+            "ACCESSIBILITY",
+            "FAMILY",
+            "CLEANLINESS",
+            "ADDITIONAL",
+        ];
         result.sort(
             (a, b) =>
                 order.indexOf(a.facilityType) - order.indexOf(b.facilityType),

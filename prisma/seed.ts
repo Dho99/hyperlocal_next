@@ -73,27 +73,61 @@ async function main() {
     });
 
     // 3. Create Halal Facilities
-    const facilityMosque = await prisma.halalFacility.create({
-        data: {
-            name: "Masjid Jami",
-            description: "Masjid luas dengan fasilitas wudhu lengkap.",
-            facilityType: "Ibadah",
+    const facilitiesData = [
+        {
+            name: "Masjid Jami Al-Lathiif",
+            description: "Fasilitas ibadah lengkap dengan area wudhu bersih.",
+            facilityType: "MOSQUE",
+            weight: 30,
         },
-    });
+        {
+            name: "Food Court Halal Terpadu",
+            description: "Area kuliner dengan sertifikasi halal BPJPH.",
+            facilityType: "RESTAURANT",
+            weight: 40,
+        },
+        {
+            name: "Ramah Disabilitas",
+            description: "Akses kursi roda dan guiding block yang memadai.",
+            facilityType: "ACCESSIBILITY",
+            weight: 10,
+        },
+        {
+            name: "Ruang Laktasi & Bermain Anak",
+            description: "Fasilitas penunjang keluarga dan ibu menyusui.",
+            facilityType: "FAMILY",
+            weight: 10,
+        },
+        {
+            name: "Toilet Higienis Terstandarisasi",
+            description: "Standar kebersihan toilet bintang 4.",
+            facilityType: "CLEANLINESS",
+            weight: 5,
+        },
+        {
+            name: "Papan Informasi Ramah Muslim",
+            description: "Arah kiblat dan jadwal waktu salat.",
+            facilityType: "ADDITIONAL",
+            weight: 5,
+        },
+    ];
 
-    const facilityHalalFood = await prisma.halalFacility.create({
-        data: {
-            name: "Area Food Court Halal",
-            description:
-                "Seluruh tenant makanan di area ini tersertifikasi halal.",
-            facilityType: "Kuliner",
-        },
-    });
+    const facilities = [];
+    for (const data of facilitiesData) {
+        const facility = await prisma.halalFacility.create({ data });
+        facilities.push(facility);
+    }
 
     // 4. Create Destination
     const destination = await prisma.destination.upsert({
         where: { slug: "masjid-raya-bandung" },
-        update: {},
+        update: {
+            destinationHalalFacilities: {
+                deleteMany: {},
+                create: facilities.map((f) => ({ facilityId: f.id })),
+            },
+            halalScore: 100, // Sum of all weights
+        },
         create: {
             name: "Masjid Raya Bandung",
             slug: "masjid-raya-bandung",
@@ -105,11 +139,9 @@ async function main() {
             province: "Jawa Barat",
             latitude: -6.9218,
             longitude: 107.6069,
+            halalScore: 100,
             destinationHalalFacilities: {
-                create: [
-                    { facilityId: facilityMosque.id },
-                    { facilityId: facilityHalalFood.id },
-                ],
+                create: facilities.map((f) => ({ facilityId: f.id })),
             },
         },
     });
