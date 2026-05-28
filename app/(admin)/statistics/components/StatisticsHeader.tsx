@@ -1,7 +1,37 @@
+'use client';
+
 import React from 'react';
 import { Calendar, MapPin, Download } from 'lucide-react';
+import { DetailedStatistics } from "@/lib/services/analytics-service";
 
-export default function StatisticsHeader() {
+export default function StatisticsHeader({ data }: { data: DetailedStatistics }) {
+  const handleExport = () => {
+    const csvContent = [
+      ['Metric', 'Value'],
+      ['Total Destinations', data.kpi.totalDestinations],
+      ['Total UMKM', data.kpi.totalUmkms],
+      ['Total Facilities', data.kpi.totalFacilities],
+      ['Verified UMKM', data.kpi.verifiedUmkms],
+      ['Average Halal Score', data.kpi.avgHalalScore],
+      [''],
+      ['Top Destinations', 'Score', 'Category'],
+      ...data.rankings.topDestinations.map(d => [d.name, d.score, d.category]),
+      [''],
+      ['Top UMKM', 'Rating', 'Category'],
+      ...data.rankings.topUmkms.map(u => [u.name, u.rating, u.category])
+    ].map(e => e.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `halal_tourism_statistics_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
       <div>
@@ -19,9 +49,12 @@ export default function StatisticsHeader() {
           <MapPin className="w-4 h-4 text-purple-600" />
           All Regions
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors">
+        <button 
+          onClick={handleExport}
+          className="flex items-center gap-2 px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors"
+        >
           <Download className="w-4 h-4" />
-          Export
+          Export CSV
         </button>
       </div>
     </header>

@@ -1,10 +1,41 @@
 import React from 'react';
 
-export default function TrendVisualization() {
+interface TrendVisualizationProps {
+  trend: {
+    label: string;
+    submissions: number;
+    approvals: number;
+  }[];
+}
+
+export default function TrendVisualization({ trend }: TrendVisualizationProps) {
+  // Find max value for scaling
+  const maxValue = Math.max(1, ...trend.map(t => Math.max(t.submissions, t.approvals)));
+  
+  // Convert trend data to SVG points
+  const submissionPoints = trend.map((t, i) => {
+    const x = 40 + (i * 960) / (trend.length - 1);
+    const y = 240 - (t.submissions / maxValue) * 200;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const approvalPoints = trend.map((t, i) => {
+    const x = 40 + (i * 960) / (trend.length - 1);
+    const y = 240 - (t.approvals / maxValue) * 200;
+    return `${x},${y}`;
+  }).join(' ');
+
+  // Area fill points for approvals
+  const areaPoints = trend.map((t, i) => {
+    const x = 40 + (i * 960) / (trend.length - 1);
+    const y = 240 - (t.approvals / maxValue) * 200;
+    return `${x},${y}`;
+  }).join(' ') + ` 1000,240 40,240`;
+
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <h2 className="text-lg font-bold text-purple-900">Validation Activity Trend</h2>
+        <h2 className="text-lg font-bold text-purple-900">Validation Activity Trend (Last 4 Weeks)</h2>
 
         <div className="flex items-center gap-6 bg-slate-50 px-4 py-2 rounded-lg border border-gray-100">
           <div className="flex items-center gap-2.5">
@@ -32,21 +63,21 @@ export default function TrendVisualization() {
             <g key={i}>
               <line x1="40" y1={i * 55 + 20} x2="1000" y2={i * 55 + 20} stroke="#E5E7EB" strokeWidth="1" strokeDasharray={i !== 4 ? "4,4" : "0"} />
               <text x="30" y={i * 55 + 24} textAnchor="end" className="text-xs fill-gray-400 font-bold">
-                {800 - (i * 200)}
+                {Math.round((maxValue - (i * maxValue / 4)))}
               </text>
             </g>
           ))}
 
           {/* X-Axis Labels */}
-          {['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((label, i) => (
-            <text key={label} x={150 + (i * 250)} y="270" textAnchor="middle" className="text-xs fill-gray-400 font-bold uppercase tracking-wider">
-              {label}
+          {trend.map((t, i) => (
+            <text key={i} x={40 + (i * 960) / (trend.length - 1)} y="270" textAnchor="middle" className="text-xs fill-gray-400 font-bold uppercase tracking-wider">
+              {t.label}
             </text>
           ))}
 
           {/* Submissions Path (Dashed) */}
-          <path
-            d="M 40 180 C 150 150, 250 200, 350 120 C 450 40, 550 180, 650 130 C 750 80, 850 140, 1000 90"
+          <polyline
+            points={submissionPoints}
             fill="none"
             stroke="#9CA3AF"
             strokeWidth="2.5"
@@ -54,21 +85,25 @@ export default function TrendVisualization() {
           />
 
           {/* Approvals Path (Solid with area fill) */}
-          <path
-            d="M 40 200 C 150 180, 250 120, 350 80 C 450 40, 550 90, 650 60 C 750 30, 850 60, 1000 40 L 1000 240 L 40 240 Z"
+          <polygon
+            points={areaPoints}
             fill="url(#purpleGradient)"
           />
-          <path
-            d="M 40 200 C 150 180, 250 120, 350 80 C 450 40, 550 90, 650 60 C 750 30, 850 60, 1000 40"
+          <polyline
+            points={approvalPoints}
             fill="none"
             stroke="#7C3AED"
             strokeWidth="3.5"
           />
 
           {/* Highlighted Data points for Approvals */}
-          <circle cx="350" cy="80" r="5" fill="#fff" stroke="#7C3AED" strokeWidth="2.5" className="drop-shadow-sm" />
-          <circle cx="650" cy="60" r="5" fill="#fff" stroke="#7C3AED" strokeWidth="2.5" className="drop-shadow-sm" />
-          <circle cx="1000" cy="40" r="5" fill="#fff" stroke="#7C3AED" strokeWidth="2.5" className="drop-shadow-sm" />
+          {trend.map((t, i) => {
+            const x = 40 + (i * 960) / (trend.length - 1);
+            const y = 240 - (t.approvals / maxValue) * 200;
+            return (
+              <circle key={i} cx={x} cy={y} r="5" fill="#fff" stroke="#7C3AED" strokeWidth="2.5" className="drop-shadow-sm" />
+            );
+          })}
         </svg>
       </div>
     </div>
