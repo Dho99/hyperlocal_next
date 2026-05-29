@@ -176,6 +176,7 @@ model DestinationHalalFacility {
   facilityId    String                       @map("facility_id")
   latitude      Float?
   longitude     Float?
+  name          String?
 
   destination Destination                   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   facility    HalalFacility                 @relation(fields: [facilityId], references: [id], onDelete: Restrict)

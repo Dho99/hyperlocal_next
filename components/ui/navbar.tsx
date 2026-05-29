@@ -70,13 +70,13 @@ export default function Navbar() {
                         />
                     </div>
                 </div>
-                <Link
+                {/* <Link
                     aria-label="Buka menu"
-                    className="rounded-full border border-[#cbc4d2] bg-white/70 p-2 text-[#4f378a] md:hidden"
-                    href="/#popular"
+                    className="rounded-full border border-[#cbc4d2] bg-white/70 p-2 text-[#4f378a] hidden"
+                    href="#"
                 >
                     <Menu className="size-5" />
-                </Link>
+                </Link> */}
             </nav>
         </header>
     );

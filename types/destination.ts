@@ -33,6 +33,7 @@ export interface DestinationHalalFacility {
     facilityId: string;
     latitude: number | null;
     longitude: number | null;
+    name?: string | null;
     facility?: HalalFacility;
     evidences?: DestinationFacilityEvidence[];
 }

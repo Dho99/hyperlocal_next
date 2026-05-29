@@ -16,6 +16,7 @@ export async function getPaginatedCategories(
                 skip,
                 cursor: cursor ? { id: cursor } : undefined,
                 where: {
+                    ...(params.type && { type: params.type }),
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),

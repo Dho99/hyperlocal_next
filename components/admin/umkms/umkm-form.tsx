@@ -108,6 +108,11 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
         }
     };
 
+    // const onError = (errors: any) => {
+    //     console.log("Validation errors:", errors);
+    //     toast.error("Periksa kembali input form");
+    // };
+
     return (
         <form
             onSubmit={form.handleSubmit(onSubmit)}

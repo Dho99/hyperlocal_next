@@ -49,6 +49,7 @@ export function FacilityArrayList({
                 onClick={() =>
                     append({
                         facilityId: "",
+                        name: "",
                         latitude: null,
                         longitude: null,
                         evidenceUrls: [],

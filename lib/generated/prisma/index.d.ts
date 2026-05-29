@@ -11726,6 +11726,7 @@ export namespace Prisma {
     facilityId: string | null
     latitude: number | null
     longitude: number | null
+    name: string | null
   }
 
   export type DestinationHalalFacilityMaxAggregateOutputType = {
@@ -11734,6 +11735,7 @@ export namespace Prisma {
     facilityId: string | null
     latitude: number | null
     longitude: number | null
+    name: string | null
   }
 
   export type DestinationHalalFacilityCountAggregateOutputType = {
@@ -11742,6 +11744,7 @@ export namespace Prisma {
     facilityId: number
     latitude: number
     longitude: number
+    name: number
     _all: number
   }
 
@@ -11762,6 +11765,7 @@ export namespace Prisma {
     facilityId?: true
     latitude?: true
     longitude?: true
+    name?: true
   }
 
   export type DestinationHalalFacilityMaxAggregateInputType = {
@@ -11770,6 +11774,7 @@ export namespace Prisma {
     facilityId?: true
     latitude?: true
     longitude?: true
+    name?: true
   }
 
   export type DestinationHalalFacilityCountAggregateInputType = {
@@ -11778,6 +11783,7 @@ export namespace Prisma {
     facilityId?: true
     latitude?: true
     longitude?: true
+    name?: true
     _all?: true
   }
 
@@ -11873,6 +11879,7 @@ export namespace Prisma {
     facilityId: string
     latitude: number | null
     longitude: number | null
+    name: string | null
     _count: DestinationHalalFacilityCountAggregateOutputType | null
     _avg: DestinationHalalFacilityAvgAggregateOutputType | null
     _sum: DestinationHalalFacilitySumAggregateOutputType | null
@@ -11900,6 +11907,7 @@ export namespace Prisma {
     facilityId?: boolean
     latitude?: boolean
     longitude?: boolean
+    name?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
     evidences?: boolean | DestinationHalalFacility$evidencesArgs<ExtArgs>
@@ -11912,6 +11920,7 @@ export namespace Prisma {
     facilityId?: boolean
     latitude?: boolean
     longitude?: boolean
+    name?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["destinationHalalFacility"]>
@@ -11922,6 +11931,7 @@ export namespace Prisma {
     facilityId?: boolean
     latitude?: boolean
     longitude?: boolean
+    name?: boolean
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["destinationHalalFacility"]>
@@ -11932,9 +11942,10 @@ export namespace Prisma {
     facilityId?: boolean
     latitude?: boolean
     longitude?: boolean
+    name?: boolean
   }
 
-  export type DestinationHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destinationId" | "facilityId" | "latitude" | "longitude", ExtArgs["result"]["destinationHalalFacility"]>
+  export type DestinationHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destinationId" | "facilityId" | "latitude" | "longitude" | "name", ExtArgs["result"]["destinationHalalFacility"]>
   export type DestinationHalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destination?: boolean | DestinationDefaultArgs<ExtArgs>
     facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
@@ -11963,6 +11974,7 @@ export namespace Prisma {
       facilityId: string
       latitude: number | null
       longitude: number | null
+      name: string | null
     }, ExtArgs["result"]["destinationHalalFacility"]>
     composites: {}
   }
@@ -12394,6 +12406,7 @@ export namespace Prisma {
     readonly facilityId: FieldRef<"DestinationHalalFacility", 'String'>
     readonly latitude: FieldRef<"DestinationHalalFacility", 'Float'>
     readonly longitude: FieldRef<"DestinationHalalFacility", 'Float'>
+    readonly name: FieldRef<"DestinationHalalFacility", 'String'>
   }
     
 
@@ -30328,7 +30341,8 @@ export namespace Prisma {
     destinationId: 'destinationId',
     facilityId: 'facilityId',
     latitude: 'latitude',
-    longitude: 'longitude'
+    longitude: 'longitude',
+    name: 'name'
   };
 
   export type DestinationHalalFacilityScalarFieldEnum = (typeof DestinationHalalFacilityScalarFieldEnum)[keyof typeof DestinationHalalFacilityScalarFieldEnum]
@@ -31402,6 +31416,7 @@ export namespace Prisma {
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
     latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
     longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    name?: StringNullableFilter<"DestinationHalalFacility"> | string | null
     destination?: XOR<DestinationScalarRelationFilter, DestinationWhereInput>
     facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
     evidences?: DestinationFacilityEvidenceListRelationFilter
@@ -31413,6 +31428,7 @@ export namespace Prisma {
     facilityId?: SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
     destination?: DestinationOrderByWithRelationInput
     facility?: HalalFacilityOrderByWithRelationInput
     evidences?: DestinationFacilityEvidenceOrderByRelationAggregateInput
@@ -31427,6 +31443,7 @@ export namespace Prisma {
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
     latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
     longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    name?: StringNullableFilter<"DestinationHalalFacility"> | string | null
     destination?: XOR<DestinationScalarRelationFilter, DestinationWhereInput>
     facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
     evidences?: DestinationFacilityEvidenceListRelationFilter
@@ -31438,6 +31455,7 @@ export namespace Prisma {
     facilityId?: SortOrder
     latitude?: SortOrderInput | SortOrder
     longitude?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
     _count?: DestinationHalalFacilityCountOrderByAggregateInput
     _avg?: DestinationHalalFacilityAvgOrderByAggregateInput
     _max?: DestinationHalalFacilityMaxOrderByAggregateInput
@@ -31454,6 +31472,7 @@ export namespace Prisma {
     facilityId?: StringWithAggregatesFilter<"DestinationHalalFacility"> | string
     latitude?: FloatNullableWithAggregatesFilter<"DestinationHalalFacility"> | number | null
     longitude?: FloatNullableWithAggregatesFilter<"DestinationHalalFacility"> | number | null
+    name?: StringNullableWithAggregatesFilter<"DestinationHalalFacility"> | string | null
   }
 
   export type DestinationFacilityEvidenceWhereInput = {
@@ -33357,6 +33376,7 @@ export namespace Prisma {
     id?: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
     facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
     evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
@@ -33368,6 +33388,7 @@ export namespace Prisma {
     facilityId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
@@ -33375,6 +33396,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
@@ -33386,6 +33408,7 @@ export namespace Prisma {
     facilityId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
@@ -33395,12 +33418,14 @@ export namespace Prisma {
     facilityId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
   }
 
   export type DestinationHalalFacilityUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DestinationHalalFacilityUncheckedUpdateManyInput = {
@@ -33409,6 +33434,7 @@ export namespace Prisma {
     facilityId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DestinationFacilityEvidenceCreateInput = {
@@ -35450,6 +35476,7 @@ export namespace Prisma {
     facilityId?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    name?: SortOrder
   }
 
   export type DestinationHalalFacilityAvgOrderByAggregateInput = {
@@ -35463,6 +35490,7 @@ export namespace Prisma {
     facilityId?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    name?: SortOrder
   }
 
   export type DestinationHalalFacilityMinOrderByAggregateInput = {
@@ -35471,6 +35499,7 @@ export namespace Prisma {
     facilityId?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
+    name?: SortOrder
   }
 
   export type DestinationHalalFacilitySumOrderByAggregateInput = {
@@ -39205,6 +39234,7 @@ export namespace Prisma {
     id?: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
     evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
   }
@@ -39214,6 +39244,7 @@ export namespace Prisma {
     facilityId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
@@ -39481,6 +39512,7 @@ export namespace Prisma {
     facilityId?: StringFilter<"DestinationHalalFacility"> | string
     latitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
     longitude?: FloatNullableFilter<"DestinationHalalFacility"> | number | null
+    name?: StringNullableFilter<"DestinationHalalFacility"> | string | null
   }
 
   export type HalalValidationUpsertWithWhereUniqueWithoutDestinationInput = {
@@ -39979,6 +40011,7 @@ export namespace Prisma {
     id?: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
     facility: HalalFacilityCreateNestedOneWithoutDestinationHalalFacilitiesInput
   }
@@ -39989,6 +40022,7 @@ export namespace Prisma {
     facilityId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
   }
 
   export type DestinationHalalFacilityCreateOrConnectWithoutEvidencesInput = {
@@ -40011,6 +40045,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
   }
@@ -40021,12 +40056,14 @@ export namespace Prisma {
     facilityId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DestinationHalalFacilityCreateWithoutFacilityInput = {
     id?: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     destination: DestinationCreateNestedOneWithoutDestinationHalalFacilitiesInput
     evidences?: DestinationFacilityEvidenceCreateNestedManyWithoutDestFacilityInput
   }
@@ -40036,6 +40073,7 @@ export namespace Prisma {
     destinationId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
     evidences?: DestinationFacilityEvidenceUncheckedCreateNestedManyWithoutDestFacilityInput
   }
 
@@ -42822,6 +42860,7 @@ export namespace Prisma {
     facilityId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
   }
 
   export type HalalValidationCreateManyDestinationInput = {
@@ -42997,6 +43036,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     facility?: HalalFacilityUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
   }
@@ -43006,6 +43046,7 @@ export namespace Prisma {
     facilityId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
@@ -43014,6 +43055,7 @@ export namespace Prisma {
     facilityId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalValidationUpdateWithoutDestinationInput = {
@@ -43188,12 +43230,14 @@ export namespace Prisma {
     destinationId: string
     latitude?: number | null
     longitude?: number | null
+    name?: string | null
   }
 
   export type DestinationHalalFacilityUpdateWithoutFacilityInput = {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneRequiredWithoutDestinationHalalFacilitiesNestedInput
     evidences?: DestinationFacilityEvidenceUpdateManyWithoutDestFacilityNestedInput
   }
@@ -43203,6 +43247,7 @@ export namespace Prisma {
     destinationId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     evidences?: DestinationFacilityEvidenceUncheckedUpdateManyWithoutDestFacilityNestedInput
   }
 
@@ -43211,6 +43256,7 @@ export namespace Prisma {
     destinationId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ItineraryItemCreateManyItineraryInput = {

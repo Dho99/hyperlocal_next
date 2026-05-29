@@ -1,10 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import type { CategoryType } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
+
+async function validateUmkmCategory(categoryId: string | null | undefined): Promise<void> {
+    if (!categoryId) return;
+    const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { type: true },
+    });
+    if (!category) throw new Error("Kategori tidak ditemukan");
+    if (category.type !== "UMKM") {
+        throw new Error(
+            "Kategori yang dipilih bukan kategori UMKM. Pilih kategori dengan tipe UMKM.",
+        );
+    }
+}
 
 function serializeUmkm(raw: unknown): Umkm {
     const umkm = raw as Umkm & {
@@ -137,6 +152,7 @@ export async function getUmkm(id: string) {
 
 export async function createUmkm(values: UmkmFormValues) {
     const { images, ...data } = values;
+    await validateUmkmCategory(data.categoryId);
 
     const umkm = await prisma.umkm.create({
         data: {
@@ -163,6 +179,7 @@ export async function createUmkm(values: UmkmFormValues) {
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
     const { images, ...data } = values;
+    await validateUmkmCategory(data.categoryId);
 
     const umkm = await prisma.$transaction(async (tx) => {
         // Delete old images if new ones are provided

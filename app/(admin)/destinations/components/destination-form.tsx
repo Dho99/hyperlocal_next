@@ -95,6 +95,7 @@ export function DestinationForm({
             facilities:
                 initialData?.destinationHalalFacilities?.map((dhf) => ({
                     facilityId: dhf.facilityId,
+                    name: dhf.name ?? "",
                     latitude: dhf.latitude ?? 0,
                     longitude: dhf.longitude ?? 0,
                     evidenceUrls: dhf.evidences?.map((e) => e.imageUrl) || [],

@@ -10,14 +10,34 @@ export const umkmSchema = z.object({
             "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung",
         ),
     owner: z.string().min(2, "Nama pemilik minimal 2 karakter"),
-    destinationId: z.string().uuid("Pilih destinasi yang valid").optional().nullable(),
-    categoryId: z.string().uuid("Pilih kategori yang valid").optional().nullable(),
-    description: z.string().min(10, "Deskripsi minimal 10 karakter").optional().nullable(),
-    address: z.string().min(5, "Alamat minimal 5 karakter").optional().nullable(),
-    phone: z.string().min(10, "Nomor telepon minimal 10 karakter").optional().nullable(),
+    destinationId: z
+        .string()
+        .uuid("Pilih destinasi yang valid")
+        .optional()
+        .nullable(),
+    categoryId: z
+        .string()
+        .uuid("Pilih kategori yang valid")
+        .optional()
+        .nullable(),
+    description: z
+        .string()
+        .min(10, "Deskripsi minimal 10 karakter")
+        .optional()
+        .nullable(),
+    address: z
+        .string()
+        .min(5, "Alamat minimal 5 karakter")
+        .optional()
+        .nullable(),
+    phone: z
+        .string()
+        .min(10, "Nomor telepon minimal 10 karakter")
+        .optional()
+        .nullable(),
     latitude: z.number().optional().nullable(),
     longitude: z.number().optional().nullable(),
-    images: z.array(z.object({ imageUrl: z.string().url() })).optional(),
+    images: z.array(z.object({ imageUrl: z.string() })).optional(),
 });
 
 export type UmkmFormValues = z.infer<typeof umkmSchema>;

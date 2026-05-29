@@ -1,13 +1,26 @@
 import { prisma } from "@/lib/prisma";
 import type { DestinationFormValues } from "@/types/destination";
 import type { Destination } from "@/types/destination";
-import type { Prisma } from "@/lib/generated/prisma";
+import type { Prisma, CategoryType } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+
+async function validateDestinationCategory(categoryId: string): Promise<void> {
+    const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { type: true },
+    });
+    if (!category) throw new Error("Kategori tidak ditemukan");
+    if (category.type !== "DESTINATION") {
+        throw new Error(
+            "Kategori yang dipilih bukan kategori destinasi. Pilih kategori dengan tipe destinasi.",
+        );
+    }
+}
 
 const destinationIncludes = {
     category: true,
@@ -107,6 +120,7 @@ export async function getDestination(id: string): Promise<Destination | null> {
 
 export async function createDestination(values: DestinationFormValues) {
     const { facilities, images, ...data } = values;
+    await validateDestinationCategory(data.categoryId);
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -156,6 +170,7 @@ export async function createDestination(values: DestinationFormValues) {
                     create:
                         facilities?.map((f) => ({
                             facilityId: f.facilityId,
+                            name: f.name,
                             latitude: f.latitude,
                             longitude: f.longitude,
                             evidences: {
@@ -188,6 +203,7 @@ export async function updateDestination(
     values: DestinationFormValues,
 ) {
     const { facilities, images, ...data } = values;
+    await validateDestinationCategory(data.categoryId);
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -236,6 +252,7 @@ export async function updateDestination(
                     create:
                         facilities?.map((f) => ({
                             facilityId: f.facilityId,
+                            name: f.name,
                             latitude: f.latitude,
                             longitude: f.longitude,
                             evidences: {
