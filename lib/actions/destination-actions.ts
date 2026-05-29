@@ -4,7 +4,19 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { destinationSchema } from "@/lib/validations/destination.schema";
 import type { DestinationFormValues } from "@/types/destination";
-import { calculateHalalScore } from "@/lib/config/halal-readiness";
+import {
+    calculateHalalScore,
+    FACILITY_TYPES,
+    type FacilityType,
+} from "@/lib/config/halal-readiness";
+
+function toFacilityType(type: string | null): FacilityType {
+    if (type && FACILITY_TYPES.includes(type as FacilityType)) {
+        return type as FacilityType;
+    }
+
+    return "ADDITIONAL";
+}
 
 export async function createDestination(values: DestinationFormValues) {
     const validatedFields = destinationSchema.safeParse(values);
@@ -23,7 +35,7 @@ export async function createDestination(values: DestinationFormValues) {
         });
 
         const facilityEntries = masterFacilities.map((mf) => ({
-            type: (mf.facilityType || "GENERAL") as "MOSQUE" | "RESTAURANT" | "TOILET" | "GENERAL",
+            type: toFacilityType(mf.facilityType),
             name: mf.name,
         }));
         const halalScore = calculateHalalScore(facilityEntries);
@@ -101,7 +113,7 @@ export async function updateDestination(
         });
 
         const facilityEntries = masterFacilities.map((mf) => ({
-            type: (mf.facilityType || "GENERAL") as "MOSQUE" | "RESTAURANT" | "TOILET" | "GENERAL",
+            type: toFacilityType(mf.facilityType),
             name: mf.name,
         }));
         const halalScore = calculateHalalScore(facilityEntries);

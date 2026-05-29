@@ -16,7 +16,11 @@ export interface HalalFacility {
 }
 
 export interface DestinationImage {
+    id?: string;
     imageUrl: string;
+    caption?: string | null;
+    isPrimary?: boolean;
+    createdAt?: Date | string;
 }
 
 export interface DestinationFacilityEvidence {
@@ -57,6 +61,30 @@ export interface Destination {
     category?: Category | null;
     images?: DestinationImage[];
     destinationHalalFacilities?: DestinationHalalFacility[];
+    umkms?: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+        address: string | null;
+        phone: string | null;
+        latitude: number | null;
+        longitude: number | null;
+        rating?: number | null;
+        reviewCount?: number | null;
+        category?: Category | null;
+        images?: Array<{
+            id?: string;
+            imageUrl: string;
+            isPrimary?: boolean;
+        }>;
+        certifications?: Array<{
+            id: string;
+            status: string;
+            certificateNo: string | null;
+            issuer: string | null;
+        }>;
+    }>;
 }
 
 export interface HalalValidationView {

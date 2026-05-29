@@ -6,8 +6,17 @@ import type { DashboardMapDestination } from "@/types/map-viewer";
 export async function getAllMapDestinations(): Promise<DashboardMapDestination[]> {
     const destinations = await prisma.destination.findMany({
         orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-        include: {
-            category: true,
+        select: {
+            id: true,
+            name: true,
+            status: true,
+            latitude: true,
+            longitude: true,
+            category: {
+                select: {
+                    name: true,
+                },
+            },
         },
     });
 
