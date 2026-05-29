@@ -547,21 +547,29 @@ export async function getViewTrends(params: {
             id: true,
             name: true,
             city: true,
-            viewCount: true,
-            category: { select: { name: true } },
-            images: { where: { isPrimary: true }, take: 1, select: { imageUrl: true } },
+            categoryId: true,
+            reviewCount: true,
         },
     });
+
+    const categoryIds = [...new Set(destinations.map(d => d.categoryId).filter(Boolean))];
+    const categories = categoryIds.length > 0
+        ? await prisma.category.findMany({
+            where: { id: { in: categoryIds } },
+            select: { id: true, name: true },
+        })
+        : [];
+    const categoryMap = Object.fromEntries(categories.map(c => [c.id, c.name]));
 
     return destinations
         .map(d => ({
             id: d.id,
             name: d.name,
             city: d.city || "-",
-            category: d.category?.name || "Destinasi",
-            totalViews: d.viewCount,
+            category: categoryMap[d.categoryId] || "Destinasi",
+            totalViews: 0,
             periodViews: viewInteractions[idsOrder[d.id]]?._count._all ?? 0,
-            imageUrl: d.images[0]?.imageUrl || null,
+            imageUrl: null,
         }))
         .sort((a, b) => idsOrder[a.id] - idsOrder[b.id]);
 }

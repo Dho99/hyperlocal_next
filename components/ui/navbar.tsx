@@ -10,7 +10,7 @@ const navItems = [
     { label: "Destinasi", href: "/destinasi" },
     { label: "Kuliner", href: "#kuliner" },
     { label: "Penginapan", href: "#penginapan" },
-    { label: "Peta", href: "#peta" },
+    { label: "Peta", href: "/peta" },
 ] as const;
 
 export default function Navbar() {

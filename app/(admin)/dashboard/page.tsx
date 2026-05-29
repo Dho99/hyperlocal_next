@@ -368,7 +368,7 @@ export default async function DashboardPage() {
                                         </div>
                                         <span className="inline-flex items-center gap-1 text-sm font-bold text-[#4f378a] shrink-0">
                                             <Eye className="h-4 w-4" />
-                                            {destination.viewCount.toLocaleString("id-ID")}
+                                            {destination.viewCount?.toLocaleString("id-ID") ?? 0}
                                         </span>
                                     </div>
                                 ))}

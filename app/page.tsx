@@ -295,11 +295,6 @@ async function getLandingData() {
     const verifiedSource = verifiedRaw.length ? verifiedRaw : popularRaw;
     const verified = verifiedSource.map(toDestinationCard).slice(0, 3);
 
-    const categoryLinks = categories.slice(0, 4).map((category) => ({
-        label: category.name,
-        href: `/destinasi?category=${category.id}`,
-    }));
-
     const facilityHighlights: FacilityHighlight[] = [
         {
             title: "Fasilitas Halal",
@@ -341,7 +336,6 @@ async function getLandingData() {
             verifiedPercent: percent(approvedDestinations, totalDestinations),
         },
         categories,
-        categoryLinks,
         popular,
         verified,
         recentReviews,
@@ -358,11 +352,6 @@ export default async function Home() {
         <main className="min-h-screen bg-[#fdf7ff] text-[#1d1b20]">
             <Navbar />
             <HeroSection
-                categoryLinks={
-                    data.categoryLinks.length
-                        ? data.categoryLinks
-                        : [{ label: "Lihat Destinasi", href: "/destinasi" }]
-                }
                 stats={[
                     {
                         label: "Total Destinasi",

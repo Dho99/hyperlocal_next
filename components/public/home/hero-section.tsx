@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import {
@@ -33,46 +33,26 @@ const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ),
 });
 
-type HeroStat = {
-    label: string;
-    value: string;
-    icon: "map" | "utensils" | "shield";
-};
-
-type HeroCategoryLink = {
-    label: string;
-    href: string;
-};
-
 const iconMap = {
     map: Map,
     utensils: Utensils,
     shield: ShieldCheck,
 } as const;
 
-const defaultStats: HeroStat[] = [
-    { label: "Total Destinasi", value: "0", icon: "map" },
-    { label: "Total UMKM", value: "0", icon: "utensils" },
-    { label: "Terverifikasi", value: "0%", icon: "shield" },
+const defaultStats = [
+    { label: "Total Destinasi", value: "0", icon: "map" as const },
+    { label: "Total UMKM", value: "0", icon: "utensils" as const },
+    { label: "Terverifikasi", value: "0%", icon: "shield" as const },
 ];
 
-const defaultCategoryLinks: HeroCategoryLink[] = [
-    { label: "Lihat Destinasi", href: "/destinasi" },
-];
-
-export function HeroSection({
-    categoryLinks = defaultCategoryLinks,
-    stats = defaultStats,
-}: {
-    categoryLinks?: HeroCategoryLink[];
-    stats?: HeroStat[];
-}) {
+export function HeroSection({ stats = defaultStats }: { stats?: { label: string; value: string; icon: "map" | "utensils" | "shield" }[] }) {
     const router = useRouter();
     const [destinations, setDestinations] = useState<DashboardMapDestination[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selected, setSelected] = useState<DashboardMapDestination | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const fetchMapData = useCallback(async () => {
         setLoading(true);
@@ -104,6 +84,16 @@ export function HeroSection({
     useEffect(() => {
         queueMicrotask(fetchMapData);
     }, [fetchMapData]);
+
+    const availableCategories = useMemo(() => {
+        const cats = new Set(destinations.map((d) => d.category).filter(Boolean));
+        return Array.from(cats) as string[];
+    }, [destinations]);
+
+    const filteredDestinations = useMemo(() => {
+        if (!activeCategory) return destinations;
+        return destinations.filter((d) => d.category === activeCategory);
+    }, [destinations, activeCategory]);
 
     const handleMarkerClick = useCallback((dest: DashboardMapDestination) => {
         setSelected(dest);
@@ -142,7 +132,7 @@ export function HeroSection({
                     </div>
                 ) : (
                     <HeroMapClient
-                        destinations={destinations}
+                        destinations={filteredDestinations}
                         onMarkerClick={handleMarkerClick}
                     />
                 )}
@@ -160,14 +150,34 @@ export function HeroSection({
                     </h1>
                     <HeroSearch />
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
-                        {categoryLinks.map((cat) => (
-                            <a
-                                key={cat.label}
-                                href={cat.href}
-                                className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-semibold text-[#1d1b20] shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5 hover:bg-white/90"
+                        <button
+                            onClick={() => setActiveCategory(null)}
+                            className={cn(
+                                "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
+                                activeCategory === null
+                                    ? "bg-[#4f378a] text-white"
+                                    : "bg-white/70 text-[#1d1b20] hover:bg-white/90",
+                            )}
+                        >
+                            Semua
+                        </button>
+                        {availableCategories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() =>
+                                    setActiveCategory(
+                                        cat === activeCategory ? null : cat,
+                                    )
+                                }
+                                className={cn(
+                                    "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
+                                    activeCategory === cat
+                                        ? "bg-[#4f378a] text-white"
+                                        : "bg-white/70 text-[#1d1b20] hover:bg-white/90",
+                                )}
                             >
-                                {cat.label}
-                            </a>
+                                {cat}
+                            </button>
                         ))}
                     </div>
                 </div>

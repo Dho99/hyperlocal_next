@@ -3,7 +3,9 @@ import { prisma } from "@/lib/prisma";
 import type { CertificationStatus } from "../generated/prisma";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 
-export async function getAllMapDestinations(): Promise<DashboardMapDestination[]> {
+export async function getAllMapDestinations(): Promise<
+    DashboardMapDestination[]
+> {
     const destinations = await prisma.destination.findMany({
         orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
         select: {
@@ -121,7 +123,7 @@ export async function getDashboardOverview() {
 
     const pTrendingDestinations = prisma.destination.findMany({
         take: 5,
-        orderBy: { viewCount: "desc" },
+        orderBy: { reviewCount: "desc" },
         include: {
             category: true,
             images: {
@@ -324,7 +326,7 @@ export async function getDashboardOverview() {
             name: destination.name,
             category: destination.category?.name || "Destinasi",
             city: destination.city || destination.province || "Tanpa wilayah",
-            viewCount: destination.viewCount,
+            viewCount: destination.reviewCount,
             imageUrl: destination.images[0]?.imageUrl || null,
         })),
         recentActivities: recentInteractions.map((interaction) => ({

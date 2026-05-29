@@ -47,3 +47,5 @@ next-env.d.ts
 opencode.json
 .gemini/
 opencode.jsonc
+
+/lib/generated/

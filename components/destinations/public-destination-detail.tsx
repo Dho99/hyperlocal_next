@@ -531,10 +531,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                             ({destination.reviewCount} ulasan)
                         </span>
                     )}
-                {destination.viewCount > 0 && (
+                {(destination.viewCount ?? 0) > 0 && (
                     <span className="inline-flex items-center gap-1 text-muted-foreground">
                         <span className="w-1 h-1 rounded-full bg-border" />
-                        {destination.viewCount.toLocaleString("id-ID")} dilihat
+                        {(destination.viewCount ?? 0).toLocaleString("id-ID")} dilihat
                     </span>
                 )}
                 {destination.category && (
