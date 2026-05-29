@@ -33,20 +33,40 @@ const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ),
 });
 
-const statData = [
-    { label: "Total Destinasi", value: "1,345", icon: Map },
-    { label: "Total UMKM", value: "2,412", icon: Utensils },
-    { label: "Sertifikasi Halal", value: "88%", icon: ShieldCheck },
+type HeroStat = {
+    label: string;
+    value: string;
+    icon: "map" | "utensils" | "shield";
+};
+
+type HeroCategoryLink = {
+    label: string;
+    href: string;
+};
+
+const iconMap = {
+    map: Map,
+    utensils: Utensils,
+    shield: ShieldCheck,
+} as const;
+
+const defaultStats: HeroStat[] = [
+    { label: "Total Destinasi", value: "0", icon: "map" },
+    { label: "Total UMKM", value: "0", icon: "utensils" },
+    { label: "Terverifikasi", value: "0%", icon: "shield" },
 ];
 
-const categories = [
-    { label: "Wisata Alam", href: "#popular" },
-    { label: "Kuliner Halal", href: "#facilities" },
-    { label: "Masjid", href: "#nearby" },
-    { label: "Penginapan", href: "#verified" },
+const defaultCategoryLinks: HeroCategoryLink[] = [
+    { label: "Lihat Destinasi", href: "/destinasi" },
 ];
 
-export function HeroSection() {
+export function HeroSection({
+    categoryLinks = defaultCategoryLinks,
+    stats = defaultStats,
+}: {
+    categoryLinks?: HeroCategoryLink[];
+    stats?: HeroStat[];
+}) {
     const router = useRouter();
     const [destinations, setDestinations] = useState<DashboardMapDestination[]>([]);
     const [loading, setLoading] = useState(true);
@@ -82,7 +102,7 @@ export function HeroSection() {
     }, []);
 
     useEffect(() => {
-        fetchMapData();
+        queueMicrotask(fetchMapData);
     }, [fetchMapData]);
 
     const handleMarkerClick = useCallback((dest: DashboardMapDestination) => {
@@ -140,7 +160,7 @@ export function HeroSection() {
                     </h1>
                     <HeroSearch />
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
-                        {categories.map((cat) => (
+                        {categoryLinks.map((cat) => (
                             <a
                                 key={cat.label}
                                 href={cat.href}
@@ -153,24 +173,27 @@ export function HeroSection() {
                 </div>
 
                 <div className="pointer-events-auto mt-10 grid w-full max-w-4xl gap-4 md:grid-cols-3">
-                    {statData.map((stat) => (
-                        <div
-                            key={stat.label}
-                            className="flex items-center gap-4 rounded-xl border border-white/40 bg-white/70 p-5 shadow-lg shadow-black/5 backdrop-blur-lg"
-                        >
-                            <div className="flex size-11 items-center justify-center rounded-xl bg-[#4f378a] text-white">
-                                <stat.icon className="size-5" />
+                    {stats.map((stat) => {
+                        const StatIcon = iconMap[stat.icon];
+                        return (
+                            <div
+                                key={stat.label}
+                                className="flex items-center gap-4 rounded-xl border border-white/40 bg-white/70 p-5 shadow-lg shadow-black/5 backdrop-blur-lg"
+                            >
+                                <div className="flex size-11 items-center justify-center rounded-xl bg-[#4f378a] text-white">
+                                    <StatIcon className="size-5" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#494551]">
+                                        {stat.label}
+                                    </p>
+                                    <p className="font-heading text-xl font-bold text-[#1d1b20]">
+                                        {stat.value}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#494551]">
-                                    {stat.label}
-                                </p>
-                                <p className="font-heading text-xl font-bold text-[#1d1b20]">
-                                    {stat.value}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
