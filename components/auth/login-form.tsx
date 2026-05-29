@@ -52,7 +52,16 @@ export function LoginForm({ role = "user" }: { role?: "admin" | "user" }) {
                     if (user.role === "admin") {
                         router.push("/dashboard");
                     } else {
-                        router.push("/");
+                        const redirect =
+                            new URLSearchParams(window.location.search).get(
+                                "redirect",
+                            ) ?? "/";
+                        router.push(
+                            redirect.startsWith("/") &&
+                                !redirect.startsWith("//")
+                                ? redirect
+                                : "/",
+                        );
                     }
                     router.refresh();
                 },
