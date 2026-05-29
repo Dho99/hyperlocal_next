@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import type { CategoryFormValues } from "@/types/destinasi-kategori";
 import { withCursorPagination, CursorPaginationParams } from "@/lib/pagination/cursorPagination";
+import { CategoryType } from "../generated/prisma";
 
 export async function getPaginatedCategories(
-    params: CursorPaginationParams & { search?: string }
+    params: CursorPaginationParams & { search?: string; type?: CategoryType }
 ) {
     return withCursorPagination(
         async (take, cursor, skip) => {
@@ -15,6 +16,9 @@ export async function getPaginatedCategories(
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),
+                    ...(params.type && {
+                        type: params.type,
+                    }),
                 },
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
             });
@@ -24,8 +28,11 @@ export async function getPaginatedCategories(
     );
 }
 
-export async function getCategories() {
+export async function getCategories(type?: CategoryType) {
     const categories = await prisma.category.findMany({
+        where: {
+            ...(type && { type }),
+        },
         orderBy: { createdAt: "desc" },
     });
     
@@ -42,6 +49,7 @@ export async function createCategory(data: CategoryFormValues) {
             name: data.name,
             slug: data.slug,
             description: data.description,
+            type: data.type || CategoryType.DESTINATION,
         },
     });
 }
@@ -53,6 +61,7 @@ export async function updateCategory(id: string, data: CategoryFormValues) {
             name: data.name,
             slug: data.slug,
             description: data.description,
+            type: data.type,
         },
     });
 }

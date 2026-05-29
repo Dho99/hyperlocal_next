@@ -19,6 +19,21 @@ const destinationIncludes = {
     images: true,
 } as const;
 
+function serializeDestination(raw: any): Destination {
+    return {
+        ...raw,
+        latitude: raw.latitude ? Number(raw.latitude) : null,
+        longitude: raw.longitude ? Number(raw.longitude) : null,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+        destinationHalalFacilities: raw.destinationHalalFacilities?.map((dhf: any) => ({
+            ...dhf,
+            latitude: dhf.latitude ? Number(dhf.latitude) : null,
+            longitude: dhf.longitude ? Number(dhf.longitude) : null,
+        })),
+    };
+}
+
 export async function getPaginatedDestinations(
     params: CursorPaginationParams & {
         categoryId?: string;
@@ -48,7 +63,7 @@ export async function getPaginatedDestinations(
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
             });
 
-            return destinations as unknown as typeof destinations;
+            return destinations.map(serializeDestination);
         },
         params,
         "Destinations fetched successfully",
@@ -60,7 +75,7 @@ export async function getDestinations(): Promise<Destination[]> {
         include: destinationIncludes,
         orderBy: { createdAt: "desc" },
     });
-    return data as unknown as Destination[];
+    return data.map(serializeDestination);
 }
 
 export async function getDestination(id: string): Promise<Destination | null> {
@@ -68,7 +83,7 @@ export async function getDestination(id: string): Promise<Destination | null> {
         where: { id },
         include: destinationIncludes,
     });
-    return data as unknown as Destination | null;
+    return data ? serializeDestination(data) : null;
 }
 
 export async function createDestination(values: DestinationFormValues) {
@@ -146,7 +161,7 @@ export async function createDestination(values: DestinationFormValues) {
         return destination;
     });
 
-    return destination as unknown as Destination;
+    return serializeDestination(destination);
 }
 
 export async function updateDestination(
@@ -239,7 +254,7 @@ export async function updateDestination(
         return destination;
     });
 
-    return destination as unknown as Destination;
+    return serializeDestination(destination);
 }
 
 export async function deleteDestination(id: string) {

@@ -97,17 +97,24 @@ model Verification {
   @@map("verification")
 }
 
+enum CategoryType {
+  DESTINATION
+  UMKM
+}
+
 model Category {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   name        String
-  slug        String   @unique
+  slug        String
+  type        CategoryType @default(DESTINATION)
   description String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   destinations Destination[]
   umkms        Umkm[]
 
+  @@unique([slug, type])
   @@map("categories")
 }
 

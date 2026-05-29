@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/card";
 import { CategoryType } from "@/lib/generated/prisma";
 
-export default async function CategoriesPage() {
+export default async function UmkmCategoriesPage() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">Manajemen Kategori Destinasi</h1>
+                <h1 className="text-3xl font-bold tracking-tight font-heading">Manajemen Kategori UMKM</h1>
                 <p className="text-muted-foreground">
-                    Kelola kategori khusus untuk destinasi pariwisata halal.
+                    Kelola kategori khusus untuk UMKM pariwisata halal.
                 </p>
             </div>
 
@@ -24,10 +24,10 @@ export default async function CategoriesPage() {
                     <Card className="border-none shadow-sm ring-1 ring-border/50">
                         <CardHeader>
                             <CardTitle className="font-heading">Tambah Kategori</CardTitle>
-                            <CardDescription>Buat kategori baru untuk destinasi.</CardDescription>
+                            <CardDescription>Buat kategori baru untuk UMKM.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <CategoryForm type={CategoryType.DESTINATION} />
+                            <CategoryForm type={CategoryType.UMKM} />
                         </CardContent>
                     </Card>
                 </div>
@@ -35,10 +35,10 @@ export default async function CategoriesPage() {
                     <Card className="border-none shadow-sm ring-1 ring-border/50">
                         <CardHeader>
                             <CardTitle className="font-heading">Daftar Kategori</CardTitle>
-                            <CardDescription>Daftar semua kategori destinasi yang tersedia.</CardDescription>
+                            <CardDescription>Daftar semua kategori UMKM yang tersedia.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <CategoryList type={CategoryType.DESTINATION} />
+                            <CategoryList type={CategoryType.UMKM} />
                         </CardContent>
                     </Card>
                 </div>

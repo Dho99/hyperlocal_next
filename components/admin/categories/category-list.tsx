@@ -44,7 +44,13 @@ import type { Category } from "@/types/destinasi-kategori";
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
-export function CategoryList() {
+import { CategoryType } from "@/lib/generated/prisma";
+
+interface CategoryListProps {
+    type?: CategoryType;
+}
+
+export function CategoryList({ type }: CategoryListProps) {
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null,
     );
@@ -61,6 +67,7 @@ export function CategoryList() {
         refresh,
     } = useCursorPagination<Category>({
         url: "/api/categories",
+        params: { type },
     });
 
     async function handleDelete() {
@@ -188,6 +195,7 @@ export function CategoryList() {
                         <CategoryForm
                             initialData={selectedCategory}
                             onSuccess={() => setSelectedCategory(null)}
+                            type={type}
                         />
                     )}
                 </DialogContent>

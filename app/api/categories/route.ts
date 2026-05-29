@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getPaginatedCategories, createCategory } from "@/lib/services/category-service";
 import { categorySchema } from "@/lib/validations/destinasi-kategori.schema";
 import { getErrorMessage } from "@/lib/api-error";
+import { CategoryType } from "@/lib/generated/prisma";
 
 export async function GET(request: Request) {
     try {
@@ -11,8 +12,9 @@ export async function GET(request: Request) {
         const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
         const cursor = searchParams.get("cursor") || undefined;
         const search = searchParams.get("search") || undefined;
+        const type = searchParams.get("type") as CategoryType || undefined;
 
-        const result = await getPaginatedCategories({ limit, cursor, search });
+        const result = await getPaginatedCategories({ limit, cursor, search, type });
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
         return NextResponse.json(
