@@ -50,6 +50,7 @@ export interface Destination {
     openingHours: JsonValue | null;
     halalScore: number | null;
     validatedScore: number | null;
+    viewCount: number;
     categoryScores: JsonValue | null;
     createdAt: Date | string;
     updatedAt: Date | string;

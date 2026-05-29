@@ -400,18 +400,24 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                         )}
                                     </div>
                                 )}
-                                {destination.reviewCount != null &&
-                                    destination.rating == null && (
-                                        <span>
-                                            ({destination.reviewCount} ulasan)
-                                        </span>
-                                    )}
-                                {destination.category && (
-                                    <>
-                                        <div className="w-1 h-1 rounded-full bg-border" />
-                                        <span>{destination.category.name}</span>
-                                    </>
-                                )}
+                {destination.reviewCount != null &&
+                    destination.rating == null && (
+                        <span>
+                            ({destination.reviewCount} ulasan)
+                        </span>
+                    )}
+                {destination.viewCount > 0 && (
+                    <span className="inline-flex items-center gap-1 text-muted-foreground">
+                        <span className="w-1 h-1 rounded-full bg-border" />
+                        {destination.viewCount.toLocaleString("id-ID")} dilihat
+                    </span>
+                )}
+                {destination.category && (
+                    <>
+                        <div className="w-1 h-1 rounded-full bg-border" />
+                        <span>{destination.category.name}</span>
+                    </>
+                )}
                             </div>
                         </div>
 

@@ -3,6 +3,7 @@ import KpiStatCards from './components/KpiStatCards';
 import AnalyticsCharts from './components/AnalyticsCharts';
 import TablesAndMap from './components/TablesAndMap';
 import TrendVisualization from './components/TrendVisualization';
+import ViewTrendAnalytics from './components/ViewTrendAnalytics';
 import { getDetailedStatistics } from "@/lib/services/analytics-service";
 
 export default async function StatisticsDashboard() {
@@ -22,6 +23,7 @@ export default async function StatisticsDashboard() {
         mapData={data.mapData} 
       />
       <TrendVisualization trend={data.weeklyTrend} />
+      <ViewTrendAnalytics period="daily" />
     </div>
   );
 }

@@ -110,6 +110,18 @@ export async function getDashboardOverview() {
         },
     });
 
+    const pTrendingDestinations = prisma.destination.findMany({
+        take: 5,
+        orderBy: { viewCount: "desc" },
+        include: {
+            category: true,
+            images: {
+                take: 1,
+                orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+            },
+        },
+    });
+
     const pRecentInteractions = prisma.destinationInteraction.findMany({
         take: 6,
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -154,6 +166,7 @@ export async function getDashboardOverview() {
         readinessScores,
         latestDestinations,
         topDestinations,
+        trendingDestinations,
         recentInteractions,
         interactionWindow,
         recentValidations,
@@ -170,6 +183,7 @@ export async function getDashboardOverview() {
         pReadinessScores,
         pLatestDestinations,
         pTopDestinations,
+        pTrendingDestinations,
         pRecentInteractions,
         pInteractionWindow,
         pRecentValidations,
@@ -294,6 +308,14 @@ export async function getDashboardOverview() {
             rating: destination.rating || 0,
             reviewCount: destination.reviewCount || 0,
             engagement: destination._count.interactions,
+            imageUrl: destination.images[0]?.imageUrl || null,
+        })),
+        trendingDestinations: trendingDestinations.map((destination) => ({
+            id: destination.id,
+            name: destination.name,
+            category: destination.category?.name || "Destinasi",
+            city: destination.city || destination.province || "Tanpa wilayah",
+            viewCount: destination.viewCount,
             imageUrl: destination.images[0]?.imageUrl || null,
         })),
         recentActivities: recentInteractions.map((interaction) => ({

@@ -509,6 +509,62 @@ export async function getDetailedStatistics(): Promise<DetailedStatistics> {
   };
 }
 
+export async function getViewTrends(params: {
+    period: "daily" | "weekly" | "monthly";
+    limit: number;
+}) {
+    const { period, limit } = params;
+    const now = new Date();
+
+    const dateCutoff = period === "daily"
+        ? subDays(now, 1)
+        : period === "weekly"
+            ? subDays(now, 7)
+            : subDays(now, 30);
+
+    const viewInteractions = await prisma.destinationInteraction.groupBy({
+        by: ["destinationId"],
+        _count: { _all: true },
+        where: {
+            type: "VIEW",
+            createdAt: { gte: dateCutoff },
+        },
+        orderBy: { _count: { destinationId: "desc" } },
+        take: limit,
+    });
+
+    if (viewInteractions.length === 0) {
+        return [];
+    }
+
+    const destIds = viewInteractions.map(v => v.destinationId);
+    const idsOrder = Object.fromEntries(destIds.map((id, i) => [id, i]));
+
+    const destinations = await prisma.destination.findMany({
+        where: { id: { in: destIds } },
+        select: {
+            id: true,
+            name: true,
+            city: true,
+            viewCount: true,
+            category: { select: { name: true } },
+            images: { where: { isPrimary: true }, take: 1, select: { imageUrl: true } },
+        },
+    });
+
+    return destinations
+        .map(d => ({
+            id: d.id,
+            name: d.name,
+            city: d.city || "-",
+            category: d.category?.name || "Destinasi",
+            totalViews: d.viewCount,
+            periodViews: viewInteractions[idsOrder[d.id]]?._count._all ?? 0,
+            imageUrl: d.images[0]?.imageUrl || null,
+        }))
+        .sort((a, b) => idsOrder[a.id] - idsOrder[b.id]);
+}
+
 export async function recalculateHalalReadiness() {
   const regions = await prisma.destination.groupBy({
     by: ["city", "province"]
