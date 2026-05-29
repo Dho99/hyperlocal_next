@@ -51,6 +51,10 @@ export const navItems = [
                 title: "Daftar UMKM",
                 href: "/umkms",
             },
+            {
+                title: "Manajemen Kategori",
+                href: "/umkms/categories",
+            },
         ],
     },
     {

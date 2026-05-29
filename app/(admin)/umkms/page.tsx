@@ -2,10 +2,11 @@ import { AddButton } from "@/components/admin/add-button";
 import { UmkmList } from "@/components/admin/umkms/umkm-list";
 import { getCategories } from "@/lib/services/category-service";
 import { getUmkms } from "@/lib/services/umkm-service";
+import { CategoryType } from "@/lib/generated/prisma";
 
 export default async function UmkmsPage() {
   const umkms = await getUmkms();
-  const categories = await getCategories();
+  const categories = await getCategories(CategoryType.UMKM);
 
   return (
     <div className="space-y-8">

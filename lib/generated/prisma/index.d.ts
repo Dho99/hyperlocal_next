@@ -160,6 +160,14 @@ export const ValidationStatus: {
 export type ValidationStatus = (typeof ValidationStatus)[keyof typeof ValidationStatus]
 
 
+export const CategoryType: {
+  DESTINATION: 'DESTINATION',
+  UMKM: 'UMKM'
+};
+
+export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
+
+
 export const InteractionType: {
   VIEW: 'VIEW',
   SEARCH: 'SEARCH',
@@ -193,6 +201,10 @@ export const CertificationStatus: typeof $Enums.CertificationStatus
 export type ValidationStatus = $Enums.ValidationStatus
 
 export const ValidationStatus: typeof $Enums.ValidationStatus
+
+export type CategoryType = $Enums.CategoryType
+
+export const CategoryType: typeof $Enums.CategoryType
 
 export type InteractionType = $Enums.InteractionType
 
@@ -7956,6 +7968,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     slug: string | null
+    type: $Enums.CategoryType | null
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7965,6 +7978,7 @@ export namespace Prisma {
     id: string | null
     name: string | null
     slug: string | null
+    type: $Enums.CategoryType | null
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7974,6 +7988,7 @@ export namespace Prisma {
     id: number
     name: number
     slug: number
+    type: number
     description: number
     createdAt: number
     updatedAt: number
@@ -7985,6 +8000,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    type?: true
     description?: true
     createdAt?: true
     updatedAt?: true
@@ -7994,6 +8010,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    type?: true
     description?: true
     createdAt?: true
     updatedAt?: true
@@ -8003,6 +8020,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    type?: true
     description?: true
     createdAt?: true
     updatedAt?: true
@@ -8085,6 +8103,7 @@ export namespace Prisma {
     id: string
     name: string
     slug: string
+    type: $Enums.CategoryType
     description: string | null
     createdAt: Date
     updatedAt: Date
@@ -8111,6 +8130,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    type?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8123,6 +8143,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    type?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8132,6 +8153,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    type?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8141,12 +8163,13 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    type?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "type" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destinations?: boolean | Category$destinationsArgs<ExtArgs>
     umkms?: boolean | Category$umkmsArgs<ExtArgs>
@@ -8165,6 +8188,7 @@ export namespace Prisma {
       id: string
       name: string
       slug: string
+      type: $Enums.CategoryType
       description: string | null
       createdAt: Date
       updatedAt: Date
@@ -8596,6 +8620,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Category", 'String'>
     readonly name: FieldRef<"Category", 'String'>
     readonly slug: FieldRef<"Category", 'String'>
+    readonly type: FieldRef<"Category", 'CategoryType'>
     readonly description: FieldRef<"Category", 'String'>
     readonly createdAt: FieldRef<"Category", 'DateTime'>
     readonly updatedAt: FieldRef<"Category", 'DateTime'>
@@ -30250,6 +30275,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     slug: 'slug',
+    type: 'type',
     description: 'description',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -30618,6 +30644,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryType'
+   */
+  export type EnumCategoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryType'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryType[]'
+   */
+  export type ListEnumCategoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryType[]'>
     
 
 
@@ -31070,6 +31110,7 @@ export namespace Prisma {
     id?: StringFilter<"Category"> | string
     name?: StringFilter<"Category"> | string
     slug?: StringFilter<"Category"> | string
+    type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
     description?: StringNullableFilter<"Category"> | string | null
     createdAt?: DateTimeFilter<"Category"> | Date | string
     updatedAt?: DateTimeFilter<"Category"> | Date | string
@@ -31081,6 +31122,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    type?: SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -31090,22 +31132,25 @@ export namespace Prisma {
 
   export type CategoryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    slug?: string
+    slug_type?: CategorySlugTypeCompoundUniqueInput
     AND?: CategoryWhereInput | CategoryWhereInput[]
     OR?: CategoryWhereInput[]
     NOT?: CategoryWhereInput | CategoryWhereInput[]
     name?: StringFilter<"Category"> | string
+    slug?: StringFilter<"Category"> | string
+    type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
     description?: StringNullableFilter<"Category"> | string | null
     createdAt?: DateTimeFilter<"Category"> | Date | string
     updatedAt?: DateTimeFilter<"Category"> | Date | string
     destinations?: DestinationListRelationFilter
     umkms?: UmkmListRelationFilter
-  }, "id" | "slug">
+  }, "id" | "slug_type">
 
   export type CategoryOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    type?: SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -31121,6 +31166,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Category"> | string
     name?: StringWithAggregatesFilter<"Category"> | string
     slug?: StringWithAggregatesFilter<"Category"> | string
+    type?: EnumCategoryTypeWithAggregatesFilter<"Category"> | $Enums.CategoryType
     description?: StringNullableWithAggregatesFilter<"Category"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
@@ -32972,6 +33018,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32983,6 +33030,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32994,6 +33042,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33005,6 +33054,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33016,6 +33066,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33025,6 +33076,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33034,6 +33086,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34996,6 +35049,13 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumCategoryTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryType | EnumCategoryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryTypeFilter<$PrismaModel> | $Enums.CategoryType
+  }
+
   export type DestinationListRelationFilter = {
     every?: DestinationWhereInput
     some?: DestinationWhereInput
@@ -35016,10 +35076,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type CategorySlugTypeCompoundUniqueInput = {
+    slug: string
+    type: $Enums.CategoryType
+  }
+
   export type CategoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    type?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35029,6 +35095,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    type?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35038,9 +35105,20 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    type?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumCategoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryType | EnumCategoryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.CategoryType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCategoryTypeFilter<$PrismaModel>
+    _max?: NestedEnumCategoryTypeFilter<$PrismaModel>
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -36618,6 +36696,10 @@ export namespace Prisma {
     connect?: UmkmWhereUniqueInput | UmkmWhereUniqueInput[]
   }
 
+  export type EnumCategoryTypeFieldUpdateOperationsInput = {
+    set?: $Enums.CategoryType
+  }
+
   export type DestinationUpdateManyWithoutCategoryNestedInput = {
     create?: XOR<DestinationCreateWithoutCategoryInput, DestinationUncheckedCreateWithoutCategoryInput> | DestinationCreateWithoutCategoryInput[] | DestinationUncheckedCreateWithoutCategoryInput[]
     connectOrCreate?: DestinationCreateOrConnectWithoutCategoryInput | DestinationCreateOrConnectWithoutCategoryInput[]
@@ -37943,6 +38025,23 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumCategoryTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryType | EnumCategoryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryTypeFilter<$PrismaModel> | $Enums.CategoryType
+  }
+
+  export type NestedEnumCategoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryType | EnumCategoryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CategoryType[] | ListEnumCategoryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCategoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.CategoryType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCategoryTypeFilter<$PrismaModel>
+    _max?: NestedEnumCategoryTypeFilter<$PrismaModel>
+  }
+
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
@@ -38965,6 +39064,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38975,6 +39075,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39277,6 +39378,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39287,6 +39389,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41197,6 +41300,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41207,6 +41311,7 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    type?: $Enums.CategoryType
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41402,6 +41507,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41412,6 +41518,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

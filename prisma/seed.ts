@@ -4,6 +4,7 @@ import {
     ValidationStatus,
     InteractionType,
     SentimentLabel,
+    CategoryType,
 } from "../lib/generated/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
@@ -35,12 +36,19 @@ async function main() {
 
     // 1. Create Categories
     const categoriesData = [
-        { name: "Kuliner Halal", slug: "kuliner-halal", description: "Makanan dan minuman terjamin halal." },
-        { name: "Wisata Religi", slug: "wisata-religi", description: "Destinasi religi dan sejarah Islam." },
-        { name: "Alam & Taman", slug: "alam-taman", description: "Wisata alam yang ramah keluarga." },
-        { name: "Belanja & Retail", slug: "belanja-retail", description: "Pusat perbelanjaan dan oleh-oleh." },
-        { name: "Budaya & Heritage", slug: "budaya-heritage", description: "Situs budaya dan warisan sejarah." },
-        { name: "Hotel & Penginapan", slug: "hotel-penginapan", description: "Akomodasi ramah muslim." },
+        // Destination Categories
+        { name: "Kuliner Halal", slug: "kuliner-halal", description: "Makanan dan minuman terjamin halal.", type: CategoryType.DESTINATION },
+        { name: "Wisata Religi", slug: "wisata-religi", description: "Destinasi religi dan sejarah Islam.", type: CategoryType.DESTINATION },
+        { name: "Alam & Taman", slug: "alam-taman", description: "Wisata alam yang ramah keluarga.", type: CategoryType.DESTINATION },
+        { name: "Belanja & Retail", slug: "belanja-retail", description: "Pusat perbelanjaan dan oleh-oleh.", type: CategoryType.DESTINATION },
+        { name: "Budaya & Heritage", slug: "budaya-heritage", description: "Situs budaya dan warisan sejarah.", type: CategoryType.DESTINATION },
+        { name: "Hotel & Penginapan", slug: "hotel-penginapan", description: "Akomodasi ramah muslim.", type: CategoryType.DESTINATION },
+        
+        // UMKM Categories
+        { name: "Rumah Makan", slug: "rumah-makan", description: "Berbagai jenis rumah makan.", type: CategoryType.UMKM },
+        { name: "Kedai Kopi", slug: "kedai-kopi", description: "Tempat bersantai menikmati kopi.", type: CategoryType.UMKM },
+        { name: "Toko Oleh-oleh", slug: "toko-oleh-oleh", description: "Menyediakan buah tangan khas daerah.", type: CategoryType.UMKM },
+        { name: "Kerajinan Tangan", slug: "kerajinan-tangan", description: "Produk kreatif lokal.", type: CategoryType.UMKM },
     ];
 
     const categories = [];
@@ -192,13 +200,14 @@ async function main() {
         const dest = destinations[i % destinations.length];
         const status = certStatuses[Math.floor(Math.random() * certStatuses.length)];
         const name = `${umkmNames[i % umkmNames.length]} ${i}`;
+        const umkmCategory = categories.find(c => c.type === CategoryType.UMKM && (i % 2 === 0 ? c.slug === "rumah-makan" : c.slug === "kedai-kopi"));
         
         await prisma.umkm.create({
             data: {
                 name,
                 slug: name.toLowerCase().replace(/ /g, '-') + '-' + i,
                 owner: "Owner " + i,
-                category: { connect: { id: categories[0].id } }, // Kuliner
+                category: { connect: { id: umkmCategory?.id || categories[0].id } },
                 destination: { connect: { id: dest.id } },
                 address: "Jl. " + dest.city + " No. " + i,
                 phone: "0812" + Math.floor(Math.random() * 100000000),

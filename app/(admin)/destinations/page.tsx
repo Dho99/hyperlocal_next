@@ -2,10 +2,11 @@ import { getCategories } from "@/lib/services/category-service";
 import { getDestinations } from "@/lib/services/destination-service";
 import { DestinationList } from "@/components/admin/destinations/destination-list";
 import { AddButton } from "@/components/admin/add-button";
+import { CategoryType } from "@/lib/generated/prisma";
 
 export default async function DestinationsPage() {
   const destinations = await getDestinations();
-  const categories = await getCategories();
+  const categories = await getCategories(CategoryType.DESTINATION);
 
   return (
     <div className="space-y-8">

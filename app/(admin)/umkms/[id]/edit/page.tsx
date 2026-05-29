@@ -2,6 +2,7 @@ import { getCategories } from "@/lib/services/category-service";
 import { getUmkm } from "@/lib/services/umkm-service";
 import { UmkmForm } from "@/components/admin/umkms/umkm-form";
 import { notFound } from "next/navigation";
+import { CategoryType } from "@/lib/generated/prisma";
 
 interface EditUmkmPageProps {
   params: Promise<{
@@ -12,7 +13,7 @@ interface EditUmkmPageProps {
 export default async function EditUmkmPage({ params }: EditUmkmPageProps) {
   const { id } = await params;
   const umkm = await getUmkm(id);
-  const categories = await getCategories();
+  const categories = await getCategories(CategoryType.UMKM);
 
   if (!umkm) {
     notFound();
