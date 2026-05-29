@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
 import { 
   InteractionType, 
   SentimentLabel, 
@@ -11,7 +12,7 @@ export async function trackInteraction(data: {
   type: InteractionType;
   keyword?: string;
   source?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Prisma.InputJsonValue;
 }) {
   return await prisma.destinationInteraction.create({
     data: {

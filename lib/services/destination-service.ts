@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { DestinationFormValues } from "@/types/destination";
 import type { Destination } from "@/types/destination";
+import type { Prisma } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
     CursorPaginationParams,
@@ -16,20 +17,38 @@ const destinationIncludes = {
             evidences: true,
         },
     },
+    umkms: {
+        include: {
+            category: true,
+            images: true,
+            certifications: true,
+        },
+        orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+        take: 8,
+    },
     images: true,
-} as const;
+} satisfies Prisma.DestinationInclude;
 
-function serializeDestination(raw: any): Destination {
+type DestinationWithIncludes = Prisma.DestinationGetPayload<{
+    include: typeof destinationIncludes;
+}>;
+
+function serializeDestination(raw: DestinationWithIncludes): Destination {
     return {
         ...raw,
         latitude: raw.latitude ? Number(raw.latitude) : null,
         longitude: raw.longitude ? Number(raw.longitude) : null,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
-        destinationHalalFacilities: raw.destinationHalalFacilities?.map((dhf: any) => ({
+        destinationHalalFacilities: raw.destinationHalalFacilities?.map((dhf) => ({
             ...dhf,
             latitude: dhf.latitude ? Number(dhf.latitude) : null,
             longitude: dhf.longitude ? Number(dhf.longitude) : null,
+        })),
+        umkms: raw.umkms?.map((umkm) => ({
+            ...umkm,
+            latitude: umkm.latitude ? Number(umkm.latitude) : null,
+            longitude: umkm.longitude ? Number(umkm.longitude) : null,
         })),
     };
 }

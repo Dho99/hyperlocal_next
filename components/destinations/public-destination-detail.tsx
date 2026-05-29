@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
     ArrowLeft,
@@ -18,6 +18,10 @@ import {
     User,
     Loader2,
     AlertCircle,
+    Navigation,
+    Store,
+    CheckCircle2,
+    Copy,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import type { Destination } from "@/types/destination";
@@ -25,10 +29,10 @@ import type { PublicReview } from "@/types/review";
 import { getDestination } from "@/lib/api/destination";
 import { getDestinationReviews } from "@/lib/api/review";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { api } from "@/lib/axios";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import Navbar from "../ui/navbar";
 
 const DynamicContextMap = dynamic(
@@ -38,14 +42,6 @@ const DynamicContextMap = dynamic(
 
 interface PublicDestinationDetailProps {
     id: string;
-}
-
-function formatDate(date: Date | string) {
-    return new Intl.DateTimeFormat("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    }).format(new Date(date));
 }
 
 function formatRelativeDate(date: Date | string) {
@@ -110,36 +106,57 @@ function getFacilityIconBg(type: string | null | undefined): string {
     );
 }
 
+function isMosqueFacility(type: string | null | undefined, name: string) {
+    const value = `${type ?? ""} ${name}`.toLowerCase();
+    return (
+        value.includes("masjid") ||
+        value.includes("mushola") ||
+        value.includes("musholla") ||
+        value.includes("mosque") ||
+        value.includes("prayer")
+    );
+}
+
+function formatDistance(distance: number | null) {
+    if (distance == null) return "Di sekitar destinasi";
+    return distance < 1
+        ? `${Math.round(distance * 1000)} m`
+        : `${distance.toFixed(1)} km`;
+}
+
+function googleMapsUrl(destination: Destination) {
+    if (destination.latitude != null && destination.longitude != null) {
+        return `https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}`;
+    }
+
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        [destination.name, destination.address, destination.city]
+            .filter(Boolean)
+            .join(", "),
+    )}`;
+}
+
+function getSavedDestinationIds() {
+    try {
+        const value = window.localStorage.getItem("savedDestinations");
+        const parsed = JSON.parse(value ?? "[]");
+        return Array.isArray(parsed)
+            ? parsed.filter((item): item is string => typeof item === "string")
+            : [];
+    } catch {
+        return [];
+    }
+}
+
 export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const router = useRouter();
-    const pathname = usePathname();
     const [destination, setDestination] = useState<Destination | null>(null);
     const [reviews, setReviews] = useState<PublicReview[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
-
-    const navRef = useRef<HTMLDivElement>(null);
-    const indicatorRef = useRef<HTMLDivElement>(null);
-    const activeLinkRef = useRef<HTMLAnchorElement>(null);
-    const [indicatorReady, setIndicatorReady] = useState(false);
-
-    const isDestinasiActive = pathname.startsWith("/destinasi/");
-
-    useEffect(() => {
-        if (!indicatorReady || !navRef.current || !activeLinkRef.current)
-            return;
-        const indicator = indicatorRef.current;
-        const active = activeLinkRef.current;
-        if (!indicator) return;
-        indicator.style.width = `${active.offsetWidth}px`;
-        indicator.style.left = `${active.offsetLeft}px`;
-        indicator.style.opacity = "1";
-    }, [indicatorReady]);
-
-    useEffect(() => {
-        setIndicatorReady(true); //eslint-disable-line
-    }, []);
+    const [saved, setSaved] = useState(false);
+    const [shareCopied, setShareCopied] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -161,6 +178,18 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         fetchData();
     }, [id]);
 
+    useEffect(() => {
+        const savedIds = getSavedDestinationIds();
+        queueMicrotask(() => setSaved(savedIds.includes(id)));
+    }, [id]);
+
+    useEffect(() => {
+        api.post(`/destinations/${id}/interactions`, {
+            type: "VIEW",
+            source: "destination_detail",
+        }).catch(() => undefined);
+    }, [id]);
+
     const primaryImage = useMemo(() => {
         if (!destination?.images?.length) return null;
         const primary = destination.images.find(
@@ -176,10 +205,9 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             .filter((img) => img.imageUrl !== primaryImage);
     }, [destination, primaryImage]);
 
-    const facilities = useMemo(() => {
+    const allFacilities = useMemo(() => {
         if (!destination?.destinationHalalFacilities?.length) return [];
         return destination.destinationHalalFacilities
-            .filter((dhf) => dhf.latitude != null && dhf.longitude != null)
             .map((dhf) => {
                 const dist =
                     destination.latitude != null &&
@@ -203,6 +231,51 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             })
             .sort(
                 (a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity),
+            );
+    }, [destination]);
+
+    const mosqueFacilities = useMemo(
+        () => allFacilities.filter((fac) => isMosqueFacility(fac.type, fac.name)),
+        [allFacilities],
+    );
+
+    const nearbyFacilities = useMemo(
+        () =>
+            allFacilities.filter(
+                (fac) => !isMosqueFacility(fac.type, fac.name),
+            ),
+        [allFacilities],
+    );
+
+    const nearbyUmkms = useMemo(() => {
+        if (!destination?.umkms?.length) return [];
+        return destination.umkms
+            .map((umkm) => ({
+                ...umkm,
+                distance:
+                    destination.latitude != null &&
+                    destination.longitude != null &&
+                    umkm.latitude != null &&
+                    umkm.longitude != null
+                        ? haversineDistance(
+                              Number(destination.latitude),
+                              Number(destination.longitude),
+                              umkm.latitude,
+                              umkm.longitude,
+                          )
+                        : null,
+                primaryImage:
+                    umkm.images?.find((image) => image.isPrimary)?.imageUrl ??
+                    umkm.images?.[0]?.imageUrl ??
+                    null,
+                validCertification: umkm.certifications?.some(
+                    (cert) => cert.status === "VALID",
+                ),
+            }))
+            .sort(
+                (a, b) =>
+                    (a.distance ?? Infinity) - (b.distance ?? Infinity) ||
+                    (b.rating ?? 0) - (a.rating ?? 0),
             );
     }, [destination]);
 
@@ -230,16 +303,51 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         };
     }, [destination]);
 
-    // const handleShare = useCallback(async () => {
-    //     const url = window.location.href;
-    //     if (navigator.share) {
-    //         try {
-    //             await navigator.share({ title: destination?.name ?? "Destinasi", url });
-    //         } catch { /* user cancelled */ }
-    //     } else {
-    //         await navigator.clipboard.writeText(url);
-    //     }
-    // }, [destination?.name]);
+    const trackInteraction = useCallback(
+        (type: "SAVE" | "SHARE" | "ROUTE" | "CLICK") => {
+            api.post(`/destinations/${id}/interactions`, {
+                type,
+                source: "destination_detail",
+            }).catch(() => undefined);
+        },
+        [id],
+    );
+
+    const handleSave = useCallback(() => {
+        const savedIds = getSavedDestinationIds();
+        const nextSaved = !saved;
+        const nextIds = nextSaved
+            ? Array.from(new Set([...savedIds, id]))
+            : savedIds.filter((savedId) => savedId !== id);
+        window.localStorage.setItem("savedDestinations", JSON.stringify(nextIds));
+        setSaved(nextSaved);
+        if (nextSaved) trackInteraction("SAVE");
+    }, [id, saved, trackInteraction]);
+
+    const handleShare = useCallback(async () => {
+        if (!destination) return;
+        const url = window.location.href;
+        trackInteraction("SHARE");
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: destination.name, url });
+                return;
+            } catch {
+                return;
+            }
+        }
+
+        await navigator.clipboard.writeText(url);
+        setShareCopied(true);
+        window.setTimeout(() => setShareCopied(false), 1800);
+    }, [destination, trackInteraction]);
+
+    const handleRoute = useCallback(() => {
+        if (!destination) return;
+        trackInteraction("ROUTE");
+        window.open(googleMapsUrl(destination), "_blank", "noopener,noreferrer");
+    }, [destination, trackInteraction]);
 
     if (loading) {
         return (
@@ -331,9 +439,26 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                         )}
                         <button
                             type="button"
-                            className="absolute top-4 right-4 bg-background/60 backdrop-blur-md p-2 rounded-full text-muted-foreground hover:text-primary transition-colors shadow-sm"
+                            onClick={handleSave}
+                            aria-pressed={saved}
+                            aria-label={
+                                saved
+                                    ? "Hapus dari simpanan"
+                                    : "Simpan destinasi"
+                            }
+                            className={cn(
+                                "absolute top-4 right-4 bg-background/70 backdrop-blur-md p-2 rounded-full transition-colors shadow-sm",
+                                saved
+                                    ? "text-primary"
+                                    : "text-muted-foreground hover:text-primary",
+                            )}
                         >
-                            <Heart className="size-5" />
+                            <Heart
+                                className={cn(
+                                    "size-5",
+                                    saved && "fill-current",
+                                )}
+                            />
                         </button>
                     </div>
                     <div className="hidden md:flex flex-col gap-2 md:gap-3">
@@ -424,24 +549,18 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                             </div>
                         )}
 
-                        {/* Halal Facilities */}
-                        {facilities.length > 0 && (
-                            <div>
+                        {/* Nearby Facilities */}
+                        {nearbyFacilities.length > 0 && (
+                            <section>
                                 <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-4">
-                                    Fasilitas Halal Terdekat
+                                    Fasilitas Terdekat
                                 </h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                    {facilities.map((fac) => {
+                                    {nearbyFacilities.map((fac) => {
                                         const Icon = getFacilityIcon(fac.type);
                                         const iconBg = getFacilityIconBg(
                                             fac.type,
                                         );
-                                        const distLabel =
-                                            fac.distance != null
-                                                ? fac.distance < 1
-                                                    ? `${(fac.distance * 1000).toFixed(0)} m`
-                                                    : `${fac.distance.toFixed(1)} km`
-                                                : null;
                                         return (
                                             <div
                                                 key={fac.id}
@@ -459,7 +578,9 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                                     {fac.name}
                                                 </h3>
                                                 <p className="text-xs text-muted-foreground">
-                                                    {distLabel ?? "Di Lokasi"}
+                                                    {formatDistance(
+                                                        fac.distance,
+                                                    )}
                                                     {fac.type
                                                         ? ` • ${fac.type}`
                                                         : ""}
@@ -468,7 +589,111 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                         );
                                     })}
                                 </div>
-                            </div>
+                            </section>
+                        )}
+
+                        {/* Nearby UMKM */}
+                        {nearbyUmkms.length > 0 && (
+                            <section>
+                                <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-4">
+                                    UMKM di Sekitar Destinasi
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {nearbyUmkms.slice(0, 4).map((umkm) => (
+                                        <div
+                                            key={umkm.id}
+                                            className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm"
+                                        >
+                                            <div className="flex gap-3 p-3">
+                                                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-accent">
+                                                    {umkm.primaryImage ? (
+                                                        <Image
+                                                            src={
+                                                                umkm.primaryImage
+                                                            }
+                                                            alt={umkm.name}
+                                                            fill
+                                                            sizes="80px"
+                                                            className="object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-full items-center justify-center">
+                                                            <Store className="size-7 text-border" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <h3 className="line-clamp-2 text-sm font-bold text-foreground">
+                                                            {umkm.name}
+                                                        </h3>
+                                                        {umkm.validCertification && (
+                                                            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                                                        )}
+                                                    </div>
+                                                    <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+                                                        {umkm.category?.name ??
+                                                            "UMKM"}
+                                                        {" • "}
+                                                        {formatDistance(
+                                                            umkm.distance,
+                                                        )}
+                                                    </p>
+                                                    {umkm.rating != null && (
+                                                        <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-foreground">
+                                                            <Star className="size-3 fill-[#e7c365] text-[#e7c365]" />
+                                                            {umkm.rating.toFixed(
+                                                                1,
+                                                            )}
+                                                            {umkm.reviewCount !=
+                                                                null && (
+                                                                <span className="font-normal text-muted-foreground">
+                                                                    (
+                                                                    {
+                                                                        umkm.reviewCount
+                                                                    }
+                                                                    )
+                                                                </span>
+                                                            )}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Nearby Mosque */}
+                        {mosqueFacilities.length > 0 && (
+                            <section>
+                                <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-4">
+                                    Masjid dan Ruang Ibadah Terdekat
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {mosqueFacilities.slice(0, 4).map((fac) => (
+                                        <div
+                                            key={fac.id}
+                                            className="flex items-center gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm"
+                                        >
+                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800">
+                                                <Building2 className="size-5" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h3 className="truncate text-sm font-bold text-foreground">
+                                                    {fac.name}
+                                                </h3>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {formatDistance(
+                                                        fac.distance,
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
                         )}
 
                         {/* Reviews */}
@@ -576,9 +801,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                 <div className="p-4 bg-muted/30">
                                     <button
                                         type="button"
+                                        onClick={handleRoute}
                                         className="w-full bg-primary text-primary-foreground text-xs font-semibold tracking-wider py-3 rounded-full hover:bg-primary/90 transition-colors shadow-sm"
                                     >
-                                        Lihat Peta Penuh
+                                        Buka Rute di Maps
                                     </button>
                                 </div>
                             </div>
@@ -591,18 +817,46 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                 <div className="space-y-3">
                                     <button
                                         type="button"
+                                        onClick={handleRoute}
                                         className="w-full bg-primary text-primary-foreground text-xs font-semibold tracking-wider py-3 rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center gap-2"
                                     >
-                                        <Bookmark className="size-4" />
-                                        Simpan ke Rencana
+                                        <Navigation className="size-4" />
+                                        Arahkan Rute
                                     </button>
                                     <button
                                         type="button"
-                                        // onClick={handleShare}
+                                        onClick={handleSave}
+                                        aria-pressed={saved}
+                                        className={cn(
+                                            "w-full border text-xs font-semibold tracking-wider py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2",
+                                            saved
+                                                ? "bg-primary/10 border-primary/30 text-primary"
+                                                : "bg-transparent border-border text-foreground hover:bg-muted",
+                                        )}
+                                    >
+                                        <Bookmark
+                                            className={cn(
+                                                "size-4",
+                                                saved && "fill-current",
+                                            )}
+                                        />
+                                        {saved
+                                            ? "Tersimpan"
+                                            : "Simpan Destinasi"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleShare}
                                         className="w-full bg-transparent border border-border text-foreground text-xs font-semibold tracking-wider py-3 rounded-lg hover:bg-muted transition-colors flex items-center justify-center gap-2"
                                     >
-                                        <Share2 className="size-4" />
-                                        Bagikan Destinasi
+                                        {shareCopied ? (
+                                            <Copy className="size-4" />
+                                        ) : (
+                                            <Share2 className="size-4" />
+                                        )}
+                                        {shareCopied
+                                            ? "Link Disalin"
+                                            : "Bagikan Destinasi"}
                                     </button>
                                 </div>
                             </div>

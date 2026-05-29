@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { umkmSchema, type UmkmFormValues } from "@/lib/validations/umkm.schema";
 import { Category } from "./category";
 import { Destination } from "./destination";
@@ -64,6 +63,8 @@ export interface Umkm {
     phone: string | null;
     latitude: number | null;
     longitude: number | null;
+    rating?: number | null;
+    reviewCount?: number | null;
     createdAt: Date | string;
     updatedAt: Date | string;
 
