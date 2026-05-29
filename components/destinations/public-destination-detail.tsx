@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import {
+    useState,
+    useEffect,
+    useMemo,
+    useCallback,
+    type FormEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -27,9 +33,13 @@ import dynamic from "next/dynamic";
 import type { Destination } from "@/types/destination";
 import type { PublicReview } from "@/types/review";
 import { getDestination } from "@/lib/api/destination";
-import { getDestinationReviews } from "@/lib/api/review";
+import {
+    createDestinationReview,
+    getDestinationReviews,
+} from "@/lib/api/review";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { api } from "@/lib/axios";
+import { authClient } from "@/lib/auth-client";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { cn } from "@/lib/utils";
@@ -156,6 +166,12 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const [heroLoaded, setHeroLoaded] = useState(false);
     const [saved, setSaved] = useState(false);
     const [shareCopied, setShareCopied] = useState(false);
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewComment, setReviewComment] = useState("");
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [reviewError, setReviewError] = useState<string | null>(null);
+    const { data: session, isPending: sessionPending } =
+        authClient.useSession();
 
     useEffect(() => {
         async function fetchData() {
@@ -347,6 +363,53 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         trackInteraction("ROUTE");
         window.open(googleMapsUrl(destination), "_blank", "noopener,noreferrer");
     }, [destination, trackInteraction]);
+
+    const handleReviewLogin = useCallback(() => {
+        const redirectTo = `${window.location.pathname}${window.location.search}`;
+        router.push(`/user/login?redirect=${encodeURIComponent(redirectTo)}`);
+    }, [router]);
+
+    const handleReviewSubmit = useCallback(
+        async (event: FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+
+            if (!session) {
+                handleReviewLogin();
+                return;
+            }
+
+            try {
+                setReviewSubmitting(true);
+                setReviewError(null);
+
+                await createDestinationReview({
+                    destinationId: id,
+                    rating: reviewRating,
+                    comment: reviewComment,
+                });
+
+                const [updatedDestination, updatedReviews] = await Promise.all([
+                    getDestination(id),
+                    getDestinationReviews(id),
+                ]);
+                setDestination(updatedDestination);
+                setReviews(updatedReviews);
+                setReviewRating(5);
+                setReviewComment("");
+            } catch (err: unknown) {
+                setReviewError(getApiErrorMessage(err));
+            } finally {
+                setReviewSubmitting(false);
+            }
+        },
+        [
+            handleReviewLogin,
+            id,
+            reviewComment,
+            reviewRating,
+            session,
+        ],
+    );
 
     if (loading) {
         return (
@@ -711,6 +774,110 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                     >
                                         Lihat Semua
                                     </button>
+                                )}
+                            </div>
+                            <div className="mb-5 rounded-xl border border-border/50 bg-card p-4 sm:p-5">
+                                {sessionPending ? (
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Loader2 className="size-4 animate-spin" />
+                                        Mengecek sesi...
+                                    </div>
+                                ) : !session ? (
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <h3 className="text-sm font-bold text-foreground">
+                                                Beri rating destinasi ini
+                                            </h3>
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                Masuk terlebih dahulu untuk
+                                                mengirim rating dan ulasan.
+                                            </p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleReviewLogin}
+                                            className="inline-flex shrink-0 items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold tracking-wider text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+                                        >
+                                            Masuk untuk Rating
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <form
+                                        onSubmit={handleReviewSubmit}
+                                        className="space-y-4"
+                                    >
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                            <div>
+                                                <h3 className="text-sm font-bold text-foreground">
+                                                    Rating Anda
+                                                </h3>
+                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                    Dibagikan sebagai{" "}
+                                                    {session.user.name}
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                {Array.from({ length: 5 }).map(
+                                                    (_, index) => {
+                                                        const value =
+                                                            index + 1;
+                                                        return (
+                                                            <button
+                                                                key={value}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setReviewRating(
+                                                                        value,
+                                                                    )
+                                                                }
+                                                                className="rounded-md p-1 text-[#e7c365] transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                                                                aria-label={`${value} bintang`}
+                                                            >
+                                                                <Star
+                                                                    className={cn(
+                                                                        "size-6",
+                                                                        value <=
+                                                                            reviewRating
+                                                                            ? "fill-current"
+                                                                            : "fill-transparent text-border",
+                                                                    )}
+                                                                />
+                                                            </button>
+                                                        );
+                                                    },
+                                                )}
+                                            </div>
+                                        </div>
+                                        <textarea
+                                            value={reviewComment}
+                                            onChange={(event) =>
+                                                setReviewComment(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            rows={3}
+                                            maxLength={1000}
+                                            placeholder="Bagikan pengalaman Anda..."
+                                            className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+                                        />
+                                        {reviewError && (
+                                            <p className="text-sm font-medium text-destructive">
+                                                {reviewError}
+                                            </p>
+                                        )}
+                                        <div className="flex justify-end">
+                                            <button
+                                                type="submit"
+                                                disabled={reviewSubmitting}
+                                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold tracking-wider text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+                                            >
+                                                {reviewSubmitting && (
+                                                    <Loader2 className="size-4 animate-spin" />
+                                                )}
+                                                Kirim Rating
+                                            </button>
+                                        </div>
+                                    </form>
                                 )}
                             </div>
                             {reviews.length > 0 ? (

@@ -4,7 +4,7 @@ import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
-import { Category as CategoryType } from "../generated/prisma";
+import { CategoryType } from "../generated/prisma";
 
 export async function getPaginatedCategories(
     params: CursorPaginationParams & { search?: string; type?: CategoryType },
@@ -28,8 +28,11 @@ export async function getPaginatedCategories(
     );
 }
 
-export async function getCategories() {
+export async function getCategories(type?: CategoryType) {
     const categories = await prisma.category.findMany({
+        where: {
+            ...(type && { type }),
+        },
         orderBy: { createdAt: "desc" },
     });
 

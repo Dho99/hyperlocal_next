@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PetaMapClient from "./components/peta-map-client";
+import PetaMapDynamic from "./components/peta-map-dynamic";
 
 export const metadata: Metadata = {
     title: "Peta Interaktif - HyperLocal",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function PetaPage() {
-    return <PetaMapClient />;
+    return <PetaMapDynamic />;
 }
