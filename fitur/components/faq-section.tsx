@@ -1,7 +1,11 @@
 import { ChevronRight } from "lucide-react";
-import { faqs } from "@/fitur/data/landing";
+import type { Faq } from "@/fitur/data/landing-data";
 
-export function FaqSection() {
+interface FaqSectionProps {
+    items: Faq[];
+}
+
+export function FaqSection({ items }: FaqSectionProps) {
     return (
         <section
             className="mx-auto max-w-4xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8"
@@ -16,7 +20,7 @@ export function FaqSection() {
                 </p>
             </div>
             <div className="mt-8 space-y-3">
-                {faqs.map((faq) => (
+                {items.map((faq) => (
                     <details
                         className="group rounded-xl border border-[#cbc4d2]/60 bg-white p-5 shadow-sm"
                         key={faq.question}

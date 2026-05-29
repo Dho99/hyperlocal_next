@@ -19,9 +19,6 @@ export async function getPaginatedCategories(
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),
-                    ...(params.type && {
-                        type: params.type,
-                    }),
                 },
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
             });

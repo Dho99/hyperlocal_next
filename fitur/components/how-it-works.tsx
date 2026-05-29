@@ -1,6 +1,10 @@
-import { steps } from "@/fitur/data/landing";
+import type { Step } from "@/fitur/data/landing-data";
 
-export function HowItWorks() {
+interface HowItWorksProps {
+    items: Step[];
+}
+
+export function HowItWorks({ items }: HowItWorksProps) {
     return (
         <section
             className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
@@ -8,7 +12,7 @@ export function HowItWorks() {
         >
             <div className="text-center">
                 <h2 className="font-heading text-3xl font-semibold">
-                    Cara Kerja HyperLocal
+                    Cara Kerja Hyperlocal
                 </h2>
                 <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#494551]">
                     Mulai dari pencarian sampai rencana perjalanan, semua
@@ -16,7 +20,7 @@ export function HowItWorks() {
                 </p>
             </div>
             <div className="mt-8 grid gap-6 md:grid-cols-3">
-                {steps.map((step, index) => (
+                {items.map((step, index) => (
                     <article
                         className="relative rounded-xl border border-[#cbc4d2]/60 bg-white p-7 shadow-sm"
                         key={step.title}

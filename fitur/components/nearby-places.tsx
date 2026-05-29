@@ -1,6 +1,11 @@
-import { nearbyPlaces } from "@/fitur/data/landing";
+import { Utensils } from "lucide-react";
+import type { UmkmCard } from "@/fitur/data/landing-data";
 
-export function NearbyPlaces() {
+interface NearbyPlacesProps {
+    items: UmkmCard[];
+}
+
+export function NearbyPlaces({ items }: NearbyPlacesProps) {
     return (
         <section
             className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
@@ -12,29 +17,33 @@ export function NearbyPlaces() {
                         Rekomendasi Sekitar
                     </p>
                     <h2 className="mt-3 font-heading text-3xl font-semibold">
-                        Fasilitas halal dekat tujuanmu
+                        UMKM dan fasilitas dekat destinasi
                     </h2>
                     <p className="mt-4 text-sm leading-7 text-[#494551]">
-                        Kombinasikan destinasi utama dengan masjid, kuliner
-                        halal, dan penginapan ramah muslim yang berada dalam
-                        radius dekat.
+                        Daftar ini memakai UMKM yang terhubung ke kategori,
+                        destinasi, sertifikasi, dan rating di database.
                     </p>
                 </div>
                 <div className="grid gap-4 md:grid-cols-3">
-                    {nearbyPlaces.map((place) => (
+                    {items.map((umkm) => (
                         <article
                             className="rounded-xl border border-[#e6e0e9] bg-white p-5"
-                            key={place.title}
+                            key={umkm.id}
                         >
                             <div className="flex size-11 items-center justify-center rounded-lg bg-[#e9ddff] text-[#4f378a]">
-                                <place.icon className="size-5" />
+                                <Utensils className="size-5" />
                             </div>
-                            <h3 className="mt-4 font-heading text-base font-bold">
-                                {place.title}
+                            <h3 className="mt-4 line-clamp-2 font-heading text-base font-bold">
+                                {umkm.name}
                             </h3>
                             <p className="mt-2 text-sm text-[#494551]">
-                                {place.distance} - {place.type}
+                                {umkm.categoryName || "UMKM"} - {umkm.location}
                             </p>
+                            {umkm.hasCertification && (
+                                <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800">
+                                    Sertifikat valid
+                                </span>
+                            )}
                         </article>
                     ))}
                 </div>

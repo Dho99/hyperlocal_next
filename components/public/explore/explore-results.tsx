@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Sparkles, MapPin, Loader2, AlertCircle, Star, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { EmptyState } from "./empty-state";
 
 interface ExploreDestination {
     id: string;
@@ -136,9 +137,11 @@ function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: Result
 
 interface ExploreResultsProps {
     query: string;
+    lat?: string;
+    lng?: string;
 }
 
-export function ExploreResults({ query }: ExploreResultsProps) {
+export function ExploreResults({ query, lat, lng }: ExploreResultsProps) {
     const [results, setResults] = useState<ExploreResponse | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -154,7 +157,9 @@ export function ExploreResults({ query }: ExploreResultsProps) {
         setError(null);
 
         try {
-            const res = await fetch(`/api/explore?q=${encodeURIComponent(q)}`);
+            let url = `/api/explore?q=${encodeURIComponent(q)}`;
+            if (lat && lng) url += `&lat=${lat}&lng=${lng}`;
+            const res = await fetch(url);
 
             if (!res.ok) {
                 const errJson = await res.json().catch(() => ({}));
@@ -227,15 +232,7 @@ export function ExploreResults({ query }: ExploreResultsProps) {
             )}
 
             {!isLoading && results && results.data.length === 0 && !error && (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <Search className="size-10 text-[#cbc4d2] mb-3" />
-                    <h2 className="text-lg font-heading font-semibold text-[#1f1635]">
-                        Tidak ditemukan destinasi yang sesuai
-                    </h2>
-                    <p className="mt-1 text-sm text-[#494551]">
-                        Coba gunakan kata kunci yang berbeda.
-                    </p>
-                </div>
+                <EmptyState query={query} />
             )}
 
             {!isLoading && results && results.data.length > 0 && (

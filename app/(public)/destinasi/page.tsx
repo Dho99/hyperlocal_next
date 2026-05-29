@@ -1,4 +1,3 @@
-import Navbar from "@/components/ui/navbar";
 import { PublicDestinationList } from "@/components/destinations/public-destination-list";
 
 export const metadata = {
@@ -10,7 +9,6 @@ export const metadata = {
 export default function DestinasiPage() {
     return (
         <div className="min-h-screen bg-background">
-            <Navbar />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
                 <div className="text-center space-y-4 mb-12">
                     <h1 className="text-4xl sm:text-5xl font-heading font-bold text-[#1f1635]">

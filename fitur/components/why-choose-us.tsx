@@ -1,6 +1,10 @@
-import { reasons } from "@/fitur/data/landing";
+import type { Reason } from "@/fitur/data/landing-data";
 
-export function WhyChooseUs() {
+interface WhyChooseUsProps {
+    items: Reason[];
+}
+
+export function WhyChooseUs({ items }: WhyChooseUsProps) {
     return (
         <section
             className="mx-auto max-w-7xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8"
@@ -11,12 +15,13 @@ export function WhyChooseUs() {
                     Kenapa Memilih Kami
                 </h2>
                 <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#494551]">
-                    Kami berkomitmen memberikan pengalaman wisata yang aman,
-                    nyaman, dan sesuai dengan prinsip-prinsip halal.
+                    Landing page ini membaca data operasional Hyperlocal,
+                    sehingga jumlah, kategori, dan rekomendasi ikut berubah
+                    saat database diperbarui.
                 </p>
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-3">
-                {reasons.map((reason) => (
+                {items.map((reason) => (
                     <article
                         className="rounded-xl border border-[#cbc4d2]/60 bg-white/55 p-7 text-center shadow-sm"
                         key={reason.title}

@@ -33,7 +33,6 @@ import { api } from "@/lib/axios";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { cn } from "@/lib/utils";
-import Navbar from "../ui/navbar";
 
 const DynamicContextMap = dynamic(
     () => import("@/components/maps").then((m) => m.DynamicContextMap),
@@ -413,9 +412,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Top Navbar */}
-            <Navbar />
-
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8 space-y-6 sm:space-y-8">
                 {/* Hero Gallery Bento */}
                 <section className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">

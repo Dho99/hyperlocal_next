@@ -25,7 +25,7 @@ import PetaSidebar from "./peta-sidebar";
 import UserLocationMarker from "./user-location-marker";
 import FacilityRoutePolyline from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
-import Navbar from "@/components/ui/navbar";
+
 
 fixLeafletIcons();
 
@@ -146,9 +146,7 @@ export default function PetaMapClient() {
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="flex h-[calc(100dvh-4rem)]">
+        <div className="flex h-[calc(100dvh-4rem)]">
                 <PetaSidebar
                     destinations={filteredDestinations}
                     userLocation={userLocation}
@@ -312,6 +310,5 @@ export default function PetaMapClient() {
                     </MapContainer>
                 </main>
             </div>
-        </>
     );
 }

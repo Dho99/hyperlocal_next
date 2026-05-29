@@ -9,9 +9,12 @@ import {
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
 import type { AIRecommendation } from "@/types/ai";
+import { haversineDistance } from "@/lib/utils/haversine-distance";
 
 const exploreQuerySchema = z.object({
     q: z.string().min(1, "Query wajib diisi"),
+    lat: z.coerce.number().optional(),
+    lng: z.coerce.number().optional(),
 });
 
 interface ExploreDestination {
@@ -38,15 +41,25 @@ interface ExploreResponse {
     data: ExploreResponseItem[];
 }
 
-function buildPrompt(candidates: string, userQuery: string): string {
-    return `Anda adalah asisten rekomendasi wisata halal. Analisis query pengguna terhadap kandidat destinasi berikut. Pilih dan urutkan berdasarkan kecocokan dengan query.
+function buildPrompt(candidates: string, userQuery: string, isNearby = false): string {
+    let prompt = `Anda adalah asisten rekomendasi wisata halal yang STRICT. Analisis query pengguna terhadap kandidat destinasi berikut.
 
 Pertimbangan:
 - Lokasi (kota/provinsi dalam query pengguna)
 - Skor Halal (semakin tinggi semakin baik)
 - Fasilitas yang relevan (misal: "ramah anak" → fasilitas bermain/aman; "halal" → masjid, kuliner halal)
 
-⚠️ HANYA gunakan ID dari kandidat di bawah. JANGAN membuat ID palsu.
+⚠️ GEOGRAPHIC STRICTNESS: Perhatikan lokasi yang disebutkan dalam query. Jika TIDAK ADA kandidat yang berlokasi di area geografis yang dimaksud, kamu HARUS mengembalikan array kosong [].
+
+⚠️ HANYA gunakan ID dari kandidat di bawah. JANGAN membuat ID palsu.`;
+
+    if (isNearby) {
+        prompt += `
+
+📍 The user is searching for nearby locations. I have pre-filtered the candidates to only include those within a 10km radius of the user's current coordinates. Emphasize proximity in your aiReason.`;
+    }
+
+    prompt += `
 
 KANDIDAT DESTINASI:
 ${candidates}
@@ -57,6 +70,8 @@ ${userQuery}
 Response HARUS array JSON tanpa teks lain:
 [{ "destinationId": "uuid", "matchScore": 85, "aiReason": "Alasan singkat dalam Bahasa Indonesia mengapa destinasi ini cocok dengan query pengguna" }]
 Urutkan dari matchScore tertinggi ke terendah. Maksimal 5 hasil.`;
+
+    return prompt;
 }
 
 function toExploreDestination(d: {
@@ -107,7 +122,9 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const q = searchParams.get("q") ?? "";
-        const parsed = exploreQuerySchema.safeParse({ q });
+        const latRaw = searchParams.get("lat");
+        const lngRaw = searchParams.get("lng");
+        const parsed = exploreQuerySchema.safeParse({ q, lat: latRaw, lng: lngRaw });
 
         if (!parsed.success) {
             return NextResponse.json(
@@ -116,7 +133,8 @@ export async function GET(request: Request) {
             );
         }
 
-        const { q: query } = parsed.data;
+        const { q: query, lat, lng } = parsed.data;
+        const isNearby = lat != null && lng != null;
 
         const knownLocations = await getLocationNames();
         const matchedLocation = extractCityFromQuery(query, knownLocations);
@@ -140,7 +158,7 @@ export async function GET(request: Request) {
               }
             : {};
 
-        const candidates = await prisma.destination.findMany({
+        let candidates = await prisma.destination.findMany({
             where: {
                 status: "APPROVED",
                 ...whereLocation,
@@ -155,6 +173,19 @@ export async function GET(request: Request) {
             take: 20,
             orderBy: { halalScore: "desc" },
         });
+
+        if (isNearby) {
+            candidates = candidates.filter((d) => {
+                if (d.latitude == null || d.longitude == null) return false;
+                const dist = haversineDistance(
+                    lat!,
+                    lng!,
+                    Number(d.latitude),
+                    Number(d.longitude),
+                );
+                return dist <= 10;
+            });
+        }
 
         if (candidates.length === 0) {
             return NextResponse.json<ExploreResponse>(
@@ -175,7 +206,7 @@ export async function GET(request: Request) {
 
         try {
             const candidateData = candidates.map(mapToCandidateData);
-            const prompt = buildPrompt(JSON.stringify(candidateData), query);
+            const prompt = buildPrompt(JSON.stringify(candidateData), query, isNearby);
 
             const model = createGeminiModel();
             if (!model) {
@@ -217,24 +248,12 @@ export async function GET(request: Request) {
                     };
                 });
 
-            while (recommendations.length < 5) {
-                const remaining = candidates.filter(
-                    (d) =>
-                        !recommendations.some((r) => r.destination.id === d.id),
-                );
-                if (remaining.length === 0) break;
-                recommendations.push({
-                    destination: toExploreDestination(remaining[0]),
-                    matchScore: remaining[0].halalScore ?? 0,
-                    aiReason: "Destinasi dengan skor halal tertinggi",
-                });
-            }
-
             return NextResponse.json<ExploreResponse>(
                 { query, data: recommendations },
                 { status: 200 },
             );
-        } catch {
+        } catch (error) {
+            console.error("AI recommendation error:", getErrorMessage(error));
             const data = buildFallback(candidates);
             return NextResponse.json<ExploreResponse>(
                 { query, data },

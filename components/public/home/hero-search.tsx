@@ -2,38 +2,121 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, Navigation, MapPin } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogMedia,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+const NEARBY_REGEX = /terdekat|sekitar|nearby|dekat sini/i;
+const GPS_TIMEOUT = 8000;
+
+function getGpsErrorMessage(code: number): string {
+    switch (code) {
+        case 1:
+            return "Akses lokasi dimatikan. Silakan izinkan akses lokasi di browser Anda.";
+        case 2:
+            return "Posisi tidak tersedia saat ini. Coba lagi nanti.";
+        case 3:
+            return "Waktu permintaan lokasi habis. Coba lagi.";
+        default:
+            return "Gagal mendapatkan lokasi.";
+    }
+}
 
 export function HeroSearch() {
     const [query, setQuery] = useState("");
+    const [showGpsModal, setShowGpsModal] = useState(false);
+    const [gpsError, setGpsError] = useState("");
     const router = useRouter();
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const trimmed = query.trim();
         if (!trimmed) return;
+
+        if (NEARBY_REGEX.test(trimmed)) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude: lat, longitude: lng } = pos.coords;
+                    router.push(
+                        `/explore?q=${encodeURIComponent(trimmed)}&lat=${lat}&lng=${lng}`,
+                    );
+                },
+                (err) => {
+                    setGpsError(getGpsErrorMessage(err.code));
+                    setShowGpsModal(true);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: GPS_TIMEOUT,
+                    maximumAge: 60000,
+                },
+            );
+            return;
+        }
+
         router.push(`/explore?q=${encodeURIComponent(trimmed)}`);
     }
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
-        >
-            <Search className="ml-3 size-5 shrink-0 text-[#7a7582]" />
-            <input
-                aria-label="Cari destinasi"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7a7582]"
-                placeholder="Cari destinasi, kuliner, atau UMKM halal..."
-            />
-            <button
-                className="hidden h-12 rounded-xl bg-[#4f378a] px-6 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/25 transition hover:bg-[#3f2a78] sm:block"
-                type="submit"
+        <>
+            <form
+                onSubmit={handleSubmit}
+                className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
             >
-                Cari Sekarang
-            </button>
-        </form>
+                <Search className="ml-3 size-5 shrink-0 text-[#7a7582]" />
+                <input
+                    aria-label="Cari destinasi"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7a7582]"
+                    placeholder="Cari destinasi, kuliner, atau UMKM halal..."
+                />
+                <button
+                    className="hidden h-12 rounded-xl bg-[#4f378a] px-6 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/25 transition hover:bg-[#3f2a78] sm:block"
+                    type="submit"
+                >
+                    Cari Sekarang
+                </button>
+            </form>
+
+            <AlertDialog open={showGpsModal} onOpenChange={setShowGpsModal}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogMedia>
+                            <Navigation className="size-8 text-[#4f378a]" />
+                        </AlertDialogMedia>
+                        <AlertDialogTitle>
+                            Akses Lokasi Dibutuhkan
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Anda mencari destinasi di sekitar Anda, namun akses
+                            lokasi dimatikan. Silakan izinkan akses lokasi di
+                            browser Anda, atau gunakan kata kunci spesifik
+                            seperti &ldquo;di Tasikmalaya&rdquo;.
+                            {gpsError && (
+                                <span className="mt-2 block text-red-600">
+                                    {gpsError}
+                                </span>
+                            )}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction
+                            onClick={() => setShowGpsModal(false)}
+                        >
+                            Mengerti
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 }

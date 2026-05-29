@@ -48,4 +48,4 @@ opencode.json
 .gemini/
 opencode.jsonc
 
-/lib/generated/
+/lib/generated/*
