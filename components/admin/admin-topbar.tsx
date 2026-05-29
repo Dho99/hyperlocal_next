@@ -62,7 +62,7 @@ export function AdminTopbar({ user }: { user: User }) {
                 <SheetContent side="left" className="w-[300px] p-0">
                     <SheetHeader className="h-16 flex items-center px-6 border-b">
                         <SheetTitle className="text-left font-bold text-xl font-heading">
-                            HalalAdmin
+                            HyperLocal
                         </SheetTitle>
                     </SheetHeader>
                     <div className="py-2">

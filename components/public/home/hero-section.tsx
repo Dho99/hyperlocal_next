@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import {
-    Search,
     Map,
     Utensils,
     ShieldCheck,
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 import { cn } from "@/lib/utils";
+import { HeroSearch } from "./hero-search";
 
 const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ssr: false,
@@ -138,24 +138,7 @@ export function HeroSection() {
                     <h1 className="mt-3 font-heading text-4xl font-bold leading-tight text-[#4f378a] sm:text-5xl lg:text-6xl">
                         Eksplorasi Halal Indonesia
                     </h1>
-                    <form
-                        action="#popular"
-                        className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
-                    >
-                        <Search className="ml-3 size-5 shrink-0 text-[#7a7582]" />
-                        <input
-                            aria-label="Cari destinasi"
-                            name="q"
-                            className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7a7582]"
-                            placeholder="Cari destinasi, kuliner, atau UMKM halal..."
-                        />
-                        <button
-                            className="hidden h-12 rounded-xl bg-[#4f378a] px-6 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/25 transition hover:bg-[#3f2a78] sm:block"
-                            type="submit"
-                        >
-                            Cari Sekarang
-                        </button>
-                    </form>
+                    <HeroSearch />
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
                         {categories.map((cat) => (
                             <a

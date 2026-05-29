@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                     <div className="h-10 w-10 rounded-lg bg-primary-foreground flex items-center justify-center">
                         <span className="text-primary text-xl">H</span>
                     </div>
-                    <span>Hyperlocal</span>
+                    <span>HyperLocal</span>
                 </div>
                 
                 <div className="space-y-4">
@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="text-sm opacity-70">
-                    &copy; {new Date().getFullYear()} Hyperlocal Team. All rights reserved.
+                    &copy; {new Date().getFullYear()} HyperLocal. All rights reserved.
                 </div>
             </div>
 
@@ -31,7 +31,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                         <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-lg">
                             <span className="text-primary-foreground text-2xl font-bold">H</span>
                         </div>
-                        <h1 className="text-2xl font-bold text-primary">Hyperlocal</h1>
+                        <h1 className="text-2xl font-bold text-primary">HyperLocal</h1>
                     </div>
                     {children}
                 </div>

@@ -38,7 +38,7 @@ export default function Navbar() {
                     className="font-heading text-xl font-bold text-[#4f378a]"
                     href="/"
                 >
-                    Hyperlocal
+                    HyperLocal
                 </Link>
                 <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-[#494551] shadow-inner ring-1 ring-[#cbc4d2]/50 md:flex">
                     {navItems.map((item) => {

@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
             data: {
                 filename,
                 path: publicUrl,
-                url: `${req.nextUrl.origin}${publicUrl}`,
+                url: `${publicUrl}`,
                 size: optimizedBuffer.length,
                 mimeType: "image/webp",
             },

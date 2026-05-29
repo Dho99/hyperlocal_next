@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Hyperlocal - Eksplorasi Halal Indonesia",
+    title: "HyperLocal - Eksplorasi Halal Indonesia",
     description:
         "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis data hyperlocal.",
 };

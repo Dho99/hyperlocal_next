@@ -26,8 +26,7 @@ export function AdminLayout({ children, user }: AdminLayoutProps) {
                 </main>
                 <footer className="border-t bg-white/60 px-6 py-4 text-center text-xs text-muted-foreground">
                     <p>
-                        &copy; {new Date().getFullYear()} Hyperlocal Admin
-                        Portal. All rights reserved.
+                        &copy; {new Date().getFullYear()} HyperLocal. All rights reserved.
                     </p>
                 </footer>
             </div>

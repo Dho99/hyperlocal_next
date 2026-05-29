@@ -118,8 +118,6 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                     isRouteActive(item.href) ||
                     (hasSubItems &&
                         item.subItems?.some((sub) => isRouteActive(sub.href)));
-                const isDirectActive = pathname === item.href;
-
                 return (
                     <div key={item.title} className="flex flex-col gap-1">
                         {hasSubItems ? (
@@ -155,7 +153,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                 onClick={onItemClick}
                                 className={cn(
                                     "group flex items-center justify-between rounded-lg px-5 py-4 text-xl font-medium transition-all duration-200",
-                                    isDirectActive
+                                    isRouteActive(item.href)
                                         ? "bg-[#6750a4] text-white shadow-sm"
                                         : "text-white/35 hover:bg-white/10 hover:text-white/80",
                                 )}
@@ -164,7 +162,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                     <item.icon
                                         className={cn(
                                             "h-6 w-6 shrink-0 transition-colors",
-                                            isDirectActive
+                                            isRouteActive(item.href)
                                                 ? "text-white"
                                                 : "group-hover:text-white/80",
                                         )}

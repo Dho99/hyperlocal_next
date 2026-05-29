@@ -2,7 +2,7 @@ import Navbar from "@/components/ui/navbar";
 import { PublicDestinationList } from "@/components/destinations/public-destination-list";
 
 export const metadata = {
-    title: "Destinasi - Hyperlocal",
+    title: "Destinasi - HyperLocal",
     description:
         "Jelajahi destinasi wisata halal terbaik di Indonesia. Temukan informasi lengkap, rating, dan fasilitas halal.",
 };

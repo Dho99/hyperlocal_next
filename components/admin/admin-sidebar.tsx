@@ -18,7 +18,7 @@ export function AdminSidebar() {
                         className="flex flex-col font-heading tracking-tight"
                     >
                         <span className="text-[40px] font-bold leading-none">
-                            HalalAdmin
+                            HyperLocal
                         </span>
                     </Link>
                 </div>

@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 
 async function main() {
-    logger.info("Starting Hyperlocal Tourism Seeder...");
+    logger.info("Starting HyperLocal Tourism Seeder...");
 
     const rawDir = path.join(process.cwd(), "lib/crawled_data/raw");
 
