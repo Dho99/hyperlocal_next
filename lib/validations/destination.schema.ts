@@ -16,8 +16,26 @@ export const destinationSchema = z.object({
     province: z.string().min(2, "Provinsi minimal 2 karakter"),
     latitude: z.number().optional(),
     longitude: z.number().optional(),
-    facilityIds: z.array(z.string().uuid()).default([]),
-    images: z.array(z.string()),
+    images: z
+        .preprocess(
+            (val) => (val == null ? [] : val),
+            z.array(z.object({ imageUrl: z.string() })),
+        )
+        .default([]),
+    facilities: z
+        .array(
+            z.object({
+                facilityId: z.string().uuid("Pilih fasilitas yang valid"),
+                name: z.string().optional(),
+                latitude: z.number().nullable(),
+                longitude: z.number().nullable(),
+                evidenceUrls: z
+                    .array(z.string())
+                    .min(1, "Minimal 1 bukti foto"),
+            }),
+        )
+        .optional()
+        .default([]),
 });
 
 export type DestinationFormValues = z.infer<typeof destinationSchema>;

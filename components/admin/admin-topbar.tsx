@@ -1,6 +1,15 @@
 "use client";
 
-import { Search, Bell, User, LogOut, Menu, Settings, HelpCircle, Grid3X3 } from "lucide-react";
+import {
+    Search,
+    Bell,
+    User,
+    LogOut,
+    Menu,
+    Settings,
+    HelpCircle,
+    Grid3X3,
+} from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -53,7 +62,7 @@ export function AdminTopbar({ user }: { user: User }) {
                 <SheetContent side="left" className="w-[300px] p-0">
                     <SheetHeader className="h-16 flex items-center px-6 border-b">
                         <SheetTitle className="text-left font-bold text-xl font-heading">
-                            HalalAdmin
+                            HyperLocal
                         </SheetTitle>
                     </SheetHeader>
                     <div className="py-2">
@@ -71,9 +80,9 @@ export function AdminTopbar({ user }: { user: User }) {
                 </div>
             </div>
 
-            <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">
+            {/* <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">
                 Pariwisata Halal
-            </h2>
+            </h2> */}
 
             {/* Desktop Search */}
             <div className="relative hidden max-w-[560px] flex-1 items-center md:flex">

@@ -1,7 +1,14 @@
-import { PrismaClient, CertificationStatus, ValidationStatus } from '../lib/generated/prisma'
+import {
+    PrismaClient,
+    CertificationStatus,
+    ValidationStatus,
+    InteractionType,
+    SentimentLabel,
+    CategoryType,
+} from "../lib/generated/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
-import pg from 'pg';
-import 'dotenv/config'
+import pg from "pg";
+import "dotenv/config";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new pg.Pool({ connectionString });
@@ -9,144 +16,287 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('Starting seeding...')
+    console.log("Cleaning up database...");
+    // Order matters due to foreign keys
+    await prisma.destinationInteraction.deleteMany();
+    await prisma.reviewSentiment.deleteMany();
+    await prisma.review.deleteMany();
+    await prisma.halalValidation.deleteMany();
+    await prisma.halalCertification.deleteMany();
+    await prisma.umkmImage.deleteMany();
+    await prisma.umkm.deleteMany();
+    await prisma.destinationImage.deleteMany();
+    await prisma.destinationHalalFacility.deleteMany();
+    await prisma.destination.deleteMany();
+    await prisma.halalFacility.deleteMany();
+    await prisma.category.deleteMany();
+    await prisma.halalReadinessScore.deleteMany();
 
-  // 1. Create Users
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@halaltourism.com' },
-    update: {},
-    create: {
-      id: 'user_admin_01',
-      name: 'Super Admin',
-      email: 'admin@halaltourism.com',
-      role: 'admin',
-    },
-  })
+    console.log("Starting seeding with expanded data...");
 
-  const owner = await prisma.user.upsert({
-    where: { email: 'owner@warunghalal.com' },
-    update: {},
-    create: {
-      id: 'user_owner_01',
-      name: 'Ahmad Halal',
-      email: 'owner@warunghalal.com',
-      role: 'umkm_owner',
-    },
-  })
+    // 1. Create Categories
+    const categoriesData = [
+        // Destination Categories
+        { name: "Kuliner Halal", slug: "kuliner-halal", description: "Makanan dan minuman terjamin halal.", type: CategoryType.DESTINATION },
+        { name: "Wisata Religi", slug: "wisata-religi", description: "Destinasi religi dan sejarah Islam.", type: CategoryType.DESTINATION },
+        { name: "Alam & Taman", slug: "alam-taman", description: "Wisata alam yang ramah keluarga.", type: CategoryType.DESTINATION },
+        { name: "Belanja & Retail", slug: "belanja-retail", description: "Pusat perbelanjaan dan oleh-oleh.", type: CategoryType.DESTINATION },
+        { name: "Budaya & Heritage", slug: "budaya-heritage", description: "Situs budaya dan warisan sejarah.", type: CategoryType.DESTINATION },
+        { name: "Hotel & Penginapan", slug: "hotel-penginapan", description: "Akomodasi ramah muslim.", type: CategoryType.DESTINATION },
+        
+        // UMKM Categories
+        { name: "Rumah Makan", slug: "rumah-makan", description: "Berbagai jenis rumah makan.", type: CategoryType.UMKM },
+        { name: "Kedai Kopi", slug: "kedai-kopi", description: "Tempat bersantai menikmati kopi.", type: CategoryType.UMKM },
+        { name: "Toko Oleh-oleh", slug: "toko-oleh-oleh", description: "Menyediakan buah tangan khas daerah.", type: CategoryType.UMKM },
+        { name: "Kerajinan Tangan", slug: "kerajinan-tangan", description: "Produk kreatif lokal.", type: CategoryType.UMKM },
+    ];
 
-  // 2. Create Categories
-  const catKuliner = await prisma.category.upsert({
-    where: { slug: 'kuliner-halal' },
-    update: {},
-    create: {
-      name: 'Kuliner Halal',
-      slug: 'kuliner-halal',
-      description: 'Makanan dan minuman yang terjamin kehalalannya.',
-    },
-  })
-
-  const catReligi = await prisma.category.upsert({
-    where: { slug: 'wisata-religi' },
-    update: {},
-    create: {
-      name: 'Wisata Religi',
-      slug: 'wisata-religi',
-      description: 'Destinasi wisata berbasis keagamaan dan sejarah Islam.',
-    },
-  })
-
-  // 3. Create Halal Facilities
-  const facilityMosque = await prisma.halalFacility.create({
-    data: {
-      name: 'Masjid Jami',
-      description: 'Masjid luas dengan fasilitas wudhu lengkap.',
-      facilityType: 'Ibadah',
+    const categories = [];
+    for (const data of categoriesData) {
+        const cat = await prisma.category.create({ data });
+        categories.push(cat);
     }
-  })
 
-  const facilityHalalFood = await prisma.halalFacility.create({
-    data: {
-      name: 'Area Food Court Halal',
-      description: 'Seluruh tenant makanan di area ini tersertifikasi halal.',
-      facilityType: 'Kuliner',
+    // 2. Create Global Halal Facilities
+    const facilitiesData = [
+        { name: "Masjid Utama", facilityType: "MOSQUE", weight: 30 },
+        { name: "Mushola Bersih", facilityType: "MOSQUE", weight: 20 },
+        { name: "Area Wudhu Terpisah", facilityType: "MOSQUE", weight: 10 },
+        { name: "Restoran Halal Tersertifikasi", facilityType: "RESTAURANT", weight: 40 },
+        { name: "Kantin Halal", facilityType: "RESTAURANT", weight: 20 },
+        { name: "Akses Kursi Roda", facilityType: "ACCESSIBILITY", weight: 10 },
+        { name: "Toilet Ramah Difabel", facilityType: "ACCESSIBILITY", weight: 5 },
+        { name: "Ruang Laktasi", facilityType: "FAMILY", weight: 10 },
+        { name: "Area Bermain Anak", facilityType: "FAMILY", weight: 5 },
+        { name: "Arah Kiblat", facilityType: "ADDITIONAL", weight: 5 },
+        { name: "Jadwal Salat", facilityType: "ADDITIONAL", weight: 5 },
+    ];
+
+    const facilities = [];
+    for (const data of facilitiesData) {
+        const facility = await prisma.halalFacility.create({ data });
+        facilities.push(facility);
     }
-  })
 
-  // 4. Create Destination
-  const destination = await prisma.destination.upsert({
-    where: { slug: 'masjid-raya-bandung' },
-    update: {},
-    create: {
-      name: 'Masjid Raya Bandung',
-      slug: 'masjid-raya-bandung',
-      categoryId: catReligi.id,
-      description: 'Masjid ikonik di pusat kota Bandung dengan alun-alun yang luas.',
-      address: 'Jl. Asia Afrika, Balonggede, Kec. Regol',
-      city: 'Bandung',
-      province: 'Jawa Barat',
-      latitude: -6.9218,
-      longitude: 107.6069,
-      destinationHalalFacilities: {
-        create: [
-          { facilityId: facilityMosque.id },
-          { facilityId: facilityHalalFood.id }
-        ]
-      }
-    },
-  })
-
-  // 5. Create UMKM
-  const umkm = await prisma.umkm.upsert({
-    where: { slug: 'warung-nasi-halal-berkah' },
-    update: {},
-    create: {
-      name: 'Warung Nasi Halal Berkah',
-      slug: 'warung-nasi-halal-berkah',
-      ownerId: owner.id,
-      categoryId: catKuliner.id,
-      destinationId: destination.id,
-      description: 'Menyediakan nasi rames dengan berbagai pilihan lauk pauk yang lezat dan 100% halal.',
-      address: 'Samping Gerbang Utara Masjid Raya Bandung',
-      phone: '081234567890',
-      latitude: -6.9215,
-      longitude: 107.6072,
-      images: {
-        create: [
-          {
-            imageUrl: 'https://images.unsplash.com/photo-1541529086526-db283c563270?q=80&w=800',
-            caption: 'Tampak Depan Warung',
-            isPrimary: true
-          }
-        ]
-      },
-      certifications: {
-        create: {
-          certificateNo: 'ID32110000123450122',
-          issuer: 'BPJPH / MUI',
-          issuedAt: new Date('2024-01-01'),
-          expiredAt: new Date('2028-01-01'),
-          status: CertificationStatus.VALID,
-          documentUrl: 'https://example.com/halal-cert.pdf',
-          validations: {
-            create: {
-              status: ValidationStatus.APPROVED,
-              notes: 'Dokumen lengkap dan valid.',
-              validatedAt: new Date(),
-            }
-          }
+    // 3. Create Destinations in different cities
+    const destinationsData = [
+        {
+            name: "Masjid Raya Bandung",
+            slug: "masjid-raya-bandung",
+            city: "Bandung",
+            province: "Jawa Barat",
+            lat: -6.9218,
+            lng: 107.6069,
+            catSlug: "wisata-religi",
+            halalScore: 95
+        },
+        {
+            name: "Masjid Istiqlal",
+            slug: "masjid-istiqlal",
+            city: "Jakarta Pusat",
+            province: "DKI Jakarta",
+            lat: -6.1702,
+            lng: 106.8314,
+            catSlug: "wisata-religi",
+            halalScore: 100
+        },
+        {
+            name: "Taman Mini Indonesia Indah",
+            slug: "tmii",
+            city: "Jakarta Timur",
+            province: "DKI Jakarta",
+            lat: -6.3024,
+            lng: 106.8951,
+            catSlug: "budaya-heritage",
+            halalScore: 85
+        },
+        {
+            name: "Farm House Lembang",
+            slug: "farm-house-lembang",
+            city: "Bandung Barat",
+            province: "Jawa Barat",
+            lat: -6.8327,
+            lng: 107.6049,
+            catSlug: "alam-taman",
+            halalScore: 75
+        },
+        {
+            name: "Candi Prambanan",
+            slug: "candi-prambanan",
+            city: "Sleman",
+            province: "DI Yogyakarta",
+            lat: -7.7520,
+            lng: 110.4914,
+            catSlug: "budaya-heritage",
+            halalScore: 65
+        },
+        {
+            name: "Malioboro Street",
+            slug: "malioboro",
+            city: "Yogyakarta",
+            province: "DI Yogyakarta",
+            lat: -7.7926,
+            lng: 110.3658,
+            catSlug: "belanja-retail",
+            halalScore: 80
+        },
+        {
+            name: "Tangkuban Perahu",
+            slug: "tangkuban-perahu",
+            city: "Subang",
+            province: "Jawa Barat",
+            lat: -6.7596,
+            lng: 107.5947,
+            catSlug: "alam-taman",
+            halalScore: 60
+        },
+        {
+            name: "Kota Tua Jakarta",
+            slug: "kota-tua-jakarta",
+            city: "Jakarta Barat",
+            province: "DKI Jakarta",
+            lat: -6.1376,
+            lng: 106.8124,
+            catSlug: "budaya-heritage",
+            halalScore: 70
         }
-      }
-    },
-  })
+    ];
 
-  console.log('Seeding completed successfully!')
+    const destinations = [];
+    for (const d of destinationsData) {
+        const category = categories.find(c => c.slug === d.catSlug);
+        const dest = await prisma.destination.create({
+            data: {
+                name: d.name,
+                slug: d.slug,
+                categoryId: category!.id,
+                city: d.city,
+                province: d.province,
+                latitude: d.lat,
+                longitude: d.lng,
+                halalScore: d.halalScore,
+                status: ValidationStatus.APPROVED,
+                destinationHalalFacilities: {
+                    create: facilities.slice(0, Math.floor(Math.random() * 5) + 3).map(f => ({
+                        facilityId: f.id
+                    }))
+                }
+            }
+        });
+        destinations.push(dest);
+    }
+
+    // 4. Create UMKMs
+    const umkmNames = [
+        "Sate Maranggi Berkah", "Nasi Goreng Halal", "Bakso Atom", "Soto Madura Barokah", 
+        "Ayam Bakar Madu", "Es Cendol Elizabeth", "Kopi Kenangan Halal", "Martabak Pecenongan",
+        "Gudeg Yu Djum", "Sate Klathak Pak Pong", "Bakpia Pathok 25", "Oleh-oleh Bandung",
+        "Rumah Makan Padang Sederhana", "Ayam Geprek Bensu", "Steak Nusantara", "Penyetan Cok"
+    ];
+
+    const certStatuses = [CertificationStatus.VALID, CertificationStatus.PENDING, CertificationStatus.EXPIRED, CertificationStatus.REVOKED];
+
+    for (let i = 0; i < 40; i++) {
+        const dest = destinations[i % destinations.length];
+        const status = certStatuses[Math.floor(Math.random() * certStatuses.length)];
+        const name = `${umkmNames[i % umkmNames.length]} ${i}`;
+        const umkmCategory = categories.find(c => c.type === CategoryType.UMKM && (i % 2 === 0 ? c.slug === "rumah-makan" : c.slug === "kedai-kopi"));
+        
+        await prisma.umkm.create({
+            data: {
+                name,
+                slug: name.toLowerCase().replace(/ /g, '-') + '-' + i,
+                owner: "Owner " + i,
+                category: { connect: { id: umkmCategory?.id || categories[0].id } },
+                destination: { connect: { id: dest.id } },
+                address: "Jl. " + dest.city + " No. " + i,
+                phone: "0812" + Math.floor(Math.random() * 100000000),
+                rating: 3 + Math.random() * 2,
+                reviewCount: Math.floor(Math.random() * 100),
+                certifications: {
+                    create: {
+                        certificateNo: "CERT-" + i + "-" + Math.random().toString(36).substring(7).toUpperCase(),
+                        issuer: "BPJPH",
+                        issuedAt: new Date("2023-01-01"),
+                        expiredAt: new Date("2027-01-01"),
+                        status: status,
+                        validations: {
+                            create: {
+                                status: status === CertificationStatus.VALID ? ValidationStatus.APPROVED : ValidationStatus.PENDING,
+                                notes: "Seeded data",
+                                validatedAt: new Date()
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 5. Create Interactions and Reviews
+    console.log("Creating interactions and reviews...");
+    const interactionTypes: InteractionType[] = ["VIEW", "SEARCH", "CLICK", "SAVE", "SHARE", "ROUTE"];
+    const keywords = ["masjid", "halal", "wisata", "bandung", "jakarta", "makanan"];
+
+    for (const dest of destinations) {
+        // Create 20-50 interactions per destination over the last 30 days
+        const interactionCount = 20 + Math.floor(Math.random() * 30);
+        for (let i = 0; i < interactionCount; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - Math.floor(Math.random() * 28));
+            
+            await prisma.destinationInteraction.create({
+                data: {
+                    destination: { connect: { id: dest.id } },
+                    type: interactionTypes[Math.floor(Math.random() * interactionTypes.length)],
+                    keyword: keywords[Math.floor(Math.random() * keywords.length)],
+                    createdAt: date
+                }
+            });
+        }
+
+        // Create 3-5 reviews per destination
+        const reviewCount = 3 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < reviewCount; i++) {
+            const rating = 3 + Math.floor(Math.random() * 3);
+            const review = await prisma.review.create({
+                data: {
+                    rating,
+                    comment: "Wisata yang bagus dan ramah muslim.",
+                    destination: { connect: { id: dest.id } },
+                    user: {
+                        connectOrCreate: {
+                            where: { id: "user_seed_" + i },
+                            create: {
+                                id: "user_seed_" + i,
+                                name: "User " + i,
+                                email: `user${i}@example.com`,
+                                role: "user"
+                            }
+                        }
+                    }
+                }
+            });
+
+            await prisma.reviewSentiment.create({
+                data: {
+                    reviewId: review.id,
+                    label: rating >= 4 ? SentimentLabel.POSITIVE : SentimentLabel.NEUTRAL,
+                    score: rating / 5,
+                    keywords: ["bagus", "ramah"]
+                }
+            });
+        }
+    }
+
+    console.log("Seeding completed successfully!");
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

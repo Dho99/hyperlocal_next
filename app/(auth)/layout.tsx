@@ -6,22 +6,22 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                     <div className="h-10 w-10 rounded-lg bg-primary-foreground flex items-center justify-center">
                         <span className="text-primary text-xl">H</span>
                     </div>
-                    <span>HalalAdmin</span>
+                    <span>HyperLocal</span>
                 </div>
                 
                 <div className="space-y-4">
                     <h2 className="text-4xl font-bold leading-tight">
-                        Portal Manajemen<br />
-                        Pariwisata Halal Indonesia
+                        Eksplorasi Pariwisata<br />
+                        Halal Indonesia
                     </h2>
                     <p className="text-primary-foreground/80 text-lg max-w-md">
-                        Sistem terintegrasi untuk verifikasi UMKM, manajemen destinasi, 
-                        dan pemantauan fasilitas halal di seluruh Indonesia.
+                        Platform terintegrasi untuk menemukan destinasi terverifikasi, 
+                        manajemen pariwisata, dan pemantauan fasilitas halal.
                     </p>
                 </div>
 
                 <div className="text-sm opacity-70">
-                    &copy; {new Date().getFullYear()} Hyperlocal Team. All rights reserved.
+                    &copy; {new Date().getFullYear()} HyperLocal. All rights reserved.
                 </div>
             </div>
 
@@ -31,7 +31,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                         <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-lg">
                             <span className="text-primary-foreground text-2xl font-bold">H</span>
                         </div>
-                        <h1 className="text-2xl font-bold text-primary">HalalAdmin</h1>
+                        <h1 className="text-2xl font-bold text-primary">HyperLocal</h1>
                     </div>
                     {children}
                 </div>

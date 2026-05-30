@@ -28,7 +28,7 @@ interface ReadonlyMapClientProps {
 }
 
 export default function ReadonlyMapClient({
-    markers,
+    markers = [],
     center,
     zoom = DEFAULT_ZOOM,
     className,
@@ -36,7 +36,7 @@ export default function ReadonlyMapClient({
     const mapCenter: [number, number] = useMemo(() => {
         if (center) return center;
         if (
-            markers.length > 0 &&
+            markers?.length > 0 &&
             isValidCoordinate(markers[0].latitude, markers[0].longitude)
         ) {
             return [markers[0].latitude, markers[0].longitude];

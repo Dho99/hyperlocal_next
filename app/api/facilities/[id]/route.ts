@@ -6,7 +6,7 @@ import {
     deleteFacility,
     getFacilityById,
 } from "@/lib/services/facility-service";
-import { facilitySchema } from "@/lib/validations/fasilitas.schema";
+import { facilitySchema } from "@/lib/validations/facility.schema";
 import { ZodError } from "zod";
 import { getErrorMessage } from "@/lib/api-error";
 

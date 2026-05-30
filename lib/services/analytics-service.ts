@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
 import { 
   InteractionType, 
   SentimentLabel, 
-  ValidationStatus 
 } from "@/lib/generated/prisma/client";
-import { subDays, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
+import { subDays, startOfDay, startOfWeek, startOfMonth } from "date-fns";
 
 export async function trackInteraction(data: {
   destinationId: string;
@@ -12,7 +12,7 @@ export async function trackInteraction(data: {
   type: InteractionType;
   keyword?: string;
   source?: string;
-  metadata?: any;
+  metadata?: Prisma.InputJsonValue;
 }) {
   return await prisma.destinationInteraction.create({
     data: {
@@ -34,12 +34,7 @@ export async function getHottestDestinations(params: {
   
   // Try to get from DestinationTrend first
   const now = new Date();
-  let periodStart: Date;
   
-  if (period === "daily") periodStart = startOfDay(now);
-  else if (period === "weekly") periodStart = startOfWeek(now);
-  else periodStart = startOfMonth(now);
-
   const trends = await prisma.destinationTrend.findMany({
     where: {
       period,
@@ -89,7 +84,7 @@ export async function getHottestDestinations(params: {
     }
   });
 
-  const destScores: Record<string, any> = {};
+  const destScores: Record<string, { view: number; search: number; click: number; save: number; share: number; route: number; score: number }> = {};
   
   interactions.forEach(i => {
     if (!destScores[i.destinationId]) {
@@ -145,7 +140,7 @@ export async function recalculateTrends(params: { period?: "daily" | "weekly" | 
       }
     });
 
-    const destData: Record<string, any> = {};
+    const destData: Record<string, { view: number; search: number; click: number; save: number; share: number; route: number }> = {};
     interactions.forEach(i => {
       if (!destData[i.destinationId]) {
         destData[i.destinationId] = { 
@@ -293,6 +288,290 @@ export async function getDestinationSentimentSummary(destinationId: string) {
     topKeywords,
     totalAnalyzedReviews
   };
+}
+
+export interface DetailedStatistics {
+  kpi: {
+    totalDestinations: number;
+    totalUmkms: number;
+    totalFacilities: number;
+    verifiedUmkms: number;
+    avgHalalScore: number;
+  };
+  distributions: {
+    destinationsByCategory: { label: string; count: number; value: number }[];
+    facilitiesByType: { label: string; count: number; value: number }[];
+  };
+  umkmHalalStatus: {
+    verified: number;
+    inProgress: number;
+    unverified: number;
+    verifiedPercent: number;
+  };
+  rankings: {
+    topRegions: {
+      regionName: string;
+      regionType: string;
+      totalScore: number;
+      destinationCount: number;
+    }[];
+    topDestinations: { id: string; name: string; score: number; category: string; city: string }[];
+    topUmkms: { id: string; name: string; rating: number; category: string; city: string }[];
+  };
+  weeklyTrend: { label: string; submissions: number; approvals: number }[];
+  mapData: {
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    status: string;
+    halalScore: number | null;
+    category: string;
+    intensity: number;
+  }[];
+}
+
+export async function getDetailedStatistics(): Promise<DetailedStatistics> {
+  const now = new Date();
+  const fourWeeksAgo = subDays(now, 28);
+
+  // 1. KPI Stats
+  const [
+    totalDestinations,
+    totalUmkms,
+    totalFacilities,
+    verifiedUmkms,
+    avgScoreResult
+  ] = await Promise.all([
+    prisma.destination.count(),
+    prisma.umkm.count(),
+    prisma.halalFacility.count(),
+    prisma.halalCertification.count({ where: { status: "VALID" } }),
+    prisma.destination.aggregate({
+      _avg: {
+        halalScore: true
+      }
+    })
+  ]);
+
+  const avgHalalScore = avgScoreResult._avg.halalScore || 0;
+
+  // 2. Distributions
+  const [categoryDistribution, facilityTypes] = await Promise.all([
+    prisma.category.findMany({
+      include: { _count: { select: { destinations: true } } }
+    }),
+    prisma.halalFacility.groupBy({
+      by: ['facilityType'],
+      _count: { _all: true }
+    })
+  ]);
+
+  const destinationsByCategory = categoryDistribution.map(c => ({
+    label: c.name,
+    count: c._count.destinations,
+    value: totalDestinations > 0 ? Math.round((c._count.destinations / totalDestinations) * 100) : 0
+  })).sort((a, b) => b.count - a.count);
+
+  const facilitiesByType = facilityTypes.map(f => ({
+    label: f.facilityType || "Other",
+    count: f._count._all,
+    value: totalFacilities > 0 ? Math.round((f._count._all / totalFacilities) * 100) : 0
+  })).sort((a, b) => b.count - a.count);
+
+  // 3. UMKM Halal Status
+  const umkmStatusCounts = await prisma.halalCertification.groupBy({
+    by: ['status'],
+    _count: { _all: true }
+  });
+
+  const statusMap: Record<string, number> = {
+    VALID: 0,
+    PENDING: 0,
+    EXPIRED: 0,
+    REVOKED: 0
+  };
+  umkmStatusCounts.forEach(c => {
+    statusMap[c.status] = c._count._all;
+  });
+
+  const totalCerts = Object.values(statusMap).reduce((a, b) => a + b, 0);
+  const umkmHalalStatus = {
+    verified: statusMap.VALID,
+    inProgress: statusMap.PENDING,
+    unverified: totalUmkms - totalCerts,
+    verifiedPercent: totalCerts > 0 ? Math.round((statusMap.VALID / totalCerts) * 100) : 0
+  };
+
+  // 4. Rankings (Regions, Destinations, UMKMs)
+  let topRegions = await prisma.halalReadinessScore.findMany({
+    where: { regionType: "city" },
+    orderBy: { totalScore: "desc" },
+    take: 5
+  });
+
+  // Auto-populate if empty
+  if (topRegions.length === 0) {
+    await recalculateHalalReadiness();
+    topRegions = await prisma.halalReadinessScore.findMany({
+      where: { regionType: "city" },
+      orderBy: { totalScore: "desc" },
+      take: 5
+    });
+  }
+
+  const [topDestinations, topUmkms] = await Promise.all([
+    prisma.destination.findMany({
+      orderBy: { halalScore: "desc" },
+      take: 5,
+      include: { category: { select: { name: true } } }
+    }),
+    prisma.umkm.findMany({
+      orderBy: { rating: "desc" },
+      take: 5,
+      include: { category: { select: { name: true } } }
+    })
+  ]);
+
+  // 5. Validation Trend (Last 4 Weeks)
+  const validations = await prisma.halalValidation.findMany({
+    where: {
+      createdAt: { gte: fourWeeksAgo }
+    },
+    select: {
+      status: true,
+      createdAt: true
+    }
+  });
+
+  const weeklyTrend = [0, 1, 2, 3].map(weekIndex => {
+    const weekStart = subDays(now, (4 - weekIndex) * 7);
+    const weekEnd = subDays(now, (3 - weekIndex) * 7);
+    const weekValidations = validations.filter(v => v.createdAt >= weekStart && v.createdAt < weekEnd);
+    
+    return {
+      label: `Week ${weekIndex + 1}`,
+      submissions: weekValidations.length,
+      approvals: weekValidations.filter(v => v.status === "APPROVED").length
+    };
+  });
+
+  // 6. Map & Heatmap Data
+  const mapDestinations = await prisma.destination.findMany({
+    select: {
+      id: true,
+      name: true,
+      latitude: true,
+      longitude: true,
+      status: true,
+      halalScore: true,
+      category: { select: { name: true } }
+    }
+  });
+
+  return {
+    kpi: {
+      totalDestinations,
+      totalUmkms,
+      totalFacilities,
+      verifiedUmkms,
+      avgHalalScore: Math.round(avgHalalScore * 10) / 10
+    },
+    distributions: {
+      destinationsByCategory,
+      facilitiesByType
+    },
+    umkmHalalStatus,
+    rankings: {
+      topRegions,
+      topDestinations: topDestinations.map(d => ({
+        id: d.id,
+        name: d.name,
+        score: d.halalScore || 0,
+        category: d.category.name,
+        city: d.city || "Jakarta"
+      })),
+      topUmkms: topUmkms.map(u => ({
+        id: u.id,
+        name: u.name,
+        rating: u.rating || 0,
+        category: u.category?.name || "UMKM",
+        city: u.address || "Jakarta"
+      }))
+    },
+    weeklyTrend,
+    mapData: mapDestinations.map(d => ({
+      ...d,
+      latitude: d.latitude ? Number(d.latitude) : 0,
+      longitude: d.longitude ? Number(d.longitude) : 0,
+      category: d.category.name,
+      intensity: (d.halalScore || 0) / 100 // For heatmap
+    }))
+  };
+}
+
+export async function getViewTrends(params: {
+    period: "daily" | "weekly" | "monthly";
+    limit: number;
+}) {
+    const { period, limit } = params;
+    const now = new Date();
+
+    const dateCutoff = period === "daily"
+        ? subDays(now, 1)
+        : period === "weekly"
+            ? subDays(now, 7)
+            : subDays(now, 30);
+
+    const viewInteractions = await prisma.destinationInteraction.groupBy({
+        by: ["destinationId"],
+        _count: { _all: true },
+        where: {
+            type: "VIEW",
+            createdAt: { gte: dateCutoff },
+        },
+        orderBy: { _count: { destinationId: "desc" } },
+        take: limit,
+    });
+
+    if (viewInteractions.length === 0) {
+        return [];
+    }
+
+    const destIds = viewInteractions.map(v => v.destinationId);
+    const idsOrder = Object.fromEntries(destIds.map((id, i) => [id, i]));
+
+    const destinations = await prisma.destination.findMany({
+        where: { id: { in: destIds } },
+        select: {
+            id: true,
+            name: true,
+            city: true,
+            categoryId: true,
+            reviewCount: true,
+        },
+    });
+
+    const categoryIds = [...new Set(destinations.map(d => d.categoryId).filter(Boolean))];
+    const categories = categoryIds.length > 0
+        ? await prisma.category.findMany({
+            where: { id: { in: categoryIds } },
+            select: { id: true, name: true },
+        })
+        : [];
+    const categoryMap = Object.fromEntries(categories.map(c => [c.id, c.name]));
+
+    return destinations
+        .map(d => ({
+            id: d.id,
+            name: d.name,
+            city: d.city || "-",
+            category: categoryMap[d.categoryId] || "Destinasi",
+            totalViews: 0,
+            periodViews: viewInteractions[idsOrder[d.id]]?._count._all ?? 0,
+            imageUrl: null,
+        }))
+        .sort((a, b) => idsOrder[a.id] - idsOrder[b.id]);
 }
 
 export async function recalculateHalalReadiness() {

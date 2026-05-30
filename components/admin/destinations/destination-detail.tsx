@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import { ReadonlyMap } from "@/components/maps";
+import { DynamicContextMap } from "@/components/maps";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 
 interface DestinationDetailProps {
@@ -215,31 +215,44 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                             Koordinat
                                         </p>
                                         <p className="text-sm">
-                                            {destination?.latitude as string},{" "}
-                                            {destination?.longitude as string}
+                                            {destination.latitude?.toString() ?? "-"},{" "}
+                                            {destination.longitude?.toString() ?? "-"}
                                         </p>
                                     </div>
                                 </div>
 
                                 {String(destination?.latitude) &&
                                     String(destination?.longitude) && (
-                                        <ReadonlyMap
-                                            markers={[
-                                                {
-                                                    id: destination.id,
-                                                    latitude: Number(
-                                                        destination.latitude,
-                                                    ),
-                                                    longitude: Number(
-                                                        destination.longitude,
-                                                    ),
-                                                    title: destination.name,
-                                                    subtitle:
-                                                        destination.category
-                                                            ?.name,
-                                                },
-                                            ]}
-                                            className="h-[300px] w-full rounded-lg border shadow-inner mt-4"
+                                        <DynamicContextMap
+                                            destination={{
+                                                id: destination.id,
+                                                name: destination.name,
+                                                latitude: Number(
+                                                    destination.latitude,
+                                                ),
+                                                longitude: Number(
+                                                    destination.longitude,
+                                                ),
+                                                facilities: (
+                                                    destination.destinationHalalFacilities ??
+                                                    []
+                                                )
+                                                    .filter(
+                                                        (f) =>
+                                                            f.latitude != null &&
+                                                            f.longitude != null,
+                                                    )
+                                                    .map((f) => ({
+                                                        id: f.id,
+                                                        name: f.facility
+                                                            ?.name ?? "",
+                                                        type: f.facility
+                                                            ?.facilityType ?? "",
+                                                        latitude: f.latitude!,
+                                                        longitude: f.longitude!,
+                                                    })),
+                                            }}
+                                            className="h-[400px] w-full rounded-lg border shadow-inner mt-4"
                                         />
                                     )}
                             </div>
@@ -294,16 +307,15 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                         <CardContent>
                             <div className="flex flex-wrap gap-2">
                                 {destination?.destinationHalalFacilities &&
-                                destination.destinationHalalFacilities.length >
-                                    0 ? (
+                                destination.destinationHalalFacilities.length > 0 ? (
                                     destination.destinationHalalFacilities.map(
-                                        (facility, idx) => (
+                                        (dhf, idx) => (
                                             <Badge
                                                 key={idx}
                                                 variant="secondary"
                                                 className="px-3 py-1 bg-primary/5 text-primary hover:bg-primary/10 border-none"
                                             >
-                                                {facility.facility?.name}
+                                                {dhf.facility?.name ?? "-"}
                                             </Badge>
                                         ),
                                     )

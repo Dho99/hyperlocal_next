@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import {
     Activity,
     AlertCircle,
@@ -13,8 +12,10 @@ import {
     MapPin,
     ShieldCheck,
     Star,
+    TrendingUp,
     Utensils,
 } from "lucide-react";
+import { DashboardMapSection } from "@/components/admin/dashboard/dashboard-map-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { getDashboardOverview } from "@/lib/services/dashboard-service";
 import { cn } from "@/lib/utils";
+import type { ValidationStatus } from "@/lib/generated/prisma";
 
 function formatDate(date: Date) {
     return new Intl.DateTimeFormat("id-ID", {
@@ -183,49 +185,7 @@ export default async function DashboardPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="relative h-[480px] overflow-hidden bg-[#d8d5db]">
-                            <div className="absolute inset-0 opacity-55 [background-image:linear-gradient(22deg,rgba(73,69,81,.18)_1px,transparent_1px),linear-gradient(112deg,rgba(73,69,81,.16)_1px,transparent_1px)] [background-size:42px_42px]" />
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_42%_45%,rgba(255,255,255,.9),transparent_9%),radial-gradient(circle_at_55%_52%,rgba(255,255,255,.8),transparent_12%),linear-gradient(120deg,transparent_0_38%,rgba(255,255,255,.35)_39%_42%,transparent_43%_100%)]" />
-                            <div className="absolute inset-0 grayscale [background-image:url('https://tile.openstreetmap.org/2/2/1.png')] bg-cover bg-center opacity-20" />
-
-                            {dashboard.mapDestinations.length === 0 ? (
-                                <>
-                                    <MapPinMarker
-                                        className="left-[41%] top-[30%]"
-                                        label="Masjid Agung"
-                                        tone="bg-[#6750a4]"
-                                    />
-                                    <MapPinMarker
-                                        className="left-[57%] top-[55%]"
-                                        label="Resto Halal"
-                                        tone="bg-[#765b00]"
-                                    />
-                                </>
-                            ) : (
-                                dashboard.mapDestinations
-                                    .slice(0, 5)
-                                    .map((point, index) => (
-                                        <MapPinMarker
-                                            key={point.id}
-                                            className=""
-                                            label={
-                                                index === 0
-                                                    ? point.name
-                                                    : undefined
-                                            }
-                                            tone={
-                                                index % 2 === 0
-                                                    ? "bg-[#6750a4]"
-                                                    : "bg-[#765b00]"
-                                            }
-                                            style={{
-                                                left: `${point.x}%`,
-                                                top: `${point.y}%`,
-                                            }}
-                                        />
-                                    ))
-                            )}
-                        </div>
+                        <DashboardMapSection />
                     </CardContent>
                 </Card>
 
@@ -289,7 +249,7 @@ export default async function DashboardPage() {
                             variant="ghost"
                             className="text-base font-medium text-[#24005d]"
                         >
-                            <Link href="/validations">Lihat Semua</Link>
+                            <Link href="/validasi/destinasi">Lihat Semua</Link>
                         </Button>
                     </CardHeader>
                     <CardContent className="p-0">
@@ -316,7 +276,9 @@ export default async function DashboardPage() {
                                 </thead>
                                 <tbody>
                                     {recentRows.slice(0, 3).map((row) => {
-                                        const badge = statusBadge(row.status);
+                                        const badge = statusBadge(
+                                            row.status as ValidationStatus,
+                                        );
                                         return (
                                             <tr
                                                 key={row.id}
@@ -353,7 +315,7 @@ export default async function DashboardPage() {
                                                             href={
                                                                 "city" in row
                                                                     ? `/destinations/${row.id}`
-                                                                    : "/validations"
+                                                                     : "/validasi/destinasi"
                                                             }
                                                         >
                                                             <Eye className="h-5 w-5" />
@@ -365,6 +327,51 @@ export default async function DashboardPage() {
                                     })}
                                 </tbody>
                             </table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-1">
+                <Card className="rounded-xl border-[#cbc4d2] bg-white shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between border-b border-[#cbc4d2] px-8 py-7">
+                        <div>
+                            <CardTitle className="font-heading text-[32px] font-semibold">
+                                Trending Saat Ini
+                            </CardTitle>
+                            <CardDescription className="mt-2 text-lg text-[#494551]">
+                                Destinasi dengan jumlah kunjungan terbanyak.
+                            </CardDescription>
+                        </div>
+                        <TrendingUp className="h-6 w-6 text-[#4f378a]" />
+                    </CardHeader>
+                    <CardContent className="p-6">
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                            {dashboard.trendingDestinations
+                                .slice(0, 5)
+                                .map((destination, index) => (
+                                    <div
+                                        key={destination.id}
+                                        className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-3"
+                                    >
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#4f378a] text-sm font-bold text-white">
+                                            {index + 1}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate font-semibold text-sm">
+                                                {destination.name}
+                                            </p>
+                                            <p className="truncate text-xs text-[#494551]">
+                                                {destination.category} •{" "}
+                                                {destination.city}
+                                            </p>
+                                        </div>
+                                        <span className="inline-flex items-center gap-1 text-sm font-bold text-[#4f378a] shrink-0">
+                                            <Eye className="h-4 w-4" />
+                                            {destination.viewCount?.toLocaleString("id-ID") ?? 0}
+                                        </span>
+                                    </div>
+                                ))}
                         </div>
                     </CardContent>
                 </Card>
@@ -417,43 +424,49 @@ export default async function DashboardPage() {
                         <BarChart3 className="h-5 w-5 text-[#4f378a]" />
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        {dashboard.topDestinations.slice(0, 3).map(
-                            (destination, index) => (
-                                <div
-                                    key={destination.id}
-                                    className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-3"
-                                >
-                                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-[#f2ecf4]">
-                                        {destination.imageUrl ? (
-                                            <Image
-                                                src={destination.imageUrl}
-                                                alt={destination.name}
-                                                fill
-                                                sizes="48px"
-                                                className="object-cover"
-                                            />
-                                        ) : (
-                                            <div className="flex h-full w-full items-center justify-center">
-                                                <MapPin className="h-5 w-5 text-[#6750a4]" />
+                            {dashboard.topDestinations
+                                    .slice(0, 3)
+                                    .map((destination, index) => (
+                                        <div
+                                            key={destination.id}
+                                            className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-3"
+                                        >
+                                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-[#f2ecf4]">
+                                                {destination.imageUrl ? (
+                                                    <Image
+                                                        src={destination.imageUrl}
+                                                        alt={destination.name}
+                                                        fill
+                                                        sizes="48px"
+                                                        className="object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center">
+                                                        <MapPin className="h-5 w-5 text-[#6750a4]" />
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate font-semibold">
-                                            #{index + 1} {destination.name}
-                                        </p>
-                                        <p className="truncate text-xs text-[#494551]">
-                                            {destination.category} •{" "}
-                                            {destination.city}
-                                        </p>
-                                    </div>
-                                    <span className="inline-flex items-center gap-1 text-sm text-[#765b00]">
-                                        <Star className="h-4 w-4 fill-current" />
-                                        {destination.rating.toFixed(1)}
-                                    </span>
-                                </div>
-                            ),
-                        )}
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate font-semibold">
+                                                    #{index + 1} {destination.name}
+                                                </p>
+                                                <p className="truncate text-xs text-[#494551]">
+                                                    {destination.category} •{" "}
+                                                    {destination.city}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col items-end gap-1 shrink-0">
+                                                <span className="inline-flex items-center gap-1 text-sm text-[#765b00]">
+                                                    <Star className="h-4 w-4 fill-current" />
+                                                    {destination.rating.toFixed(1)}
+                                                </span>
+                                                <span className="inline-flex items-center gap-1 text-xs text-[#494551]">
+                                                    <Eye className="h-3 w-3" />
+                                                    {destination.engagement}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
                     </CardContent>
                 </Card>
 
@@ -467,8 +480,9 @@ export default async function DashboardPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                        {dashboard.recentActivities.slice(0, 3).map(
-                            (activity) => (
+                        {dashboard.recentActivities
+                            .slice(0, 3)
+                            .map((activity) => (
                                 <div
                                     key={activity.id}
                                     className="flex gap-3 rounded-lg border border-[#e6e0e9] p-3"
@@ -493,8 +507,7 @@ export default async function DashboardPage() {
                                         </p>
                                     </div>
                                 </div>
-                            ),
-                        )}
+                            ))}
                     </CardContent>
                 </Card>
             </section>
@@ -502,34 +515,4 @@ export default async function DashboardPage() {
     );
 }
 
-function MapPinMarker({
-    className,
-    label,
-    tone,
-    style,
-}: {
-    className?: string;
-    label?: string;
-    tone: string;
-    style?: CSSProperties;
-}) {
-    return (
-        <div className={cn("absolute", className)} style={style}>
-            <div className="relative">
-                <div
-                    className={cn(
-                        "flex h-11 w-11 items-center justify-center rounded-full border-2 border-white text-white shadow-md",
-                        tone,
-                    )}
-                >
-                    <MapPin className="h-5 w-5" />
-                </div>
-                {label && (
-                    <div className="absolute left-1/2 top-[48px] -translate-x-1/2 whitespace-nowrap rounded bg-white px-3 py-1 text-base font-semibold text-[#1d1b20] shadow-sm">
-                        {label}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
+

@@ -44,9 +44,13 @@ import type { Category } from "@/types/destinasi-kategori";
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
-interface CategoryListProps {}
+import { CategoryType } from "@/lib/generated/prisma";
 
-export function CategoryList({}: CategoryListProps) {
+interface CategoryListProps {
+    type?: CategoryType;
+}
+
+export function CategoryList({ type }: CategoryListProps) {
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null,
     );
@@ -54,10 +58,16 @@ export function CategoryList({}: CategoryListProps) {
         null,
     );
     const [isDeleting, setIsDeleting] = useState(false);
-    const router = useRouter();
 
-    const { data: categories, isLoading, hasMore, loadMore, refresh } = useCursorPagination<Category>({
+    const {
+        data: categories,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Category>({
         url: "/api/categories",
+        params: { type },
     });
 
     async function handleDelete() {
@@ -98,7 +108,7 @@ export function CategoryList({}: CategoryListProps) {
                         <TableHead className="hidden md:table-cell">
                             Deskripsi
                         </TableHead>
-                        <TableHead className="w-[100px] text-right">
+                        <TableHead className="w-[100px] text-center">
                             Aksi
                         </TableHead>
                     </TableRow>
@@ -125,7 +135,7 @@ export function CategoryList({}: CategoryListProps) {
                             <TableCell className="hidden md:table-cell max-w-[200px] truncate text-muted-foreground text-xs">
                                 {category.description || "-"}
                             </TableCell>
-                            <TableCell className="text-right">
+                            <TableCell className="text-center">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="icon-sm">
@@ -185,6 +195,7 @@ export function CategoryList({}: CategoryListProps) {
                         <CategoryForm
                             initialData={selectedCategory}
                             onSuccess={() => setSelectedCategory(null)}
+                            type={type}
                         />
                     )}
                 </DialogContent>

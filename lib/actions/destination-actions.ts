@@ -4,6 +4,19 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { destinationSchema } from "@/lib/validations/destination.schema";
 import type { DestinationFormValues } from "@/types/destination";
+import {
+    calculateHalalScore,
+    FACILITY_TYPES,
+    type FacilityType,
+} from "@/lib/config/halal-readiness";
+
+function toFacilityType(type: string | null): FacilityType {
+    if (type && FACILITY_TYPES.includes(type as FacilityType)) {
+        return type as FacilityType;
+    }
+
+    return "ADDITIONAL";
+}
 
 export async function createDestination(values: DestinationFormValues) {
     const validatedFields = destinationSchema.safeParse(values);
@@ -12,27 +25,59 @@ export async function createDestination(values: DestinationFormValues) {
         return { error: "Data tidak valid" };
     }
 
-    const { facilityIds, ...data } = validatedFields.data;
+    const { facilities, images, ...data } = validatedFields.data;
 
     try {
+        const facilityIds = facilities?.map((f) => f.facilityId) || [];
+
+        const masterFacilities = await prisma.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+
+        const facilityEntries = masterFacilities.map((mf) => ({
+            type: toFacilityType(mf.facilityType),
+            name: mf.name,
+        }));
+        const halalScore = calculateHalalScore(facilityEntries);
+
         const destination = await prisma.destination.create({
             data: {
                 ...data,
+                description: data.description ?? undefined,
+                status: "PENDING",
+                openingHours: { halalScore },
                 images: {
-                    createMany: {
-                        data: data.images.map((url) => ({ imageUrl: url })),
-                    },
+                    create:
+                        images?.map((image) => ({
+                            imageUrl: image.imageUrl,
+                        })) || [],
                 },
                 destinationHalalFacilities: {
-                    create: facilityIds?.map((id) => ({
-                        facilityId: id,
-                    })),
+                    create:
+                        facilities?.map((f) => ({
+                            facilityId: f.facilityId,
+                            latitude: f.latitude,
+                            longitude: f.longitude,
+                            evidences: {
+                                create:
+                                    f.evidenceUrls?.map((url) => ({
+                                        imageUrl: url,
+                                    })) || [],
+                            },
+                        })) || [],
                 },
             },
             include: {
                 destinationHalalFacilities: {
-                    include: { facility: true },
+                    include: { facility: true, evidences: true },
                 },
+            },
+        });
+
+        await prisma.halalValidation.create({
+            data: {
+                destinationId: destination.id,
+                status: "PENDING",
             },
         });
 
@@ -58,10 +103,21 @@ export async function updateDestination(
         return { error: "Data tidak valid" };
     }
 
-    const { facilityIds, ...data } = validatedFields.data;
+    const { facilities, images, ...data } = validatedFields.data;
 
     try {
-        // Remove existing relation rows then recreate based on facilityIds
+        const facilityIds = facilities?.map((f) => f.facilityId) || [];
+
+        const masterFacilities = await prisma.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+
+        const facilityEntries = masterFacilities.map((mf) => ({
+            type: toFacilityType(mf.facilityType),
+            name: mf.name,
+        }));
+        const halalScore = calculateHalalScore(facilityEntries);
+
         await prisma.destinationHalalFacility.deleteMany({
             where: { destinationId: id },
         });
@@ -70,22 +126,50 @@ export async function updateDestination(
             where: { id },
             data: {
                 ...data,
+                description: data.description ?? undefined,
+                status: "PENDING",
+                openingHours: { halalScore },
                 images: {
                     deleteMany: {},
-                    create: (data.images ?? []).map((image) => ({
-                        imageUrl: image,
-                    })),
+                    create:
+                        images?.map((image) => ({
+                            imageUrl: image.imageUrl,
+                        })) || [],
                 },
                 destinationHalalFacilities: {
-                    create: facilityIds?.map((fid) => ({ facilityId: fid })),
+                    create:
+                        facilities?.map((f) => ({
+                            facilityId: f.facilityId,
+                            latitude: f.latitude,
+                            longitude: f.longitude,
+                            evidences: {
+                                create:
+                                    f.evidenceUrls?.map((url) => ({
+                                        imageUrl: url,
+                                    })) || [],
+                            },
+                        })) || [],
                 },
             },
             include: {
                 destinationHalalFacilities: {
-                    include: { facility: true },
+                    include: { facility: true, evidences: true },
                 },
             },
         });
+
+        const existingValidation = await prisma.halalValidation.findFirst({
+            where: { destinationId: id, status: "PENDING" },
+        });
+
+        if (!existingValidation) {
+            await prisma.halalValidation.create({
+                data: {
+                    destinationId: id,
+                    status: "PENDING",
+                },
+            });
+        }
 
         revalidatePath("/destinations");
         return { success: true, data: destination };
@@ -126,7 +210,9 @@ export async function getDestination(id: string) {
         where: { id },
         include: {
             category: true,
-            destinationHalalFacilities: { include: { facility: true } },
+            destinationHalalFacilities: {
+                include: { facility: true, evidences: true },
+            },
         },
     });
 }
@@ -135,7 +221,9 @@ export async function getDestinations() {
     return await prisma.destination.findMany({
         include: {
             category: true,
-            destinationHalalFacilities: { include: { facility: true } },
+            destinationHalalFacilities: {
+                include: { facility: true, evidences: true },
+            },
         },
         orderBy: { createdAt: "desc" },
     });

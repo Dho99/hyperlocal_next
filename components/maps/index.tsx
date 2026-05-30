@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -25,3 +27,6 @@ export const ReadonlyMap = dynamic(() => import("./readonly-map-client"), {
   ssr: false,
   loading: () => <MapSkeleton />,
 });
+
+export { DynamicContextMap } from "./dynamic-context-map";
+export { DynamicDashboardMap } from "../admin/dashboard/dynamic-dashboard-map";

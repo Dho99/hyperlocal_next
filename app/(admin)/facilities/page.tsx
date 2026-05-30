@@ -1,12 +1,24 @@
-import { getDestinations } from "@/lib/services/destination-service";
-import { FacilitiesContent } from "@/components/admin/facilities/facilities-content";
+import { getFacilities } from "@/lib/services/facility-service";
+import { FacilitiesTable } from "./components/facility-table";
 
 export default async function FacilitiesPage() {
-    const destinations = await getDestinations();
+    const facilities = await getFacilities();
 
     return (
-        <FacilitiesContent
-            destinations={destinations}
-        />
+        <div className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight font-heading">
+                        Manajemen Fasilitas
+                    </h1>
+                    <p className="text-muted-foreground">
+                        Kelola data master fasilitas halal yang tersedia di
+                        berbagai destinasi.
+                    </p>
+                </div>
+            </div>
+
+            <FacilitiesTable facilities={facilities} />
+        </div>
     );
 }

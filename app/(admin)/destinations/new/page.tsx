@@ -1,8 +1,9 @@
 import { getCategories } from "@/lib/services/category-service";
-import { DestinationForm } from "@/components/admin/destinations/destination-form";
+import { DestinationForm } from "../components/destination-form";
+import { CategoryType } from "@/lib/generated/prisma";
 
 export default async function NewDestinationPage() {
-    const categories = await getCategories();
+    const categories = await getCategories(CategoryType.DESTINATION);
 
     return (
         <div className="space-y-8">

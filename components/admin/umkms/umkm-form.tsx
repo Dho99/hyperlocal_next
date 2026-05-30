@@ -14,7 +14,7 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, MapPin, Upload, Info, Store, Phone, User as UserIcon } from "lucide-react";
+import { Loader2, MapPin, Store, Phone, User as UserIcon } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -25,34 +25,43 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { MapPicker } from "@/components/maps";
+import { DEFAULT_CENTER } from "@/lib/maps/geo-utils";
+import { ImageDropzone } from "@/components/upload/image-dropzone";
+
 interface UmkmFormProps {
     initialData?: Umkm;
     categories: Category[];
-    users?: { id: string; name: string; email: string }[];
 }
 
-export function UmkmForm({
-    initialData,
-    categories,
-    users = [],
-}: UmkmFormProps) {
+export function UmkmForm({ initialData, categories }: UmkmFormProps) {
     const [isPending, startTransition] = useTransition();
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const router = useRouter();
 
     const form = useForm<UmkmFormValues>({
-        resolver: zodResolver(umkmSchema) as unknown as Resolver<UmkmFormValues>,
+        resolver: zodResolver(
+            umkmSchema,
+        ) as unknown as Resolver<UmkmFormValues>,
         defaultValues: {
             name: initialData?.name || "",
             slug: initialData?.slug || "",
-            ownerId: initialData?.ownerId || null,
+            owner: initialData?.owner || "",
             destinationId: initialData?.destinationId || null,
             categoryId: initialData?.categoryId || null,
             description: initialData?.description || "",
             address: initialData?.address || "",
             phone: initialData?.phone || "",
-            latitude: initialData?.latitude ? Number(initialData.latitude) : null,
-            longitude: initialData?.longitude ? Number(initialData.longitude) : null,
+            latitude: initialData?.latitude
+                ? Number(initialData.latitude)
+                : null,
+            longitude: initialData?.longitude
+                ? Number(initialData.longitude)
+                : null,
+            images:
+                initialData?.images?.map((img) => ({
+                    imageUrl: img.imageUrl,
+                })) || [],
         },
     });
 
@@ -99,6 +108,11 @@ export function UmkmForm({
         }
     };
 
+    // const onError = (errors: any) => {
+    //     console.log("Validation errors:", errors);
+    //     toast.error("Periksa kembali input form");
+    // };
+
     return (
         <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -112,7 +126,8 @@ export function UmkmForm({
                                 Informasi UMKM
                             </CardTitle>
                             <CardDescription>
-                                Detail dasar mengenai usaha mikro kecil menengah.
+                                Detail dasar mengenai usaha mikro kecil
+                                menengah.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -136,25 +151,22 @@ export function UmkmForm({
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="ownerId">Pemilik UMKM</Label>
+                                    <Label htmlFor="owner">Nama Pemilik</Label>
                                     <div className="relative">
                                         <UserIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <select
-                                            id="ownerId"
-                                            className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background pl-9 pr-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                            {...form.register("ownerId")}
-                                        >
-                                            <option value="">Pilih Pemilik (Opsional)</option>
-                                            {users.map((user) => (
-                                                <option key={user.id} value={user.id}>
-                                                    {user.name} ({user.email})
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <Input
+                                            id="owner"
+                                            placeholder="Contoh: Bpk. Slamet"
+                                            className="pl-9"
+                                            {...form.register("owner")}
+                                        />
                                     </div>
-                                    {form.formState.errors.ownerId && (
+                                    {form.formState.errors.owner && (
                                         <p className="text-xs text-destructive">
-                                            {form.formState.errors.ownerId.message}
+                                            {
+                                                form.formState.errors.owner
+                                                    .message
+                                            }
                                         </p>
                                     )}
                                 </div>
@@ -179,7 +191,10 @@ export function UmkmForm({
                                     </select>
                                     {form.formState.errors.categoryId && (
                                         <p className="text-xs text-destructive">
-                                            {form.formState.errors.categoryId.message}
+                                            {
+                                                form.formState.errors.categoryId
+                                                    .message
+                                            }
                                         </p>
                                     )}
                                 </div>
@@ -212,7 +227,10 @@ export function UmkmForm({
                                     </div>
                                     {form.formState.errors.phone && (
                                         <p className="text-xs text-destructive">
-                                            {form.formState.errors.phone.message}
+                                            {
+                                                form.formState.errors.phone
+                                                    .message
+                                            }
                                         </p>
                                     )}
                                 </div>
@@ -231,7 +249,10 @@ export function UmkmForm({
                                 />
                                 {form.formState.errors.description && (
                                     <p className="text-xs text-destructive">
-                                        {form.formState.errors.description.message}
+                                        {
+                                            form.formState.errors.description
+                                                .message
+                                        }
                                     </p>
                                 )}
                             </div>
@@ -257,7 +278,9 @@ export function UmkmForm({
                                     className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                                     {...form.register("destinationId")}
                                 >
-                                    <option value="">Tanpa Relasi Destinasi</option>
+                                    <option value="">
+                                        Tanpa Relasi Destinasi
+                                    </option>
                                     {destinations.map((d) => (
                                         <option key={d.id} value={d.id}>
                                             {d.name} ({d.city})
@@ -265,7 +288,8 @@ export function UmkmForm({
                                     ))}
                                 </select>
                                 <p className="text-[10px] text-muted-foreground">
-                                    Pilih destinasi jika UMKM berada di dalam atau sekitar area wisata tersebut.
+                                    Pilih destinasi jika UMKM berada di dalam
+                                    atau sekitar area wisata tersebut.
                                 </p>
                             </div>
 
@@ -288,32 +312,83 @@ export function UmkmForm({
                                 )}
                             </div>
 
-                            <div className="pt-4 border-t">
+                            <div className="pt-4 border-t space-y-4">
                                 <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                    Koordinat Peta (Opsional)
+                                    Lokasi di Peta
                                 </Label>
+
+                                <MapPicker
+                                    latitude={form.watch("latitude") ?? null}
+                                    longitude={form.watch("longitude") ?? null}
+                                    onChange={(lat, lng) => {
+                                        form.setValue("latitude", lat);
+                                        form.setValue("longitude", lng);
+                                    }}
+                                />
+
                                 <div className="grid gap-4 md:grid-cols-2 mt-2">
                                     <div className="space-y-2">
-                                        <Label htmlFor="latitude">Latitude</Label>
+                                        <Label htmlFor="latitude">
+                                            Latitude
+                                        </Label>
                                         <Input
                                             id="latitude"
                                             type="number"
                                             step="any"
                                             placeholder="-6.2088"
-                                            {...form.register("latitude", { valueAsNumber: true })}
+                                            {...form.register("latitude", {
+                                                valueAsNumber: true,
+                                            })}
+                                            onChange={(e) =>
+                                                form.setValue(
+                                                    "latitude",
+                                                    parseFloat(e.target.value),
+                                                )
+                                            }
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="longitude">Longitude</Label>
+                                        <Label htmlFor="longitude">
+                                            Longitude
+                                        </Label>
                                         <Input
                                             id="longitude"
                                             type="number"
                                             step="any"
                                             placeholder="106.8456"
-                                            {...form.register("longitude", { valueAsNumber: true })}
+                                            {...form.register("longitude", {
+                                                valueAsNumber: true,
+                                            })}
+                                            onChange={(e) =>
+                                                form.setValue(
+                                                    "longitude",
+                                                    parseFloat(e.target.value),
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
+                                {!form.watch("latitude") && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full text-xs"
+                                        onClick={() => {
+                                            form.setValue(
+                                                "latitude",
+                                                DEFAULT_CENTER[0],
+                                            );
+                                            form.setValue(
+                                                "longitude",
+                                                DEFAULT_CENTER[1],
+                                            );
+                                        }}
+                                    >
+                                        <MapPin className="mr-2 h-3 w-3" />
+                                        Gunakan Lokasi Default
+                                    </Button>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
@@ -327,15 +402,21 @@ export function UmkmForm({
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center space-y-2 bg-muted/5">
-                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <Upload className="h-5 w-5 text-primary" />
-                                </div>
-                                <div className="text-xs">
-                                    <p className="font-bold">Klik untuk unggah</p>
-                                    <p className="text-muted-foreground">Maksimal 3 foto (PNG, JPG)</p>
-                                </div>
-                            </div>
+                            <ImageDropzone
+                                folder="umkm"
+                                multiple={true}
+                                maxFiles={3}
+                                onUploadComplete={(urls) => {
+                                    form.setValue(
+                                        "images",
+                                        urls.map((url) => ({ imageUrl: url })),
+                                    );
+                                }}
+                            />
+                            <p className="text-[10px] text-muted-foreground mt-4 text-center">
+                                Unggah foto terbaik untuk menarik minat
+                                pengunjung. Maksimal 3 foto.
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -346,7 +427,9 @@ export function UmkmForm({
                             size="lg"
                             disabled={isPending}
                         >
-                            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {isPending && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             {initialData ? "Simpan Perubahan" : "Simpan UMKM"}
                         </Button>
                         <Button

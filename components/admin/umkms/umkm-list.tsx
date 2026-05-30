@@ -49,10 +49,7 @@ interface UmkmListProps {
     categories: Category[];
 }
 
-export function UmkmList({
-    initialUmkms,
-    categories,
-}: UmkmListProps) {
+export function UmkmList({ initialUmkms, categories }: UmkmListProps) {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [selectedUmkm, setSelectedUmkm] = useState<Umkm | null>(null);
@@ -70,7 +67,7 @@ export function UmkmList({
 
     async function handleDelete() {
         if (!selectedUmkm) return;
-        
+
         setIsDeleting(true);
         try {
             await deleteUmkm(selectedUmkm.id);
@@ -86,19 +83,30 @@ export function UmkmList({
 
     const getStatusBadge = (umkm: Umkm) => {
         const cert = umkm.certifications?.[0];
-        if (!cert) return <Badge variant="outline" className="text-[10px]">Belum Ada Sertifikat</Badge>;
+        if (!cert)
+            return (
+                <Badge variant="outline" className="text-[10px]">
+                    Belum Ada Sertifikat
+                </Badge>
+            );
 
         switch (cert.status) {
             case "VALID":
                 return (
-                    <Badge variant="success" className="text-[10px] font-bold gap-1">
+                    <Badge
+                        variant="success"
+                        className="text-[10px] font-bold gap-1"
+                    >
                         <CheckCircle2 className="h-3 w-3" />
                         Valid
                     </Badge>
                 );
             case "PENDING":
                 return (
-                    <Badge variant="secondary" className="text-[10px] font-bold gap-1">
+                    <Badge
+                        variant="secondary"
+                        className="text-[10px] font-bold gap-1"
+                    >
                         <Clock className="h-3 w-3" />
                         Pending
                     </Badge>
@@ -106,13 +114,20 @@ export function UmkmList({
             case "EXPIRED":
             case "REVOKED":
                 return (
-                    <Badge variant="destructive" className="text-[10px] font-bold gap-1">
+                    <Badge
+                        variant="destructive"
+                        className="text-[10px] font-bold gap-1"
+                    >
                         <XCircle className="h-3 w-3" />
                         {cert.status === "EXPIRED" ? "Kedaluwarsa" : "Dicabut"}
                     </Badge>
                 );
             default:
-                return <Badge variant="outline" className="text-[10px]">{cert.status}</Badge>;
+                return (
+                    <Badge variant="outline" className="text-[10px]">
+                        {cert.status}
+                    </Badge>
+                );
         }
     };
 
@@ -163,25 +178,36 @@ export function UmkmList({
                             <TableHead>KATEGORI</TableHead>
                             <TableHead>DESTINASI</TableHead>
                             <TableHead>STATUS HALAL</TableHead>
-                            <TableHead className="w-[100px] text-right">AKSI</TableHead>
+                            <TableHead className="w-[100px] text-right">
+                                AKSI
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredUmkms.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                                <TableCell
+                                    colSpan={5}
+                                    className="h-32 text-center text-muted-foreground"
+                                >
                                     Tidak ada UMKM ditemukan.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             filteredUmkms.map((umkm) => (
-                                <TableRow key={umkm.id} className="group hover:bg-muted/50 transition-colors">
+                                <TableRow
+                                    key={umkm.id}
+                                    className="group hover:bg-muted/50 transition-colors"
+                                >
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="h-10 w-10 rounded bg-muted flex items-center justify-center overflow-hidden shrink-0 border relative">
                                                 {umkm.images?.[0] ? (
                                                     <Image
-                                                        src={umkm.images[0].imageUrl}
+                                                        src={
+                                                            umkm.images[0]
+                                                                .imageUrl
+                                                        }
                                                         alt={umkm.name}
                                                         fill
                                                         className="object-cover"
@@ -191,15 +217,21 @@ export function UmkmList({
                                                 )}
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="font-bold text-sm leading-tight">{umkm.name}</span>
+                                                <span className="font-bold text-sm leading-tight">
+                                                    {umkm.name}
+                                                </span>
                                                 <span className="text-[10px] text-muted-foreground">
-                                                    {umkm.address || "Alamat tidak tersedia"}
+                                                    {umkm.address ||
+                                                        "Alamat tidak tersedia"}
                                                 </span>
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px]">
+                                        <Badge
+                                            variant="secondary"
+                                            className="bg-primary/10 text-primary border-none text-[10px]"
+                                        >
                                             {umkm.category?.name || "-"}
                                         </Badge>
                                     </TableCell>
@@ -210,40 +242,50 @@ export function UmkmList({
                                                 {umkm.destination.name}
                                             </div>
                                         ) : (
-                                            <span className="text-muted-foreground text-sm">-</span>
+                                            <span className="text-muted-foreground text-sm">
+                                                -
+                                            </span>
                                         )}
                                     </TableCell>
                                     <TableCell>
                                         {getStatusBadge(umkm)}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon-sm"
-                                                onClick={() => router.push(`/umkms/${umkm.id}`)}
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon-sm"
-                                                onClick={() => router.push(`/umkms/${umkm.id}/edit`)}
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon-sm"
-                                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                onClick={() => setSelectedUmkm(umkm)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="group-hover:hidden">
+                                        {/* <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity"> */}
+                                        <Button
+                                            variant="ghost"
+                                            size="icon-sm"
+                                            onClick={() =>
+                                                router.push(`/umkms/${umkm.id}`)
+                                            }
+                                        >
+                                            <Eye className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon-sm"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/umkms/${umkm.id}/edit`,
+                                                )
+                                            }
+                                        >
+                                            <Edit className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon-sm"
+                                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                            onClick={() =>
+                                                setSelectedUmkm(umkm)
+                                            }
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                        {/* </div> */}
+                                        {/* <div className="group-hover:hidden">
                                             <MoreHorizontal className="h-4 w-4 text-muted-foreground ml-auto" />
-                                        </div>
+                                        </div> */}
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -262,15 +304,21 @@ export function UmkmList({
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="font-heading">Hapus UMKM</AlertDialogTitle>
+                        <AlertDialogTitle className="font-heading">
+                            Hapus UMKM
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
                             Apakah Anda yakin ingin menghapus UMKM{" "}
-                            <span className="font-medium text-foreground">{selectedUmkm?.name || "ini"}</span>? 
-                            Tindakan ini tidak dapat dibatalkan.
+                            <span className="font-medium text-foreground">
+                                {selectedUmkm?.name || "ini"}
+                            </span>
+                            ? Tindakan ini tidak dapat dibatalkan.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isDeleting}>
+                            Batal
+                        </AlertDialogCancel>
                         <AlertDialogAction
                             onClick={(event) => {
                                 event.preventDefault();
@@ -279,7 +327,9 @@ export function UmkmList({
                             disabled={isDeleting}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {isDeleting && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             Hapus
                         </AlertDialogAction>
                     </AlertDialogFooter>

@@ -1,3 +1,4 @@
+import { CategoryType } from "@/lib/generated/prisma";
 import { z } from "zod";
 import { categorySchema } from "@/lib/validations/category.schema";
 
@@ -8,4 +9,5 @@ export interface Category {
     name: string;
     slug: string;
     description?: string | null;
+    type: CategoryType;
 }
