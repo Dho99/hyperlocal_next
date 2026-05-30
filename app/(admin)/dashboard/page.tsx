@@ -249,7 +249,7 @@ export default async function DashboardPage() {
                             variant="ghost"
                             className="text-base font-medium text-[#24005d]"
                         >
-                            <Link href="/validations">Lihat Semua</Link>
+                            <Link href="/validasi/destinasi">Lihat Semua</Link>
                         </Button>
                     </CardHeader>
                     <CardContent className="p-0">
@@ -315,7 +315,7 @@ export default async function DashboardPage() {
                                                             href={
                                                                 "city" in row
                                                                     ? `/destinations/${row.id}`
-                                                                    : "/validations"
+                                                                     : "/validasi/destinasi"
                                                             }
                                                         >
                                                             <Eye className="h-5 w-5" />

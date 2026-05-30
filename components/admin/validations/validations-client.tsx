@@ -330,7 +330,7 @@ export function ValidationsClient() {
                                                 size="icon-sm"
                                                 title="Proses Validasi"
                                                 onClick={() =>
-                                                    router.push(`/validations/${v.id}`)
+                                                    router.push(`/validasi/destinasi/${v.id}`)
                                                 }
                                             >
                                                 <Eye className="h-4 w-4" />

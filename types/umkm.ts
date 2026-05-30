@@ -65,6 +65,9 @@ export interface Umkm {
     longitude: number | null;
     rating?: number | null;
     reviewCount?: number | null;
+    openingHours?: Record<string, { open: string; close: string }> | { open: string; close: string } | null;
+    validationStatus?: string;
+    surveyorNote?: string | null;
     createdAt: Date | string;
     updatedAt: Date | string;
 

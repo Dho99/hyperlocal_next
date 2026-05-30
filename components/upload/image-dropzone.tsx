@@ -16,7 +16,8 @@ interface ImageDropzoneProps {
         | "users"
         | "validations"
         | "categories"
-        | "facilities";
+        | "facilities"
+        | "accommodations";
     multiple?: boolean;
     maxFiles?: number;
     onUploadComplete?: (urls: string[]) => void;

@@ -10,7 +10,7 @@ import { LogoutDialog } from "./logout-dialog";
 
 export function AdminSidebar() {
     return (
-        <aside className="hidden bg-[#24005d] text-white lg:block lg:w-80 lg:flex-none">
+        <aside className="hidden bg-emerald-900 text-white lg:block lg:w-80 lg:flex-none">
             <div className="flex h-full flex-col">
                 <div className="flex h-24 items-start px-8 pt-10">
                     <Link

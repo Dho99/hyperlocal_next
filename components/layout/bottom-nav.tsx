@@ -1,12 +1,13 @@
 "use client";
 
-import { Home, Map, Compass, User } from "lucide-react";
+import { Home, Map, Compass, User, Store } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const bottomNavItems = [
     { label: "Home", href: "/", icon: Home },
     { label: "Destinasi", href: "/destinasi", icon: Map },
+    { label: "Kuliner", href: "/umkm", icon: Store },
     { label: "Peta", href: "/peta", icon: Compass },
     { label: "Profile", href: "/profile", icon: User },
 ] as const;
@@ -15,6 +16,8 @@ function isActive(pathname: string, href: string): boolean {
     if (href === "/") return pathname === "/";
     if (href === "/destinasi")
         return pathname === "/destinasi" || pathname.startsWith("/destinasi/");
+    if (href === "/umkm")
+        return pathname === "/umkm" || pathname.startsWith("/umkm/");
     return pathname.startsWith(href);
 }
 
@@ -32,8 +35,8 @@ export function BottomNav() {
                         href={item.href}
                         className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1 text-xs font-medium transition active:scale-90 ${
                             active
-                                ? "rounded-full bg-[#eaddff] text-[#4f378a]"
-                                : "text-[#494551] hover:text-[#4f378a]"
+                                ? "rounded-full bg-emerald-100 text-emerald-900"
+                                : "text-stone-600 hover:text-emerald-900"
                         }`}
                     >
                         <Icon className="size-5" />

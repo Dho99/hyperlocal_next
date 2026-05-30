@@ -1,42 +1,80 @@
-import type { Reason } from "@/fitur/data/landing-data";
+"use client";
 
-interface WhyChooseUsProps {
-    items: Reason[];
-}
+import { motion } from "framer-motion";
+import { reasons } from "@/fitur/data/static-data";
+import { TopographicPattern } from "@/components/ui/topographic-pattern";
 
-export function WhyChooseUs({ items }: WhyChooseUsProps) {
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.15,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+export function WhyChooseUs() {
     return (
         <section
-            className="mx-auto max-w-7xl scroll-mt-20 px-4 py-16 sm:px-6 lg:px-8"
+            className="relative mx-auto max-w-7xl scroll-mt-20 overflow-hidden px-4 py-20 sm:px-6 lg:px-8"
             id="why"
         >
-            <div className="text-center">
-                <h2 className="font-heading text-3xl font-semibold">
-                    Kenapa Memilih Kami
-                </h2>
-                <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#494551]">
-                    Landing page ini membaca data operasional Hyperlocal,
-                    sehingga jumlah, kategori, dan rekomendasi ikut berubah
-                    saat database diperbarui.
-                </p>
-            </div>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-                {items.map((reason) => (
-                    <article
-                        className="rounded-xl border border-[#cbc4d2]/60 bg-white/55 p-7 text-center shadow-sm"
-                        key={reason.title}
-                    >
-                        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#e1d4fd] text-[#4f378a]">
-                            <reason.icon className="size-5" />
-                        </div>
-                        <h3 className="mt-5 font-heading text-lg font-semibold">
-                            {reason.title}
-                        </h3>
-                        <p className="mt-2 text-sm leading-6 text-[#494551]">
-                            {reason.copy}
-                        </p>
-                    </article>
-                ))}
+            <TopographicPattern className="pointer-events-none absolute inset-0 select-none text-emerald-900" />
+            <div className="relative">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center"
+                >
+                    <h2 className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl">
+                        Kenapa Memilih Kami
+                    </h2>
+                    <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-stone-600">
+                        Landing page ini membaca data operasional Hyperlocal,
+                        sehingga jumlah, kategori, dan rekomendasi ikut berubah
+                        saat database diperbarui.
+                    </p>
+                </motion.div>
+
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-80px" }}
+                    className="mt-14 grid gap-8 md:grid-cols-3"
+                >
+                    {reasons.map((reason, index) => {
+                        const Icon = reason.icon;
+                        return (
+                            <motion.article
+                                key={reason.title}
+                                variants={itemVariants}
+                                className={`${index === 1 ? "md:translate-y-8" : ""}`}
+                            >
+                                <div className="flex items-start gap-5">
+                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-900">
+                                        <Icon className="size-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-heading text-lg font-bold text-stone-900">
+                                            {reason.title}
+                                        </h3>
+                                        <p className="mt-1.5 leading-6 text-stone-600">
+                                            {reason.copy}
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.article>
+                        );
+                    })}
+                </motion.div>
             </div>
         </section>
     );

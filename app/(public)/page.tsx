@@ -1,11 +1,9 @@
 import { HeroSection } from "@/components/public/home/hero-section";
 import {
     getLandingData,
-    formatNumber,
-    reasons,
-    steps,
     faqs,
 } from "@/fitur/data/landing-data";
+import { formatNumber } from "@/fitur/data/utils";
 import { WhyChooseUs } from "@/fitur/components/why-choose-us";
 import { CategoriesSection } from "@/fitur/components/categories-section";
 import { PopularSection } from "@/fitur/components/popular-section";
@@ -23,7 +21,7 @@ export default async function Home() {
     const data = await getLandingData();
 
     return (
-        <main className="min-h-screen bg-[#fdf7ff] text-[#1d1b20]">
+        <main className="min-h-screen">
             <HeroSection
                 stats={[
                     {
@@ -43,14 +41,19 @@ export default async function Home() {
                     },
                 ]}
             />
-            <WhyChooseUs items={reasons} />
+            <WhyChooseUs />
             <CategoriesSection categories={data.categories} />
             <PopularSection items={data.popular} />
             <VerifiedDestinations items={data.verified} />
             <NearbyPlaces items={data.topUmkmCards} />
             <RouteInspiration items={data.routeIdeas} />
-            <HowItWorks items={steps} />
-            <FacilitiesHighlights items={data.facilityHighlights} />
+            <HowItWorks />
+            <FacilitiesHighlights
+                totalFacilities={data.stats.totalFacilities}
+                totalUmkms={data.stats.totalUmkms}
+                validCertifications={data.stats.validCertifications}
+                approvedDestinations={data.stats.approvedDestinations}
+            />
             <Testimonials items={data.reviewCards} />
             <FaqSection items={faqs} />
             <CtaSection

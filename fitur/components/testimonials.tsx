@@ -1,37 +1,68 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import type { ReviewCard } from "@/fitur/data/landing-data";
+import type { ReviewCard } from "@/fitur/data/utils";
 
 interface TestimonialsProps {
     items: ReviewCard[];
 }
 
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.15 },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
 export function Testimonials({ items }: TestimonialsProps) {
+    if (items.length === 0) return null;
+
     return (
-        <section className="scroll-mt-20 bg-white/45 py-16" id="reviews">
+        <section className="bg-emerald-900 py-20" id="reviews">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="text-center">
-                    <h2 className="font-heading text-3xl font-semibold">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center"
+                >
+                    <h2 className="font-heading text-3xl font-bold tracking-tighter text-white sm:text-4xl lg:text-5xl">
                         Testimoni Traveller
                     </h2>
-                    <p className="mt-2 text-sm text-[#494551]">
+                    <p className="mt-3 text-base text-emerald-100">
                         Ulasan terbaru dengan rating tertinggi dari database.
                     </p>
-                </div>
-                <div className="mt-8 grid gap-6 md:grid-cols-3">
+                </motion.div>
+
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-80px" }}
+                    className="mt-10 grid gap-6 md:grid-cols-3"
+                >
                     {items.map((review) => (
-                        <article
-                            className="rounded-xl border border-[#cbc4d2]/60 bg-white p-6 shadow-sm"
+                        <motion.article
                             key={review.id}
+                            variants={itemVariants}
+                            className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-md"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="flex size-10 items-center justify-center rounded-full bg-[#e1d4fd] font-bold text-[#4f378a]">
+                                <div className="flex size-11 items-center justify-center rounded-full bg-emerald-700/40 font-bold text-white">
                                     {review.userName[0]}
                                 </div>
                                 <div>
-                                    <p className="font-heading text-sm font-bold">
+                                    <p className="font-heading text-sm font-bold text-white">
                                         {review.userName}
                                     </p>
-                                    <div className="mt-1 flex text-[#c9a74d]">
+                                    <div className="mt-1 flex text-amber-400">
                                         {Array.from({
                                             length: review.rating,
                                         }).map((_, index) => (
@@ -43,17 +74,17 @@ export function Testimonials({ items }: TestimonialsProps) {
                                     </div>
                                 </div>
                             </div>
-                            <p className="mt-5 line-clamp-4 text-sm italic leading-7 text-[#494551]">
+                            <p className="mt-5 line-clamp-4 text-sm italic leading-7 text-emerald-50">
                                 &quot;{review.comment}&quot;
                             </p>
                             {review.destinationName && (
-                                <p className="mt-4 text-xs font-semibold text-[#4f378a]">
+                                <p className="mt-4 text-xs font-semibold text-emerald-300">
                                     {review.destinationName}
                                 </p>
                             )}
-                        </article>
+                        </motion.article>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );

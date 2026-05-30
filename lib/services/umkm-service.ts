@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import type { PublicReview } from "@/types/review";
 import type { CategoryType } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
@@ -217,4 +218,81 @@ export async function deleteUmkm(id: string) {
     return await prisma.umkm.delete({
         where: { id },
     });
+}
+
+export interface FacilityInfo {
+    id: string;
+    name: string;
+    instanceName: string | null;
+    type: string | null;
+}
+
+export interface UmkmDetail extends Umkm {
+    reviews: PublicReview[];
+    destinationFacilities: FacilityInfo[];
+}
+
+export async function getUmkmDetail(id: string) {
+    const umkm = await prisma.umkm.findUnique({
+        where: { id },
+        include: {
+            category: true,
+            destination: {
+                include: {
+                    destinationHalalFacilities: {
+                        include: {
+                            facility: true,
+                        },
+                    },
+                },
+            },
+            images: true,
+            certifications: {
+                include: {
+                    validations: {
+                        include: {
+                            evidences: true,
+                        },
+                    },
+                },
+            },
+            reviews: {
+                include: {
+                    user: {
+                        select: { id: true, name: true, image: true },
+                    },
+                    sentiment: true,
+                },
+                orderBy: { createdAt: "desc" },
+                take: 10,
+            },
+        },
+    });
+
+    if (!umkm) return null;
+
+    const facilities: FacilityInfo[] =
+        umkm.destination?.destinationHalalFacilities?.map((dhf) => ({
+            id: dhf.facility.id,
+            name: dhf.facility.name,
+            instanceName: dhf.name,
+            type: dhf.facility.facilityType,
+        })) || [];
+
+    const reviews: PublicReview[] = umkm.reviews.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.createdAt,
+        user: { id: r.user.id, name: r.user.name, image: r.user.image },
+        sentiment: r.sentiment ? { label: r.sentiment.label } : null,
+    }));
+
+    const serialized = serializeUmkm(umkm);
+
+    return {
+        ...serialized,
+        reviews,
+        destinationFacilities: facilities,
+    } as UmkmDetail;
 }

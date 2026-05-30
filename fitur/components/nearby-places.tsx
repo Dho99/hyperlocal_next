@@ -1,42 +1,71 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Utensils } from "lucide-react";
-import type { UmkmCard } from "@/fitur/data/landing-data";
+import type { UmkmCard } from "@/fitur/data/utils";
+import { TopographicPattern } from "@/components/ui/topographic-pattern";
 
 interface NearbyPlacesProps {
     items: UmkmCard[];
 }
 
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.1 },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
 export function NearbyPlaces({ items }: NearbyPlacesProps) {
+    if (items.length === 0) return null;
+
     return (
-        <section
-            className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
-            id="nearby"
-        >
-            <div className="grid gap-6 rounded-xl border border-[#cbc4d2]/60 bg-white/65 p-6 shadow-sm lg:grid-cols-[0.8fr_1.2fr] lg:p-8">
-                <div>
-                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#4f378a]">
+        <section className="relative mx-auto max-w-7xl scroll-mt-20 overflow-hidden px-4 py-16 sm:px-6 lg:px-8" id="nearby">
+            <TopographicPattern className="pointer-events-none absolute inset-0 select-none text-emerald-900" />
+            <div className="relative grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-amber-700">
                         Rekomendasi Sekitar
                     </p>
-                    <h2 className="mt-3 font-heading text-3xl font-semibold">
+                    <h2 className="mt-3 font-heading text-3xl font-bold tracking-tighter text-stone-900 sm:text-4xl">
                         UMKM dan fasilitas dekat destinasi
                     </h2>
-                    <p className="mt-4 text-sm leading-7 text-[#494551]">
+                    <p className="mt-4 leading-7 text-stone-600">
                         Daftar ini memakai UMKM yang terhubung ke kategori,
                         destinasi, sertifikasi, dan rating di database.
                     </p>
-                </div>
-                <div className="grid gap-4 md:grid-cols-3">
+                </motion.div>
+
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-80px" }}
+                    className="grid gap-4 md:grid-cols-3"
+                >
                     {items.map((umkm) => (
-                        <article
-                            className="rounded-xl border border-[#e6e0e9] bg-white p-5"
+                        <motion.article
                             key={umkm.id}
+                            variants={itemVariants}
+                            className="rounded-2xl border border-stone-200/60 bg-stone-50/50 p-5"
                         >
-                            <div className="flex size-11 items-center justify-center rounded-lg bg-[#e9ddff] text-[#4f378a]">
+                            <div className="flex size-11 items-center justify-center rounded-lg bg-emerald-100 text-emerald-900">
                                 <Utensils className="size-5" />
                             </div>
-                            <h3 className="mt-4 line-clamp-2 font-heading text-base font-bold">
+                            <h3 className="mt-4 line-clamp-2 font-heading text-base font-bold text-stone-900">
                                 {umkm.name}
                             </h3>
-                            <p className="mt-2 text-sm text-[#494551]">
+                            <p className="mt-2 text-sm text-stone-600">
                                 {umkm.categoryName || "UMKM"} - {umkm.location}
                             </p>
                             {umkm.hasCertification && (
@@ -44,9 +73,9 @@ export function NearbyPlaces({ items }: NearbyPlacesProps) {
                                     Sertifikat valid
                                 </span>
                             )}
-                        </article>
+                        </motion.article>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );

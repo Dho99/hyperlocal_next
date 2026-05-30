@@ -44,6 +44,21 @@ export type Category = $Result.DefaultSelection<Prisma.$CategoryPayload>
  */
 export type Destination = $Result.DefaultSelection<Prisma.$DestinationPayload>
 /**
+ * Model Accommodation
+ * 
+ */
+export type Accommodation = $Result.DefaultSelection<Prisma.$AccommodationPayload>
+/**
+ * Model AccommodationImage
+ * 
+ */
+export type AccommodationImage = $Result.DefaultSelection<Prisma.$AccommodationImagePayload>
+/**
+ * Model AccommodationHalalFacility
+ * 
+ */
+export type AccommodationHalalFacility = $Result.DefaultSelection<Prisma.$AccommodationHalalFacilityPayload>
+/**
  * Model DestinationImage
  * 
  */
@@ -109,6 +124,11 @@ export type Umkm = $Result.DefaultSelection<Prisma.$UmkmPayload>
  */
 export type UmkmImage = $Result.DefaultSelection<Prisma.$UmkmImagePayload>
 /**
+ * Model UmkmHalalFacility
+ * 
+ */
+export type UmkmHalalFacility = $Result.DefaultSelection<Prisma.$UmkmHalalFacilityPayload>
+/**
  * Model HalalCertification
  * 
  */
@@ -162,7 +182,8 @@ export type ValidationStatus = (typeof ValidationStatus)[keyof typeof Validation
 
 export const CategoryType: {
   DESTINATION: 'DESTINATION',
-  UMKM: 'UMKM'
+  UMKM: 'UMKM',
+  ACCOMMODATION: 'ACCOMMODATION'
 };
 
 export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
@@ -396,6 +417,36 @@ export class PrismaClient<
   get destination(): Prisma.DestinationDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.accommodation`: Exposes CRUD operations for the **Accommodation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Accommodations
+    * const accommodations = await prisma.accommodation.findMany()
+    * ```
+    */
+  get accommodation(): Prisma.AccommodationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.accommodationImage`: Exposes CRUD operations for the **AccommodationImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccommodationImages
+    * const accommodationImages = await prisma.accommodationImage.findMany()
+    * ```
+    */
+  get accommodationImage(): Prisma.AccommodationImageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.accommodationHalalFacility`: Exposes CRUD operations for the **AccommodationHalalFacility** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccommodationHalalFacilities
+    * const accommodationHalalFacilities = await prisma.accommodationHalalFacility.findMany()
+    * ```
+    */
+  get accommodationHalalFacility(): Prisma.AccommodationHalalFacilityDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.destinationImage`: Exposes CRUD operations for the **DestinationImage** model.
     * Example usage:
     * ```ts
@@ -524,6 +575,16 @@ export class PrismaClient<
     * ```
     */
   get umkmImage(): Prisma.UmkmImageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.umkmHalalFacility`: Exposes CRUD operations for the **UmkmHalalFacility** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UmkmHalalFacilities
+    * const umkmHalalFacilities = await prisma.umkmHalalFacility.findMany()
+    * ```
+    */
+  get umkmHalalFacility(): Prisma.UmkmHalalFacilityDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.halalCertification`: Exposes CRUD operations for the **HalalCertification** model.
@@ -1004,6 +1065,9 @@ export namespace Prisma {
     Verification: 'Verification',
     Category: 'Category',
     Destination: 'Destination',
+    Accommodation: 'Accommodation',
+    AccommodationImage: 'AccommodationImage',
+    AccommodationHalalFacility: 'AccommodationHalalFacility',
     DestinationImage: 'DestinationImage',
     DestinationHalalFacility: 'DestinationHalalFacility',
     DestinationFacilityEvidence: 'DestinationFacilityEvidence',
@@ -1017,6 +1081,7 @@ export namespace Prisma {
     HalalReadinessScore: 'HalalReadinessScore',
     Umkm: 'Umkm',
     UmkmImage: 'UmkmImage',
+    UmkmHalalFacility: 'UmkmHalalFacility',
     HalalCertification: 'HalalCertification',
     HalalValidation: 'HalalValidation',
     ValidationEvidence: 'ValidationEvidence',
@@ -1036,7 +1101,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
+      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "accommodation" | "accommodationImage" | "accommodationHalalFacility" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "umkmHalalFacility" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1481,6 +1546,228 @@ export namespace Prisma {
           count: {
             args: Prisma.DestinationCountArgs<ExtArgs>
             result: $Utils.Optional<DestinationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Accommodation: {
+        payload: Prisma.$AccommodationPayload<ExtArgs>
+        fields: Prisma.AccommodationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccommodationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccommodationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          findFirst: {
+            args: Prisma.AccommodationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccommodationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          findMany: {
+            args: Prisma.AccommodationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>[]
+          }
+          create: {
+            args: Prisma.AccommodationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          createMany: {
+            args: Prisma.AccommodationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccommodationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>[]
+          }
+          delete: {
+            args: Prisma.AccommodationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          update: {
+            args: Prisma.AccommodationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          deleteMany: {
+            args: Prisma.AccommodationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccommodationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccommodationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>[]
+          }
+          upsert: {
+            args: Prisma.AccommodationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationPayload>
+          }
+          aggregate: {
+            args: Prisma.AccommodationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccommodation>
+          }
+          groupBy: {
+            args: Prisma.AccommodationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccommodationCountArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationCountAggregateOutputType> | number
+          }
+        }
+      }
+      AccommodationImage: {
+        payload: Prisma.$AccommodationImagePayload<ExtArgs>
+        fields: Prisma.AccommodationImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccommodationImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccommodationImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          findFirst: {
+            args: Prisma.AccommodationImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccommodationImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          findMany: {
+            args: Prisma.AccommodationImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>[]
+          }
+          create: {
+            args: Prisma.AccommodationImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          createMany: {
+            args: Prisma.AccommodationImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccommodationImageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>[]
+          }
+          delete: {
+            args: Prisma.AccommodationImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          update: {
+            args: Prisma.AccommodationImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.AccommodationImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccommodationImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccommodationImageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>[]
+          }
+          upsert: {
+            args: Prisma.AccommodationImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationImagePayload>
+          }
+          aggregate: {
+            args: Prisma.AccommodationImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccommodationImage>
+          }
+          groupBy: {
+            args: Prisma.AccommodationImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccommodationImageCountArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationImageCountAggregateOutputType> | number
+          }
+        }
+      }
+      AccommodationHalalFacility: {
+        payload: Prisma.$AccommodationHalalFacilityPayload<ExtArgs>
+        fields: Prisma.AccommodationHalalFacilityFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccommodationHalalFacilityFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccommodationHalalFacilityFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          findFirst: {
+            args: Prisma.AccommodationHalalFacilityFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccommodationHalalFacilityFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          findMany: {
+            args: Prisma.AccommodationHalalFacilityFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>[]
+          }
+          create: {
+            args: Prisma.AccommodationHalalFacilityCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          createMany: {
+            args: Prisma.AccommodationHalalFacilityCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccommodationHalalFacilityCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>[]
+          }
+          delete: {
+            args: Prisma.AccommodationHalalFacilityDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          update: {
+            args: Prisma.AccommodationHalalFacilityUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          deleteMany: {
+            args: Prisma.AccommodationHalalFacilityDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccommodationHalalFacilityUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccommodationHalalFacilityUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>[]
+          }
+          upsert: {
+            args: Prisma.AccommodationHalalFacilityUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccommodationHalalFacilityPayload>
+          }
+          aggregate: {
+            args: Prisma.AccommodationHalalFacilityAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccommodationHalalFacility>
+          }
+          groupBy: {
+            args: Prisma.AccommodationHalalFacilityGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationHalalFacilityGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccommodationHalalFacilityCountArgs<ExtArgs>
+            result: $Utils.Optional<AccommodationHalalFacilityCountAggregateOutputType> | number
           }
         }
       }
@@ -2446,6 +2733,80 @@ export namespace Prisma {
           }
         }
       }
+      UmkmHalalFacility: {
+        payload: Prisma.$UmkmHalalFacilityPayload<ExtArgs>
+        fields: Prisma.UmkmHalalFacilityFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UmkmHalalFacilityFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UmkmHalalFacilityFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          findFirst: {
+            args: Prisma.UmkmHalalFacilityFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UmkmHalalFacilityFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          findMany: {
+            args: Prisma.UmkmHalalFacilityFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>[]
+          }
+          create: {
+            args: Prisma.UmkmHalalFacilityCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          createMany: {
+            args: Prisma.UmkmHalalFacilityCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UmkmHalalFacilityCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>[]
+          }
+          delete: {
+            args: Prisma.UmkmHalalFacilityDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          update: {
+            args: Prisma.UmkmHalalFacilityUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          deleteMany: {
+            args: Prisma.UmkmHalalFacilityDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UmkmHalalFacilityUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UmkmHalalFacilityUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>[]
+          }
+          upsert: {
+            args: Prisma.UmkmHalalFacilityUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UmkmHalalFacilityPayload>
+          }
+          aggregate: {
+            args: Prisma.UmkmHalalFacilityAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUmkmHalalFacility>
+          }
+          groupBy: {
+            args: Prisma.UmkmHalalFacilityGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UmkmHalalFacilityGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UmkmHalalFacilityCountArgs<ExtArgs>
+            result: $Utils.Optional<UmkmHalalFacilityCountAggregateOutputType> | number
+          }
+        }
+      }
       HalalCertification: {
         payload: Prisma.$HalalCertificationPayload<ExtArgs>
         fields: Prisma.HalalCertificationFieldRefs
@@ -2856,6 +3217,9 @@ export namespace Prisma {
     verification?: VerificationOmit
     category?: CategoryOmit
     destination?: DestinationOmit
+    accommodation?: AccommodationOmit
+    accommodationImage?: AccommodationImageOmit
+    accommodationHalalFacility?: AccommodationHalalFacilityOmit
     destinationImage?: DestinationImageOmit
     destinationHalalFacility?: DestinationHalalFacilityOmit
     destinationFacilityEvidence?: DestinationFacilityEvidenceOmit
@@ -2869,6 +3233,7 @@ export namespace Prisma {
     halalReadinessScore?: HalalReadinessScoreOmit
     umkm?: UmkmOmit
     umkmImage?: UmkmImageOmit
+    umkmHalalFacility?: UmkmHalalFacilityOmit
     halalCertification?: HalalCertificationOmit
     halalValidation?: HalalValidationOmit
     validationEvidence?: ValidationEvidenceOmit
@@ -3159,6 +3524,55 @@ export namespace Prisma {
 
 
   /**
+   * Count Type AccommodationCountOutputType
+   */
+
+  export type AccommodationCountOutputType = {
+    images: number
+    reviews: number
+    facilities: number
+  }
+
+  export type AccommodationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    images?: boolean | AccommodationCountOutputTypeCountImagesArgs
+    reviews?: boolean | AccommodationCountOutputTypeCountReviewsArgs
+    facilities?: boolean | AccommodationCountOutputTypeCountFacilitiesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AccommodationCountOutputType without action
+   */
+  export type AccommodationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationCountOutputType
+     */
+    select?: AccommodationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AccommodationCountOutputType without action
+   */
+  export type AccommodationCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationImageWhereInput
+  }
+
+  /**
+   * AccommodationCountOutputType without action
+   */
+  export type AccommodationCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+  }
+
+  /**
+   * AccommodationCountOutputType without action
+   */
+  export type AccommodationCountOutputTypeCountFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationHalalFacilityWhereInput
+  }
+
+
+  /**
    * Count Type DestinationHalalFacilityCountOutputType
    */
 
@@ -3195,10 +3609,14 @@ export namespace Prisma {
 
   export type HalalFacilityCountOutputType = {
     destinationHalalFacilities: number
+    umkmHalalFacilities: number
+    accommodationHalalFacilities: number
   }
 
   export type HalalFacilityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destinationHalalFacilities?: boolean | HalalFacilityCountOutputTypeCountDestinationHalalFacilitiesArgs
+    umkmHalalFacilities?: boolean | HalalFacilityCountOutputTypeCountUmkmHalalFacilitiesArgs
+    accommodationHalalFacilities?: boolean | HalalFacilityCountOutputTypeCountAccommodationHalalFacilitiesArgs
   }
 
   // Custom InputTypes
@@ -3217,6 +3635,20 @@ export namespace Prisma {
    */
   export type HalalFacilityCountOutputTypeCountDestinationHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DestinationHalalFacilityWhereInput
+  }
+
+  /**
+   * HalalFacilityCountOutputType without action
+   */
+  export type HalalFacilityCountOutputTypeCountUmkmHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UmkmHalalFacilityWhereInput
+  }
+
+  /**
+   * HalalFacilityCountOutputType without action
+   */
+  export type HalalFacilityCountOutputTypeCountAccommodationHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationHalalFacilityWhereInput
   }
 
 
@@ -3259,12 +3691,14 @@ export namespace Prisma {
     images: number
     reviews: number
     certifications: number
+    umkmHalalFacilities: number
   }
 
   export type UmkmCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     images?: boolean | UmkmCountOutputTypeCountImagesArgs
     reviews?: boolean | UmkmCountOutputTypeCountReviewsArgs
     certifications?: boolean | UmkmCountOutputTypeCountCertificationsArgs
+    umkmHalalFacilities?: boolean | UmkmCountOutputTypeCountUmkmHalalFacilitiesArgs
   }
 
   // Custom InputTypes
@@ -3297,6 +3731,13 @@ export namespace Prisma {
    */
   export type UmkmCountOutputTypeCountCertificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: HalalCertificationWhereInput
+  }
+
+  /**
+   * UmkmCountOutputType without action
+   */
+  export type UmkmCountOutputTypeCountUmkmHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UmkmHalalFacilityWhereInput
   }
 
 
@@ -10623,6 +11064,3512 @@ export namespace Prisma {
 
 
   /**
+   * Model Accommodation
+   */
+
+  export type AggregateAccommodation = {
+    _count: AccommodationCountAggregateOutputType | null
+    _avg: AccommodationAvgAggregateOutputType | null
+    _sum: AccommodationSumAggregateOutputType | null
+    _min: AccommodationMinAggregateOutputType | null
+    _max: AccommodationMaxAggregateOutputType | null
+  }
+
+  export type AccommodationAvgAggregateOutputType = {
+    latitude: Decimal | null
+    longitude: Decimal | null
+    rating: number | null
+    reviewCount: number | null
+    validatedScore: number | null
+  }
+
+  export type AccommodationSumAggregateOutputType = {
+    latitude: Decimal | null
+    longitude: Decimal | null
+    rating: number | null
+    reviewCount: number | null
+    validatedScore: number | null
+  }
+
+  export type AccommodationMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    address: string | null
+    city: string | null
+    province: string | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    phone: string | null
+    website: string | null
+    rating: number | null
+    reviewCount: number | null
+    validationStatus: string | null
+    surveyorNote: string | null
+    validatedScore: number | null
+    externalId: string | null
+    externalSource: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AccommodationMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    address: string | null
+    city: string | null
+    province: string | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    phone: string | null
+    website: string | null
+    rating: number | null
+    reviewCount: number | null
+    validationStatus: string | null
+    surveyorNote: string | null
+    validatedScore: number | null
+    externalId: string | null
+    externalSource: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AccommodationCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    description: number
+    address: number
+    city: number
+    province: number
+    latitude: number
+    longitude: number
+    phone: number
+    website: number
+    rating: number
+    reviewCount: number
+    validationStatus: number
+    surveyorNote: number
+    validatedScore: number
+    externalId: number
+    externalSource: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AccommodationAvgAggregateInputType = {
+    latitude?: true
+    longitude?: true
+    rating?: true
+    reviewCount?: true
+    validatedScore?: true
+  }
+
+  export type AccommodationSumAggregateInputType = {
+    latitude?: true
+    longitude?: true
+    rating?: true
+    reviewCount?: true
+    validatedScore?: true
+  }
+
+  export type AccommodationMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    address?: true
+    city?: true
+    province?: true
+    latitude?: true
+    longitude?: true
+    phone?: true
+    website?: true
+    rating?: true
+    reviewCount?: true
+    validationStatus?: true
+    surveyorNote?: true
+    validatedScore?: true
+    externalId?: true
+    externalSource?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AccommodationMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    address?: true
+    city?: true
+    province?: true
+    latitude?: true
+    longitude?: true
+    phone?: true
+    website?: true
+    rating?: true
+    reviewCount?: true
+    validationStatus?: true
+    surveyorNote?: true
+    validatedScore?: true
+    externalId?: true
+    externalSource?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AccommodationCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    description?: true
+    address?: true
+    city?: true
+    province?: true
+    latitude?: true
+    longitude?: true
+    phone?: true
+    website?: true
+    rating?: true
+    reviewCount?: true
+    validationStatus?: true
+    surveyorNote?: true
+    validatedScore?: true
+    externalId?: true
+    externalSource?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AccommodationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Accommodation to aggregate.
+     */
+    where?: AccommodationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Accommodations to fetch.
+     */
+    orderBy?: AccommodationOrderByWithRelationInput | AccommodationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccommodationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Accommodations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Accommodations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Accommodations
+    **/
+    _count?: true | AccommodationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AccommodationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AccommodationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccommodationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccommodationMaxAggregateInputType
+  }
+
+  export type GetAccommodationAggregateType<T extends AccommodationAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccommodation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccommodation[P]>
+      : GetScalarType<T[P], AggregateAccommodation[P]>
+  }
+
+
+
+
+  export type AccommodationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationWhereInput
+    orderBy?: AccommodationOrderByWithAggregationInput | AccommodationOrderByWithAggregationInput[]
+    by: AccommodationScalarFieldEnum[] | AccommodationScalarFieldEnum
+    having?: AccommodationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccommodationCountAggregateInputType | true
+    _avg?: AccommodationAvgAggregateInputType
+    _sum?: AccommodationSumAggregateInputType
+    _min?: AccommodationMinAggregateInputType
+    _max?: AccommodationMaxAggregateInputType
+  }
+
+  export type AccommodationGroupByOutputType = {
+    id: string
+    name: string
+    slug: string
+    description: JsonValue | null
+    address: string | null
+    city: string | null
+    province: string | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    phone: string | null
+    website: string | null
+    rating: number | null
+    reviewCount: number | null
+    validationStatus: string
+    surveyorNote: string | null
+    validatedScore: number | null
+    externalId: string | null
+    externalSource: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AccommodationCountAggregateOutputType | null
+    _avg: AccommodationAvgAggregateOutputType | null
+    _sum: AccommodationSumAggregateOutputType | null
+    _min: AccommodationMinAggregateOutputType | null
+    _max: AccommodationMaxAggregateOutputType | null
+  }
+
+  type GetAccommodationGroupByPayload<T extends AccommodationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccommodationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccommodationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccommodationGroupByOutputType[P]>
+            : GetScalarType<T[P], AccommodationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccommodationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    description?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    phone?: boolean
+    website?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
+    validatedScore?: boolean
+    externalId?: boolean
+    externalSource?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    images?: boolean | Accommodation$imagesArgs<ExtArgs>
+    reviews?: boolean | Accommodation$reviewsArgs<ExtArgs>
+    facilities?: boolean | Accommodation$facilitiesArgs<ExtArgs>
+    _count?: boolean | AccommodationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodation"]>
+
+  export type AccommodationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    description?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    phone?: boolean
+    website?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
+    validatedScore?: boolean
+    externalId?: boolean
+    externalSource?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["accommodation"]>
+
+  export type AccommodationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    description?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    phone?: boolean
+    website?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
+    validatedScore?: boolean
+    externalId?: boolean
+    externalSource?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["accommodation"]>
+
+  export type AccommodationSelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    description?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    phone?: boolean
+    website?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
+    validatedScore?: boolean
+    externalId?: boolean
+    externalSource?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AccommodationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "address" | "city" | "province" | "latitude" | "longitude" | "phone" | "website" | "rating" | "reviewCount" | "validationStatus" | "surveyorNote" | "validatedScore" | "externalId" | "externalSource" | "createdAt" | "updatedAt", ExtArgs["result"]["accommodation"]>
+  export type AccommodationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    images?: boolean | Accommodation$imagesArgs<ExtArgs>
+    reviews?: boolean | Accommodation$reviewsArgs<ExtArgs>
+    facilities?: boolean | Accommodation$facilitiesArgs<ExtArgs>
+    _count?: boolean | AccommodationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AccommodationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AccommodationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $AccommodationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Accommodation"
+    objects: {
+      images: Prisma.$AccommodationImagePayload<ExtArgs>[]
+      reviews: Prisma.$ReviewPayload<ExtArgs>[]
+      facilities: Prisma.$AccommodationHalalFacilityPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string
+      description: Prisma.JsonValue | null
+      address: string | null
+      city: string | null
+      province: string | null
+      latitude: Prisma.Decimal | null
+      longitude: Prisma.Decimal | null
+      phone: string | null
+      website: string | null
+      rating: number | null
+      reviewCount: number | null
+      validationStatus: string
+      surveyorNote: string | null
+      validatedScore: number | null
+      externalId: string | null
+      externalSource: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["accommodation"]>
+    composites: {}
+  }
+
+  type AccommodationGetPayload<S extends boolean | null | undefined | AccommodationDefaultArgs> = $Result.GetResult<Prisma.$AccommodationPayload, S>
+
+  type AccommodationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccommodationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccommodationCountAggregateInputType | true
+    }
+
+  export interface AccommodationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Accommodation'], meta: { name: 'Accommodation' } }
+    /**
+     * Find zero or one Accommodation that matches the filter.
+     * @param {AccommodationFindUniqueArgs} args - Arguments to find a Accommodation
+     * @example
+     * // Get one Accommodation
+     * const accommodation = await prisma.accommodation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccommodationFindUniqueArgs>(args: SelectSubset<T, AccommodationFindUniqueArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Accommodation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccommodationFindUniqueOrThrowArgs} args - Arguments to find a Accommodation
+     * @example
+     * // Get one Accommodation
+     * const accommodation = await prisma.accommodation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccommodationFindUniqueOrThrowArgs>(args: SelectSubset<T, AccommodationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Accommodation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationFindFirstArgs} args - Arguments to find a Accommodation
+     * @example
+     * // Get one Accommodation
+     * const accommodation = await prisma.accommodation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccommodationFindFirstArgs>(args?: SelectSubset<T, AccommodationFindFirstArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Accommodation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationFindFirstOrThrowArgs} args - Arguments to find a Accommodation
+     * @example
+     * // Get one Accommodation
+     * const accommodation = await prisma.accommodation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccommodationFindFirstOrThrowArgs>(args?: SelectSubset<T, AccommodationFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Accommodations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Accommodations
+     * const accommodations = await prisma.accommodation.findMany()
+     * 
+     * // Get first 10 Accommodations
+     * const accommodations = await prisma.accommodation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accommodationWithIdOnly = await prisma.accommodation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccommodationFindManyArgs>(args?: SelectSubset<T, AccommodationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Accommodation.
+     * @param {AccommodationCreateArgs} args - Arguments to create a Accommodation.
+     * @example
+     * // Create one Accommodation
+     * const Accommodation = await prisma.accommodation.create({
+     *   data: {
+     *     // ... data to create a Accommodation
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccommodationCreateArgs>(args: SelectSubset<T, AccommodationCreateArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Accommodations.
+     * @param {AccommodationCreateManyArgs} args - Arguments to create many Accommodations.
+     * @example
+     * // Create many Accommodations
+     * const accommodation = await prisma.accommodation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccommodationCreateManyArgs>(args?: SelectSubset<T, AccommodationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Accommodations and returns the data saved in the database.
+     * @param {AccommodationCreateManyAndReturnArgs} args - Arguments to create many Accommodations.
+     * @example
+     * // Create many Accommodations
+     * const accommodation = await prisma.accommodation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Accommodations and only return the `id`
+     * const accommodationWithIdOnly = await prisma.accommodation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccommodationCreateManyAndReturnArgs>(args?: SelectSubset<T, AccommodationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Accommodation.
+     * @param {AccommodationDeleteArgs} args - Arguments to delete one Accommodation.
+     * @example
+     * // Delete one Accommodation
+     * const Accommodation = await prisma.accommodation.delete({
+     *   where: {
+     *     // ... filter to delete one Accommodation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccommodationDeleteArgs>(args: SelectSubset<T, AccommodationDeleteArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Accommodation.
+     * @param {AccommodationUpdateArgs} args - Arguments to update one Accommodation.
+     * @example
+     * // Update one Accommodation
+     * const accommodation = await prisma.accommodation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccommodationUpdateArgs>(args: SelectSubset<T, AccommodationUpdateArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Accommodations.
+     * @param {AccommodationDeleteManyArgs} args - Arguments to filter Accommodations to delete.
+     * @example
+     * // Delete a few Accommodations
+     * const { count } = await prisma.accommodation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccommodationDeleteManyArgs>(args?: SelectSubset<T, AccommodationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Accommodations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Accommodations
+     * const accommodation = await prisma.accommodation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccommodationUpdateManyArgs>(args: SelectSubset<T, AccommodationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Accommodations and returns the data updated in the database.
+     * @param {AccommodationUpdateManyAndReturnArgs} args - Arguments to update many Accommodations.
+     * @example
+     * // Update many Accommodations
+     * const accommodation = await prisma.accommodation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Accommodations and only return the `id`
+     * const accommodationWithIdOnly = await prisma.accommodation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccommodationUpdateManyAndReturnArgs>(args: SelectSubset<T, AccommodationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Accommodation.
+     * @param {AccommodationUpsertArgs} args - Arguments to update or create a Accommodation.
+     * @example
+     * // Update or create a Accommodation
+     * const accommodation = await prisma.accommodation.upsert({
+     *   create: {
+     *     // ... data to create a Accommodation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Accommodation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccommodationUpsertArgs>(args: SelectSubset<T, AccommodationUpsertArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Accommodations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationCountArgs} args - Arguments to filter Accommodations to count.
+     * @example
+     * // Count the number of Accommodations
+     * const count = await prisma.accommodation.count({
+     *   where: {
+     *     // ... the filter for the Accommodations we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccommodationCountArgs>(
+      args?: Subset<T, AccommodationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccommodationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Accommodation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccommodationAggregateArgs>(args: Subset<T, AccommodationAggregateArgs>): Prisma.PrismaPromise<GetAccommodationAggregateType<T>>
+
+    /**
+     * Group by Accommodation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccommodationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccommodationGroupByArgs['orderBy'] }
+        : { orderBy?: AccommodationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccommodationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccommodationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Accommodation model
+   */
+  readonly fields: AccommodationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Accommodation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccommodationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    images<T extends Accommodation$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Accommodation$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviews<T extends Accommodation$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Accommodation$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    facilities<T extends Accommodation$facilitiesArgs<ExtArgs> = {}>(args?: Subset<T, Accommodation$facilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Accommodation model
+   */
+  interface AccommodationFieldRefs {
+    readonly id: FieldRef<"Accommodation", 'String'>
+    readonly name: FieldRef<"Accommodation", 'String'>
+    readonly slug: FieldRef<"Accommodation", 'String'>
+    readonly description: FieldRef<"Accommodation", 'Json'>
+    readonly address: FieldRef<"Accommodation", 'String'>
+    readonly city: FieldRef<"Accommodation", 'String'>
+    readonly province: FieldRef<"Accommodation", 'String'>
+    readonly latitude: FieldRef<"Accommodation", 'Decimal'>
+    readonly longitude: FieldRef<"Accommodation", 'Decimal'>
+    readonly phone: FieldRef<"Accommodation", 'String'>
+    readonly website: FieldRef<"Accommodation", 'String'>
+    readonly rating: FieldRef<"Accommodation", 'Float'>
+    readonly reviewCount: FieldRef<"Accommodation", 'Int'>
+    readonly validationStatus: FieldRef<"Accommodation", 'String'>
+    readonly surveyorNote: FieldRef<"Accommodation", 'String'>
+    readonly validatedScore: FieldRef<"Accommodation", 'Int'>
+    readonly externalId: FieldRef<"Accommodation", 'String'>
+    readonly externalSource: FieldRef<"Accommodation", 'String'>
+    readonly createdAt: FieldRef<"Accommodation", 'DateTime'>
+    readonly updatedAt: FieldRef<"Accommodation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Accommodation findUnique
+   */
+  export type AccommodationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter, which Accommodation to fetch.
+     */
+    where: AccommodationWhereUniqueInput
+  }
+
+  /**
+   * Accommodation findUniqueOrThrow
+   */
+  export type AccommodationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter, which Accommodation to fetch.
+     */
+    where: AccommodationWhereUniqueInput
+  }
+
+  /**
+   * Accommodation findFirst
+   */
+  export type AccommodationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter, which Accommodation to fetch.
+     */
+    where?: AccommodationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Accommodations to fetch.
+     */
+    orderBy?: AccommodationOrderByWithRelationInput | AccommodationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Accommodations.
+     */
+    cursor?: AccommodationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Accommodations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Accommodations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accommodations.
+     */
+    distinct?: AccommodationScalarFieldEnum | AccommodationScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation findFirstOrThrow
+   */
+  export type AccommodationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter, which Accommodation to fetch.
+     */
+    where?: AccommodationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Accommodations to fetch.
+     */
+    orderBy?: AccommodationOrderByWithRelationInput | AccommodationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Accommodations.
+     */
+    cursor?: AccommodationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Accommodations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Accommodations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accommodations.
+     */
+    distinct?: AccommodationScalarFieldEnum | AccommodationScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation findMany
+   */
+  export type AccommodationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter, which Accommodations to fetch.
+     */
+    where?: AccommodationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Accommodations to fetch.
+     */
+    orderBy?: AccommodationOrderByWithRelationInput | AccommodationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Accommodations.
+     */
+    cursor?: AccommodationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Accommodations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Accommodations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accommodations.
+     */
+    distinct?: AccommodationScalarFieldEnum | AccommodationScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation create
+   */
+  export type AccommodationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Accommodation.
+     */
+    data: XOR<AccommodationCreateInput, AccommodationUncheckedCreateInput>
+  }
+
+  /**
+   * Accommodation createMany
+   */
+  export type AccommodationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Accommodations.
+     */
+    data: AccommodationCreateManyInput | AccommodationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Accommodation createManyAndReturn
+   */
+  export type AccommodationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Accommodations.
+     */
+    data: AccommodationCreateManyInput | AccommodationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Accommodation update
+   */
+  export type AccommodationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Accommodation.
+     */
+    data: XOR<AccommodationUpdateInput, AccommodationUncheckedUpdateInput>
+    /**
+     * Choose, which Accommodation to update.
+     */
+    where: AccommodationWhereUniqueInput
+  }
+
+  /**
+   * Accommodation updateMany
+   */
+  export type AccommodationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Accommodations.
+     */
+    data: XOR<AccommodationUpdateManyMutationInput, AccommodationUncheckedUpdateManyInput>
+    /**
+     * Filter which Accommodations to update
+     */
+    where?: AccommodationWhereInput
+    /**
+     * Limit how many Accommodations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Accommodation updateManyAndReturn
+   */
+  export type AccommodationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * The data used to update Accommodations.
+     */
+    data: XOR<AccommodationUpdateManyMutationInput, AccommodationUncheckedUpdateManyInput>
+    /**
+     * Filter which Accommodations to update
+     */
+    where?: AccommodationWhereInput
+    /**
+     * Limit how many Accommodations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Accommodation upsert
+   */
+  export type AccommodationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Accommodation to update in case it exists.
+     */
+    where: AccommodationWhereUniqueInput
+    /**
+     * In case the Accommodation found by the `where` argument doesn't exist, create a new Accommodation with this data.
+     */
+    create: XOR<AccommodationCreateInput, AccommodationUncheckedCreateInput>
+    /**
+     * In case the Accommodation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccommodationUpdateInput, AccommodationUncheckedUpdateInput>
+  }
+
+  /**
+   * Accommodation delete
+   */
+  export type AccommodationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    /**
+     * Filter which Accommodation to delete.
+     */
+    where: AccommodationWhereUniqueInput
+  }
+
+  /**
+   * Accommodation deleteMany
+   */
+  export type AccommodationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Accommodations to delete
+     */
+    where?: AccommodationWhereInput
+    /**
+     * Limit how many Accommodations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Accommodation.images
+   */
+  export type Accommodation$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    where?: AccommodationImageWhereInput
+    orderBy?: AccommodationImageOrderByWithRelationInput | AccommodationImageOrderByWithRelationInput[]
+    cursor?: AccommodationImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccommodationImageScalarFieldEnum | AccommodationImageScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation.reviews
+   */
+  export type Accommodation$reviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation.facilities
+   */
+  export type Accommodation$facilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    where?: AccommodationHalalFacilityWhereInput
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccommodationHalalFacilityScalarFieldEnum | AccommodationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * Accommodation without action
+   */
+  export type AccommodationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AccommodationImage
+   */
+
+  export type AggregateAccommodationImage = {
+    _count: AccommodationImageCountAggregateOutputType | null
+    _min: AccommodationImageMinAggregateOutputType | null
+    _max: AccommodationImageMaxAggregateOutputType | null
+  }
+
+  export type AccommodationImageMinAggregateOutputType = {
+    id: string | null
+    accommodationId: string | null
+    imageUrl: string | null
+    caption: string | null
+    isPrimary: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AccommodationImageMaxAggregateOutputType = {
+    id: string | null
+    accommodationId: string | null
+    imageUrl: string | null
+    caption: string | null
+    isPrimary: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AccommodationImageCountAggregateOutputType = {
+    id: number
+    accommodationId: number
+    imageUrl: number
+    caption: number
+    isPrimary: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AccommodationImageMinAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    imageUrl?: true
+    caption?: true
+    isPrimary?: true
+    createdAt?: true
+  }
+
+  export type AccommodationImageMaxAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    imageUrl?: true
+    caption?: true
+    isPrimary?: true
+    createdAt?: true
+  }
+
+  export type AccommodationImageCountAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    imageUrl?: true
+    caption?: true
+    isPrimary?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AccommodationImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccommodationImage to aggregate.
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationImages to fetch.
+     */
+    orderBy?: AccommodationImageOrderByWithRelationInput | AccommodationImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccommodationImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccommodationImages
+    **/
+    _count?: true | AccommodationImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccommodationImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccommodationImageMaxAggregateInputType
+  }
+
+  export type GetAccommodationImageAggregateType<T extends AccommodationImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccommodationImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccommodationImage[P]>
+      : GetScalarType<T[P], AggregateAccommodationImage[P]>
+  }
+
+
+
+
+  export type AccommodationImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationImageWhereInput
+    orderBy?: AccommodationImageOrderByWithAggregationInput | AccommodationImageOrderByWithAggregationInput[]
+    by: AccommodationImageScalarFieldEnum[] | AccommodationImageScalarFieldEnum
+    having?: AccommodationImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccommodationImageCountAggregateInputType | true
+    _min?: AccommodationImageMinAggregateInputType
+    _max?: AccommodationImageMaxAggregateInputType
+  }
+
+  export type AccommodationImageGroupByOutputType = {
+    id: string
+    accommodationId: string
+    imageUrl: string
+    caption: string | null
+    isPrimary: boolean
+    createdAt: Date
+    _count: AccommodationImageCountAggregateOutputType | null
+    _min: AccommodationImageMinAggregateOutputType | null
+    _max: AccommodationImageMaxAggregateOutputType | null
+  }
+
+  type GetAccommodationImageGroupByPayload<T extends AccommodationImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccommodationImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccommodationImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccommodationImageGroupByOutputType[P]>
+            : GetScalarType<T[P], AccommodationImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccommodationImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    imageUrl?: boolean
+    caption?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationImage"]>
+
+  export type AccommodationImageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    imageUrl?: boolean
+    caption?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationImage"]>
+
+  export type AccommodationImageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    imageUrl?: boolean
+    caption?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationImage"]>
+
+  export type AccommodationImageSelectScalar = {
+    id?: boolean
+    accommodationId?: boolean
+    imageUrl?: boolean
+    caption?: boolean
+    isPrimary?: boolean
+    createdAt?: boolean
+  }
+
+  export type AccommodationImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accommodationId" | "imageUrl" | "caption" | "isPrimary" | "createdAt", ExtArgs["result"]["accommodationImage"]>
+  export type AccommodationImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }
+  export type AccommodationImageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }
+  export type AccommodationImageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+  }
+
+  export type $AccommodationImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccommodationImage"
+    objects: {
+      accommodation: Prisma.$AccommodationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      accommodationId: string
+      imageUrl: string
+      caption: string | null
+      isPrimary: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["accommodationImage"]>
+    composites: {}
+  }
+
+  type AccommodationImageGetPayload<S extends boolean | null | undefined | AccommodationImageDefaultArgs> = $Result.GetResult<Prisma.$AccommodationImagePayload, S>
+
+  type AccommodationImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccommodationImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccommodationImageCountAggregateInputType | true
+    }
+
+  export interface AccommodationImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccommodationImage'], meta: { name: 'AccommodationImage' } }
+    /**
+     * Find zero or one AccommodationImage that matches the filter.
+     * @param {AccommodationImageFindUniqueArgs} args - Arguments to find a AccommodationImage
+     * @example
+     * // Get one AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccommodationImageFindUniqueArgs>(args: SelectSubset<T, AccommodationImageFindUniqueArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccommodationImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccommodationImageFindUniqueOrThrowArgs} args - Arguments to find a AccommodationImage
+     * @example
+     * // Get one AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccommodationImageFindUniqueOrThrowArgs>(args: SelectSubset<T, AccommodationImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccommodationImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageFindFirstArgs} args - Arguments to find a AccommodationImage
+     * @example
+     * // Get one AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccommodationImageFindFirstArgs>(args?: SelectSubset<T, AccommodationImageFindFirstArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccommodationImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageFindFirstOrThrowArgs} args - Arguments to find a AccommodationImage
+     * @example
+     * // Get one AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccommodationImageFindFirstOrThrowArgs>(args?: SelectSubset<T, AccommodationImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccommodationImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccommodationImages
+     * const accommodationImages = await prisma.accommodationImage.findMany()
+     * 
+     * // Get first 10 AccommodationImages
+     * const accommodationImages = await prisma.accommodationImage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accommodationImageWithIdOnly = await prisma.accommodationImage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccommodationImageFindManyArgs>(args?: SelectSubset<T, AccommodationImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccommodationImage.
+     * @param {AccommodationImageCreateArgs} args - Arguments to create a AccommodationImage.
+     * @example
+     * // Create one AccommodationImage
+     * const AccommodationImage = await prisma.accommodationImage.create({
+     *   data: {
+     *     // ... data to create a AccommodationImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccommodationImageCreateArgs>(args: SelectSubset<T, AccommodationImageCreateArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccommodationImages.
+     * @param {AccommodationImageCreateManyArgs} args - Arguments to create many AccommodationImages.
+     * @example
+     * // Create many AccommodationImages
+     * const accommodationImage = await prisma.accommodationImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccommodationImageCreateManyArgs>(args?: SelectSubset<T, AccommodationImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccommodationImages and returns the data saved in the database.
+     * @param {AccommodationImageCreateManyAndReturnArgs} args - Arguments to create many AccommodationImages.
+     * @example
+     * // Create many AccommodationImages
+     * const accommodationImage = await prisma.accommodationImage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AccommodationImages and only return the `id`
+     * const accommodationImageWithIdOnly = await prisma.accommodationImage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccommodationImageCreateManyAndReturnArgs>(args?: SelectSubset<T, AccommodationImageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccommodationImage.
+     * @param {AccommodationImageDeleteArgs} args - Arguments to delete one AccommodationImage.
+     * @example
+     * // Delete one AccommodationImage
+     * const AccommodationImage = await prisma.accommodationImage.delete({
+     *   where: {
+     *     // ... filter to delete one AccommodationImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccommodationImageDeleteArgs>(args: SelectSubset<T, AccommodationImageDeleteArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccommodationImage.
+     * @param {AccommodationImageUpdateArgs} args - Arguments to update one AccommodationImage.
+     * @example
+     * // Update one AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccommodationImageUpdateArgs>(args: SelectSubset<T, AccommodationImageUpdateArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccommodationImages.
+     * @param {AccommodationImageDeleteManyArgs} args - Arguments to filter AccommodationImages to delete.
+     * @example
+     * // Delete a few AccommodationImages
+     * const { count } = await prisma.accommodationImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccommodationImageDeleteManyArgs>(args?: SelectSubset<T, AccommodationImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccommodationImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccommodationImages
+     * const accommodationImage = await prisma.accommodationImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccommodationImageUpdateManyArgs>(args: SelectSubset<T, AccommodationImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccommodationImages and returns the data updated in the database.
+     * @param {AccommodationImageUpdateManyAndReturnArgs} args - Arguments to update many AccommodationImages.
+     * @example
+     * // Update many AccommodationImages
+     * const accommodationImage = await prisma.accommodationImage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AccommodationImages and only return the `id`
+     * const accommodationImageWithIdOnly = await prisma.accommodationImage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccommodationImageUpdateManyAndReturnArgs>(args: SelectSubset<T, AccommodationImageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccommodationImage.
+     * @param {AccommodationImageUpsertArgs} args - Arguments to update or create a AccommodationImage.
+     * @example
+     * // Update or create a AccommodationImage
+     * const accommodationImage = await prisma.accommodationImage.upsert({
+     *   create: {
+     *     // ... data to create a AccommodationImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccommodationImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccommodationImageUpsertArgs>(args: SelectSubset<T, AccommodationImageUpsertArgs<ExtArgs>>): Prisma__AccommodationImageClient<$Result.GetResult<Prisma.$AccommodationImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccommodationImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageCountArgs} args - Arguments to filter AccommodationImages to count.
+     * @example
+     * // Count the number of AccommodationImages
+     * const count = await prisma.accommodationImage.count({
+     *   where: {
+     *     // ... the filter for the AccommodationImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccommodationImageCountArgs>(
+      args?: Subset<T, AccommodationImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccommodationImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccommodationImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccommodationImageAggregateArgs>(args: Subset<T, AccommodationImageAggregateArgs>): Prisma.PrismaPromise<GetAccommodationImageAggregateType<T>>
+
+    /**
+     * Group by AccommodationImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccommodationImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccommodationImageGroupByArgs['orderBy'] }
+        : { orderBy?: AccommodationImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccommodationImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccommodationImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccommodationImage model
+   */
+  readonly fields: AccommodationImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccommodationImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccommodationImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    accommodation<T extends AccommodationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccommodationDefaultArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccommodationImage model
+   */
+  interface AccommodationImageFieldRefs {
+    readonly id: FieldRef<"AccommodationImage", 'String'>
+    readonly accommodationId: FieldRef<"AccommodationImage", 'String'>
+    readonly imageUrl: FieldRef<"AccommodationImage", 'String'>
+    readonly caption: FieldRef<"AccommodationImage", 'String'>
+    readonly isPrimary: FieldRef<"AccommodationImage", 'Boolean'>
+    readonly createdAt: FieldRef<"AccommodationImage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AccommodationImage findUnique
+   */
+  export type AccommodationImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationImage to fetch.
+     */
+    where: AccommodationImageWhereUniqueInput
+  }
+
+  /**
+   * AccommodationImage findUniqueOrThrow
+   */
+  export type AccommodationImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationImage to fetch.
+     */
+    where: AccommodationImageWhereUniqueInput
+  }
+
+  /**
+   * AccommodationImage findFirst
+   */
+  export type AccommodationImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationImage to fetch.
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationImages to fetch.
+     */
+    orderBy?: AccommodationImageOrderByWithRelationInput | AccommodationImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccommodationImages.
+     */
+    cursor?: AccommodationImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationImages.
+     */
+    distinct?: AccommodationImageScalarFieldEnum | AccommodationImageScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationImage findFirstOrThrow
+   */
+  export type AccommodationImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationImage to fetch.
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationImages to fetch.
+     */
+    orderBy?: AccommodationImageOrderByWithRelationInput | AccommodationImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccommodationImages.
+     */
+    cursor?: AccommodationImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationImages.
+     */
+    distinct?: AccommodationImageScalarFieldEnum | AccommodationImageScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationImage findMany
+   */
+  export type AccommodationImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationImages to fetch.
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationImages to fetch.
+     */
+    orderBy?: AccommodationImageOrderByWithRelationInput | AccommodationImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccommodationImages.
+     */
+    cursor?: AccommodationImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationImages.
+     */
+    distinct?: AccommodationImageScalarFieldEnum | AccommodationImageScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationImage create
+   */
+  export type AccommodationImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AccommodationImage.
+     */
+    data: XOR<AccommodationImageCreateInput, AccommodationImageUncheckedCreateInput>
+  }
+
+  /**
+   * AccommodationImage createMany
+   */
+  export type AccommodationImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccommodationImages.
+     */
+    data: AccommodationImageCreateManyInput | AccommodationImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccommodationImage createManyAndReturn
+   */
+  export type AccommodationImageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccommodationImages.
+     */
+    data: AccommodationImageCreateManyInput | AccommodationImageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccommodationImage update
+   */
+  export type AccommodationImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AccommodationImage.
+     */
+    data: XOR<AccommodationImageUpdateInput, AccommodationImageUncheckedUpdateInput>
+    /**
+     * Choose, which AccommodationImage to update.
+     */
+    where: AccommodationImageWhereUniqueInput
+  }
+
+  /**
+   * AccommodationImage updateMany
+   */
+  export type AccommodationImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccommodationImages.
+     */
+    data: XOR<AccommodationImageUpdateManyMutationInput, AccommodationImageUncheckedUpdateManyInput>
+    /**
+     * Filter which AccommodationImages to update
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * Limit how many AccommodationImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccommodationImage updateManyAndReturn
+   */
+  export type AccommodationImageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * The data used to update AccommodationImages.
+     */
+    data: XOR<AccommodationImageUpdateManyMutationInput, AccommodationImageUncheckedUpdateManyInput>
+    /**
+     * Filter which AccommodationImages to update
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * Limit how many AccommodationImages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccommodationImage upsert
+   */
+  export type AccommodationImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AccommodationImage to update in case it exists.
+     */
+    where: AccommodationImageWhereUniqueInput
+    /**
+     * In case the AccommodationImage found by the `where` argument doesn't exist, create a new AccommodationImage with this data.
+     */
+    create: XOR<AccommodationImageCreateInput, AccommodationImageUncheckedCreateInput>
+    /**
+     * In case the AccommodationImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccommodationImageUpdateInput, AccommodationImageUncheckedUpdateInput>
+  }
+
+  /**
+   * AccommodationImage delete
+   */
+  export type AccommodationImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+    /**
+     * Filter which AccommodationImage to delete.
+     */
+    where: AccommodationImageWhereUniqueInput
+  }
+
+  /**
+   * AccommodationImage deleteMany
+   */
+  export type AccommodationImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccommodationImages to delete
+     */
+    where?: AccommodationImageWhereInput
+    /**
+     * Limit how many AccommodationImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccommodationImage without action
+   */
+  export type AccommodationImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationImage
+     */
+    select?: AccommodationImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationImage
+     */
+    omit?: AccommodationImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationImageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AccommodationHalalFacility
+   */
+
+  export type AggregateAccommodationHalalFacility = {
+    _count: AccommodationHalalFacilityCountAggregateOutputType | null
+    _min: AccommodationHalalFacilityMinAggregateOutputType | null
+    _max: AccommodationHalalFacilityMaxAggregateOutputType | null
+  }
+
+  export type AccommodationHalalFacilityMinAggregateOutputType = {
+    id: string | null
+    accommodationId: string | null
+    facilityId: string | null
+    name: string | null
+  }
+
+  export type AccommodationHalalFacilityMaxAggregateOutputType = {
+    id: string | null
+    accommodationId: string | null
+    facilityId: string | null
+    name: string | null
+  }
+
+  export type AccommodationHalalFacilityCountAggregateOutputType = {
+    id: number
+    accommodationId: number
+    facilityId: number
+    name: number
+    _all: number
+  }
+
+
+  export type AccommodationHalalFacilityMinAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    facilityId?: true
+    name?: true
+  }
+
+  export type AccommodationHalalFacilityMaxAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    facilityId?: true
+    name?: true
+  }
+
+  export type AccommodationHalalFacilityCountAggregateInputType = {
+    id?: true
+    accommodationId?: true
+    facilityId?: true
+    name?: true
+    _all?: true
+  }
+
+  export type AccommodationHalalFacilityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccommodationHalalFacility to aggregate.
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationHalalFacilities to fetch.
+     */
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccommodationHalalFacilities
+    **/
+    _count?: true | AccommodationHalalFacilityCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccommodationHalalFacilityMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccommodationHalalFacilityMaxAggregateInputType
+  }
+
+  export type GetAccommodationHalalFacilityAggregateType<T extends AccommodationHalalFacilityAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccommodationHalalFacility]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccommodationHalalFacility[P]>
+      : GetScalarType<T[P], AggregateAccommodationHalalFacility[P]>
+  }
+
+
+
+
+  export type AccommodationHalalFacilityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccommodationHalalFacilityWhereInput
+    orderBy?: AccommodationHalalFacilityOrderByWithAggregationInput | AccommodationHalalFacilityOrderByWithAggregationInput[]
+    by: AccommodationHalalFacilityScalarFieldEnum[] | AccommodationHalalFacilityScalarFieldEnum
+    having?: AccommodationHalalFacilityScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccommodationHalalFacilityCountAggregateInputType | true
+    _min?: AccommodationHalalFacilityMinAggregateInputType
+    _max?: AccommodationHalalFacilityMaxAggregateInputType
+  }
+
+  export type AccommodationHalalFacilityGroupByOutputType = {
+    id: string
+    accommodationId: string
+    facilityId: string
+    name: string | null
+    _count: AccommodationHalalFacilityCountAggregateOutputType | null
+    _min: AccommodationHalalFacilityMinAggregateOutputType | null
+    _max: AccommodationHalalFacilityMaxAggregateOutputType | null
+  }
+
+  type GetAccommodationHalalFacilityGroupByPayload<T extends AccommodationHalalFacilityGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccommodationHalalFacilityGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccommodationHalalFacilityGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccommodationHalalFacilityGroupByOutputType[P]>
+            : GetScalarType<T[P], AccommodationHalalFacilityGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccommodationHalalFacilitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationHalalFacility"]>
+
+  export type AccommodationHalalFacilitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationHalalFacility"]>
+
+  export type AccommodationHalalFacilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accommodationId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["accommodationHalalFacility"]>
+
+  export type AccommodationHalalFacilitySelectScalar = {
+    id?: boolean
+    accommodationId?: boolean
+    facilityId?: boolean
+    name?: boolean
+  }
+
+  export type AccommodationHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accommodationId" | "facilityId" | "name", ExtArgs["result"]["accommodationHalalFacility"]>
+  export type AccommodationHalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type AccommodationHalalFacilityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type AccommodationHalalFacilityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accommodation?: boolean | AccommodationDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+
+  export type $AccommodationHalalFacilityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccommodationHalalFacility"
+    objects: {
+      accommodation: Prisma.$AccommodationPayload<ExtArgs>
+      facility: Prisma.$HalalFacilityPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      accommodationId: string
+      facilityId: string
+      name: string | null
+    }, ExtArgs["result"]["accommodationHalalFacility"]>
+    composites: {}
+  }
+
+  type AccommodationHalalFacilityGetPayload<S extends boolean | null | undefined | AccommodationHalalFacilityDefaultArgs> = $Result.GetResult<Prisma.$AccommodationHalalFacilityPayload, S>
+
+  type AccommodationHalalFacilityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccommodationHalalFacilityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccommodationHalalFacilityCountAggregateInputType | true
+    }
+
+  export interface AccommodationHalalFacilityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccommodationHalalFacility'], meta: { name: 'AccommodationHalalFacility' } }
+    /**
+     * Find zero or one AccommodationHalalFacility that matches the filter.
+     * @param {AccommodationHalalFacilityFindUniqueArgs} args - Arguments to find a AccommodationHalalFacility
+     * @example
+     * // Get one AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccommodationHalalFacilityFindUniqueArgs>(args: SelectSubset<T, AccommodationHalalFacilityFindUniqueArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccommodationHalalFacility that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccommodationHalalFacilityFindUniqueOrThrowArgs} args - Arguments to find a AccommodationHalalFacility
+     * @example
+     * // Get one AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccommodationHalalFacilityFindUniqueOrThrowArgs>(args: SelectSubset<T, AccommodationHalalFacilityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccommodationHalalFacility that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityFindFirstArgs} args - Arguments to find a AccommodationHalalFacility
+     * @example
+     * // Get one AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccommodationHalalFacilityFindFirstArgs>(args?: SelectSubset<T, AccommodationHalalFacilityFindFirstArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccommodationHalalFacility that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityFindFirstOrThrowArgs} args - Arguments to find a AccommodationHalalFacility
+     * @example
+     * // Get one AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccommodationHalalFacilityFindFirstOrThrowArgs>(args?: SelectSubset<T, AccommodationHalalFacilityFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccommodationHalalFacilities that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccommodationHalalFacilities
+     * const accommodationHalalFacilities = await prisma.accommodationHalalFacility.findMany()
+     * 
+     * // Get first 10 AccommodationHalalFacilities
+     * const accommodationHalalFacilities = await prisma.accommodationHalalFacility.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accommodationHalalFacilityWithIdOnly = await prisma.accommodationHalalFacility.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccommodationHalalFacilityFindManyArgs>(args?: SelectSubset<T, AccommodationHalalFacilityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccommodationHalalFacility.
+     * @param {AccommodationHalalFacilityCreateArgs} args - Arguments to create a AccommodationHalalFacility.
+     * @example
+     * // Create one AccommodationHalalFacility
+     * const AccommodationHalalFacility = await prisma.accommodationHalalFacility.create({
+     *   data: {
+     *     // ... data to create a AccommodationHalalFacility
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccommodationHalalFacilityCreateArgs>(args: SelectSubset<T, AccommodationHalalFacilityCreateArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccommodationHalalFacilities.
+     * @param {AccommodationHalalFacilityCreateManyArgs} args - Arguments to create many AccommodationHalalFacilities.
+     * @example
+     * // Create many AccommodationHalalFacilities
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccommodationHalalFacilityCreateManyArgs>(args?: SelectSubset<T, AccommodationHalalFacilityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccommodationHalalFacilities and returns the data saved in the database.
+     * @param {AccommodationHalalFacilityCreateManyAndReturnArgs} args - Arguments to create many AccommodationHalalFacilities.
+     * @example
+     * // Create many AccommodationHalalFacilities
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AccommodationHalalFacilities and only return the `id`
+     * const accommodationHalalFacilityWithIdOnly = await prisma.accommodationHalalFacility.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccommodationHalalFacilityCreateManyAndReturnArgs>(args?: SelectSubset<T, AccommodationHalalFacilityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccommodationHalalFacility.
+     * @param {AccommodationHalalFacilityDeleteArgs} args - Arguments to delete one AccommodationHalalFacility.
+     * @example
+     * // Delete one AccommodationHalalFacility
+     * const AccommodationHalalFacility = await prisma.accommodationHalalFacility.delete({
+     *   where: {
+     *     // ... filter to delete one AccommodationHalalFacility
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccommodationHalalFacilityDeleteArgs>(args: SelectSubset<T, AccommodationHalalFacilityDeleteArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccommodationHalalFacility.
+     * @param {AccommodationHalalFacilityUpdateArgs} args - Arguments to update one AccommodationHalalFacility.
+     * @example
+     * // Update one AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccommodationHalalFacilityUpdateArgs>(args: SelectSubset<T, AccommodationHalalFacilityUpdateArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccommodationHalalFacilities.
+     * @param {AccommodationHalalFacilityDeleteManyArgs} args - Arguments to filter AccommodationHalalFacilities to delete.
+     * @example
+     * // Delete a few AccommodationHalalFacilities
+     * const { count } = await prisma.accommodationHalalFacility.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccommodationHalalFacilityDeleteManyArgs>(args?: SelectSubset<T, AccommodationHalalFacilityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccommodationHalalFacilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccommodationHalalFacilities
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccommodationHalalFacilityUpdateManyArgs>(args: SelectSubset<T, AccommodationHalalFacilityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccommodationHalalFacilities and returns the data updated in the database.
+     * @param {AccommodationHalalFacilityUpdateManyAndReturnArgs} args - Arguments to update many AccommodationHalalFacilities.
+     * @example
+     * // Update many AccommodationHalalFacilities
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AccommodationHalalFacilities and only return the `id`
+     * const accommodationHalalFacilityWithIdOnly = await prisma.accommodationHalalFacility.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccommodationHalalFacilityUpdateManyAndReturnArgs>(args: SelectSubset<T, AccommodationHalalFacilityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccommodationHalalFacility.
+     * @param {AccommodationHalalFacilityUpsertArgs} args - Arguments to update or create a AccommodationHalalFacility.
+     * @example
+     * // Update or create a AccommodationHalalFacility
+     * const accommodationHalalFacility = await prisma.accommodationHalalFacility.upsert({
+     *   create: {
+     *     // ... data to create a AccommodationHalalFacility
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccommodationHalalFacility we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccommodationHalalFacilityUpsertArgs>(args: SelectSubset<T, AccommodationHalalFacilityUpsertArgs<ExtArgs>>): Prisma__AccommodationHalalFacilityClient<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccommodationHalalFacilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityCountArgs} args - Arguments to filter AccommodationHalalFacilities to count.
+     * @example
+     * // Count the number of AccommodationHalalFacilities
+     * const count = await prisma.accommodationHalalFacility.count({
+     *   where: {
+     *     // ... the filter for the AccommodationHalalFacilities we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccommodationHalalFacilityCountArgs>(
+      args?: Subset<T, AccommodationHalalFacilityCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccommodationHalalFacilityCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccommodationHalalFacility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccommodationHalalFacilityAggregateArgs>(args: Subset<T, AccommodationHalalFacilityAggregateArgs>): Prisma.PrismaPromise<GetAccommodationHalalFacilityAggregateType<T>>
+
+    /**
+     * Group by AccommodationHalalFacility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccommodationHalalFacilityGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccommodationHalalFacilityGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccommodationHalalFacilityGroupByArgs['orderBy'] }
+        : { orderBy?: AccommodationHalalFacilityGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccommodationHalalFacilityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccommodationHalalFacilityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccommodationHalalFacility model
+   */
+  readonly fields: AccommodationHalalFacilityFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccommodationHalalFacility.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccommodationHalalFacilityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    accommodation<T extends AccommodationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccommodationDefaultArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    facility<T extends HalalFacilityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacilityDefaultArgs<ExtArgs>>): Prisma__HalalFacilityClient<$Result.GetResult<Prisma.$HalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccommodationHalalFacility model
+   */
+  interface AccommodationHalalFacilityFieldRefs {
+    readonly id: FieldRef<"AccommodationHalalFacility", 'String'>
+    readonly accommodationId: FieldRef<"AccommodationHalalFacility", 'String'>
+    readonly facilityId: FieldRef<"AccommodationHalalFacility", 'String'>
+    readonly name: FieldRef<"AccommodationHalalFacility", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AccommodationHalalFacility findUnique
+   */
+  export type AccommodationHalalFacilityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationHalalFacility to fetch.
+     */
+    where: AccommodationHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * AccommodationHalalFacility findUniqueOrThrow
+   */
+  export type AccommodationHalalFacilityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationHalalFacility to fetch.
+     */
+    where: AccommodationHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * AccommodationHalalFacility findFirst
+   */
+  export type AccommodationHalalFacilityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationHalalFacility to fetch.
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationHalalFacilities to fetch.
+     */
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccommodationHalalFacilities.
+     */
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationHalalFacilities.
+     */
+    distinct?: AccommodationHalalFacilityScalarFieldEnum | AccommodationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationHalalFacility findFirstOrThrow
+   */
+  export type AccommodationHalalFacilityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationHalalFacility to fetch.
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationHalalFacilities to fetch.
+     */
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccommodationHalalFacilities.
+     */
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationHalalFacilities.
+     */
+    distinct?: AccommodationHalalFacilityScalarFieldEnum | AccommodationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationHalalFacility findMany
+   */
+  export type AccommodationHalalFacilityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which AccommodationHalalFacilities to fetch.
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccommodationHalalFacilities to fetch.
+     */
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccommodationHalalFacilities.
+     */
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccommodationHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccommodationHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccommodationHalalFacilities.
+     */
+    distinct?: AccommodationHalalFacilityScalarFieldEnum | AccommodationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * AccommodationHalalFacility create
+   */
+  export type AccommodationHalalFacilityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AccommodationHalalFacility.
+     */
+    data: XOR<AccommodationHalalFacilityCreateInput, AccommodationHalalFacilityUncheckedCreateInput>
+  }
+
+  /**
+   * AccommodationHalalFacility createMany
+   */
+  export type AccommodationHalalFacilityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccommodationHalalFacilities.
+     */
+    data: AccommodationHalalFacilityCreateManyInput | AccommodationHalalFacilityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccommodationHalalFacility createManyAndReturn
+   */
+  export type AccommodationHalalFacilityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccommodationHalalFacilities.
+     */
+    data: AccommodationHalalFacilityCreateManyInput | AccommodationHalalFacilityCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccommodationHalalFacility update
+   */
+  export type AccommodationHalalFacilityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AccommodationHalalFacility.
+     */
+    data: XOR<AccommodationHalalFacilityUpdateInput, AccommodationHalalFacilityUncheckedUpdateInput>
+    /**
+     * Choose, which AccommodationHalalFacility to update.
+     */
+    where: AccommodationHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * AccommodationHalalFacility updateMany
+   */
+  export type AccommodationHalalFacilityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccommodationHalalFacilities.
+     */
+    data: XOR<AccommodationHalalFacilityUpdateManyMutationInput, AccommodationHalalFacilityUncheckedUpdateManyInput>
+    /**
+     * Filter which AccommodationHalalFacilities to update
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * Limit how many AccommodationHalalFacilities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccommodationHalalFacility updateManyAndReturn
+   */
+  export type AccommodationHalalFacilityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * The data used to update AccommodationHalalFacilities.
+     */
+    data: XOR<AccommodationHalalFacilityUpdateManyMutationInput, AccommodationHalalFacilityUncheckedUpdateManyInput>
+    /**
+     * Filter which AccommodationHalalFacilities to update
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * Limit how many AccommodationHalalFacilities to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AccommodationHalalFacility upsert
+   */
+  export type AccommodationHalalFacilityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AccommodationHalalFacility to update in case it exists.
+     */
+    where: AccommodationHalalFacilityWhereUniqueInput
+    /**
+     * In case the AccommodationHalalFacility found by the `where` argument doesn't exist, create a new AccommodationHalalFacility with this data.
+     */
+    create: XOR<AccommodationHalalFacilityCreateInput, AccommodationHalalFacilityUncheckedCreateInput>
+    /**
+     * In case the AccommodationHalalFacility was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccommodationHalalFacilityUpdateInput, AccommodationHalalFacilityUncheckedUpdateInput>
+  }
+
+  /**
+   * AccommodationHalalFacility delete
+   */
+  export type AccommodationHalalFacilityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter which AccommodationHalalFacility to delete.
+     */
+    where: AccommodationHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * AccommodationHalalFacility deleteMany
+   */
+  export type AccommodationHalalFacilityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccommodationHalalFacilities to delete
+     */
+    where?: AccommodationHalalFacilityWhereInput
+    /**
+     * Limit how many AccommodationHalalFacilities to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccommodationHalalFacility without action
+   */
+  export type AccommodationHalalFacilityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model DestinationImage
    */
 
@@ -14143,6 +18090,8 @@ export namespace Prisma {
     weight?: boolean
     maxDistance?: boolean
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
+    umkmHalalFacilities?: boolean | HalalFacility$umkmHalalFacilitiesArgs<ExtArgs>
+    accommodationHalalFacilities?: boolean | HalalFacility$accommodationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["halalFacility"]>
 
@@ -14188,6 +18137,8 @@ export namespace Prisma {
   export type HalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "facilityType" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "weight" | "maxDistance", ExtArgs["result"]["halalFacility"]>
   export type HalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destinationHalalFacilities?: boolean | HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>
+    umkmHalalFacilities?: boolean | HalalFacility$umkmHalalFacilitiesArgs<ExtArgs>
+    accommodationHalalFacilities?: boolean | HalalFacility$accommodationHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | HalalFacilityCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type HalalFacilityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -14197,6 +18148,8 @@ export namespace Prisma {
     name: "HalalFacility"
     objects: {
       destinationHalalFacilities: Prisma.$DestinationHalalFacilityPayload<ExtArgs>[]
+      umkmHalalFacilities: Prisma.$UmkmHalalFacilityPayload<ExtArgs>[]
+      accommodationHalalFacilities: Prisma.$AccommodationHalalFacilityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14604,6 +18557,8 @@ export namespace Prisma {
   export interface Prisma__HalalFacilityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     destinationHalalFacilities<T extends HalalFacility$destinationHalalFacilitiesArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacility$destinationHalalFacilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    umkmHalalFacilities<T extends HalalFacility$umkmHalalFacilitiesArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacility$umkmHalalFacilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accommodationHalalFacilities<T extends HalalFacility$accommodationHalalFacilitiesArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacility$accommodationHalalFacilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccommodationHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15060,6 +19015,54 @@ export namespace Prisma {
   }
 
   /**
+   * HalalFacility.umkmHalalFacilities
+   */
+  export type HalalFacility$umkmHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    where?: UmkmHalalFacilityWhereInput
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UmkmHalalFacilityScalarFieldEnum | UmkmHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * HalalFacility.accommodationHalalFacilities
+   */
+  export type HalalFacility$accommodationHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccommodationHalalFacility
+     */
+    select?: AccommodationHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccommodationHalalFacility
+     */
+    omit?: AccommodationHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationHalalFacilityInclude<ExtArgs> | null
+    where?: AccommodationHalalFacilityWhereInput
+    orderBy?: AccommodationHalalFacilityOrderByWithRelationInput | AccommodationHalalFacilityOrderByWithRelationInput[]
+    cursor?: AccommodationHalalFacilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccommodationHalalFacilityScalarFieldEnum | AccommodationHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
    * HalalFacility without action
    */
   export type HalalFacilityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15103,6 +19106,7 @@ export namespace Prisma {
     userId: string | null
     destinationId: string | null
     umkmId: string | null
+    accommodationId: string | null
     rating: number | null
     comment: string | null
     createdAt: Date | null
@@ -15114,6 +19118,7 @@ export namespace Prisma {
     userId: string | null
     destinationId: string | null
     umkmId: string | null
+    accommodationId: string | null
     rating: number | null
     comment: string | null
     createdAt: Date | null
@@ -15125,6 +19130,7 @@ export namespace Prisma {
     userId: number
     destinationId: number
     umkmId: number
+    accommodationId: number
     rating: number
     comment: number
     createdAt: number
@@ -15146,6 +19152,7 @@ export namespace Prisma {
     userId?: true
     destinationId?: true
     umkmId?: true
+    accommodationId?: true
     rating?: true
     comment?: true
     createdAt?: true
@@ -15157,6 +19164,7 @@ export namespace Prisma {
     userId?: true
     destinationId?: true
     umkmId?: true
+    accommodationId?: true
     rating?: true
     comment?: true
     createdAt?: true
@@ -15168,6 +19176,7 @@ export namespace Prisma {
     userId?: true
     destinationId?: true
     umkmId?: true
+    accommodationId?: true
     rating?: true
     comment?: true
     createdAt?: true
@@ -15266,6 +19275,7 @@ export namespace Prisma {
     userId: string
     destinationId: string | null
     umkmId: string | null
+    accommodationId: string | null
     rating: number
     comment: string | null
     createdAt: Date
@@ -15296,6 +19306,7 @@ export namespace Prisma {
     userId?: boolean
     destinationId?: boolean
     umkmId?: boolean
+    accommodationId?: boolean
     rating?: boolean
     comment?: boolean
     createdAt?: boolean
@@ -15303,6 +19314,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
     sentiment?: boolean | Review$sentimentArgs<ExtArgs>
   }, ExtArgs["result"]["review"]>
 
@@ -15311,6 +19323,7 @@ export namespace Prisma {
     userId?: boolean
     destinationId?: boolean
     umkmId?: boolean
+    accommodationId?: boolean
     rating?: boolean
     comment?: boolean
     createdAt?: boolean
@@ -15318,6 +19331,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
   }, ExtArgs["result"]["review"]>
 
   export type ReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15325,6 +19339,7 @@ export namespace Prisma {
     userId?: boolean
     destinationId?: boolean
     umkmId?: boolean
+    accommodationId?: boolean
     rating?: boolean
     comment?: boolean
     createdAt?: boolean
@@ -15332,6 +19347,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
   }, ExtArgs["result"]["review"]>
 
   export type ReviewSelectScalar = {
@@ -15339,28 +19355,32 @@ export namespace Prisma {
     userId?: boolean
     destinationId?: boolean
     umkmId?: boolean
+    accommodationId?: boolean
     rating?: boolean
     comment?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "destinationId" | "umkmId" | "rating" | "comment" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "destinationId" | "umkmId" | "accommodationId" | "rating" | "comment" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
   export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
     sentiment?: boolean | Review$sentimentArgs<ExtArgs>
   }
   export type ReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
   }
   export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     destination?: boolean | Review$destinationArgs<ExtArgs>
     umkm?: boolean | Review$umkmArgs<ExtArgs>
+    accommodation?: boolean | Review$accommodationArgs<ExtArgs>
   }
 
   export type $ReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15369,6 +19389,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       destination: Prisma.$DestinationPayload<ExtArgs> | null
       umkm: Prisma.$UmkmPayload<ExtArgs> | null
+      accommodation: Prisma.$AccommodationPayload<ExtArgs> | null
       sentiment: Prisma.$ReviewSentimentPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -15376,6 +19397,7 @@ export namespace Prisma {
       userId: string
       destinationId: string | null
       umkmId: string | null
+      accommodationId: string | null
       rating: number
       comment: string | null
       createdAt: Date
@@ -15777,6 +19799,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     destination<T extends Review$destinationArgs<ExtArgs> = {}>(args?: Subset<T, Review$destinationArgs<ExtArgs>>): Prisma__DestinationClient<$Result.GetResult<Prisma.$DestinationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     umkm<T extends Review$umkmArgs<ExtArgs> = {}>(args?: Subset<T, Review$umkmArgs<ExtArgs>>): Prisma__UmkmClient<$Result.GetResult<Prisma.$UmkmPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    accommodation<T extends Review$accommodationArgs<ExtArgs> = {}>(args?: Subset<T, Review$accommodationArgs<ExtArgs>>): Prisma__AccommodationClient<$Result.GetResult<Prisma.$AccommodationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sentiment<T extends Review$sentimentArgs<ExtArgs> = {}>(args?: Subset<T, Review$sentimentArgs<ExtArgs>>): Prisma__ReviewSentimentClient<$Result.GetResult<Prisma.$ReviewSentimentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -15811,6 +19834,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Review", 'String'>
     readonly destinationId: FieldRef<"Review", 'String'>
     readonly umkmId: FieldRef<"Review", 'String'>
+    readonly accommodationId: FieldRef<"Review", 'String'>
     readonly rating: FieldRef<"Review", 'Int'>
     readonly comment: FieldRef<"Review", 'String'>
     readonly createdAt: FieldRef<"Review", 'DateTime'>
@@ -16251,6 +20275,25 @@ export namespace Prisma {
      */
     include?: UmkmInclude<ExtArgs> | null
     where?: UmkmWhereInput
+  }
+
+  /**
+   * Review.accommodation
+   */
+  export type Review$accommodationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Accommodation
+     */
+    select?: AccommodationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Accommodation
+     */
+    omit?: AccommodationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccommodationInclude<ExtArgs> | null
+    where?: AccommodationWhereInput
   }
 
   /**
@@ -23239,6 +27282,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     owner: string | null
+    validationStatus: string | null
+    surveyorNote: string | null
   }
 
   export type UmkmMaxAggregateOutputType = {
@@ -23259,6 +27304,8 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     owner: string | null
+    validationStatus: string | null
+    surveyorNote: string | null
   }
 
   export type UmkmCountAggregateOutputType = {
@@ -23280,6 +27327,8 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     owner: number
+    validationStatus: number
+    surveyorNote: number
     _all: number
   }
 
@@ -23316,6 +27365,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     owner?: true
+    validationStatus?: true
+    surveyorNote?: true
   }
 
   export type UmkmMaxAggregateInputType = {
@@ -23336,6 +27387,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     owner?: true
+    validationStatus?: true
+    surveyorNote?: true
   }
 
   export type UmkmCountAggregateInputType = {
@@ -23357,6 +27410,8 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     owner?: true
+    validationStatus?: true
+    surveyorNote?: true
     _all?: true
   }
 
@@ -23465,6 +27520,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     owner: string
+    validationStatus: string
+    surveyorNote: string | null
     _count: UmkmCountAggregateOutputType | null
     _avg: UmkmAvgAggregateOutputType | null
     _sum: UmkmSumAggregateOutputType | null
@@ -23505,11 +27562,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     owner?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
     destination?: boolean | Umkm$destinationArgs<ExtArgs>
     category?: boolean | Umkm$categoryArgs<ExtArgs>
     images?: boolean | Umkm$imagesArgs<ExtArgs>
     reviews?: boolean | Umkm$reviewsArgs<ExtArgs>
     certifications?: boolean | Umkm$certificationsArgs<ExtArgs>
+    umkmHalalFacilities?: boolean | Umkm$umkmHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | UmkmCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["umkm"]>
 
@@ -23532,6 +27592,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     owner?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
     destination?: boolean | Umkm$destinationArgs<ExtArgs>
     category?: boolean | Umkm$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["umkm"]>
@@ -23555,6 +27617,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     owner?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
     destination?: boolean | Umkm$destinationArgs<ExtArgs>
     category?: boolean | Umkm$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["umkm"]>
@@ -23578,15 +27642,18 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     owner?: boolean
+    validationStatus?: boolean
+    surveyorNote?: boolean
   }
 
-  export type UmkmOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destinationId" | "categoryId" | "name" | "slug" | "description" | "address" | "phone" | "latitude" | "longitude" | "rating" | "reviewCount" | "openingHours" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "owner", ExtArgs["result"]["umkm"]>
+  export type UmkmOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destinationId" | "categoryId" | "name" | "slug" | "description" | "address" | "phone" | "latitude" | "longitude" | "rating" | "reviewCount" | "openingHours" | "externalId" | "externalSource" | "createdAt" | "updatedAt" | "owner" | "validationStatus" | "surveyorNote", ExtArgs["result"]["umkm"]>
   export type UmkmInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     destination?: boolean | Umkm$destinationArgs<ExtArgs>
     category?: boolean | Umkm$categoryArgs<ExtArgs>
     images?: boolean | Umkm$imagesArgs<ExtArgs>
     reviews?: boolean | Umkm$reviewsArgs<ExtArgs>
     certifications?: boolean | Umkm$certificationsArgs<ExtArgs>
+    umkmHalalFacilities?: boolean | Umkm$umkmHalalFacilitiesArgs<ExtArgs>
     _count?: boolean | UmkmCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UmkmIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -23606,6 +27673,7 @@ export namespace Prisma {
       images: Prisma.$UmkmImagePayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       certifications: Prisma.$HalalCertificationPayload<ExtArgs>[]
+      umkmHalalFacilities: Prisma.$UmkmHalalFacilityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -23626,6 +27694,8 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       owner: string
+      validationStatus: string
+      surveyorNote: string | null
     }, ExtArgs["result"]["umkm"]>
     composites: {}
   }
@@ -24025,6 +28095,7 @@ export namespace Prisma {
     images<T extends Umkm$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Umkm$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends Umkm$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Umkm$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     certifications<T extends Umkm$certificationsArgs<ExtArgs> = {}>(args?: Subset<T, Umkm$certificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HalalCertificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    umkmHalalFacilities<T extends Umkm$umkmHalalFacilitiesArgs<ExtArgs> = {}>(args?: Subset<T, Umkm$umkmHalalFacilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -24072,6 +28143,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Umkm", 'DateTime'>
     readonly updatedAt: FieldRef<"Umkm", 'DateTime'>
     readonly owner: FieldRef<"Umkm", 'String'>
+    readonly validationStatus: FieldRef<"Umkm", 'String'>
+    readonly surveyorNote: FieldRef<"Umkm", 'String'>
   }
     
 
@@ -24580,6 +28653,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: HalalCertificationScalarFieldEnum | HalalCertificationScalarFieldEnum[]
+  }
+
+  /**
+   * Umkm.umkmHalalFacilities
+   */
+  export type Umkm$umkmHalalFacilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    where?: UmkmHalalFacilityWhereInput
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UmkmHalalFacilityScalarFieldEnum | UmkmHalalFacilityScalarFieldEnum[]
   }
 
   /**
@@ -25674,6 +29771,1064 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UmkmImageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UmkmHalalFacility
+   */
+
+  export type AggregateUmkmHalalFacility = {
+    _count: UmkmHalalFacilityCountAggregateOutputType | null
+    _min: UmkmHalalFacilityMinAggregateOutputType | null
+    _max: UmkmHalalFacilityMaxAggregateOutputType | null
+  }
+
+  export type UmkmHalalFacilityMinAggregateOutputType = {
+    id: string | null
+    umkmId: string | null
+    facilityId: string | null
+    name: string | null
+  }
+
+  export type UmkmHalalFacilityMaxAggregateOutputType = {
+    id: string | null
+    umkmId: string | null
+    facilityId: string | null
+    name: string | null
+  }
+
+  export type UmkmHalalFacilityCountAggregateOutputType = {
+    id: number
+    umkmId: number
+    facilityId: number
+    name: number
+    _all: number
+  }
+
+
+  export type UmkmHalalFacilityMinAggregateInputType = {
+    id?: true
+    umkmId?: true
+    facilityId?: true
+    name?: true
+  }
+
+  export type UmkmHalalFacilityMaxAggregateInputType = {
+    id?: true
+    umkmId?: true
+    facilityId?: true
+    name?: true
+  }
+
+  export type UmkmHalalFacilityCountAggregateInputType = {
+    id?: true
+    umkmId?: true
+    facilityId?: true
+    name?: true
+    _all?: true
+  }
+
+  export type UmkmHalalFacilityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UmkmHalalFacility to aggregate.
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UmkmHalalFacilities to fetch.
+     */
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UmkmHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UmkmHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UmkmHalalFacilities
+    **/
+    _count?: true | UmkmHalalFacilityCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UmkmHalalFacilityMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UmkmHalalFacilityMaxAggregateInputType
+  }
+
+  export type GetUmkmHalalFacilityAggregateType<T extends UmkmHalalFacilityAggregateArgs> = {
+        [P in keyof T & keyof AggregateUmkmHalalFacility]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUmkmHalalFacility[P]>
+      : GetScalarType<T[P], AggregateUmkmHalalFacility[P]>
+  }
+
+
+
+
+  export type UmkmHalalFacilityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UmkmHalalFacilityWhereInput
+    orderBy?: UmkmHalalFacilityOrderByWithAggregationInput | UmkmHalalFacilityOrderByWithAggregationInput[]
+    by: UmkmHalalFacilityScalarFieldEnum[] | UmkmHalalFacilityScalarFieldEnum
+    having?: UmkmHalalFacilityScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UmkmHalalFacilityCountAggregateInputType | true
+    _min?: UmkmHalalFacilityMinAggregateInputType
+    _max?: UmkmHalalFacilityMaxAggregateInputType
+  }
+
+  export type UmkmHalalFacilityGroupByOutputType = {
+    id: string
+    umkmId: string
+    facilityId: string
+    name: string | null
+    _count: UmkmHalalFacilityCountAggregateOutputType | null
+    _min: UmkmHalalFacilityMinAggregateOutputType | null
+    _max: UmkmHalalFacilityMaxAggregateOutputType | null
+  }
+
+  type GetUmkmHalalFacilityGroupByPayload<T extends UmkmHalalFacilityGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UmkmHalalFacilityGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UmkmHalalFacilityGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UmkmHalalFacilityGroupByOutputType[P]>
+            : GetScalarType<T[P], UmkmHalalFacilityGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UmkmHalalFacilitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    umkmId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["umkmHalalFacility"]>
+
+  export type UmkmHalalFacilitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    umkmId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["umkmHalalFacility"]>
+
+  export type UmkmHalalFacilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    umkmId?: boolean
+    facilityId?: boolean
+    name?: boolean
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["umkmHalalFacility"]>
+
+  export type UmkmHalalFacilitySelectScalar = {
+    id?: boolean
+    umkmId?: boolean
+    facilityId?: boolean
+    name?: boolean
+  }
+
+  export type UmkmHalalFacilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "umkmId" | "facilityId" | "name", ExtArgs["result"]["umkmHalalFacility"]>
+  export type UmkmHalalFacilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type UmkmHalalFacilityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+  export type UmkmHalalFacilityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    umkm?: boolean | UmkmDefaultArgs<ExtArgs>
+    facility?: boolean | HalalFacilityDefaultArgs<ExtArgs>
+  }
+
+  export type $UmkmHalalFacilityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UmkmHalalFacility"
+    objects: {
+      umkm: Prisma.$UmkmPayload<ExtArgs>
+      facility: Prisma.$HalalFacilityPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      umkmId: string
+      facilityId: string
+      name: string | null
+    }, ExtArgs["result"]["umkmHalalFacility"]>
+    composites: {}
+  }
+
+  type UmkmHalalFacilityGetPayload<S extends boolean | null | undefined | UmkmHalalFacilityDefaultArgs> = $Result.GetResult<Prisma.$UmkmHalalFacilityPayload, S>
+
+  type UmkmHalalFacilityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UmkmHalalFacilityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UmkmHalalFacilityCountAggregateInputType | true
+    }
+
+  export interface UmkmHalalFacilityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UmkmHalalFacility'], meta: { name: 'UmkmHalalFacility' } }
+    /**
+     * Find zero or one UmkmHalalFacility that matches the filter.
+     * @param {UmkmHalalFacilityFindUniqueArgs} args - Arguments to find a UmkmHalalFacility
+     * @example
+     * // Get one UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UmkmHalalFacilityFindUniqueArgs>(args: SelectSubset<T, UmkmHalalFacilityFindUniqueArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UmkmHalalFacility that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UmkmHalalFacilityFindUniqueOrThrowArgs} args - Arguments to find a UmkmHalalFacility
+     * @example
+     * // Get one UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UmkmHalalFacilityFindUniqueOrThrowArgs>(args: SelectSubset<T, UmkmHalalFacilityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UmkmHalalFacility that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityFindFirstArgs} args - Arguments to find a UmkmHalalFacility
+     * @example
+     * // Get one UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UmkmHalalFacilityFindFirstArgs>(args?: SelectSubset<T, UmkmHalalFacilityFindFirstArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UmkmHalalFacility that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityFindFirstOrThrowArgs} args - Arguments to find a UmkmHalalFacility
+     * @example
+     * // Get one UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UmkmHalalFacilityFindFirstOrThrowArgs>(args?: SelectSubset<T, UmkmHalalFacilityFindFirstOrThrowArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UmkmHalalFacilities that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UmkmHalalFacilities
+     * const umkmHalalFacilities = await prisma.umkmHalalFacility.findMany()
+     * 
+     * // Get first 10 UmkmHalalFacilities
+     * const umkmHalalFacilities = await prisma.umkmHalalFacility.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const umkmHalalFacilityWithIdOnly = await prisma.umkmHalalFacility.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UmkmHalalFacilityFindManyArgs>(args?: SelectSubset<T, UmkmHalalFacilityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UmkmHalalFacility.
+     * @param {UmkmHalalFacilityCreateArgs} args - Arguments to create a UmkmHalalFacility.
+     * @example
+     * // Create one UmkmHalalFacility
+     * const UmkmHalalFacility = await prisma.umkmHalalFacility.create({
+     *   data: {
+     *     // ... data to create a UmkmHalalFacility
+     *   }
+     * })
+     * 
+     */
+    create<T extends UmkmHalalFacilityCreateArgs>(args: SelectSubset<T, UmkmHalalFacilityCreateArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UmkmHalalFacilities.
+     * @param {UmkmHalalFacilityCreateManyArgs} args - Arguments to create many UmkmHalalFacilities.
+     * @example
+     * // Create many UmkmHalalFacilities
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UmkmHalalFacilityCreateManyArgs>(args?: SelectSubset<T, UmkmHalalFacilityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UmkmHalalFacilities and returns the data saved in the database.
+     * @param {UmkmHalalFacilityCreateManyAndReturnArgs} args - Arguments to create many UmkmHalalFacilities.
+     * @example
+     * // Create many UmkmHalalFacilities
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UmkmHalalFacilities and only return the `id`
+     * const umkmHalalFacilityWithIdOnly = await prisma.umkmHalalFacility.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UmkmHalalFacilityCreateManyAndReturnArgs>(args?: SelectSubset<T, UmkmHalalFacilityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UmkmHalalFacility.
+     * @param {UmkmHalalFacilityDeleteArgs} args - Arguments to delete one UmkmHalalFacility.
+     * @example
+     * // Delete one UmkmHalalFacility
+     * const UmkmHalalFacility = await prisma.umkmHalalFacility.delete({
+     *   where: {
+     *     // ... filter to delete one UmkmHalalFacility
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UmkmHalalFacilityDeleteArgs>(args: SelectSubset<T, UmkmHalalFacilityDeleteArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UmkmHalalFacility.
+     * @param {UmkmHalalFacilityUpdateArgs} args - Arguments to update one UmkmHalalFacility.
+     * @example
+     * // Update one UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UmkmHalalFacilityUpdateArgs>(args: SelectSubset<T, UmkmHalalFacilityUpdateArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UmkmHalalFacilities.
+     * @param {UmkmHalalFacilityDeleteManyArgs} args - Arguments to filter UmkmHalalFacilities to delete.
+     * @example
+     * // Delete a few UmkmHalalFacilities
+     * const { count } = await prisma.umkmHalalFacility.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UmkmHalalFacilityDeleteManyArgs>(args?: SelectSubset<T, UmkmHalalFacilityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UmkmHalalFacilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UmkmHalalFacilities
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UmkmHalalFacilityUpdateManyArgs>(args: SelectSubset<T, UmkmHalalFacilityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UmkmHalalFacilities and returns the data updated in the database.
+     * @param {UmkmHalalFacilityUpdateManyAndReturnArgs} args - Arguments to update many UmkmHalalFacilities.
+     * @example
+     * // Update many UmkmHalalFacilities
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UmkmHalalFacilities and only return the `id`
+     * const umkmHalalFacilityWithIdOnly = await prisma.umkmHalalFacility.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UmkmHalalFacilityUpdateManyAndReturnArgs>(args: SelectSubset<T, UmkmHalalFacilityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UmkmHalalFacility.
+     * @param {UmkmHalalFacilityUpsertArgs} args - Arguments to update or create a UmkmHalalFacility.
+     * @example
+     * // Update or create a UmkmHalalFacility
+     * const umkmHalalFacility = await prisma.umkmHalalFacility.upsert({
+     *   create: {
+     *     // ... data to create a UmkmHalalFacility
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UmkmHalalFacility we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UmkmHalalFacilityUpsertArgs>(args: SelectSubset<T, UmkmHalalFacilityUpsertArgs<ExtArgs>>): Prisma__UmkmHalalFacilityClient<$Result.GetResult<Prisma.$UmkmHalalFacilityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UmkmHalalFacilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityCountArgs} args - Arguments to filter UmkmHalalFacilities to count.
+     * @example
+     * // Count the number of UmkmHalalFacilities
+     * const count = await prisma.umkmHalalFacility.count({
+     *   where: {
+     *     // ... the filter for the UmkmHalalFacilities we want to count
+     *   }
+     * })
+    **/
+    count<T extends UmkmHalalFacilityCountArgs>(
+      args?: Subset<T, UmkmHalalFacilityCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UmkmHalalFacilityCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UmkmHalalFacility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UmkmHalalFacilityAggregateArgs>(args: Subset<T, UmkmHalalFacilityAggregateArgs>): Prisma.PrismaPromise<GetUmkmHalalFacilityAggregateType<T>>
+
+    /**
+     * Group by UmkmHalalFacility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UmkmHalalFacilityGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UmkmHalalFacilityGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UmkmHalalFacilityGroupByArgs['orderBy'] }
+        : { orderBy?: UmkmHalalFacilityGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UmkmHalalFacilityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUmkmHalalFacilityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UmkmHalalFacility model
+   */
+  readonly fields: UmkmHalalFacilityFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UmkmHalalFacility.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UmkmHalalFacilityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    umkm<T extends UmkmDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UmkmDefaultArgs<ExtArgs>>): Prisma__UmkmClient<$Result.GetResult<Prisma.$UmkmPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    facility<T extends HalalFacilityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HalalFacilityDefaultArgs<ExtArgs>>): Prisma__HalalFacilityClient<$Result.GetResult<Prisma.$HalalFacilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UmkmHalalFacility model
+   */
+  interface UmkmHalalFacilityFieldRefs {
+    readonly id: FieldRef<"UmkmHalalFacility", 'String'>
+    readonly umkmId: FieldRef<"UmkmHalalFacility", 'String'>
+    readonly facilityId: FieldRef<"UmkmHalalFacility", 'String'>
+    readonly name: FieldRef<"UmkmHalalFacility", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UmkmHalalFacility findUnique
+   */
+  export type UmkmHalalFacilityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which UmkmHalalFacility to fetch.
+     */
+    where: UmkmHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * UmkmHalalFacility findUniqueOrThrow
+   */
+  export type UmkmHalalFacilityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which UmkmHalalFacility to fetch.
+     */
+    where: UmkmHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * UmkmHalalFacility findFirst
+   */
+  export type UmkmHalalFacilityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which UmkmHalalFacility to fetch.
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UmkmHalalFacilities to fetch.
+     */
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UmkmHalalFacilities.
+     */
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UmkmHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UmkmHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UmkmHalalFacilities.
+     */
+    distinct?: UmkmHalalFacilityScalarFieldEnum | UmkmHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * UmkmHalalFacility findFirstOrThrow
+   */
+  export type UmkmHalalFacilityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which UmkmHalalFacility to fetch.
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UmkmHalalFacilities to fetch.
+     */
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UmkmHalalFacilities.
+     */
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UmkmHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UmkmHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UmkmHalalFacilities.
+     */
+    distinct?: UmkmHalalFacilityScalarFieldEnum | UmkmHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * UmkmHalalFacility findMany
+   */
+  export type UmkmHalalFacilityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter, which UmkmHalalFacilities to fetch.
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UmkmHalalFacilities to fetch.
+     */
+    orderBy?: UmkmHalalFacilityOrderByWithRelationInput | UmkmHalalFacilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UmkmHalalFacilities.
+     */
+    cursor?: UmkmHalalFacilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UmkmHalalFacilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UmkmHalalFacilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UmkmHalalFacilities.
+     */
+    distinct?: UmkmHalalFacilityScalarFieldEnum | UmkmHalalFacilityScalarFieldEnum[]
+  }
+
+  /**
+   * UmkmHalalFacility create
+   */
+  export type UmkmHalalFacilityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UmkmHalalFacility.
+     */
+    data: XOR<UmkmHalalFacilityCreateInput, UmkmHalalFacilityUncheckedCreateInput>
+  }
+
+  /**
+   * UmkmHalalFacility createMany
+   */
+  export type UmkmHalalFacilityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UmkmHalalFacilities.
+     */
+    data: UmkmHalalFacilityCreateManyInput | UmkmHalalFacilityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UmkmHalalFacility createManyAndReturn
+   */
+  export type UmkmHalalFacilityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * The data used to create many UmkmHalalFacilities.
+     */
+    data: UmkmHalalFacilityCreateManyInput | UmkmHalalFacilityCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UmkmHalalFacility update
+   */
+  export type UmkmHalalFacilityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UmkmHalalFacility.
+     */
+    data: XOR<UmkmHalalFacilityUpdateInput, UmkmHalalFacilityUncheckedUpdateInput>
+    /**
+     * Choose, which UmkmHalalFacility to update.
+     */
+    where: UmkmHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * UmkmHalalFacility updateMany
+   */
+  export type UmkmHalalFacilityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UmkmHalalFacilities.
+     */
+    data: XOR<UmkmHalalFacilityUpdateManyMutationInput, UmkmHalalFacilityUncheckedUpdateManyInput>
+    /**
+     * Filter which UmkmHalalFacilities to update
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * Limit how many UmkmHalalFacilities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UmkmHalalFacility updateManyAndReturn
+   */
+  export type UmkmHalalFacilityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * The data used to update UmkmHalalFacilities.
+     */
+    data: XOR<UmkmHalalFacilityUpdateManyMutationInput, UmkmHalalFacilityUncheckedUpdateManyInput>
+    /**
+     * Filter which UmkmHalalFacilities to update
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * Limit how many UmkmHalalFacilities to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UmkmHalalFacility upsert
+   */
+  export type UmkmHalalFacilityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UmkmHalalFacility to update in case it exists.
+     */
+    where: UmkmHalalFacilityWhereUniqueInput
+    /**
+     * In case the UmkmHalalFacility found by the `where` argument doesn't exist, create a new UmkmHalalFacility with this data.
+     */
+    create: XOR<UmkmHalalFacilityCreateInput, UmkmHalalFacilityUncheckedCreateInput>
+    /**
+     * In case the UmkmHalalFacility was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UmkmHalalFacilityUpdateInput, UmkmHalalFacilityUncheckedUpdateInput>
+  }
+
+  /**
+   * UmkmHalalFacility delete
+   */
+  export type UmkmHalalFacilityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
+    /**
+     * Filter which UmkmHalalFacility to delete.
+     */
+    where: UmkmHalalFacilityWhereUniqueInput
+  }
+
+  /**
+   * UmkmHalalFacility deleteMany
+   */
+  export type UmkmHalalFacilityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UmkmHalalFacilities to delete
+     */
+    where?: UmkmHalalFacilityWhereInput
+    /**
+     * Limit how many UmkmHalalFacilities to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UmkmHalalFacility without action
+   */
+  export type UmkmHalalFacilityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UmkmHalalFacility
+     */
+    select?: UmkmHalalFacilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UmkmHalalFacility
+     */
+    omit?: UmkmHalalFacilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UmkmHalalFacilityInclude<ExtArgs> | null
   }
 
 
@@ -30324,6 +35479,54 @@ export namespace Prisma {
   export type DestinationScalarFieldEnum = (typeof DestinationScalarFieldEnum)[keyof typeof DestinationScalarFieldEnum]
 
 
+  export const AccommodationScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    description: 'description',
+    address: 'address',
+    city: 'city',
+    province: 'province',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    phone: 'phone',
+    website: 'website',
+    rating: 'rating',
+    reviewCount: 'reviewCount',
+    validationStatus: 'validationStatus',
+    surveyorNote: 'surveyorNote',
+    validatedScore: 'validatedScore',
+    externalId: 'externalId',
+    externalSource: 'externalSource',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AccommodationScalarFieldEnum = (typeof AccommodationScalarFieldEnum)[keyof typeof AccommodationScalarFieldEnum]
+
+
+  export const AccommodationImageScalarFieldEnum: {
+    id: 'id',
+    accommodationId: 'accommodationId',
+    imageUrl: 'imageUrl',
+    caption: 'caption',
+    isPrimary: 'isPrimary',
+    createdAt: 'createdAt'
+  };
+
+  export type AccommodationImageScalarFieldEnum = (typeof AccommodationImageScalarFieldEnum)[keyof typeof AccommodationImageScalarFieldEnum]
+
+
+  export const AccommodationHalalFacilityScalarFieldEnum: {
+    id: 'id',
+    accommodationId: 'accommodationId',
+    facilityId: 'facilityId',
+    name: 'name'
+  };
+
+  export type AccommodationHalalFacilityScalarFieldEnum = (typeof AccommodationHalalFacilityScalarFieldEnum)[keyof typeof AccommodationHalalFacilityScalarFieldEnum]
+
+
   export const DestinationImageScalarFieldEnum: {
     id: 'id',
     destinationId: 'destinationId',
@@ -30379,6 +35582,7 @@ export namespace Prisma {
     userId: 'userId',
     destinationId: 'destinationId',
     umkmId: 'umkmId',
+    accommodationId: 'accommodationId',
     rating: 'rating',
     comment: 'comment',
     createdAt: 'createdAt',
@@ -30497,7 +35701,9 @@ export namespace Prisma {
     externalSource: 'externalSource',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    owner: 'owner'
+    owner: 'owner',
+    validationStatus: 'validationStatus',
+    surveyorNote: 'surveyorNote'
   };
 
   export type UmkmScalarFieldEnum = (typeof UmkmScalarFieldEnum)[keyof typeof UmkmScalarFieldEnum]
@@ -30513,6 +35719,16 @@ export namespace Prisma {
   };
 
   export type UmkmImageScalarFieldEnum = (typeof UmkmImageScalarFieldEnum)[keyof typeof UmkmImageScalarFieldEnum]
+
+
+  export const UmkmHalalFacilityScalarFieldEnum: {
+    id: 'id',
+    umkmId: 'umkmId',
+    facilityId: 'facilityId',
+    name: 'name'
+  };
+
+  export type UmkmHalalFacilityScalarFieldEnum = (typeof UmkmHalalFacilityScalarFieldEnum)[keyof typeof UmkmHalalFacilityScalarFieldEnum]
 
 
   export const HalalCertificationScalarFieldEnum: {
@@ -31347,6 +36563,257 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Destination"> | Date | string
   }
 
+  export type AccommodationWhereInput = {
+    AND?: AccommodationWhereInput | AccommodationWhereInput[]
+    OR?: AccommodationWhereInput[]
+    NOT?: AccommodationWhereInput | AccommodationWhereInput[]
+    id?: StringFilter<"Accommodation"> | string
+    name?: StringFilter<"Accommodation"> | string
+    slug?: StringFilter<"Accommodation"> | string
+    description?: JsonNullableFilter<"Accommodation">
+    address?: StringNullableFilter<"Accommodation"> | string | null
+    city?: StringNullableFilter<"Accommodation"> | string | null
+    province?: StringNullableFilter<"Accommodation"> | string | null
+    latitude?: DecimalNullableFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    phone?: StringNullableFilter<"Accommodation"> | string | null
+    website?: StringNullableFilter<"Accommodation"> | string | null
+    rating?: FloatNullableFilter<"Accommodation"> | number | null
+    reviewCount?: IntNullableFilter<"Accommodation"> | number | null
+    validationStatus?: StringFilter<"Accommodation"> | string
+    surveyorNote?: StringNullableFilter<"Accommodation"> | string | null
+    validatedScore?: IntNullableFilter<"Accommodation"> | number | null
+    externalId?: StringNullableFilter<"Accommodation"> | string | null
+    externalSource?: StringNullableFilter<"Accommodation"> | string | null
+    createdAt?: DateTimeFilter<"Accommodation"> | Date | string
+    updatedAt?: DateTimeFilter<"Accommodation"> | Date | string
+    images?: AccommodationImageListRelationFilter
+    reviews?: ReviewListRelationFilter
+    facilities?: AccommodationHalalFacilityListRelationFilter
+  }
+
+  export type AccommodationOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    description?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    province?: SortOrderInput | SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    rating?: SortOrderInput | SortOrder
+    reviewCount?: SortOrderInput | SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrderInput | SortOrder
+    validatedScore?: SortOrderInput | SortOrder
+    externalId?: SortOrderInput | SortOrder
+    externalSource?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    images?: AccommodationImageOrderByRelationAggregateInput
+    reviews?: ReviewOrderByRelationAggregateInput
+    facilities?: AccommodationHalalFacilityOrderByRelationAggregateInput
+  }
+
+  export type AccommodationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    AND?: AccommodationWhereInput | AccommodationWhereInput[]
+    OR?: AccommodationWhereInput[]
+    NOT?: AccommodationWhereInput | AccommodationWhereInput[]
+    name?: StringFilter<"Accommodation"> | string
+    description?: JsonNullableFilter<"Accommodation">
+    address?: StringNullableFilter<"Accommodation"> | string | null
+    city?: StringNullableFilter<"Accommodation"> | string | null
+    province?: StringNullableFilter<"Accommodation"> | string | null
+    latitude?: DecimalNullableFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    phone?: StringNullableFilter<"Accommodation"> | string | null
+    website?: StringNullableFilter<"Accommodation"> | string | null
+    rating?: FloatNullableFilter<"Accommodation"> | number | null
+    reviewCount?: IntNullableFilter<"Accommodation"> | number | null
+    validationStatus?: StringFilter<"Accommodation"> | string
+    surveyorNote?: StringNullableFilter<"Accommodation"> | string | null
+    validatedScore?: IntNullableFilter<"Accommodation"> | number | null
+    externalId?: StringNullableFilter<"Accommodation"> | string | null
+    externalSource?: StringNullableFilter<"Accommodation"> | string | null
+    createdAt?: DateTimeFilter<"Accommodation"> | Date | string
+    updatedAt?: DateTimeFilter<"Accommodation"> | Date | string
+    images?: AccommodationImageListRelationFilter
+    reviews?: ReviewListRelationFilter
+    facilities?: AccommodationHalalFacilityListRelationFilter
+  }, "id" | "slug">
+
+  export type AccommodationOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    description?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    province?: SortOrderInput | SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    rating?: SortOrderInput | SortOrder
+    reviewCount?: SortOrderInput | SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrderInput | SortOrder
+    validatedScore?: SortOrderInput | SortOrder
+    externalId?: SortOrderInput | SortOrder
+    externalSource?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AccommodationCountOrderByAggregateInput
+    _avg?: AccommodationAvgOrderByAggregateInput
+    _max?: AccommodationMaxOrderByAggregateInput
+    _min?: AccommodationMinOrderByAggregateInput
+    _sum?: AccommodationSumOrderByAggregateInput
+  }
+
+  export type AccommodationScalarWhereWithAggregatesInput = {
+    AND?: AccommodationScalarWhereWithAggregatesInput | AccommodationScalarWhereWithAggregatesInput[]
+    OR?: AccommodationScalarWhereWithAggregatesInput[]
+    NOT?: AccommodationScalarWhereWithAggregatesInput | AccommodationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Accommodation"> | string
+    name?: StringWithAggregatesFilter<"Accommodation"> | string
+    slug?: StringWithAggregatesFilter<"Accommodation"> | string
+    description?: JsonNullableWithAggregatesFilter<"Accommodation">
+    address?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    city?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    province?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    latitude?: DecimalNullableWithAggregatesFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    longitude?: DecimalNullableWithAggregatesFilter<"Accommodation"> | Decimal | DecimalJsLike | number | string | null
+    phone?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    rating?: FloatNullableWithAggregatesFilter<"Accommodation"> | number | null
+    reviewCount?: IntNullableWithAggregatesFilter<"Accommodation"> | number | null
+    validationStatus?: StringWithAggregatesFilter<"Accommodation"> | string
+    surveyorNote?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    validatedScore?: IntNullableWithAggregatesFilter<"Accommodation"> | number | null
+    externalId?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    externalSource?: StringNullableWithAggregatesFilter<"Accommodation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Accommodation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Accommodation"> | Date | string
+  }
+
+  export type AccommodationImageWhereInput = {
+    AND?: AccommodationImageWhereInput | AccommodationImageWhereInput[]
+    OR?: AccommodationImageWhereInput[]
+    NOT?: AccommodationImageWhereInput | AccommodationImageWhereInput[]
+    id?: StringFilter<"AccommodationImage"> | string
+    accommodationId?: StringFilter<"AccommodationImage"> | string
+    imageUrl?: StringFilter<"AccommodationImage"> | string
+    caption?: StringNullableFilter<"AccommodationImage"> | string | null
+    isPrimary?: BoolFilter<"AccommodationImage"> | boolean
+    createdAt?: DateTimeFilter<"AccommodationImage"> | Date | string
+    accommodation?: XOR<AccommodationScalarRelationFilter, AccommodationWhereInput>
+  }
+
+  export type AccommodationImageOrderByWithRelationInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    imageUrl?: SortOrder
+    caption?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    accommodation?: AccommodationOrderByWithRelationInput
+  }
+
+  export type AccommodationImageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AccommodationImageWhereInput | AccommodationImageWhereInput[]
+    OR?: AccommodationImageWhereInput[]
+    NOT?: AccommodationImageWhereInput | AccommodationImageWhereInput[]
+    accommodationId?: StringFilter<"AccommodationImage"> | string
+    imageUrl?: StringFilter<"AccommodationImage"> | string
+    caption?: StringNullableFilter<"AccommodationImage"> | string | null
+    isPrimary?: BoolFilter<"AccommodationImage"> | boolean
+    createdAt?: DateTimeFilter<"AccommodationImage"> | Date | string
+    accommodation?: XOR<AccommodationScalarRelationFilter, AccommodationWhereInput>
+  }, "id">
+
+  export type AccommodationImageOrderByWithAggregationInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    imageUrl?: SortOrder
+    caption?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+    _count?: AccommodationImageCountOrderByAggregateInput
+    _max?: AccommodationImageMaxOrderByAggregateInput
+    _min?: AccommodationImageMinOrderByAggregateInput
+  }
+
+  export type AccommodationImageScalarWhereWithAggregatesInput = {
+    AND?: AccommodationImageScalarWhereWithAggregatesInput | AccommodationImageScalarWhereWithAggregatesInput[]
+    OR?: AccommodationImageScalarWhereWithAggregatesInput[]
+    NOT?: AccommodationImageScalarWhereWithAggregatesInput | AccommodationImageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AccommodationImage"> | string
+    accommodationId?: StringWithAggregatesFilter<"AccommodationImage"> | string
+    imageUrl?: StringWithAggregatesFilter<"AccommodationImage"> | string
+    caption?: StringNullableWithAggregatesFilter<"AccommodationImage"> | string | null
+    isPrimary?: BoolWithAggregatesFilter<"AccommodationImage"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AccommodationImage"> | Date | string
+  }
+
+  export type AccommodationHalalFacilityWhereInput = {
+    AND?: AccommodationHalalFacilityWhereInput | AccommodationHalalFacilityWhereInput[]
+    OR?: AccommodationHalalFacilityWhereInput[]
+    NOT?: AccommodationHalalFacilityWhereInput | AccommodationHalalFacilityWhereInput[]
+    id?: StringFilter<"AccommodationHalalFacility"> | string
+    accommodationId?: StringFilter<"AccommodationHalalFacility"> | string
+    facilityId?: StringFilter<"AccommodationHalalFacility"> | string
+    name?: StringNullableFilter<"AccommodationHalalFacility"> | string | null
+    accommodation?: XOR<AccommodationScalarRelationFilter, AccommodationWhereInput>
+    facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
+  }
+
+  export type AccommodationHalalFacilityOrderByWithRelationInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    accommodation?: AccommodationOrderByWithRelationInput
+    facility?: HalalFacilityOrderByWithRelationInput
+  }
+
+  export type AccommodationHalalFacilityWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AccommodationHalalFacilityWhereInput | AccommodationHalalFacilityWhereInput[]
+    OR?: AccommodationHalalFacilityWhereInput[]
+    NOT?: AccommodationHalalFacilityWhereInput | AccommodationHalalFacilityWhereInput[]
+    accommodationId?: StringFilter<"AccommodationHalalFacility"> | string
+    facilityId?: StringFilter<"AccommodationHalalFacility"> | string
+    name?: StringNullableFilter<"AccommodationHalalFacility"> | string | null
+    accommodation?: XOR<AccommodationScalarRelationFilter, AccommodationWhereInput>
+    facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
+  }, "id">
+
+  export type AccommodationHalalFacilityOrderByWithAggregationInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    _count?: AccommodationHalalFacilityCountOrderByAggregateInput
+    _max?: AccommodationHalalFacilityMaxOrderByAggregateInput
+    _min?: AccommodationHalalFacilityMinOrderByAggregateInput
+  }
+
+  export type AccommodationHalalFacilityScalarWhereWithAggregatesInput = {
+    AND?: AccommodationHalalFacilityScalarWhereWithAggregatesInput | AccommodationHalalFacilityScalarWhereWithAggregatesInput[]
+    OR?: AccommodationHalalFacilityScalarWhereWithAggregatesInput[]
+    NOT?: AccommodationHalalFacilityScalarWhereWithAggregatesInput | AccommodationHalalFacilityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AccommodationHalalFacility"> | string
+    accommodationId?: StringWithAggregatesFilter<"AccommodationHalalFacility"> | string
+    facilityId?: StringWithAggregatesFilter<"AccommodationHalalFacility"> | string
+    name?: StringNullableWithAggregatesFilter<"AccommodationHalalFacility"> | string | null
+  }
+
   export type DestinationImageWhereInput = {
     AND?: DestinationImageWhereInput | DestinationImageWhereInput[]
     OR?: DestinationImageWhereInput[]
@@ -31540,6 +37007,8 @@ export namespace Prisma {
     weight?: IntNullableFilter<"HalalFacility"> | number | null
     maxDistance?: FloatFilter<"HalalFacility"> | number
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
+    umkmHalalFacilities?: UmkmHalalFacilityListRelationFilter
+    accommodationHalalFacilities?: AccommodationHalalFacilityListRelationFilter
   }
 
   export type HalalFacilityOrderByWithRelationInput = {
@@ -31554,6 +37023,8 @@ export namespace Prisma {
     weight?: SortOrderInput | SortOrder
     maxDistance?: SortOrder
     destinationHalalFacilities?: DestinationHalalFacilityOrderByRelationAggregateInput
+    umkmHalalFacilities?: UmkmHalalFacilityOrderByRelationAggregateInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityOrderByRelationAggregateInput
   }
 
   export type HalalFacilityWhereUniqueInput = Prisma.AtLeast<{
@@ -31571,6 +37042,8 @@ export namespace Prisma {
     weight?: IntNullableFilter<"HalalFacility"> | number | null
     maxDistance?: FloatFilter<"HalalFacility"> | number
     destinationHalalFacilities?: DestinationHalalFacilityListRelationFilter
+    umkmHalalFacilities?: UmkmHalalFacilityListRelationFilter
+    accommodationHalalFacilities?: AccommodationHalalFacilityListRelationFilter
   }, "id">
 
   export type HalalFacilityOrderByWithAggregationInput = {
@@ -31615,6 +37088,7 @@ export namespace Prisma {
     userId?: StringFilter<"Review"> | string
     destinationId?: StringNullableFilter<"Review"> | string | null
     umkmId?: StringNullableFilter<"Review"> | string | null
+    accommodationId?: StringNullableFilter<"Review"> | string | null
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
     createdAt?: DateTimeFilter<"Review"> | Date | string
@@ -31622,6 +37096,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     umkm?: XOR<UmkmNullableScalarRelationFilter, UmkmWhereInput> | null
+    accommodation?: XOR<AccommodationNullableScalarRelationFilter, AccommodationWhereInput> | null
     sentiment?: XOR<ReviewSentimentNullableScalarRelationFilter, ReviewSentimentWhereInput> | null
   }
 
@@ -31630,6 +37105,7 @@ export namespace Prisma {
     userId?: SortOrder
     destinationId?: SortOrderInput | SortOrder
     umkmId?: SortOrderInput | SortOrder
+    accommodationId?: SortOrderInput | SortOrder
     rating?: SortOrder
     comment?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -31637,6 +37113,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     destination?: DestinationOrderByWithRelationInput
     umkm?: UmkmOrderByWithRelationInput
+    accommodation?: AccommodationOrderByWithRelationInput
     sentiment?: ReviewSentimentOrderByWithRelationInput
   }
 
@@ -31648,6 +37125,7 @@ export namespace Prisma {
     userId?: StringFilter<"Review"> | string
     destinationId?: StringNullableFilter<"Review"> | string | null
     umkmId?: StringNullableFilter<"Review"> | string | null
+    accommodationId?: StringNullableFilter<"Review"> | string | null
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
     createdAt?: DateTimeFilter<"Review"> | Date | string
@@ -31655,6 +37133,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     umkm?: XOR<UmkmNullableScalarRelationFilter, UmkmWhereInput> | null
+    accommodation?: XOR<AccommodationNullableScalarRelationFilter, AccommodationWhereInput> | null
     sentiment?: XOR<ReviewSentimentNullableScalarRelationFilter, ReviewSentimentWhereInput> | null
   }, "id">
 
@@ -31663,6 +37142,7 @@ export namespace Prisma {
     userId?: SortOrder
     destinationId?: SortOrderInput | SortOrder
     umkmId?: SortOrderInput | SortOrder
+    accommodationId?: SortOrderInput | SortOrder
     rating?: SortOrder
     comment?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -31682,6 +37162,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Review"> | string
     destinationId?: StringNullableWithAggregatesFilter<"Review"> | string | null
     umkmId?: StringNullableWithAggregatesFilter<"Review"> | string | null
+    accommodationId?: StringNullableWithAggregatesFilter<"Review"> | string | null
     rating?: IntWithAggregatesFilter<"Review"> | number
     comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
@@ -32180,11 +37661,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Umkm"> | Date | string
     updatedAt?: DateTimeFilter<"Umkm"> | Date | string
     owner?: StringFilter<"Umkm"> | string
+    validationStatus?: StringFilter<"Umkm"> | string
+    surveyorNote?: StringNullableFilter<"Umkm"> | string | null
     destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     images?: UmkmImageListRelationFilter
     reviews?: ReviewListRelationFilter
     certifications?: HalalCertificationListRelationFilter
+    umkmHalalFacilities?: UmkmHalalFacilityListRelationFilter
   }
 
   export type UmkmOrderByWithRelationInput = {
@@ -32206,11 +37690,14 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     owner?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrderInput | SortOrder
     destination?: DestinationOrderByWithRelationInput
     category?: CategoryOrderByWithRelationInput
     images?: UmkmImageOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
     certifications?: HalalCertificationOrderByRelationAggregateInput
+    umkmHalalFacilities?: UmkmHalalFacilityOrderByRelationAggregateInput
   }
 
   export type UmkmWhereUniqueInput = Prisma.AtLeast<{
@@ -32235,11 +37722,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Umkm"> | Date | string
     updatedAt?: DateTimeFilter<"Umkm"> | Date | string
     owner?: StringFilter<"Umkm"> | string
+    validationStatus?: StringFilter<"Umkm"> | string
+    surveyorNote?: StringNullableFilter<"Umkm"> | string | null
     destination?: XOR<DestinationNullableScalarRelationFilter, DestinationWhereInput> | null
     category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     images?: UmkmImageListRelationFilter
     reviews?: ReviewListRelationFilter
     certifications?: HalalCertificationListRelationFilter
+    umkmHalalFacilities?: UmkmHalalFacilityListRelationFilter
   }, "id" | "slug">
 
   export type UmkmOrderByWithAggregationInput = {
@@ -32261,6 +37751,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     owner?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrderInput | SortOrder
     _count?: UmkmCountOrderByAggregateInput
     _avg?: UmkmAvgOrderByAggregateInput
     _max?: UmkmMaxOrderByAggregateInput
@@ -32290,6 +37782,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Umkm"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Umkm"> | Date | string
     owner?: StringWithAggregatesFilter<"Umkm"> | string
+    validationStatus?: StringWithAggregatesFilter<"Umkm"> | string
+    surveyorNote?: StringNullableWithAggregatesFilter<"Umkm"> | string | null
   }
 
   export type UmkmImageWhereInput = {
@@ -32350,6 +37844,59 @@ export namespace Prisma {
     caption?: StringNullableWithAggregatesFilter<"UmkmImage"> | string | null
     isPrimary?: BoolWithAggregatesFilter<"UmkmImage"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"UmkmImage"> | Date | string
+  }
+
+  export type UmkmHalalFacilityWhereInput = {
+    AND?: UmkmHalalFacilityWhereInput | UmkmHalalFacilityWhereInput[]
+    OR?: UmkmHalalFacilityWhereInput[]
+    NOT?: UmkmHalalFacilityWhereInput | UmkmHalalFacilityWhereInput[]
+    id?: StringFilter<"UmkmHalalFacility"> | string
+    umkmId?: StringFilter<"UmkmHalalFacility"> | string
+    facilityId?: StringFilter<"UmkmHalalFacility"> | string
+    name?: StringNullableFilter<"UmkmHalalFacility"> | string | null
+    umkm?: XOR<UmkmScalarRelationFilter, UmkmWhereInput>
+    facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
+  }
+
+  export type UmkmHalalFacilityOrderByWithRelationInput = {
+    id?: SortOrder
+    umkmId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    umkm?: UmkmOrderByWithRelationInput
+    facility?: HalalFacilityOrderByWithRelationInput
+  }
+
+  export type UmkmHalalFacilityWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UmkmHalalFacilityWhereInput | UmkmHalalFacilityWhereInput[]
+    OR?: UmkmHalalFacilityWhereInput[]
+    NOT?: UmkmHalalFacilityWhereInput | UmkmHalalFacilityWhereInput[]
+    umkmId?: StringFilter<"UmkmHalalFacility"> | string
+    facilityId?: StringFilter<"UmkmHalalFacility"> | string
+    name?: StringNullableFilter<"UmkmHalalFacility"> | string | null
+    umkm?: XOR<UmkmScalarRelationFilter, UmkmWhereInput>
+    facility?: XOR<HalalFacilityScalarRelationFilter, HalalFacilityWhereInput>
+  }, "id">
+
+  export type UmkmHalalFacilityOrderByWithAggregationInput = {
+    id?: SortOrder
+    umkmId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    _count?: UmkmHalalFacilityCountOrderByAggregateInput
+    _max?: UmkmHalalFacilityMaxOrderByAggregateInput
+    _min?: UmkmHalalFacilityMinOrderByAggregateInput
+  }
+
+  export type UmkmHalalFacilityScalarWhereWithAggregatesInput = {
+    AND?: UmkmHalalFacilityScalarWhereWithAggregatesInput | UmkmHalalFacilityScalarWhereWithAggregatesInput[]
+    OR?: UmkmHalalFacilityScalarWhereWithAggregatesInput[]
+    NOT?: UmkmHalalFacilityScalarWhereWithAggregatesInput | UmkmHalalFacilityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UmkmHalalFacility"> | string
+    umkmId?: StringWithAggregatesFilter<"UmkmHalalFacility"> | string
+    facilityId?: StringWithAggregatesFilter<"UmkmHalalFacility"> | string
+    name?: StringNullableWithAggregatesFilter<"UmkmHalalFacility"> | string | null
   }
 
   export type HalalCertificationWhereInput = {
@@ -33310,6 +38857,288 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AccommodationCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageCreateNestedManyWithoutAccommodationInput
+    reviews?: ReviewCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageUncheckedCreateNestedManyWithoutAccommodationInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUpdateManyWithoutAccommodationNestedInput
+    reviews?: ReviewUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUncheckedUpdateManyWithoutAccommodationNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationCreateManyInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccommodationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationImageCreateInput = {
+    id?: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+    accommodation: AccommodationCreateNestedOneWithoutImagesInput
+  }
+
+  export type AccommodationImageUncheckedCreateInput = {
+    id?: string
+    accommodationId: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AccommodationImageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accommodation?: AccommodationUpdateOneRequiredWithoutImagesNestedInput
+  }
+
+  export type AccommodationImageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationImageCreateManyInput = {
+    id?: string
+    accommodationId: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AccommodationImageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationImageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationHalalFacilityCreateInput = {
+    id?: string
+    name?: string | null
+    accommodation: AccommodationCreateNestedOneWithoutFacilitiesInput
+    facility: HalalFacilityCreateNestedOneWithoutAccommodationHalalFacilitiesInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedCreateInput = {
+    id?: string
+    accommodationId: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type AccommodationHalalFacilityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodation?: AccommodationUpdateOneRequiredWithoutFacilitiesNestedInput
+    facility?: HalalFacilityUpdateOneRequiredWithoutAccommodationHalalFacilitiesNestedInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccommodationHalalFacilityCreateManyInput = {
+    id?: string
+    accommodationId: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type AccommodationHalalFacilityUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type DestinationImageCreateInput = {
     id?: string
     imageUrl: string
@@ -33497,6 +39326,8 @@ export namespace Prisma {
     weight?: number | null
     maxDistance?: number
     destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutFacilityInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityCreateNestedManyWithoutFacilityInput
   }
 
   export type HalalFacilityUncheckedCreateInput = {
@@ -33511,6 +39342,8 @@ export namespace Prisma {
     weight?: number | null
     maxDistance?: number
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
   }
 
   export type HalalFacilityUpdateInput = {
@@ -33525,6 +39358,8 @@ export namespace Prisma {
     weight?: NullableIntFieldUpdateOperationsInput | number | null
     maxDistance?: FloatFieldUpdateOperationsInput | number
     destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUpdateManyWithoutFacilityNestedInput
   }
 
   export type HalalFacilityUncheckedUpdateInput = {
@@ -33539,6 +39374,8 @@ export namespace Prisma {
     weight?: NullableIntFieldUpdateOperationsInput | number | null
     maxDistance?: FloatFieldUpdateOperationsInput | number
     destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
   }
 
   export type HalalFacilityCreateManyInput = {
@@ -33589,6 +39426,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutReviewsInput
     destination?: DestinationCreateNestedOneWithoutReviewsInput
     umkm?: UmkmCreateNestedOneWithoutReviewsInput
+    accommodation?: AccommodationCreateNestedOneWithoutReviewsInput
     sentiment?: ReviewSentimentCreateNestedOneWithoutReviewInput
   }
 
@@ -33597,6 +39435,7 @@ export namespace Prisma {
     userId: string
     destinationId?: string | null
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -33613,6 +39452,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutReviewsNestedInput
     destination?: DestinationUpdateOneWithoutReviewsNestedInput
     umkm?: UmkmUpdateOneWithoutReviewsNestedInput
+    accommodation?: AccommodationUpdateOneWithoutReviewsNestedInput
     sentiment?: ReviewSentimentUpdateOneWithoutReviewNestedInput
   }
 
@@ -33621,6 +39461,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33633,6 +39474,7 @@ export namespace Prisma {
     userId: string
     destinationId?: string | null
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -33652,6 +39494,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34183,11 +40026,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     destination?: DestinationCreateNestedOneWithoutUmkmsInput
     category?: CategoryCreateNestedOneWithoutUmkmsInput
     images?: UmkmImageCreateNestedManyWithoutUmkmInput
     reviews?: ReviewCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateInput = {
@@ -34209,9 +40055,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUpdateInput = {
@@ -34231,11 +40080,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneWithoutUmkmsNestedInput
     category?: CategoryUpdateOneWithoutUmkmsNestedInput
     images?: UmkmImageUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateInput = {
@@ -34257,9 +40109,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmCreateManyInput = {
@@ -34281,6 +40136,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
   }
 
   export type UmkmUpdateManyMutationInput = {
@@ -34300,6 +40157,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UmkmUncheckedUpdateManyInput = {
@@ -34321,6 +40180,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UmkmImageCreateInput = {
@@ -34383,6 +40244,53 @@ export namespace Prisma {
     caption?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UmkmHalalFacilityCreateInput = {
+    id?: string
+    name?: string | null
+    umkm: UmkmCreateNestedOneWithoutUmkmHalalFacilitiesInput
+    facility: HalalFacilityCreateNestedOneWithoutUmkmHalalFacilitiesInput
+  }
+
+  export type UmkmHalalFacilityUncheckedCreateInput = {
+    id?: string
+    umkmId: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type UmkmHalalFacilityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    umkm?: UmkmUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput
+    facility?: HalalFacilityUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    umkmId?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityCreateManyInput = {
+    id?: string
+    umkmId: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type UmkmHalalFacilityUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    umkmId?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalCertificationCreateInput = {
@@ -35423,6 +41331,167 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type AccommodationImageListRelationFilter = {
+    every?: AccommodationImageWhereInput
+    some?: AccommodationImageWhereInput
+    none?: AccommodationImageWhereInput
+  }
+
+  export type AccommodationHalalFacilityListRelationFilter = {
+    every?: AccommodationHalalFacilityWhereInput
+    some?: AccommodationHalalFacilityWhereInput
+    none?: AccommodationHalalFacilityWhereInput
+  }
+
+  export type AccommodationImageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccommodationHalalFacilityOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccommodationCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    description?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
+    validatedScore?: SortOrder
+    externalId?: SortOrder
+    externalSource?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccommodationAvgOrderByAggregateInput = {
+    latitude?: SortOrder
+    longitude?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    validatedScore?: SortOrder
+  }
+
+  export type AccommodationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
+    validatedScore?: SortOrder
+    externalId?: SortOrder
+    externalSource?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccommodationMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    phone?: SortOrder
+    website?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
+    validatedScore?: SortOrder
+    externalId?: SortOrder
+    externalSource?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccommodationSumOrderByAggregateInput = {
+    latitude?: SortOrder
+    longitude?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    validatedScore?: SortOrder
+  }
+
+  export type AccommodationScalarRelationFilter = {
+    is?: AccommodationWhereInput
+    isNot?: AccommodationWhereInput
+  }
+
+  export type AccommodationImageCountOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    imageUrl?: SortOrder
+    caption?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AccommodationImageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    imageUrl?: SortOrder
+    caption?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AccommodationImageMinOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    imageUrl?: SortOrder
+    caption?: SortOrder
+    isPrimary?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type HalalFacilityScalarRelationFilter = {
+    is?: HalalFacilityWhereInput
+    isNot?: HalalFacilityWhereInput
+  }
+
+  export type AccommodationHalalFacilityCountOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
+  }
+
+  export type AccommodationHalalFacilityMaxOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
+  }
+
+  export type AccommodationHalalFacilityMinOrderByAggregateInput = {
+    id?: SortOrder
+    accommodationId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
+  }
+
   export type DestinationScalarRelationFilter = {
     is?: DestinationWhereInput
     isNot?: DestinationWhereInput
@@ -35453,11 +41522,6 @@ export namespace Prisma {
     caption?: SortOrder
     isPrimary?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type HalalFacilityScalarRelationFilter = {
-    is?: HalalFacilityWhereInput
-    isNot?: HalalFacilityWhereInput
   }
 
   export type DestinationFacilityEvidenceListRelationFilter = {
@@ -35542,6 +41606,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type UmkmHalalFacilityListRelationFilter = {
+    every?: UmkmHalalFacilityWhereInput
+    some?: UmkmHalalFacilityWhereInput
+    none?: UmkmHalalFacilityWhereInput
+  }
+
+  export type UmkmHalalFacilityOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type HalalFacilityCountOrderByAggregateInput = {
@@ -35630,6 +41704,11 @@ export namespace Prisma {
     isNot?: UmkmWhereInput | null
   }
 
+  export type AccommodationNullableScalarRelationFilter = {
+    is?: AccommodationWhereInput | null
+    isNot?: AccommodationWhereInput | null
+  }
+
   export type ReviewSentimentNullableScalarRelationFilter = {
     is?: ReviewSentimentWhereInput | null
     isNot?: ReviewSentimentWhereInput | null
@@ -35640,6 +41719,7 @@ export namespace Prisma {
     userId?: SortOrder
     destinationId?: SortOrder
     umkmId?: SortOrder
+    accommodationId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
     createdAt?: SortOrder
@@ -35655,6 +41735,7 @@ export namespace Prisma {
     userId?: SortOrder
     destinationId?: SortOrder
     umkmId?: SortOrder
+    accommodationId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
     createdAt?: SortOrder
@@ -35666,6 +41747,7 @@ export namespace Prisma {
     userId?: SortOrder
     destinationId?: SortOrder
     umkmId?: SortOrder
+    accommodationId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
     createdAt?: SortOrder
@@ -36072,6 +42154,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     owner?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
   }
 
   export type UmkmAvgOrderByAggregateInput = {
@@ -36099,6 +42183,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     owner?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
   }
 
   export type UmkmMinOrderByAggregateInput = {
@@ -36119,6 +42205,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     owner?: SortOrder
+    validationStatus?: SortOrder
+    surveyorNote?: SortOrder
   }
 
   export type UmkmSumOrderByAggregateInput = {
@@ -36158,6 +42246,27 @@ export namespace Prisma {
     caption?: SortOrder
     isPrimary?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type UmkmHalalFacilityCountOrderByAggregateInput = {
+    id?: SortOrder
+    umkmId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
+  }
+
+  export type UmkmHalalFacilityMaxOrderByAggregateInput = {
+    id?: SortOrder
+    umkmId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
+  }
+
+  export type UmkmHalalFacilityMinOrderByAggregateInput = {
+    id?: SortOrder
+    umkmId?: SortOrder
+    facilityId?: SortOrder
+    name?: SortOrder
   }
 
   export type EnumCertificationStatusFilter<$PrismaModel = never> = {
@@ -37163,6 +43272,174 @@ export namespace Prisma {
     deleteMany?: ItineraryItemScalarWhereInput | ItineraryItemScalarWhereInput[]
   }
 
+  export type AccommodationImageCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput> | AccommodationImageCreateWithoutAccommodationInput[] | AccommodationImageUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationImageCreateOrConnectWithoutAccommodationInput | AccommodationImageCreateOrConnectWithoutAccommodationInput[]
+    createMany?: AccommodationImageCreateManyAccommodationInputEnvelope
+    connect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+  }
+
+  export type ReviewCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput> | ReviewCreateWithoutAccommodationInput[] | ReviewUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAccommodationInput | ReviewCreateOrConnectWithoutAccommodationInput[]
+    createMany?: ReviewCreateManyAccommodationInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type AccommodationHalalFacilityCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput> | AccommodationHalalFacilityCreateWithoutAccommodationInput[] | AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput | AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput[]
+    createMany?: AccommodationHalalFacilityCreateManyAccommodationInputEnvelope
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+  }
+
+  export type AccommodationImageUncheckedCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput> | AccommodationImageCreateWithoutAccommodationInput[] | AccommodationImageUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationImageCreateOrConnectWithoutAccommodationInput | AccommodationImageCreateOrConnectWithoutAccommodationInput[]
+    createMany?: AccommodationImageCreateManyAccommodationInputEnvelope
+    connect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+  }
+
+  export type ReviewUncheckedCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput> | ReviewCreateWithoutAccommodationInput[] | ReviewUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAccommodationInput | ReviewCreateOrConnectWithoutAccommodationInput[]
+    createMany?: ReviewCreateManyAccommodationInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type AccommodationHalalFacilityUncheckedCreateNestedManyWithoutAccommodationInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput> | AccommodationHalalFacilityCreateWithoutAccommodationInput[] | AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput | AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput[]
+    createMany?: AccommodationHalalFacilityCreateManyAccommodationInputEnvelope
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+  }
+
+  export type AccommodationImageUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput> | AccommodationImageCreateWithoutAccommodationInput[] | AccommodationImageUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationImageCreateOrConnectWithoutAccommodationInput | AccommodationImageCreateOrConnectWithoutAccommodationInput[]
+    upsert?: AccommodationImageUpsertWithWhereUniqueWithoutAccommodationInput | AccommodationImageUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: AccommodationImageCreateManyAccommodationInputEnvelope
+    set?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    disconnect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    delete?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    connect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    update?: AccommodationImageUpdateWithWhereUniqueWithoutAccommodationInput | AccommodationImageUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: AccommodationImageUpdateManyWithWhereWithoutAccommodationInput | AccommodationImageUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: AccommodationImageScalarWhereInput | AccommodationImageScalarWhereInput[]
+  }
+
+  export type ReviewUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput> | ReviewCreateWithoutAccommodationInput[] | ReviewUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAccommodationInput | ReviewCreateOrConnectWithoutAccommodationInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutAccommodationInput | ReviewUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: ReviewCreateManyAccommodationInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutAccommodationInput | ReviewUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutAccommodationInput | ReviewUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type AccommodationHalalFacilityUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput> | AccommodationHalalFacilityCreateWithoutAccommodationInput[] | AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput | AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput[]
+    upsert?: AccommodationHalalFacilityUpsertWithWhereUniqueWithoutAccommodationInput | AccommodationHalalFacilityUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: AccommodationHalalFacilityCreateManyAccommodationInputEnvelope
+    set?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    disconnect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    delete?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    update?: AccommodationHalalFacilityUpdateWithWhereUniqueWithoutAccommodationInput | AccommodationHalalFacilityUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: AccommodationHalalFacilityUpdateManyWithWhereWithoutAccommodationInput | AccommodationHalalFacilityUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
+  }
+
+  export type AccommodationImageUncheckedUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput> | AccommodationImageCreateWithoutAccommodationInput[] | AccommodationImageUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationImageCreateOrConnectWithoutAccommodationInput | AccommodationImageCreateOrConnectWithoutAccommodationInput[]
+    upsert?: AccommodationImageUpsertWithWhereUniqueWithoutAccommodationInput | AccommodationImageUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: AccommodationImageCreateManyAccommodationInputEnvelope
+    set?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    disconnect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    delete?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    connect?: AccommodationImageWhereUniqueInput | AccommodationImageWhereUniqueInput[]
+    update?: AccommodationImageUpdateWithWhereUniqueWithoutAccommodationInput | AccommodationImageUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: AccommodationImageUpdateManyWithWhereWithoutAccommodationInput | AccommodationImageUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: AccommodationImageScalarWhereInput | AccommodationImageScalarWhereInput[]
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput> | ReviewCreateWithoutAccommodationInput[] | ReviewUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAccommodationInput | ReviewCreateOrConnectWithoutAccommodationInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutAccommodationInput | ReviewUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: ReviewCreateManyAccommodationInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutAccommodationInput | ReviewUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutAccommodationInput | ReviewUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationNestedInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput> | AccommodationHalalFacilityCreateWithoutAccommodationInput[] | AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput | AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput[]
+    upsert?: AccommodationHalalFacilityUpsertWithWhereUniqueWithoutAccommodationInput | AccommodationHalalFacilityUpsertWithWhereUniqueWithoutAccommodationInput[]
+    createMany?: AccommodationHalalFacilityCreateManyAccommodationInputEnvelope
+    set?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    disconnect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    delete?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    update?: AccommodationHalalFacilityUpdateWithWhereUniqueWithoutAccommodationInput | AccommodationHalalFacilityUpdateWithWhereUniqueWithoutAccommodationInput[]
+    updateMany?: AccommodationHalalFacilityUpdateManyWithWhereWithoutAccommodationInput | AccommodationHalalFacilityUpdateManyWithWhereWithoutAccommodationInput[]
+    deleteMany?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
+  }
+
+  export type AccommodationCreateNestedOneWithoutImagesInput = {
+    create?: XOR<AccommodationCreateWithoutImagesInput, AccommodationUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutImagesInput
+    connect?: AccommodationWhereUniqueInput
+  }
+
+  export type AccommodationUpdateOneRequiredWithoutImagesNestedInput = {
+    create?: XOR<AccommodationCreateWithoutImagesInput, AccommodationUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutImagesInput
+    upsert?: AccommodationUpsertWithoutImagesInput
+    connect?: AccommodationWhereUniqueInput
+    update?: XOR<XOR<AccommodationUpdateToOneWithWhereWithoutImagesInput, AccommodationUpdateWithoutImagesInput>, AccommodationUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type AccommodationCreateNestedOneWithoutFacilitiesInput = {
+    create?: XOR<AccommodationCreateWithoutFacilitiesInput, AccommodationUncheckedCreateWithoutFacilitiesInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutFacilitiesInput
+    connect?: AccommodationWhereUniqueInput
+  }
+
+  export type HalalFacilityCreateNestedOneWithoutAccommodationHalalFacilitiesInput = {
+    create?: XOR<HalalFacilityCreateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutAccommodationHalalFacilitiesInput>
+    connectOrCreate?: HalalFacilityCreateOrConnectWithoutAccommodationHalalFacilitiesInput
+    connect?: HalalFacilityWhereUniqueInput
+  }
+
+  export type AccommodationUpdateOneRequiredWithoutFacilitiesNestedInput = {
+    create?: XOR<AccommodationCreateWithoutFacilitiesInput, AccommodationUncheckedCreateWithoutFacilitiesInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutFacilitiesInput
+    upsert?: AccommodationUpsertWithoutFacilitiesInput
+    connect?: AccommodationWhereUniqueInput
+    update?: XOR<XOR<AccommodationUpdateToOneWithWhereWithoutFacilitiesInput, AccommodationUpdateWithoutFacilitiesInput>, AccommodationUncheckedUpdateWithoutFacilitiesInput>
+  }
+
+  export type HalalFacilityUpdateOneRequiredWithoutAccommodationHalalFacilitiesNestedInput = {
+    create?: XOR<HalalFacilityCreateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutAccommodationHalalFacilitiesInput>
+    connectOrCreate?: HalalFacilityCreateOrConnectWithoutAccommodationHalalFacilitiesInput
+    upsert?: HalalFacilityUpsertWithoutAccommodationHalalFacilitiesInput
+    connect?: HalalFacilityWhereUniqueInput
+    update?: XOR<XOR<HalalFacilityUpdateToOneWithWhereWithoutAccommodationHalalFacilitiesInput, HalalFacilityUpdateWithoutAccommodationHalalFacilitiesInput>, HalalFacilityUncheckedUpdateWithoutAccommodationHalalFacilitiesInput>
+  }
+
   export type DestinationCreateNestedOneWithoutImagesInput = {
     create?: XOR<DestinationCreateWithoutImagesInput, DestinationUncheckedCreateWithoutImagesInput>
     connectOrCreate?: DestinationCreateOrConnectWithoutImagesInput
@@ -37268,11 +43545,39 @@ export namespace Prisma {
     connect?: DestinationHalalFacilityWhereUniqueInput | DestinationHalalFacilityWhereUniqueInput[]
   }
 
+  export type UmkmHalalFacilityCreateNestedManyWithoutFacilityInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput> | UmkmHalalFacilityCreateWithoutFacilityInput[] | UmkmHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutFacilityInput | UmkmHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    createMany?: UmkmHalalFacilityCreateManyFacilityInputEnvelope
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+  }
+
+  export type AccommodationHalalFacilityCreateNestedManyWithoutFacilityInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput> | AccommodationHalalFacilityCreateWithoutFacilityInput[] | AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput | AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    createMany?: AccommodationHalalFacilityCreateManyFacilityInputEnvelope
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+  }
+
   export type DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput = {
     create?: XOR<DestinationHalalFacilityCreateWithoutFacilityInput, DestinationHalalFacilityUncheckedCreateWithoutFacilityInput> | DestinationHalalFacilityCreateWithoutFacilityInput[] | DestinationHalalFacilityUncheckedCreateWithoutFacilityInput[]
     connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutFacilityInput | DestinationHalalFacilityCreateOrConnectWithoutFacilityInput[]
     createMany?: DestinationHalalFacilityCreateManyFacilityInputEnvelope
     connect?: DestinationHalalFacilityWhereUniqueInput | DestinationHalalFacilityWhereUniqueInput[]
+  }
+
+  export type UmkmHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput> | UmkmHalalFacilityCreateWithoutFacilityInput[] | UmkmHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutFacilityInput | UmkmHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    createMany?: UmkmHalalFacilityCreateManyFacilityInputEnvelope
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+  }
+
+  export type AccommodationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput> | AccommodationHalalFacilityCreateWithoutFacilityInput[] | AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput | AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    createMany?: AccommodationHalalFacilityCreateManyFacilityInputEnvelope
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -37297,6 +43602,34 @@ export namespace Prisma {
     deleteMany?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
   }
 
+  export type UmkmHalalFacilityUpdateManyWithoutFacilityNestedInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput> | UmkmHalalFacilityCreateWithoutFacilityInput[] | UmkmHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutFacilityInput | UmkmHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    upsert?: UmkmHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput | UmkmHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput[]
+    createMany?: UmkmHalalFacilityCreateManyFacilityInputEnvelope
+    set?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    disconnect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    delete?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    update?: UmkmHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput | UmkmHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput[]
+    updateMany?: UmkmHalalFacilityUpdateManyWithWhereWithoutFacilityInput | UmkmHalalFacilityUpdateManyWithWhereWithoutFacilityInput[]
+    deleteMany?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+  }
+
+  export type AccommodationHalalFacilityUpdateManyWithoutFacilityNestedInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput> | AccommodationHalalFacilityCreateWithoutFacilityInput[] | AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput | AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    upsert?: AccommodationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput | AccommodationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput[]
+    createMany?: AccommodationHalalFacilityCreateManyFacilityInputEnvelope
+    set?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    disconnect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    delete?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    update?: AccommodationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput | AccommodationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput[]
+    updateMany?: AccommodationHalalFacilityUpdateManyWithWhereWithoutFacilityInput | AccommodationHalalFacilityUpdateManyWithWhereWithoutFacilityInput[]
+    deleteMany?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
+  }
+
   export type DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput = {
     create?: XOR<DestinationHalalFacilityCreateWithoutFacilityInput, DestinationHalalFacilityUncheckedCreateWithoutFacilityInput> | DestinationHalalFacilityCreateWithoutFacilityInput[] | DestinationHalalFacilityUncheckedCreateWithoutFacilityInput[]
     connectOrCreate?: DestinationHalalFacilityCreateOrConnectWithoutFacilityInput | DestinationHalalFacilityCreateOrConnectWithoutFacilityInput[]
@@ -37309,6 +43642,34 @@ export namespace Prisma {
     update?: DestinationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput | DestinationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput[]
     updateMany?: DestinationHalalFacilityUpdateManyWithWhereWithoutFacilityInput | DestinationHalalFacilityUpdateManyWithWhereWithoutFacilityInput[]
     deleteMany?: DestinationHalalFacilityScalarWhereInput | DestinationHalalFacilityScalarWhereInput[]
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput> | UmkmHalalFacilityCreateWithoutFacilityInput[] | UmkmHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutFacilityInput | UmkmHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    upsert?: UmkmHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput | UmkmHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput[]
+    createMany?: UmkmHalalFacilityCreateManyFacilityInputEnvelope
+    set?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    disconnect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    delete?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    update?: UmkmHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput | UmkmHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput[]
+    updateMany?: UmkmHalalFacilityUpdateManyWithWhereWithoutFacilityInput | UmkmHalalFacilityUpdateManyWithWhereWithoutFacilityInput[]
+    deleteMany?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput = {
+    create?: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput> | AccommodationHalalFacilityCreateWithoutFacilityInput[] | AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput[]
+    connectOrCreate?: AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput | AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput[]
+    upsert?: AccommodationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput | AccommodationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput[]
+    createMany?: AccommodationHalalFacilityCreateManyFacilityInputEnvelope
+    set?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    disconnect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    delete?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    connect?: AccommodationHalalFacilityWhereUniqueInput | AccommodationHalalFacilityWhereUniqueInput[]
+    update?: AccommodationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput | AccommodationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput[]
+    updateMany?: AccommodationHalalFacilityUpdateManyWithWhereWithoutFacilityInput | AccommodationHalalFacilityUpdateManyWithWhereWithoutFacilityInput[]
+    deleteMany?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutReviewsInput = {
@@ -37327,6 +43688,12 @@ export namespace Prisma {
     create?: XOR<UmkmCreateWithoutReviewsInput, UmkmUncheckedCreateWithoutReviewsInput>
     connectOrCreate?: UmkmCreateOrConnectWithoutReviewsInput
     connect?: UmkmWhereUniqueInput
+  }
+
+  export type AccommodationCreateNestedOneWithoutReviewsInput = {
+    create?: XOR<AccommodationCreateWithoutReviewsInput, AccommodationUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutReviewsInput
+    connect?: AccommodationWhereUniqueInput
   }
 
   export type ReviewSentimentCreateNestedOneWithoutReviewInput = {
@@ -37375,6 +43742,16 @@ export namespace Prisma {
     delete?: UmkmWhereInput | boolean
     connect?: UmkmWhereUniqueInput
     update?: XOR<XOR<UmkmUpdateToOneWithWhereWithoutReviewsInput, UmkmUpdateWithoutReviewsInput>, UmkmUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type AccommodationUpdateOneWithoutReviewsNestedInput = {
+    create?: XOR<AccommodationCreateWithoutReviewsInput, AccommodationUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: AccommodationCreateOrConnectWithoutReviewsInput
+    upsert?: AccommodationUpsertWithoutReviewsInput
+    disconnect?: AccommodationWhereInput | boolean
+    delete?: AccommodationWhereInput | boolean
+    connect?: AccommodationWhereUniqueInput
+    update?: XOR<XOR<AccommodationUpdateToOneWithWhereWithoutReviewsInput, AccommodationUpdateWithoutReviewsInput>, AccommodationUncheckedUpdateWithoutReviewsInput>
   }
 
   export type ReviewSentimentUpdateOneWithoutReviewNestedInput = {
@@ -37591,6 +43968,13 @@ export namespace Prisma {
     connect?: HalalCertificationWhereUniqueInput | HalalCertificationWhereUniqueInput[]
   }
 
+  export type UmkmHalalFacilityCreateNestedManyWithoutUmkmInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput> | UmkmHalalFacilityCreateWithoutUmkmInput[] | UmkmHalalFacilityUncheckedCreateWithoutUmkmInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutUmkmInput | UmkmHalalFacilityCreateOrConnectWithoutUmkmInput[]
+    createMany?: UmkmHalalFacilityCreateManyUmkmInputEnvelope
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+  }
+
   export type UmkmImageUncheckedCreateNestedManyWithoutUmkmInput = {
     create?: XOR<UmkmImageCreateWithoutUmkmInput, UmkmImageUncheckedCreateWithoutUmkmInput> | UmkmImageCreateWithoutUmkmInput[] | UmkmImageUncheckedCreateWithoutUmkmInput[]
     connectOrCreate?: UmkmImageCreateOrConnectWithoutUmkmInput | UmkmImageCreateOrConnectWithoutUmkmInput[]
@@ -37610,6 +43994,13 @@ export namespace Prisma {
     connectOrCreate?: HalalCertificationCreateOrConnectWithoutUmkmInput | HalalCertificationCreateOrConnectWithoutUmkmInput[]
     createMany?: HalalCertificationCreateManyUmkmInputEnvelope
     connect?: HalalCertificationWhereUniqueInput | HalalCertificationWhereUniqueInput[]
+  }
+
+  export type UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput> | UmkmHalalFacilityCreateWithoutUmkmInput[] | UmkmHalalFacilityUncheckedCreateWithoutUmkmInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutUmkmInput | UmkmHalalFacilityCreateOrConnectWithoutUmkmInput[]
+    createMany?: UmkmHalalFacilityCreateManyUmkmInputEnvelope
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
   }
 
   export type DestinationUpdateOneWithoutUmkmsNestedInput = {
@@ -37674,6 +44065,20 @@ export namespace Prisma {
     deleteMany?: HalalCertificationScalarWhereInput | HalalCertificationScalarWhereInput[]
   }
 
+  export type UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput> | UmkmHalalFacilityCreateWithoutUmkmInput[] | UmkmHalalFacilityUncheckedCreateWithoutUmkmInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutUmkmInput | UmkmHalalFacilityCreateOrConnectWithoutUmkmInput[]
+    upsert?: UmkmHalalFacilityUpsertWithWhereUniqueWithoutUmkmInput | UmkmHalalFacilityUpsertWithWhereUniqueWithoutUmkmInput[]
+    createMany?: UmkmHalalFacilityCreateManyUmkmInputEnvelope
+    set?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    disconnect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    delete?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    update?: UmkmHalalFacilityUpdateWithWhereUniqueWithoutUmkmInput | UmkmHalalFacilityUpdateWithWhereUniqueWithoutUmkmInput[]
+    updateMany?: UmkmHalalFacilityUpdateManyWithWhereWithoutUmkmInput | UmkmHalalFacilityUpdateManyWithWhereWithoutUmkmInput[]
+    deleteMany?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+  }
+
   export type UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput = {
     create?: XOR<UmkmImageCreateWithoutUmkmInput, UmkmImageUncheckedCreateWithoutUmkmInput> | UmkmImageCreateWithoutUmkmInput[] | UmkmImageUncheckedCreateWithoutUmkmInput[]
     connectOrCreate?: UmkmImageCreateOrConnectWithoutUmkmInput | UmkmImageCreateOrConnectWithoutUmkmInput[]
@@ -37716,6 +44121,20 @@ export namespace Prisma {
     deleteMany?: HalalCertificationScalarWhereInput | HalalCertificationScalarWhereInput[]
   }
 
+  export type UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput = {
+    create?: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput> | UmkmHalalFacilityCreateWithoutUmkmInput[] | UmkmHalalFacilityUncheckedCreateWithoutUmkmInput[]
+    connectOrCreate?: UmkmHalalFacilityCreateOrConnectWithoutUmkmInput | UmkmHalalFacilityCreateOrConnectWithoutUmkmInput[]
+    upsert?: UmkmHalalFacilityUpsertWithWhereUniqueWithoutUmkmInput | UmkmHalalFacilityUpsertWithWhereUniqueWithoutUmkmInput[]
+    createMany?: UmkmHalalFacilityCreateManyUmkmInputEnvelope
+    set?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    disconnect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    delete?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    connect?: UmkmHalalFacilityWhereUniqueInput | UmkmHalalFacilityWhereUniqueInput[]
+    update?: UmkmHalalFacilityUpdateWithWhereUniqueWithoutUmkmInput | UmkmHalalFacilityUpdateWithWhereUniqueWithoutUmkmInput[]
+    updateMany?: UmkmHalalFacilityUpdateManyWithWhereWithoutUmkmInput | UmkmHalalFacilityUpdateManyWithWhereWithoutUmkmInput[]
+    deleteMany?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+  }
+
   export type UmkmCreateNestedOneWithoutImagesInput = {
     create?: XOR<UmkmCreateWithoutImagesInput, UmkmUncheckedCreateWithoutImagesInput>
     connectOrCreate?: UmkmCreateOrConnectWithoutImagesInput
@@ -37728,6 +44147,34 @@ export namespace Prisma {
     upsert?: UmkmUpsertWithoutImagesInput
     connect?: UmkmWhereUniqueInput
     update?: XOR<XOR<UmkmUpdateToOneWithWhereWithoutImagesInput, UmkmUpdateWithoutImagesInput>, UmkmUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type UmkmCreateNestedOneWithoutUmkmHalalFacilitiesInput = {
+    create?: XOR<UmkmCreateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    connectOrCreate?: UmkmCreateOrConnectWithoutUmkmHalalFacilitiesInput
+    connect?: UmkmWhereUniqueInput
+  }
+
+  export type HalalFacilityCreateNestedOneWithoutUmkmHalalFacilitiesInput = {
+    create?: XOR<HalalFacilityCreateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    connectOrCreate?: HalalFacilityCreateOrConnectWithoutUmkmHalalFacilitiesInput
+    connect?: HalalFacilityWhereUniqueInput
+  }
+
+  export type UmkmUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput = {
+    create?: XOR<UmkmCreateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    connectOrCreate?: UmkmCreateOrConnectWithoutUmkmHalalFacilitiesInput
+    upsert?: UmkmUpsertWithoutUmkmHalalFacilitiesInput
+    connect?: UmkmWhereUniqueInput
+    update?: XOR<XOR<UmkmUpdateToOneWithWhereWithoutUmkmHalalFacilitiesInput, UmkmUpdateWithoutUmkmHalalFacilitiesInput>, UmkmUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
+  }
+
+  export type HalalFacilityUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput = {
+    create?: XOR<HalalFacilityCreateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    connectOrCreate?: HalalFacilityCreateOrConnectWithoutUmkmHalalFacilitiesInput
+    upsert?: HalalFacilityUpsertWithoutUmkmHalalFacilitiesInput
+    connect?: HalalFacilityWhereUniqueInput
+    update?: XOR<XOR<HalalFacilityUpdateToOneWithWhereWithoutUmkmHalalFacilitiesInput, HalalFacilityUpdateWithoutUmkmHalalFacilitiesInput>, HalalFacilityUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
   }
 
   export type UmkmCreateNestedOneWithoutCertificationsInput = {
@@ -38378,6 +44825,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     destination?: DestinationCreateNestedOneWithoutReviewsInput
     umkm?: UmkmCreateNestedOneWithoutReviewsInput
+    accommodation?: AccommodationCreateNestedOneWithoutReviewsInput
     sentiment?: ReviewSentimentCreateNestedOneWithoutReviewInput
   }
 
@@ -38385,6 +44833,7 @@ export namespace Prisma {
     id?: string
     destinationId?: string | null
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -38594,6 +45043,7 @@ export namespace Prisma {
     userId?: StringFilter<"Review"> | string
     destinationId?: StringNullableFilter<"Review"> | string | null
     umkmId?: StringNullableFilter<"Review"> | string | null
+    accommodationId?: StringNullableFilter<"Review"> | string | null
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
     createdAt?: DateTimeFilter<"Review"> | Date | string
@@ -38967,10 +45417,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     destination?: DestinationCreateNestedOneWithoutUmkmsInput
     images?: UmkmImageCreateNestedManyWithoutUmkmInput
     reviews?: ReviewCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateWithoutCategoryInput = {
@@ -38991,9 +45444,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmCreateOrConnectWithoutCategoryInput = {
@@ -39087,6 +45543,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Umkm"> | Date | string
     updatedAt?: DateTimeFilter<"Umkm"> | Date | string
     owner?: StringFilter<"Umkm"> | string
+    validationStatus?: StringFilter<"Umkm"> | string
+    surveyorNote?: StringNullableFilter<"Umkm"> | string | null
   }
 
   export type CategoryCreateWithoutDestinationsInput = {
@@ -39150,6 +45608,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutReviewsInput
     umkm?: UmkmCreateNestedOneWithoutReviewsInput
+    accommodation?: AccommodationCreateNestedOneWithoutReviewsInput
     sentiment?: ReviewSentimentCreateNestedOneWithoutReviewInput
   }
 
@@ -39157,6 +45616,7 @@ export namespace Prisma {
     id?: string
     userId: string
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -39191,10 +45651,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     category?: CategoryCreateNestedOneWithoutUmkmsInput
     images?: UmkmImageCreateNestedManyWithoutUmkmInput
     reviews?: ReviewCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateWithoutDestinationInput = {
@@ -39215,9 +45678,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmCreateOrConnectWithoutDestinationInput = {
@@ -39611,6 +46077,466 @@ export namespace Prisma {
     notes?: StringNullableFilter<"ItineraryItem"> | string | null
   }
 
+  export type AccommodationImageCreateWithoutAccommodationInput = {
+    id?: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AccommodationImageUncheckedCreateWithoutAccommodationInput = {
+    id?: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AccommodationImageCreateOrConnectWithoutAccommodationInput = {
+    where: AccommodationImageWhereUniqueInput
+    create: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type AccommodationImageCreateManyAccommodationInputEnvelope = {
+    data: AccommodationImageCreateManyAccommodationInput | AccommodationImageCreateManyAccommodationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewCreateWithoutAccommodationInput = {
+    id?: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutReviewsInput
+    destination?: DestinationCreateNestedOneWithoutReviewsInput
+    umkm?: UmkmCreateNestedOneWithoutReviewsInput
+    sentiment?: ReviewSentimentCreateNestedOneWithoutReviewInput
+  }
+
+  export type ReviewUncheckedCreateWithoutAccommodationInput = {
+    id?: string
+    userId: string
+    destinationId?: string | null
+    umkmId?: string | null
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sentiment?: ReviewSentimentUncheckedCreateNestedOneWithoutReviewInput
+  }
+
+  export type ReviewCreateOrConnectWithoutAccommodationInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type ReviewCreateManyAccommodationInputEnvelope = {
+    data: ReviewCreateManyAccommodationInput | ReviewCreateManyAccommodationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AccommodationHalalFacilityCreateWithoutAccommodationInput = {
+    id?: string
+    name?: string | null
+    facility: HalalFacilityCreateNestedOneWithoutAccommodationHalalFacilitiesInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput = {
+    id?: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type AccommodationHalalFacilityCreateOrConnectWithoutAccommodationInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    create: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type AccommodationHalalFacilityCreateManyAccommodationInputEnvelope = {
+    data: AccommodationHalalFacilityCreateManyAccommodationInput | AccommodationHalalFacilityCreateManyAccommodationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AccommodationImageUpsertWithWhereUniqueWithoutAccommodationInput = {
+    where: AccommodationImageWhereUniqueInput
+    update: XOR<AccommodationImageUpdateWithoutAccommodationInput, AccommodationImageUncheckedUpdateWithoutAccommodationInput>
+    create: XOR<AccommodationImageCreateWithoutAccommodationInput, AccommodationImageUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type AccommodationImageUpdateWithWhereUniqueWithoutAccommodationInput = {
+    where: AccommodationImageWhereUniqueInput
+    data: XOR<AccommodationImageUpdateWithoutAccommodationInput, AccommodationImageUncheckedUpdateWithoutAccommodationInput>
+  }
+
+  export type AccommodationImageUpdateManyWithWhereWithoutAccommodationInput = {
+    where: AccommodationImageScalarWhereInput
+    data: XOR<AccommodationImageUpdateManyMutationInput, AccommodationImageUncheckedUpdateManyWithoutAccommodationInput>
+  }
+
+  export type AccommodationImageScalarWhereInput = {
+    AND?: AccommodationImageScalarWhereInput | AccommodationImageScalarWhereInput[]
+    OR?: AccommodationImageScalarWhereInput[]
+    NOT?: AccommodationImageScalarWhereInput | AccommodationImageScalarWhereInput[]
+    id?: StringFilter<"AccommodationImage"> | string
+    accommodationId?: StringFilter<"AccommodationImage"> | string
+    imageUrl?: StringFilter<"AccommodationImage"> | string
+    caption?: StringNullableFilter<"AccommodationImage"> | string | null
+    isPrimary?: BoolFilter<"AccommodationImage"> | boolean
+    createdAt?: DateTimeFilter<"AccommodationImage"> | Date | string
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutAccommodationInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutAccommodationInput, ReviewUncheckedUpdateWithoutAccommodationInput>
+    create: XOR<ReviewCreateWithoutAccommodationInput, ReviewUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutAccommodationInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutAccommodationInput, ReviewUncheckedUpdateWithoutAccommodationInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutAccommodationInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutAccommodationInput>
+  }
+
+  export type AccommodationHalalFacilityUpsertWithWhereUniqueWithoutAccommodationInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    update: XOR<AccommodationHalalFacilityUpdateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedUpdateWithoutAccommodationInput>
+    create: XOR<AccommodationHalalFacilityCreateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedCreateWithoutAccommodationInput>
+  }
+
+  export type AccommodationHalalFacilityUpdateWithWhereUniqueWithoutAccommodationInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    data: XOR<AccommodationHalalFacilityUpdateWithoutAccommodationInput, AccommodationHalalFacilityUncheckedUpdateWithoutAccommodationInput>
+  }
+
+  export type AccommodationHalalFacilityUpdateManyWithWhereWithoutAccommodationInput = {
+    where: AccommodationHalalFacilityScalarWhereInput
+    data: XOR<AccommodationHalalFacilityUpdateManyMutationInput, AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationInput>
+  }
+
+  export type AccommodationHalalFacilityScalarWhereInput = {
+    AND?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
+    OR?: AccommodationHalalFacilityScalarWhereInput[]
+    NOT?: AccommodationHalalFacilityScalarWhereInput | AccommodationHalalFacilityScalarWhereInput[]
+    id?: StringFilter<"AccommodationHalalFacility"> | string
+    accommodationId?: StringFilter<"AccommodationHalalFacility"> | string
+    facilityId?: StringFilter<"AccommodationHalalFacility"> | string
+    name?: StringNullableFilter<"AccommodationHalalFacility"> | string | null
+  }
+
+  export type AccommodationCreateWithoutImagesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reviews?: ReviewCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationUncheckedCreateWithoutImagesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reviews?: ReviewUncheckedCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationCreateOrConnectWithoutImagesInput = {
+    where: AccommodationWhereUniqueInput
+    create: XOR<AccommodationCreateWithoutImagesInput, AccommodationUncheckedCreateWithoutImagesInput>
+  }
+
+  export type AccommodationUpsertWithoutImagesInput = {
+    update: XOR<AccommodationUpdateWithoutImagesInput, AccommodationUncheckedUpdateWithoutImagesInput>
+    create: XOR<AccommodationCreateWithoutImagesInput, AccommodationUncheckedCreateWithoutImagesInput>
+    where?: AccommodationWhereInput
+  }
+
+  export type AccommodationUpdateToOneWithWhereWithoutImagesInput = {
+    where?: AccommodationWhereInput
+    data: XOR<AccommodationUpdateWithoutImagesInput, AccommodationUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type AccommodationUpdateWithoutImagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reviews?: ReviewUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationUncheckedUpdateWithoutImagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reviews?: ReviewUncheckedUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationCreateWithoutFacilitiesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageCreateNestedManyWithoutAccommodationInput
+    reviews?: ReviewCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationUncheckedCreateWithoutFacilitiesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageUncheckedCreateNestedManyWithoutAccommodationInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationCreateOrConnectWithoutFacilitiesInput = {
+    where: AccommodationWhereUniqueInput
+    create: XOR<AccommodationCreateWithoutFacilitiesInput, AccommodationUncheckedCreateWithoutFacilitiesInput>
+  }
+
+  export type HalalFacilityCreateWithoutAccommodationHalalFacilitiesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    facilityType?: string | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    weight?: number | null
+    maxDistance?: number
+    destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutFacilityInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutFacilityInput
+  }
+
+  export type HalalFacilityUncheckedCreateWithoutAccommodationHalalFacilitiesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    facilityType?: string | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    weight?: number | null
+    maxDistance?: number
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+  }
+
+  export type HalalFacilityCreateOrConnectWithoutAccommodationHalalFacilitiesInput = {
+    where: HalalFacilityWhereUniqueInput
+    create: XOR<HalalFacilityCreateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutAccommodationHalalFacilitiesInput>
+  }
+
+  export type AccommodationUpsertWithoutFacilitiesInput = {
+    update: XOR<AccommodationUpdateWithoutFacilitiesInput, AccommodationUncheckedUpdateWithoutFacilitiesInput>
+    create: XOR<AccommodationCreateWithoutFacilitiesInput, AccommodationUncheckedCreateWithoutFacilitiesInput>
+    where?: AccommodationWhereInput
+  }
+
+  export type AccommodationUpdateToOneWithWhereWithoutFacilitiesInput = {
+    where?: AccommodationWhereInput
+    data: XOR<AccommodationUpdateWithoutFacilitiesInput, AccommodationUncheckedUpdateWithoutFacilitiesInput>
+  }
+
+  export type AccommodationUpdateWithoutFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUpdateManyWithoutAccommodationNestedInput
+    reviews?: ReviewUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationUncheckedUpdateWithoutFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUncheckedUpdateManyWithoutAccommodationNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type HalalFacilityUpsertWithoutAccommodationHalalFacilitiesInput = {
+    update: XOR<HalalFacilityUpdateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedUpdateWithoutAccommodationHalalFacilitiesInput>
+    create: XOR<HalalFacilityCreateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutAccommodationHalalFacilitiesInput>
+    where?: HalalFacilityWhereInput
+  }
+
+  export type HalalFacilityUpdateToOneWithWhereWithoutAccommodationHalalFacilitiesInput = {
+    where?: HalalFacilityWhereInput
+    data: XOR<HalalFacilityUpdateWithoutAccommodationHalalFacilitiesInput, HalalFacilityUncheckedUpdateWithoutAccommodationHalalFacilitiesInput>
+  }
+
+  export type HalalFacilityUpdateWithoutAccommodationHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    facilityType?: NullableStringFieldUpdateOperationsInput | string | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
+    destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutFacilityNestedInput
+  }
+
+  export type HalalFacilityUncheckedUpdateWithoutAccommodationHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    facilityType?: NullableStringFieldUpdateOperationsInput | string | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+  }
+
   export type DestinationCreateWithoutImagesInput = {
     id?: string
     name: string
@@ -39829,6 +46755,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     weight?: number | null
     maxDistance?: number
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityCreateNestedManyWithoutFacilityInput
   }
 
   export type HalalFacilityUncheckedCreateWithoutDestinationHalalFacilitiesInput = {
@@ -39842,6 +46770,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     weight?: number | null
     maxDistance?: number
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
   }
 
   export type HalalFacilityCreateOrConnectWithoutDestinationHalalFacilitiesInput = {
@@ -39966,6 +46896,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
     maxDistance?: FloatFieldUpdateOperationsInput | number
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUpdateManyWithoutFacilityNestedInput
   }
 
   export type HalalFacilityUncheckedUpdateWithoutDestinationHalalFacilitiesInput = {
@@ -39979,6 +46911,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     weight?: NullableIntFieldUpdateOperationsInput | number | null
     maxDistance?: FloatFieldUpdateOperationsInput | number
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
   }
 
   export type DestinationFacilityEvidenceUpsertWithWhereUniqueWithoutDestFacilityInput = {
@@ -40087,6 +47021,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UmkmHalalFacilityCreateWithoutFacilityInput = {
+    id?: string
+    name?: string | null
+    umkm: UmkmCreateNestedOneWithoutUmkmHalalFacilitiesInput
+  }
+
+  export type UmkmHalalFacilityUncheckedCreateWithoutFacilityInput = {
+    id?: string
+    umkmId: string
+    name?: string | null
+  }
+
+  export type UmkmHalalFacilityCreateOrConnectWithoutFacilityInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    create: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput>
+  }
+
+  export type UmkmHalalFacilityCreateManyFacilityInputEnvelope = {
+    data: UmkmHalalFacilityCreateManyFacilityInput | UmkmHalalFacilityCreateManyFacilityInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AccommodationHalalFacilityCreateWithoutFacilityInput = {
+    id?: string
+    name?: string | null
+    accommodation: AccommodationCreateNestedOneWithoutFacilitiesInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput = {
+    id?: string
+    accommodationId: string
+    name?: string | null
+  }
+
+  export type AccommodationHalalFacilityCreateOrConnectWithoutFacilityInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    create: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput>
+  }
+
+  export type AccommodationHalalFacilityCreateManyFacilityInputEnvelope = {
+    data: AccommodationHalalFacilityCreateManyFacilityInput | AccommodationHalalFacilityCreateManyFacilityInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DestinationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput = {
     where: DestinationHalalFacilityWhereUniqueInput
     update: XOR<DestinationHalalFacilityUpdateWithoutFacilityInput, DestinationHalalFacilityUncheckedUpdateWithoutFacilityInput>
@@ -40101,6 +47079,48 @@ export namespace Prisma {
   export type DestinationHalalFacilityUpdateManyWithWhereWithoutFacilityInput = {
     where: DestinationHalalFacilityScalarWhereInput
     data: XOR<DestinationHalalFacilityUpdateManyMutationInput, DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityInput>
+  }
+
+  export type UmkmHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    update: XOR<UmkmHalalFacilityUpdateWithoutFacilityInput, UmkmHalalFacilityUncheckedUpdateWithoutFacilityInput>
+    create: XOR<UmkmHalalFacilityCreateWithoutFacilityInput, UmkmHalalFacilityUncheckedCreateWithoutFacilityInput>
+  }
+
+  export type UmkmHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    data: XOR<UmkmHalalFacilityUpdateWithoutFacilityInput, UmkmHalalFacilityUncheckedUpdateWithoutFacilityInput>
+  }
+
+  export type UmkmHalalFacilityUpdateManyWithWhereWithoutFacilityInput = {
+    where: UmkmHalalFacilityScalarWhereInput
+    data: XOR<UmkmHalalFacilityUpdateManyMutationInput, UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityInput>
+  }
+
+  export type UmkmHalalFacilityScalarWhereInput = {
+    AND?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+    OR?: UmkmHalalFacilityScalarWhereInput[]
+    NOT?: UmkmHalalFacilityScalarWhereInput | UmkmHalalFacilityScalarWhereInput[]
+    id?: StringFilter<"UmkmHalalFacility"> | string
+    umkmId?: StringFilter<"UmkmHalalFacility"> | string
+    facilityId?: StringFilter<"UmkmHalalFacility"> | string
+    name?: StringNullableFilter<"UmkmHalalFacility"> | string | null
+  }
+
+  export type AccommodationHalalFacilityUpsertWithWhereUniqueWithoutFacilityInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    update: XOR<AccommodationHalalFacilityUpdateWithoutFacilityInput, AccommodationHalalFacilityUncheckedUpdateWithoutFacilityInput>
+    create: XOR<AccommodationHalalFacilityCreateWithoutFacilityInput, AccommodationHalalFacilityUncheckedCreateWithoutFacilityInput>
+  }
+
+  export type AccommodationHalalFacilityUpdateWithWhereUniqueWithoutFacilityInput = {
+    where: AccommodationHalalFacilityWhereUniqueInput
+    data: XOR<AccommodationHalalFacilityUpdateWithoutFacilityInput, AccommodationHalalFacilityUncheckedUpdateWithoutFacilityInput>
+  }
+
+  export type AccommodationHalalFacilityUpdateManyWithWhereWithoutFacilityInput = {
+    where: AccommodationHalalFacilityScalarWhereInput
+    data: XOR<AccommodationHalalFacilityUpdateManyMutationInput, AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityInput>
   }
 
   export type UserCreateWithoutReviewsInput = {
@@ -40230,10 +47250,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     destination?: DestinationCreateNestedOneWithoutUmkmsInput
     category?: CategoryCreateNestedOneWithoutUmkmsInput
     images?: UmkmImageCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateWithoutReviewsInput = {
@@ -40255,13 +47278,71 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmCreateOrConnectWithoutReviewsInput = {
     where: UmkmWhereUniqueInput
     create: XOR<UmkmCreateWithoutReviewsInput, UmkmUncheckedCreateWithoutReviewsInput>
+  }
+
+  export type AccommodationCreateWithoutReviewsInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationUncheckedCreateWithoutReviewsInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    phone?: string | null
+    website?: string | null
+    rating?: number | null
+    reviewCount?: number | null
+    validationStatus?: string
+    surveyorNote?: string | null
+    validatedScore?: number | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: AccommodationImageUncheckedCreateNestedManyWithoutAccommodationInput
+    facilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutAccommodationInput
+  }
+
+  export type AccommodationCreateOrConnectWithoutReviewsInput = {
+    where: AccommodationWhereUniqueInput
+    create: XOR<AccommodationCreateWithoutReviewsInput, AccommodationUncheckedCreateWithoutReviewsInput>
   }
 
   export type ReviewSentimentCreateWithoutReviewInput = {
@@ -40437,10 +47518,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneWithoutUmkmsNestedInput
     category?: CategoryUpdateOneWithoutUmkmsNestedInput
     images?: UmkmImageUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateWithoutReviewsInput = {
@@ -40462,8 +47546,72 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
+  }
+
+  export type AccommodationUpsertWithoutReviewsInput = {
+    update: XOR<AccommodationUpdateWithoutReviewsInput, AccommodationUncheckedUpdateWithoutReviewsInput>
+    create: XOR<AccommodationCreateWithoutReviewsInput, AccommodationUncheckedCreateWithoutReviewsInput>
+    where?: AccommodationWhereInput
+  }
+
+  export type AccommodationUpdateToOneWithWhereWithoutReviewsInput = {
+    where?: AccommodationWhereInput
+    data: XOR<AccommodationUpdateWithoutReviewsInput, AccommodationUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type AccommodationUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUpdateManyWithoutAccommodationNestedInput
+  }
+
+  export type AccommodationUncheckedUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableJsonNullValueInput | InputJsonValue
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedScore?: NullableIntFieldUpdateOperationsInput | number | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: AccommodationImageUncheckedUpdateManyWithoutAccommodationNestedInput
+    facilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationNestedInput
   }
 
   export type ReviewSentimentUpsertWithoutReviewInput = {
@@ -40876,6 +48024,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutReviewsInput
     destination?: DestinationCreateNestedOneWithoutReviewsInput
     umkm?: UmkmCreateNestedOneWithoutReviewsInput
+    accommodation?: AccommodationCreateNestedOneWithoutReviewsInput
   }
 
   export type ReviewUncheckedCreateWithoutSentimentInput = {
@@ -40883,6 +48032,7 @@ export namespace Prisma {
     userId: string
     destinationId?: string | null
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -40914,6 +48064,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutReviewsNestedInput
     destination?: DestinationUpdateOneWithoutReviewsNestedInput
     umkm?: UmkmUpdateOneWithoutReviewsNestedInput
+    accommodation?: AccommodationUpdateOneWithoutReviewsNestedInput
   }
 
   export type ReviewUncheckedUpdateWithoutSentimentInput = {
@@ -40921,6 +48072,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41395,6 +48547,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutReviewsInput
     destination?: DestinationCreateNestedOneWithoutReviewsInput
+    accommodation?: AccommodationCreateNestedOneWithoutReviewsInput
     sentiment?: ReviewSentimentCreateNestedOneWithoutReviewInput
   }
 
@@ -41402,6 +48555,7 @@ export namespace Prisma {
     id?: string
     userId: string
     destinationId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -41454,6 +48608,28 @@ export namespace Prisma {
 
   export type HalalCertificationCreateManyUmkmInputEnvelope = {
     data: HalalCertificationCreateManyUmkmInput | HalalCertificationCreateManyUmkmInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UmkmHalalFacilityCreateWithoutUmkmInput = {
+    id?: string
+    name?: string | null
+    facility: HalalFacilityCreateNestedOneWithoutUmkmHalalFacilitiesInput
+  }
+
+  export type UmkmHalalFacilityUncheckedCreateWithoutUmkmInput = {
+    id?: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type UmkmHalalFacilityCreateOrConnectWithoutUmkmInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    create: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput>
+  }
+
+  export type UmkmHalalFacilityCreateManyUmkmInputEnvelope = {
+    data: UmkmHalalFacilityCreateManyUmkmInput | UmkmHalalFacilityCreateManyUmkmInput[]
     skipDuplicates?: boolean
   }
 
@@ -41640,6 +48816,22 @@ export namespace Prisma {
     notes?: StringNullableFilter<"HalalCertification"> | string | null
   }
 
+  export type UmkmHalalFacilityUpsertWithWhereUniqueWithoutUmkmInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    update: XOR<UmkmHalalFacilityUpdateWithoutUmkmInput, UmkmHalalFacilityUncheckedUpdateWithoutUmkmInput>
+    create: XOR<UmkmHalalFacilityCreateWithoutUmkmInput, UmkmHalalFacilityUncheckedCreateWithoutUmkmInput>
+  }
+
+  export type UmkmHalalFacilityUpdateWithWhereUniqueWithoutUmkmInput = {
+    where: UmkmHalalFacilityWhereUniqueInput
+    data: XOR<UmkmHalalFacilityUpdateWithoutUmkmInput, UmkmHalalFacilityUncheckedUpdateWithoutUmkmInput>
+  }
+
+  export type UmkmHalalFacilityUpdateManyWithWhereWithoutUmkmInput = {
+    where: UmkmHalalFacilityScalarWhereInput
+    data: XOR<UmkmHalalFacilityUpdateManyMutationInput, UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmInput>
+  }
+
   export type UmkmCreateWithoutImagesInput = {
     id?: string
     name: string
@@ -41657,10 +48849,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     destination?: DestinationCreateNestedOneWithoutUmkmsInput
     category?: CategoryCreateNestedOneWithoutUmkmsInput
     reviews?: ReviewCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateWithoutImagesInput = {
@@ -41682,8 +48877,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
     certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmCreateOrConnectWithoutImagesInput = {
@@ -41719,10 +48917,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneWithoutUmkmsNestedInput
     category?: CategoryUpdateOneWithoutUmkmsNestedInput
     reviews?: ReviewUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateWithoutImagesInput = {
@@ -41744,8 +48945,207 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
+  }
+
+  export type UmkmCreateWithoutUmkmHalalFacilitiesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: string | null
+    address?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    rating?: number | null
+    reviewCount?: number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
+    destination?: DestinationCreateNestedOneWithoutUmkmsInput
+    category?: CategoryCreateNestedOneWithoutUmkmsInput
+    images?: UmkmImageCreateNestedManyWithoutUmkmInput
+    reviews?: ReviewCreateNestedManyWithoutUmkmInput
+    certifications?: HalalCertificationCreateNestedManyWithoutUmkmInput
+  }
+
+  export type UmkmUncheckedCreateWithoutUmkmHalalFacilitiesInput = {
+    id?: string
+    destinationId?: string | null
+    categoryId?: string | null
+    name: string
+    slug: string
+    description?: string | null
+    address?: string | null
+    phone?: string | null
+    latitude?: Decimal | DecimalJsLike | number | string | null
+    longitude?: Decimal | DecimalJsLike | number | string | null
+    rating?: number | null
+    reviewCount?: number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
+    images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
+    certifications?: HalalCertificationUncheckedCreateNestedManyWithoutUmkmInput
+  }
+
+  export type UmkmCreateOrConnectWithoutUmkmHalalFacilitiesInput = {
+    where: UmkmWhereUniqueInput
+    create: XOR<UmkmCreateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+  }
+
+  export type HalalFacilityCreateWithoutUmkmHalalFacilitiesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    facilityType?: string | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    weight?: number | null
+    maxDistance?: number
+    destinationHalalFacilities?: DestinationHalalFacilityCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityCreateNestedManyWithoutFacilityInput
+  }
+
+  export type HalalFacilityUncheckedCreateWithoutUmkmHalalFacilitiesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    facilityType?: string | null
+    externalId?: string | null
+    externalSource?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    weight?: number | null
+    maxDistance?: number
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedCreateNestedManyWithoutFacilityInput
+  }
+
+  export type HalalFacilityCreateOrConnectWithoutUmkmHalalFacilitiesInput = {
+    where: HalalFacilityWhereUniqueInput
+    create: XOR<HalalFacilityCreateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+  }
+
+  export type UmkmUpsertWithoutUmkmHalalFacilitiesInput = {
+    update: XOR<UmkmUpdateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
+    create: XOR<UmkmCreateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    where?: UmkmWhereInput
+  }
+
+  export type UmkmUpdateToOneWithWhereWithoutUmkmHalalFacilitiesInput = {
+    where?: UmkmWhereInput
+    data: XOR<UmkmUpdateWithoutUmkmHalalFacilitiesInput, UmkmUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
+  }
+
+  export type UmkmUpdateWithoutUmkmHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    destination?: DestinationUpdateOneWithoutUmkmsNestedInput
+    category?: CategoryUpdateOneWithoutUmkmsNestedInput
+    images?: UmkmImageUpdateManyWithoutUmkmNestedInput
+    reviews?: ReviewUpdateManyWithoutUmkmNestedInput
+    certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+  }
+
+  export type UmkmUncheckedUpdateWithoutUmkmHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    longitude?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: NullableIntFieldUpdateOperationsInput | number | null
+    openingHours?: NullableJsonNullValueInput | InputJsonValue
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
+    images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
+    certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+  }
+
+  export type HalalFacilityUpsertWithoutUmkmHalalFacilitiesInput = {
+    update: XOR<HalalFacilityUpdateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
+    create: XOR<HalalFacilityCreateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedCreateWithoutUmkmHalalFacilitiesInput>
+    where?: HalalFacilityWhereInput
+  }
+
+  export type HalalFacilityUpdateToOneWithWhereWithoutUmkmHalalFacilitiesInput = {
+    where?: HalalFacilityWhereInput
+    data: XOR<HalalFacilityUpdateWithoutUmkmHalalFacilitiesInput, HalalFacilityUncheckedUpdateWithoutUmkmHalalFacilitiesInput>
+  }
+
+  export type HalalFacilityUpdateWithoutUmkmHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    facilityType?: NullableStringFieldUpdateOperationsInput | string | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
+    destinationHalalFacilities?: DestinationHalalFacilityUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUpdateManyWithoutFacilityNestedInput
+  }
+
+  export type HalalFacilityUncheckedUpdateWithoutUmkmHalalFacilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    facilityType?: NullableStringFieldUpdateOperationsInput | string | null
+    externalId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSource?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    weight?: NullableIntFieldUpdateOperationsInput | number | null
+    maxDistance?: FloatFieldUpdateOperationsInput | number
+    destinationHalalFacilities?: DestinationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
+    accommodationHalalFacilities?: AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityNestedInput
   }
 
   export type UmkmCreateWithoutCertificationsInput = {
@@ -41765,10 +49165,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     destination?: DestinationCreateNestedOneWithoutUmkmsInput
     category?: CategoryCreateNestedOneWithoutUmkmsInput
     images?: UmkmImageCreateNestedManyWithoutUmkmInput
     reviews?: ReviewCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmUncheckedCreateWithoutCertificationsInput = {
@@ -41790,8 +49193,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
     images?: UmkmImageUncheckedCreateNestedManyWithoutUmkmInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUmkmInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedCreateNestedManyWithoutUmkmInput
   }
 
   export type UmkmCreateOrConnectWithoutCertificationsInput = {
@@ -41865,10 +49271,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneWithoutUmkmsNestedInput
     category?: CategoryUpdateOneWithoutUmkmsNestedInput
     images?: UmkmImageUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateWithoutCertificationsInput = {
@@ -41890,8 +49299,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
   }
 
   export type HalalValidationUpsertWithWhereUniqueWithoutCertificationInput = {
@@ -42367,6 +49779,7 @@ export namespace Prisma {
     id?: string
     destinationId?: string | null
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -42493,6 +49906,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     destination?: DestinationUpdateOneWithoutReviewsNestedInput
     umkm?: UmkmUpdateOneWithoutReviewsNestedInput
+    accommodation?: AccommodationUpdateOneWithoutReviewsNestedInput
     sentiment?: ReviewSentimentUpdateOneWithoutReviewNestedInput
   }
 
@@ -42500,6 +49914,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42511,6 +49926,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42664,6 +50080,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
   }
 
   export type DestinationUpdateWithoutCategoryInput = {
@@ -42768,10 +50186,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     destination?: DestinationUpdateOneWithoutUmkmsNestedInput
     images?: UmkmImageUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateWithoutCategoryInput = {
@@ -42792,9 +50213,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateManyWithoutCategoryInput = {
@@ -42815,6 +50239,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DestinationImageCreateManyDestinationInput = {
@@ -42829,6 +50255,7 @@ export namespace Prisma {
     id?: string
     userId: string
     umkmId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -42853,6 +50280,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: string
+    validationStatus?: string
+    surveyorNote?: string | null
   }
 
   export type DestinationHalalFacilityCreateManyDestinationInput = {
@@ -42942,6 +50371,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutReviewsNestedInput
     umkm?: UmkmUpdateOneWithoutReviewsNestedInput
+    accommodation?: AccommodationUpdateOneWithoutReviewsNestedInput
     sentiment?: ReviewSentimentUpdateOneWithoutReviewNestedInput
   }
 
@@ -42949,6 +50379,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42960,6 +50391,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42983,10 +50415,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     category?: CategoryUpdateOneWithoutUmkmsNestedInput
     images?: UmkmImageUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateWithoutDestinationInput = {
@@ -43007,9 +50442,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
     images?: UmkmImageUncheckedUpdateManyWithoutUmkmNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUmkmNestedInput
     certifications?: HalalCertificationUncheckedUpdateManyWithoutUmkmNestedInput
+    umkmHalalFacilities?: UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmNestedInput
   }
 
   export type UmkmUncheckedUpdateManyWithoutDestinationInput = {
@@ -43030,6 +50468,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: StringFieldUpdateOperationsInput | string
+    validationStatus?: StringFieldUpdateOperationsInput | string
+    surveyorNote?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DestinationHalalFacilityUpdateWithoutDestinationInput = {
@@ -43201,6 +50641,108 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type AccommodationImageCreateManyAccommodationInput = {
+    id?: string
+    imageUrl: string
+    caption?: string | null
+    isPrimary?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ReviewCreateManyAccommodationInput = {
+    id?: string
+    userId: string
+    destinationId?: string | null
+    umkmId?: string | null
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccommodationHalalFacilityCreateManyAccommodationInput = {
+    id?: string
+    facilityId: string
+    name?: string | null
+  }
+
+  export type AccommodationImageUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationImageUncheckedUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationImageUncheckedUpdateManyWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutReviewsNestedInput
+    destination?: DestinationUpdateOneWithoutReviewsNestedInput
+    umkm?: UmkmUpdateOneWithoutReviewsNestedInput
+    sentiment?: ReviewSentimentUpdateOneWithoutReviewNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentiment?: ReviewSentimentUncheckedUpdateOneWithoutReviewNestedInput
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    umkmId?: NullableStringFieldUpdateOperationsInput | string | null
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccommodationHalalFacilityUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    facility?: HalalFacilityUpdateOneRequiredWithoutAccommodationHalalFacilitiesNestedInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateManyWithoutAccommodationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type DestinationFacilityEvidenceCreateManyDestFacilityInput = {
     id?: string
     imageUrl: string
@@ -43233,6 +50775,18 @@ export namespace Prisma {
     name?: string | null
   }
 
+  export type UmkmHalalFacilityCreateManyFacilityInput = {
+    id?: string
+    umkmId: string
+    name?: string | null
+  }
+
+  export type AccommodationHalalFacilityCreateManyFacilityInput = {
+    id?: string
+    accommodationId: string
+    name?: string | null
+  }
+
   export type DestinationHalalFacilityUpdateWithoutFacilityInput = {
     id?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -43256,6 +50810,42 @@ export namespace Prisma {
     destinationId?: StringFieldUpdateOperationsInput | string
     latitude?: NullableFloatFieldUpdateOperationsInput | number | null
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    umkm?: UmkmUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    umkmId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateManyWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    umkmId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccommodationHalalFacilityUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodation?: AccommodationUpdateOneRequiredWithoutFacilitiesNestedInput
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccommodationHalalFacilityUncheckedUpdateManyWithoutFacilityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accommodationId?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -43307,6 +50897,7 @@ export namespace Prisma {
     id?: string
     userId: string
     destinationId?: string | null
+    accommodationId?: string | null
     rating: number
     comment?: string | null
     createdAt?: Date | string
@@ -43324,6 +50915,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     notes?: string | null
+  }
+
+  export type UmkmHalalFacilityCreateManyUmkmInput = {
+    id?: string
+    facilityId: string
+    name?: string | null
   }
 
   export type UmkmImageUpdateWithoutUmkmInput = {
@@ -43358,6 +50955,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutReviewsNestedInput
     destination?: DestinationUpdateOneWithoutReviewsNestedInput
+    accommodation?: AccommodationUpdateOneWithoutReviewsNestedInput
     sentiment?: ReviewSentimentUpdateOneWithoutReviewNestedInput
   }
 
@@ -43365,6 +50963,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43376,6 +50975,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     destinationId?: NullableStringFieldUpdateOperationsInput | string | null
+    accommodationId?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43421,6 +51021,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityUpdateWithoutUmkmInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    facility?: HalalFacilityUpdateOneRequiredWithoutUmkmHalalFacilitiesNestedInput
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateWithoutUmkmInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UmkmHalalFacilityUncheckedUpdateManyWithoutUmkmInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    facilityId?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type HalalValidationCreateManyCertificationInput = {

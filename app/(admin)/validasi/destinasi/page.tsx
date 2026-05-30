@@ -6,11 +6,10 @@ export default function ValidationsPage() {
         <div className="flex flex-col gap-6 p-8">
             <div className="flex flex-col gap-2">
                 <h1 className="text-3xl font-bold tracking-tight">
-                    Validasi Halal
+                    Validasi Destinasi
                 </h1>
                 <p className="text-muted-foreground">
-                    Kelola dan tinjau permintaan validasi sertifikasi halal di
-                    sistem.
+                    Kelola dan tinjau permintaan validasi destinasi wisata halal.
                 </p>
             </div>
 

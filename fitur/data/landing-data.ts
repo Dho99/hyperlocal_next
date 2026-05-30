@@ -1,22 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import {
     ShieldCheck,
-    Compass,
-    Sparkles,
-    Search,
-    Map,
     Landmark,
     Utensils,
     Hotel,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import type {
-    Reason,
-    Step,
-    Faq,
-} from "./landing";
-
-export type { Reason, Step, Faq };
+import type { Faq } from "./landing";
 
 export interface DestinationCard {
     id: string;
@@ -114,42 +104,6 @@ function toDestinationCard(destination: {
         imageUrl: safeImage(destination.images[0]?.imageUrl),
     };
 }
-
-export const reasons: Reason[] = [
-    {
-        title: "Data Terverifikasi",
-        copy: "Destinasi diperkaya status validasi, skor kesiapan halal, rating, dan fasilitas pendukung dari database.",
-        icon: ShieldCheck,
-    },
-    {
-        title: "Informasi Hyperlocal",
-        copy: "Kategori, kota, UMKM, dan aktivitas pengguna dirangkum dari data operasional yang terus bertambah.",
-        icon: Compass,
-    },
-    {
-        title: "Ramah Muslim",
-        copy: "Fasilitas seperti tempat ibadah, kuliner halal, dan penginapan ditampilkan sesuai relasi yang tersedia.",
-        icon: Sparkles,
-    },
-];
-
-export const steps: Step[] = [
-    {
-        title: "Cari Kebutuhan",
-        copy: "Masukkan kota, kategori, atau nama destinasi untuk membuka listing publik yang terhubung ke database.",
-        icon: Search,
-    },
-    {
-        title: "Cek Verifikasi",
-        copy: "Bandingkan status, skor halal, rating, dan jumlah ulasan sebelum memilih tujuan.",
-        icon: ShieldCheck,
-    },
-    {
-        title: "Susun Rute",
-        copy: "Gunakan kota populer dan rekomendasi sekitar sebagai titik awal itinerary perjalanan.",
-        icon: Map,
-    },
-];
 
 export const faqs: Faq[] = [
     {

@@ -54,7 +54,9 @@ export default async function proxy(request: NextRequest) {
         path.startsWith("/destinations") ||
         path.startsWith("/halal-facilities") ||
         path.startsWith("/umkms") ||
+        path.startsWith("/accommodations") ||
         path.startsWith("/validations") ||
+        path.startsWith("/validasi") ||
         path.startsWith("/statistics") ||
         path.startsWith("/settings");
 

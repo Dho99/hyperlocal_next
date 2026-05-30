@@ -50,15 +50,15 @@ export function calculateHalalScore(facilities: FacilityInput[]): number {
 }
 
 export function getScoreColor(score: number): string {
-    if (score > 80) return "text-green-600";
-    if (score >= 60) return "text-blue-600";
-    if (score >= 40) return "text-yellow-600";
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    if (score >= 40) return "text-orange-600";
     return "text-red-600";
 }
 
 export function getScoreLabel(score: number): string {
-    if (score > 80) return "Sangat Siap";
-    if (score >= 60) return "Siap";
-    if (score >= 40) return "Cukup Siap";
-    return "Perlu Pengembangan";
+    if (score >= 80) return "Sangat Siap";
+    if (score >= 60) return "Siap dengan Catatan";
+    if (score >= 40) return "Perlu Pengembangan";
+    return "Belum Siap";
 }

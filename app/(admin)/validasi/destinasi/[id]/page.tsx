@@ -106,7 +106,7 @@ export default function ProcessValidationPage() {
                     });
                 } else {
                     toast.error(data.message || "Gagal memuat data");
-                    router.push("/validations");
+                        router.push("/validasi/destinasi");
                 }
             } catch (error) {
                 console.error("Error fetching validation detail:", error);
@@ -158,7 +158,7 @@ export default function ProcessValidationPage() {
 
             if (data.success) {
                 toast.success(data.message);
-                router.push("/validations");
+                router.push("/validasi/destinasi");
                 router.refresh();
             } else {
                 toast.error(data.message || "Gagal memproses validasi");
@@ -191,16 +191,16 @@ export default function ProcessValidationPage() {
             <div className="flex-1 space-y-8 p-8 pt-6 pb-20">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Link
-                            href="/validations"
-                            className="hover:text-primary transition-colors"
-                        >
-                            Validasi
-                        </Link>
-                        <span className="text-muted-foreground/50">/</span>
-                        <span className="text-foreground font-medium">
-                            Validasi Destinasi
-                        </span>
+                            <Link
+                                href="/validasi/destinasi"
+                                className="hover:text-primary transition-colors"
+                            >
+                                Validasi
+                            </Link>
+                            <span className="text-muted-foreground/50">/</span>
+                            <span className="text-foreground font-medium">
+                                Validasi Destinasi
+                            </span>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -243,7 +243,7 @@ export default function ProcessValidationPage() {
             <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Link
-                        href="/validations"
+                        href="/validasi/destinasi"
                         className="hover:text-primary transition-colors"
                     >
                         Validasi

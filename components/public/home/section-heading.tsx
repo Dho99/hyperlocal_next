@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
 interface SectionHeadingProps {
@@ -14,22 +17,28 @@ export function SectionHeading({
     actionHref = "#popular",
 }: SectionHeadingProps) {
     return (
-        <div className="flex items-end justify-between gap-4">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5 }}
+            className="flex items-end justify-between gap-4"
+        >
             <div>
-                <h2 className="font-heading text-2xl font-semibold sm:text-3xl">
+                <h2 className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl">
                     {title}
                 </h2>
-                <p className="mt-2 text-sm text-[#494551]">{eyebrow}</p>
+                <p className="mt-2 text-base text-stone-600">{eyebrow}</p>
             </div>
             {action && (
                 <a
-                    className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-[#4f378a] sm:inline-flex"
+                    className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-emerald-900 sm:inline-flex"
                     href={actionHref}
                 >
                     {action}
                     <ChevronRight className="size-4" />
                 </a>
             )}
-        </div>
+        </motion.div>
     );
 }

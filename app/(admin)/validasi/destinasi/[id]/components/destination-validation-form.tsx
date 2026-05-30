@@ -156,11 +156,12 @@ export function DestinationValidationForm({
     }, [categories, categoryScores]);
 
     const totalScore = useMemo(() => {
+        if (categories.length === 0) return 0;
         let sum = 0;
         for (const cat of categories) {
             sum += localCategoryScores[cat.facilityType] ?? 0;
         }
-        return Math.min(Math.round(sum), 100);
+        return Math.round(sum / categories.length);
     }, [categories, localCategoryScores]);
 
     const handleScoreChange = (facilityType: string, value: string) => {
@@ -203,7 +204,7 @@ export function DestinationValidationForm({
 
             if (data.success) {
                 toast.success(data.message);
-                router.push("/validations");
+                router.push("/validasi/destinasi");
                 router.refresh();
             } else {
                 toast.error(data.message || "Gagal memproses validasi");

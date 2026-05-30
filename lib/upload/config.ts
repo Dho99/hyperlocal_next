@@ -13,5 +13,6 @@ export const UPLOAD_CONFIG = {
         "categories",
         "facilities",
         "facility-evidences",
+        "accommodations",
     ],
 };

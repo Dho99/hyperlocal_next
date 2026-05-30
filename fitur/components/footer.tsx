@@ -1,5 +1,8 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { formatNumber } from "@/fitur/data/landing-data";
+import { formatNumber } from "@/fitur/data/utils";
 
 interface FooterStats {
     approvedDestinations: number;
@@ -20,13 +23,13 @@ function FooterLinks({
 }) {
     return (
         <div>
-            <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-[#4f378a]">
+            <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-emerald-900">
                 {title}
             </h3>
-            <div className="mt-4 grid gap-3 text-sm text-[#494551]">
+            <div className="mt-4 grid gap-3 text-sm text-stone-600">
                 {links.map(([label, href]) => (
                     <Link
-                        className="transition hover:text-[#4f378a]"
+                        className="transition hover:text-emerald-900"
                         href={href}
                         key={label}
                     >
@@ -40,16 +43,22 @@ function FooterLinks({
 
 export function Footer({ stats }: FooterProps) {
     return (
-        <footer className="border-t border-[#cbc4d2]/60 bg-white/70">
+        <motion.footer
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="border-t border-stone-200/60 bg-white/70"
+        >
             <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.3fr_0.7fr_0.7fr_1fr] lg:px-8">
                 <div>
                     <Link
-                        className="font-heading text-2xl font-bold text-[#4f378a]"
+                        className="font-heading text-2xl font-bold text-emerald-900"
                         href="/"
                     >
                         Hyperlocal
                     </Link>
-                    <p className="mt-4 max-w-sm text-sm leading-7 text-[#494551]">
+                    <p className="mt-4 max-w-sm text-sm leading-7 text-stone-600">
                         Platform penemuan destinasi halal, fasilitas
                         muslim-friendly, dan rekomendasi wisata berbasis
                         insight lokal.
@@ -74,10 +83,10 @@ export function Footer({ stats }: FooterProps) {
                     title="Dukungan"
                 />
                 <div>
-                    <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-[#4f378a]">
+                    <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-emerald-900">
                         Ringkasan Data
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-[#494551]">
+                    <p className="mt-3 text-sm leading-6 text-stone-600">
                         {formatNumber(stats.approvedDestinations)} destinasi
                         approved, {formatNumber(stats.validCertifications)}{" "}
                         sertifikasi valid, dan{" "}
@@ -85,9 +94,9 @@ export function Footer({ stats }: FooterProps) {
                     </p>
                 </div>
             </div>
-            <div className="border-t border-[#e6e0e9] px-4 py-5 text-center text-xs text-[#494551] sm:px-6 lg:px-8">
+            <div className="border-t border-stone-200 px-4 py-5 text-center text-xs text-stone-600 sm:px-6 lg:px-8">
                 © 2026 Hyperlocal. Semua hak dilindungi.
             </div>
-        </footer>
+        </motion.footer>
     );
 }
