@@ -82,6 +82,8 @@ export function HeroSearch() {
 
             if (data.intent === "DESTINATION_SEARCH") {
                 router.push(data.redirectTo);
+            } else if (data.intent === "FACILITY_CHECK") {
+                router.push(data.redirectTo);
             } else if (data.intent === "ITINERARY_RECOMMENDATION") {
                 sessionStorage.setItem(
                     "itinerary_payload",

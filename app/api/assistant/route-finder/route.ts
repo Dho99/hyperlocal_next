@@ -35,7 +35,7 @@ interface ItineraryPayload {
 }
 
 interface RouteFinderResponse {
-    intent: "DESTINATION_SEARCH" | "ITINERARY_RECOMMENDATION";
+    intent: "DESTINATION_SEARCH" | "ITINERARY_RECOMMENDATION" | "FACILITY_CHECK";
     redirectTo: string;
     payload: ItineraryPayload | null;
 }
@@ -48,9 +48,12 @@ function buildPrompt(
 
 1. DESTINATION_SEARCH — pengguna mencari atau ingin melihat destinasi wisata, kuliner, atau penginapan.
 2. ITINERARY_RECOMMENDATION — pengguna ingin rencana perjalanan / itinerary / rute wisata yang terstruktur (misalnya "1 hari", "2 hari", "3 hari", atau menyebutkan durasi).
+3. FACILITY_CHECK — pengguna ingin mengecek ketersediaan fasilitas halal tertentu di suatu destinasi (misalnya musala, tempat wudu, sertifikat halal, dll).
 
 Petunjuk penting:
 - Jika query mengandung kata seperti "rute", "itinerary", "rencana perjalanan", "trips", "jalan-jalan ke", "tour", atau menyebutkan durasi (1 hari, 2 hari, 3 hari, sehari, full day), gunakan ITINERARY_RECOMMENDATION.
+- Jika query menanyakan ketersediaan atau keberadaan fasilitas tertentu (musala, masjid, tempat wudu, toilet, parkir, sertifikat halal) di suatu tempat, gunakan FACILITY_CHECK.
+- Untuk FACILITY_CHECK, ekstrak slug destinasi dan nama fasilitas dari query.
 - Untuk ITINERARY_RECOMMENDATION, pilah destinasi dari kandidat yang diberikan, atur secara kronologis berdasarkan lokasi dan jam operasional, dan berikan notes yang informatif dalam Bahasa Indonesia.
 - Untuk DESTINATION_SEARCH, ekstrak kata kunci pencarian dari query dan gunakan di redirectTo.
 
@@ -69,6 +72,9 @@ Untuk DESTINATION_SEARCH:
 
 Untuk ITINERARY_RECOMMENDATION:
 { "intent": "ITINERARY_RECOMMENDATION", "redirectTo": "/itinerary-recommendation", "payload": { "title": "Judul Rencana Perjalanan", "days": 1, "items": [ { "orderIndex": 1, "destinationId": "uuid-kandidat", "notes": "Catatan dalam Bahasa Indonesia" } ] } }
+
+Untuk FACILITY_CHECK:
+{ "intent": "FACILITY_CHECK", "redirectTo": "/facility-check?slug=slug-destinasi&facility=fasilitas", "payload": null }
 
 HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
 }
@@ -163,6 +169,10 @@ export async function POST(request: Request) {
                     buildFallbackSearch(query),
                     { status: 200 },
                 );
+            }
+
+            if (aiResult.intent === "FACILITY_CHECK") {
+                return NextResponse.json<RouteFinderResponse>(aiResult);
             }
 
             if (aiResult.intent === "ITINERARY_RECOMMENDATION") {
