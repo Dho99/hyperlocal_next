@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import {
     getPaginatedDestinations,
     createDestination,
+    type DestinationSort,
 } from "@/lib/services/destination-service";
 import { destinationSchema } from "@/lib/validations/destination.schema";
 import { getErrorMessage } from "@/lib/api-error";
@@ -18,6 +19,8 @@ export async function GET(request: Request) {
         const categoryId = searchParams.get("categoryId") || undefined;
         const search = searchParams.get("search") || undefined;
         const status = searchParams.get("status") || undefined;
+        const minScore = parseMinScore(searchParams.get("minScore"));
+        const sort = parseSort(searchParams.get("sort"));
 
         const result = await getPaginatedDestinations({
             limit,
@@ -25,6 +28,8 @@ export async function GET(request: Request) {
             categoryId,
             search,
             status,
+            minScore,
+            sort,
         });
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
@@ -33,6 +38,30 @@ export async function GET(request: Request) {
             { status: 500 },
         );
     }
+}
+
+const allowedSorts = new Set<DestinationSort>([
+    "newest",
+    "rating",
+    "score",
+    "reviews",
+    "name",
+]);
+
+function parseSort(value: string | null): DestinationSort | undefined {
+    if (!value) return undefined;
+    return allowedSorts.has(value as DestinationSort)
+        ? (value as DestinationSort)
+        : undefined;
+}
+
+function parseMinScore(value: string | null): number | undefined {
+    if (!value) return undefined;
+
+    const score = Number(value);
+    if (!Number.isFinite(score)) return undefined;
+
+    return Math.min(100, Math.max(0, score));
 }
 
 export async function POST(request: Request) {
