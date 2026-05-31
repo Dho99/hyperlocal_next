@@ -138,8 +138,8 @@ export default function PetaMapClient() {
 
     if (loading) {
         return (
-            <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-[#f2ecf4]">
-                <p className="text-sm text-[#7a7380]">Memuat peta...</p>
+            <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-emerald-50">
+                <p className="text-sm text-stone-500">Memuat peta...</p>
             </div>
         );
     }
@@ -187,8 +187,8 @@ export default function PetaMapClient() {
                                 center={[userLocation.lat, userLocation.lng]}
                                 radius={radius * 1000}
                                 pathOptions={{
-                                    color: "#4f378a",
-                                    fillColor: "#eaddff",
+                                    color: "#047857",
+                                    fillColor: "#d1fae5",
                                     fillOpacity: 0.15,
                                     weight: 2,
                                     dashArray: "4, 4",
@@ -217,7 +217,7 @@ export default function PetaMapClient() {
                                     isSelected
                                         ? L.divIcon({
                                               className: "",
-                                              html: createPinSvg("#4f378a"),
+                                              html: createPinSvg("#047857"),
                                               iconSize: [36, 54],
                                               iconAnchor: [18, 54],
                                               popupAnchor: [0, -56],
@@ -230,11 +230,11 @@ export default function PetaMapClient() {
                             >
                                 <Popup>
                                     <div className="p-1">
-                                        <p className="m-0 text-sm font-bold text-[#4f378a]">
+                                        <p className="m-0 text-sm font-bold text-emerald-900">
                                             {d.name}
                                         </p>
                                         {d.category?.name && (
-                                            <p className="m-0 mt-0.5 text-xs text-[#7a7380]">
+                                            <p className="m-0 mt-0.5 text-xs text-stone-500">
                                                 {d.category.name}
                                             </p>
                                         )}
@@ -274,12 +274,12 @@ export default function PetaMapClient() {
                                     >
                                         <Popup>
                                             <div className="p-1">
-                                                <p className="m-0 text-sm font-bold text-[#4f378a]">
+                                                <p className="m-0 text-sm font-bold text-emerald-900">
                                                     {dhf.facility?.name ??
                                                         "Fasilitas"}
                                                 </p>
                                                 {dhf.facility?.facilityType && (
-                                                    <p className="m-0 mt-0.5 text-xs text-[#7a7380] capitalize">
+                                                    <p className="m-0 mt-0.5 text-xs text-stone-500 capitalize">
                                                         {dhf.facility.facilityType.replace(
                                                             /_/g,
                                                             " ",

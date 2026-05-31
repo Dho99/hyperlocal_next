@@ -1,13 +1,51 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star, Search, Loader2, AlertCircle } from "lucide-react";
+import {
+    AlertCircle,
+    ArrowDownUp,
+    Loader2,
+    MapPin,
+    Search,
+    SlidersHorizontal,
+    Star,
+    X,
+} from "lucide-react";
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
+import { Button } from "@/components/ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { Destination } from "@/types/destination";
+
+interface PublicDestinationListProps {
+    categories: Array<{
+        id: string;
+        name: string;
+    }>;
+}
+
+const scoreFilters = [
+    { value: "all", label: "Semua skor" },
+    { value: "80", label: "Skor 80+" },
+    { value: "60", label: "Skor 60+" },
+] as const;
+
+const sortOptions = [
+    { value: "newest", label: "Terbaru" },
+    { value: "score", label: "Skor tertinggi" },
+    { value: "rating", label: "Rating tertinggi" },
+    { value: "reviews", label: "Ulasan terbanyak" },
+    { value: "name", label: "Nama A-Z" },
+] as const;
 
 function ScoreBadge({ score }: { score: number | null }) {
     if (score === null) return null;
@@ -81,13 +119,24 @@ function DestinationCard({ dest }: { dest: Destination }) {
     );
 }
 
-export function PublicDestinationList() {
+export function PublicDestinationList({ categories }: PublicDestinationListProps) {
     const [search, setSearch] = useState("");
+    const [categoryId, setCategoryId] = useState("all");
+    const [minScore, setMinScore] = useState("all");
+    const [sort, setSort] = useState("newest");
+    const deferredSearch = useDeferredValue(search);
+
+    const hasActiveFilters =
+        categoryId !== "all" || minScore !== "all" || sort !== "newest";
+
     const params = useMemo(() => {
         const p: Record<string, string> = { status: "APPROVED" };
-        if (search.trim()) p.search = search.trim();
+        if (deferredSearch.trim()) p.search = deferredSearch.trim();
+        if (categoryId !== "all") p.categoryId = categoryId;
+        if (minScore !== "all") p.minScore = minScore;
+        if (sort !== "newest") p.sort = sort;
         return p;
-    }, [search]);
+    }, [categoryId, deferredSearch, minScore, sort]);
 
     const { data, isLoading, error, hasMore, loadMore } =
         useCursorPagination<Destination>({
@@ -98,15 +147,79 @@ export function PublicDestinationList() {
 
     return (
         <div className="space-y-8">
-            <div className="relative max-w-md mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#494551]" />
-                <input
-                    type="text"
-                    placeholder="Cari destinasi..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-white/40 text-[#1f1635] placeholder:text-[#494551]/60 focus:outline-none focus:ring-2 focus:ring-[#4f378a]/30 focus:border-[#4f378a] transition-shadow"
-                />
+            <div className="rounded-xl border border-white/50 bg-white/75 p-4 shadow-sm backdrop-blur-md">
+                <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_180px_160px_190px_auto]">
+                    <div className="relative">
+                        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#494551]" />
+                        <input
+                            type="search"
+                            placeholder="Cari destinasi..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="h-10 w-full rounded-md border border-stone-200 bg-white pl-10 pr-4 text-sm text-[#1f1635] shadow-xs placeholder:text-[#494551]/60 focus:border-[#4f378a] focus:outline-none focus:ring-2 focus:ring-[#4f378a]/20"
+                        />
+                    </div>
+
+                    <Select value={categoryId} onValueChange={setCategoryId}>
+                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
+                            <SlidersHorizontal className="mr-2 size-4 text-[#494551]" />
+                            <SelectValue placeholder="Kategori" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Semua kategori</SelectItem>
+                            {categories.map((category) => (
+                                <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={minScore} onValueChange={setMinScore}>
+                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
+                            <Star className="mr-2 size-4 text-[#494551]" />
+                            <SelectValue placeholder="Skor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {scoreFilters.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={sort} onValueChange={setSort}>
+                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
+                            <ArrowDownUp className="mr-2 size-4 text-[#494551]" />
+                            <SelectValue placeholder="Urutkan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {sortOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="h-10 border-stone-200 bg-white text-[#494551] hover:bg-stone-50 md:w-10 md:px-0"
+                        disabled={!hasActiveFilters && !search}
+                        onClick={() => {
+                            setSearch("");
+                            setCategoryId("all");
+                            setMinScore("all");
+                            setSort("newest");
+                        }}
+                        aria-label="Reset filter"
+                    >
+                        <X className="size-4" />
+                        <span className="md:sr-only">Reset</span>
+                    </Button>
+                </div>
             </div>
 
             {error && (
@@ -132,7 +245,7 @@ export function PublicDestinationList() {
                         </p>
                     ) : !isLoading ? (
                         <p className="text-center text-sm text-[#494551]/60 py-8">
-                            {search
+                            {search || hasActiveFilters
                                 ? "Tidak ada destinasi yang sesuai"
                                 : "Belum ada destinasi tersedia"}
                         </p>
