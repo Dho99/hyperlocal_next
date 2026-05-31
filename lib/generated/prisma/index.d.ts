@@ -89,6 +89,11 @@ export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
  */
 export type DestinationInteraction = $Result.DefaultSelection<Prisma.$DestinationInteractionPayload>
 /**
+ * Model UserInteraction
+ * 
+ */
+export type UserInteraction = $Result.DefaultSelection<Prisma.$UserInteractionPayload>
+/**
  * Model DestinationTrend
  * 
  */
@@ -189,6 +194,23 @@ export const CategoryType: {
 export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]
 
 
+export const TargetType: {
+  DESTINASI: 'DESTINASI',
+  UMKM: 'UMKM'
+};
+
+export type TargetType = (typeof TargetType)[keyof typeof TargetType]
+
+
+export const ActionType: {
+  CLICK_ROUTE: 'CLICK_ROUTE',
+  CLICK_WHATSAPP: 'CLICK_WHATSAPP',
+  BOOKMARK: 'BOOKMARK'
+};
+
+export type ActionType = (typeof ActionType)[keyof typeof ActionType]
+
+
 export const InteractionType: {
   VIEW: 'VIEW',
   SEARCH: 'SEARCH',
@@ -226,6 +248,14 @@ export const ValidationStatus: typeof $Enums.ValidationStatus
 export type CategoryType = $Enums.CategoryType
 
 export const CategoryType: typeof $Enums.CategoryType
+
+export type TargetType = $Enums.TargetType
+
+export const TargetType: typeof $Enums.TargetType
+
+export type ActionType = $Enums.ActionType
+
+export const ActionType: typeof $Enums.ActionType
 
 export type InteractionType = $Enums.InteractionType
 
@@ -505,6 +535,16 @@ export class PrismaClient<
     * ```
     */
   get destinationInteraction(): Prisma.DestinationInteractionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userInteraction`: Exposes CRUD operations for the **UserInteraction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserInteractions
+    * const userInteractions = await prisma.userInteraction.findMany()
+    * ```
+    */
+  get userInteraction(): Prisma.UserInteractionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.destinationTrend`: Exposes CRUD operations for the **DestinationTrend** model.
@@ -1074,6 +1114,7 @@ export namespace Prisma {
     HalalFacility: 'HalalFacility',
     Review: 'Review',
     DestinationInteraction: 'DestinationInteraction',
+    UserInteraction: 'UserInteraction',
     DestinationTrend: 'DestinationTrend',
     ReviewSentiment: 'ReviewSentiment',
     Itinerary: 'Itinerary',
@@ -1101,7 +1142,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "accommodation" | "accommodationImage" | "accommodationHalalFacility" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "umkmHalalFacility" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
+      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "accommodation" | "accommodationImage" | "accommodationHalalFacility" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "userInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "umkmHalalFacility" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2215,6 +2256,80 @@ export namespace Prisma {
           }
         }
       }
+      UserInteraction: {
+        payload: Prisma.$UserInteractionPayload<ExtArgs>
+        fields: Prisma.UserInteractionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserInteractionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserInteractionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          findFirst: {
+            args: Prisma.UserInteractionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserInteractionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          findMany: {
+            args: Prisma.UserInteractionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>[]
+          }
+          create: {
+            args: Prisma.UserInteractionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          createMany: {
+            args: Prisma.UserInteractionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserInteractionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>[]
+          }
+          delete: {
+            args: Prisma.UserInteractionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          update: {
+            args: Prisma.UserInteractionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserInteractionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserInteractionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserInteractionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserInteractionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserInteractionPayload>
+          }
+          aggregate: {
+            args: Prisma.UserInteractionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserInteraction>
+          }
+          groupBy: {
+            args: Prisma.UserInteractionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserInteractionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserInteractionCountArgs<ExtArgs>
+            result: $Utils.Optional<UserInteractionCountAggregateOutputType> | number
+          }
+        }
+      }
       DestinationTrend: {
         payload: Prisma.$DestinationTrendPayload<ExtArgs>
         fields: Prisma.DestinationTrendFieldRefs
@@ -3226,6 +3341,7 @@ export namespace Prisma {
     halalFacility?: HalalFacilityOmit
     review?: ReviewOmit
     destinationInteraction?: DestinationInteractionOmit
+    userInteraction?: UserInteractionOmit
     destinationTrend?: DestinationTrendOmit
     reviewSentiment?: ReviewSentimentOmit
     itinerary?: ItineraryOmit
@@ -3323,6 +3439,7 @@ export namespace Prisma {
     reviews: number
     halalValidations: number
     destinationInteractions: number
+    userInteractions: number
     itineraries: number
   }
 
@@ -3332,6 +3449,7 @@ export namespace Prisma {
     reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     halalValidations?: boolean | UserCountOutputTypeCountHalalValidationsArgs
     destinationInteractions?: boolean | UserCountOutputTypeCountDestinationInteractionsArgs
+    userInteractions?: boolean | UserCountOutputTypeCountUserInteractionsArgs
     itineraries?: boolean | UserCountOutputTypeCountItinerariesArgs
   }
 
@@ -3379,6 +3497,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountDestinationInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DestinationInteractionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUserInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserInteractionWhereInput
   }
 
   /**
@@ -4024,6 +4149,7 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     halalValidations?: boolean | User$halalValidationsArgs<ExtArgs>
     destinationInteractions?: boolean | User$destinationInteractionsArgs<ExtArgs>
+    userInteractions?: boolean | User$userInteractionsArgs<ExtArgs>
     itineraries?: boolean | User$itinerariesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -4077,6 +4203,7 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     halalValidations?: boolean | User$halalValidationsArgs<ExtArgs>
     destinationInteractions?: boolean | User$destinationInteractionsArgs<ExtArgs>
+    userInteractions?: boolean | User$userInteractionsArgs<ExtArgs>
     itineraries?: boolean | User$itinerariesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -4091,6 +4218,7 @@ export namespace Prisma {
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       halalValidations: Prisma.$HalalValidationPayload<ExtArgs>[]
       destinationInteractions: Prisma.$DestinationInteractionPayload<ExtArgs>[]
+      userInteractions: Prisma.$UserInteractionPayload<ExtArgs>[]
       itineraries: Prisma.$ItineraryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4504,6 +4632,7 @@ export namespace Prisma {
     reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     halalValidations<T extends User$halalValidationsArgs<ExtArgs> = {}>(args?: Subset<T, User$halalValidationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HalalValidationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     destinationInteractions<T extends User$destinationInteractionsArgs<ExtArgs> = {}>(args?: Subset<T, User$destinationInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DestinationInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userInteractions<T extends User$userInteractionsArgs<ExtArgs> = {}>(args?: Subset<T, User$userInteractionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     itineraries<T extends User$itinerariesArgs<ExtArgs> = {}>(args?: Subset<T, User$itinerariesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItineraryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5055,6 +5184,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DestinationInteractionScalarFieldEnum | DestinationInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * User.userInteractions
+   */
+  export type User$userInteractionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    where?: UserInteractionWhereInput
+    orderBy?: UserInteractionOrderByWithRelationInput | UserInteractionOrderByWithRelationInput[]
+    cursor?: UserInteractionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserInteractionScalarFieldEnum | UserInteractionScalarFieldEnum[]
   }
 
   /**
@@ -21460,6 +21613,1101 @@ export namespace Prisma {
 
 
   /**
+   * Model UserInteraction
+   */
+
+  export type AggregateUserInteraction = {
+    _count: UserInteractionCountAggregateOutputType | null
+    _min: UserInteractionMinAggregateOutputType | null
+    _max: UserInteractionMaxAggregateOutputType | null
+  }
+
+  export type UserInteractionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    targetId: string | null
+    targetType: $Enums.TargetType | null
+    actionType: $Enums.ActionType | null
+    createdAt: Date | null
+  }
+
+  export type UserInteractionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    targetId: string | null
+    targetType: $Enums.TargetType | null
+    actionType: $Enums.ActionType | null
+    createdAt: Date | null
+  }
+
+  export type UserInteractionCountAggregateOutputType = {
+    id: number
+    userId: number
+    targetId: number
+    targetType: number
+    actionType: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserInteractionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    targetId?: true
+    targetType?: true
+    actionType?: true
+    createdAt?: true
+  }
+
+  export type UserInteractionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    targetId?: true
+    targetType?: true
+    actionType?: true
+    createdAt?: true
+  }
+
+  export type UserInteractionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    targetId?: true
+    targetType?: true
+    actionType?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserInteractionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserInteraction to aggregate.
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserInteractions to fetch.
+     */
+    orderBy?: UserInteractionOrderByWithRelationInput | UserInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserInteractions
+    **/
+    _count?: true | UserInteractionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserInteractionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserInteractionMaxAggregateInputType
+  }
+
+  export type GetUserInteractionAggregateType<T extends UserInteractionAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserInteraction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserInteraction[P]>
+      : GetScalarType<T[P], AggregateUserInteraction[P]>
+  }
+
+
+
+
+  export type UserInteractionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserInteractionWhereInput
+    orderBy?: UserInteractionOrderByWithAggregationInput | UserInteractionOrderByWithAggregationInput[]
+    by: UserInteractionScalarFieldEnum[] | UserInteractionScalarFieldEnum
+    having?: UserInteractionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserInteractionCountAggregateInputType | true
+    _min?: UserInteractionMinAggregateInputType
+    _max?: UserInteractionMaxAggregateInputType
+  }
+
+  export type UserInteractionGroupByOutputType = {
+    id: string
+    userId: string | null
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt: Date
+    _count: UserInteractionCountAggregateOutputType | null
+    _min: UserInteractionMinAggregateOutputType | null
+    _max: UserInteractionMaxAggregateOutputType | null
+  }
+
+  type GetUserInteractionGroupByPayload<T extends UserInteractionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserInteractionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserInteractionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserInteractionGroupByOutputType[P]>
+            : GetScalarType<T[P], UserInteractionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserInteractionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    targetId?: boolean
+    targetType?: boolean
+    actionType?: boolean
+    createdAt?: boolean
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["userInteraction"]>
+
+  export type UserInteractionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    targetId?: boolean
+    targetType?: boolean
+    actionType?: boolean
+    createdAt?: boolean
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["userInteraction"]>
+
+  export type UserInteractionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    targetId?: boolean
+    targetType?: boolean
+    actionType?: boolean
+    createdAt?: boolean
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }, ExtArgs["result"]["userInteraction"]>
+
+  export type UserInteractionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    targetId?: boolean
+    targetType?: boolean
+    actionType?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserInteractionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "targetId" | "targetType" | "actionType" | "createdAt", ExtArgs["result"]["userInteraction"]>
+  export type UserInteractionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }
+  export type UserInteractionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }
+  export type UserInteractionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserInteraction$userArgs<ExtArgs>
+  }
+
+  export type $UserInteractionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserInteraction"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      targetId: string
+      targetType: $Enums.TargetType
+      actionType: $Enums.ActionType
+      createdAt: Date
+    }, ExtArgs["result"]["userInteraction"]>
+    composites: {}
+  }
+
+  type UserInteractionGetPayload<S extends boolean | null | undefined | UserInteractionDefaultArgs> = $Result.GetResult<Prisma.$UserInteractionPayload, S>
+
+  type UserInteractionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserInteractionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserInteractionCountAggregateInputType | true
+    }
+
+  export interface UserInteractionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserInteraction'], meta: { name: 'UserInteraction' } }
+    /**
+     * Find zero or one UserInteraction that matches the filter.
+     * @param {UserInteractionFindUniqueArgs} args - Arguments to find a UserInteraction
+     * @example
+     * // Get one UserInteraction
+     * const userInteraction = await prisma.userInteraction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserInteractionFindUniqueArgs>(args: SelectSubset<T, UserInteractionFindUniqueArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserInteraction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserInteractionFindUniqueOrThrowArgs} args - Arguments to find a UserInteraction
+     * @example
+     * // Get one UserInteraction
+     * const userInteraction = await prisma.userInteraction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserInteractionFindUniqueOrThrowArgs>(args: SelectSubset<T, UserInteractionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserInteraction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionFindFirstArgs} args - Arguments to find a UserInteraction
+     * @example
+     * // Get one UserInteraction
+     * const userInteraction = await prisma.userInteraction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserInteractionFindFirstArgs>(args?: SelectSubset<T, UserInteractionFindFirstArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserInteraction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionFindFirstOrThrowArgs} args - Arguments to find a UserInteraction
+     * @example
+     * // Get one UserInteraction
+     * const userInteraction = await prisma.userInteraction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserInteractionFindFirstOrThrowArgs>(args?: SelectSubset<T, UserInteractionFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserInteractions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserInteractions
+     * const userInteractions = await prisma.userInteraction.findMany()
+     * 
+     * // Get first 10 UserInteractions
+     * const userInteractions = await prisma.userInteraction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userInteractionWithIdOnly = await prisma.userInteraction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserInteractionFindManyArgs>(args?: SelectSubset<T, UserInteractionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserInteraction.
+     * @param {UserInteractionCreateArgs} args - Arguments to create a UserInteraction.
+     * @example
+     * // Create one UserInteraction
+     * const UserInteraction = await prisma.userInteraction.create({
+     *   data: {
+     *     // ... data to create a UserInteraction
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserInteractionCreateArgs>(args: SelectSubset<T, UserInteractionCreateArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserInteractions.
+     * @param {UserInteractionCreateManyArgs} args - Arguments to create many UserInteractions.
+     * @example
+     * // Create many UserInteractions
+     * const userInteraction = await prisma.userInteraction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserInteractionCreateManyArgs>(args?: SelectSubset<T, UserInteractionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserInteractions and returns the data saved in the database.
+     * @param {UserInteractionCreateManyAndReturnArgs} args - Arguments to create many UserInteractions.
+     * @example
+     * // Create many UserInteractions
+     * const userInteraction = await prisma.userInteraction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserInteractions and only return the `id`
+     * const userInteractionWithIdOnly = await prisma.userInteraction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserInteractionCreateManyAndReturnArgs>(args?: SelectSubset<T, UserInteractionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserInteraction.
+     * @param {UserInteractionDeleteArgs} args - Arguments to delete one UserInteraction.
+     * @example
+     * // Delete one UserInteraction
+     * const UserInteraction = await prisma.userInteraction.delete({
+     *   where: {
+     *     // ... filter to delete one UserInteraction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserInteractionDeleteArgs>(args: SelectSubset<T, UserInteractionDeleteArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserInteraction.
+     * @param {UserInteractionUpdateArgs} args - Arguments to update one UserInteraction.
+     * @example
+     * // Update one UserInteraction
+     * const userInteraction = await prisma.userInteraction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserInteractionUpdateArgs>(args: SelectSubset<T, UserInteractionUpdateArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserInteractions.
+     * @param {UserInteractionDeleteManyArgs} args - Arguments to filter UserInteractions to delete.
+     * @example
+     * // Delete a few UserInteractions
+     * const { count } = await prisma.userInteraction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserInteractionDeleteManyArgs>(args?: SelectSubset<T, UserInteractionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserInteractions
+     * const userInteraction = await prisma.userInteraction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserInteractionUpdateManyArgs>(args: SelectSubset<T, UserInteractionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserInteractions and returns the data updated in the database.
+     * @param {UserInteractionUpdateManyAndReturnArgs} args - Arguments to update many UserInteractions.
+     * @example
+     * // Update many UserInteractions
+     * const userInteraction = await prisma.userInteraction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserInteractions and only return the `id`
+     * const userInteractionWithIdOnly = await prisma.userInteraction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserInteractionUpdateManyAndReturnArgs>(args: SelectSubset<T, UserInteractionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserInteraction.
+     * @param {UserInteractionUpsertArgs} args - Arguments to update or create a UserInteraction.
+     * @example
+     * // Update or create a UserInteraction
+     * const userInteraction = await prisma.userInteraction.upsert({
+     *   create: {
+     *     // ... data to create a UserInteraction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserInteraction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserInteractionUpsertArgs>(args: SelectSubset<T, UserInteractionUpsertArgs<ExtArgs>>): Prisma__UserInteractionClient<$Result.GetResult<Prisma.$UserInteractionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionCountArgs} args - Arguments to filter UserInteractions to count.
+     * @example
+     * // Count the number of UserInteractions
+     * const count = await prisma.userInteraction.count({
+     *   where: {
+     *     // ... the filter for the UserInteractions we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserInteractionCountArgs>(
+      args?: Subset<T, UserInteractionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserInteractionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserInteractionAggregateArgs>(args: Subset<T, UserInteractionAggregateArgs>): Prisma.PrismaPromise<GetUserInteractionAggregateType<T>>
+
+    /**
+     * Group by UserInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserInteractionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserInteractionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserInteractionGroupByArgs['orderBy'] }
+        : { orderBy?: UserInteractionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserInteractionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserInteractionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserInteraction model
+   */
+  readonly fields: UserInteractionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserInteraction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserInteractionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserInteraction$userArgs<ExtArgs> = {}>(args?: Subset<T, UserInteraction$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserInteraction model
+   */
+  interface UserInteractionFieldRefs {
+    readonly id: FieldRef<"UserInteraction", 'String'>
+    readonly userId: FieldRef<"UserInteraction", 'String'>
+    readonly targetId: FieldRef<"UserInteraction", 'String'>
+    readonly targetType: FieldRef<"UserInteraction", 'TargetType'>
+    readonly actionType: FieldRef<"UserInteraction", 'ActionType'>
+    readonly createdAt: FieldRef<"UserInteraction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserInteraction findUnique
+   */
+  export type UserInteractionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserInteraction to fetch.
+     */
+    where: UserInteractionWhereUniqueInput
+  }
+
+  /**
+   * UserInteraction findUniqueOrThrow
+   */
+  export type UserInteractionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserInteraction to fetch.
+     */
+    where: UserInteractionWhereUniqueInput
+  }
+
+  /**
+   * UserInteraction findFirst
+   */
+  export type UserInteractionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserInteraction to fetch.
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserInteractions to fetch.
+     */
+    orderBy?: UserInteractionOrderByWithRelationInput | UserInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserInteractions.
+     */
+    cursor?: UserInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserInteractions.
+     */
+    distinct?: UserInteractionScalarFieldEnum | UserInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * UserInteraction findFirstOrThrow
+   */
+  export type UserInteractionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserInteraction to fetch.
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserInteractions to fetch.
+     */
+    orderBy?: UserInteractionOrderByWithRelationInput | UserInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserInteractions.
+     */
+    cursor?: UserInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserInteractions.
+     */
+    distinct?: UserInteractionScalarFieldEnum | UserInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * UserInteraction findMany
+   */
+  export type UserInteractionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter, which UserInteractions to fetch.
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserInteractions to fetch.
+     */
+    orderBy?: UserInteractionOrderByWithRelationInput | UserInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserInteractions.
+     */
+    cursor?: UserInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserInteractions.
+     */
+    distinct?: UserInteractionScalarFieldEnum | UserInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * UserInteraction create
+   */
+  export type UserInteractionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserInteraction.
+     */
+    data: XOR<UserInteractionCreateInput, UserInteractionUncheckedCreateInput>
+  }
+
+  /**
+   * UserInteraction createMany
+   */
+  export type UserInteractionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserInteractions.
+     */
+    data: UserInteractionCreateManyInput | UserInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserInteraction createManyAndReturn
+   */
+  export type UserInteractionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserInteractions.
+     */
+    data: UserInteractionCreateManyInput | UserInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserInteraction update
+   */
+  export type UserInteractionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserInteraction.
+     */
+    data: XOR<UserInteractionUpdateInput, UserInteractionUncheckedUpdateInput>
+    /**
+     * Choose, which UserInteraction to update.
+     */
+    where: UserInteractionWhereUniqueInput
+  }
+
+  /**
+   * UserInteraction updateMany
+   */
+  export type UserInteractionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserInteractions.
+     */
+    data: XOR<UserInteractionUpdateManyMutationInput, UserInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which UserInteractions to update
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * Limit how many UserInteractions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserInteraction updateManyAndReturn
+   */
+  export type UserInteractionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to update UserInteractions.
+     */
+    data: XOR<UserInteractionUpdateManyMutationInput, UserInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which UserInteractions to update
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * Limit how many UserInteractions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserInteraction upsert
+   */
+  export type UserInteractionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserInteraction to update in case it exists.
+     */
+    where: UserInteractionWhereUniqueInput
+    /**
+     * In case the UserInteraction found by the `where` argument doesn't exist, create a new UserInteraction with this data.
+     */
+    create: XOR<UserInteractionCreateInput, UserInteractionUncheckedCreateInput>
+    /**
+     * In case the UserInteraction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserInteractionUpdateInput, UserInteractionUncheckedUpdateInput>
+  }
+
+  /**
+   * UserInteraction delete
+   */
+  export type UserInteractionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+    /**
+     * Filter which UserInteraction to delete.
+     */
+    where: UserInteractionWhereUniqueInput
+  }
+
+  /**
+   * UserInteraction deleteMany
+   */
+  export type UserInteractionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserInteractions to delete
+     */
+    where?: UserInteractionWhereInput
+    /**
+     * Limit how many UserInteractions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserInteraction.user
+   */
+  export type UserInteraction$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * UserInteraction without action
+   */
+  export type UserInteractionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserInteraction
+     */
+    select?: UserInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserInteraction
+     */
+    omit?: UserInteractionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInteractionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model DestinationTrend
    */
 
@@ -35606,6 +36854,18 @@ export namespace Prisma {
   export type DestinationInteractionScalarFieldEnum = (typeof DestinationInteractionScalarFieldEnum)[keyof typeof DestinationInteractionScalarFieldEnum]
 
 
+  export const UserInteractionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    targetId: 'targetId',
+    targetType: 'targetType',
+    actionType: 'actionType',
+    createdAt: 'createdAt'
+  };
+
+  export type UserInteractionScalarFieldEnum = (typeof UserInteractionScalarFieldEnum)[keyof typeof UserInteractionScalarFieldEnum]
+
+
   export const DestinationTrendScalarFieldEnum: {
     id: 'id',
     destinationId: 'destinationId',
@@ -35976,6 +37236,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TargetType'
+   */
+  export type EnumTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TargetType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TargetType[]'
+   */
+  export type ListEnumTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TargetType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ActionType'
+   */
+  export type EnumActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ActionType[]'
+   */
+  export type ListEnumActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'SentimentLabel'
    */
   export type EnumSentimentLabelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SentimentLabel'>
@@ -36026,6 +37314,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     halalValidations?: HalalValidationListRelationFilter
     destinationInteractions?: DestinationInteractionListRelationFilter
+    userInteractions?: UserInteractionListRelationFilter
     itineraries?: ItineraryListRelationFilter
   }
 
@@ -36046,6 +37335,7 @@ export namespace Prisma {
     reviews?: ReviewOrderByRelationAggregateInput
     halalValidations?: HalalValidationOrderByRelationAggregateInput
     destinationInteractions?: DestinationInteractionOrderByRelationAggregateInput
+    userInteractions?: UserInteractionOrderByRelationAggregateInput
     itineraries?: ItineraryOrderByRelationAggregateInput
   }
 
@@ -36069,6 +37359,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     halalValidations?: HalalValidationListRelationFilter
     destinationInteractions?: DestinationInteractionListRelationFilter
+    userInteractions?: UserInteractionListRelationFilter
     itineraries?: ItineraryListRelationFilter
   }, "id" | "email">
 
@@ -37242,6 +38533,66 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"DestinationInteraction"> | Date | string
   }
 
+  export type UserInteractionWhereInput = {
+    AND?: UserInteractionWhereInput | UserInteractionWhereInput[]
+    OR?: UserInteractionWhereInput[]
+    NOT?: UserInteractionWhereInput | UserInteractionWhereInput[]
+    id?: StringFilter<"UserInteraction"> | string
+    userId?: StringNullableFilter<"UserInteraction"> | string | null
+    targetId?: StringFilter<"UserInteraction"> | string
+    targetType?: EnumTargetTypeFilter<"UserInteraction"> | $Enums.TargetType
+    actionType?: EnumActionTypeFilter<"UserInteraction"> | $Enums.ActionType
+    createdAt?: DateTimeFilter<"UserInteraction"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type UserInteractionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    targetId?: SortOrder
+    targetType?: SortOrder
+    actionType?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserInteractionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UserInteractionWhereInput | UserInteractionWhereInput[]
+    OR?: UserInteractionWhereInput[]
+    NOT?: UserInteractionWhereInput | UserInteractionWhereInput[]
+    userId?: StringNullableFilter<"UserInteraction"> | string | null
+    targetId?: StringFilter<"UserInteraction"> | string
+    targetType?: EnumTargetTypeFilter<"UserInteraction"> | $Enums.TargetType
+    actionType?: EnumActionTypeFilter<"UserInteraction"> | $Enums.ActionType
+    createdAt?: DateTimeFilter<"UserInteraction"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type UserInteractionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    targetId?: SortOrder
+    targetType?: SortOrder
+    actionType?: SortOrder
+    createdAt?: SortOrder
+    _count?: UserInteractionCountOrderByAggregateInput
+    _max?: UserInteractionMaxOrderByAggregateInput
+    _min?: UserInteractionMinOrderByAggregateInput
+  }
+
+  export type UserInteractionScalarWhereWithAggregatesInput = {
+    AND?: UserInteractionScalarWhereWithAggregatesInput | UserInteractionScalarWhereWithAggregatesInput[]
+    OR?: UserInteractionScalarWhereWithAggregatesInput[]
+    NOT?: UserInteractionScalarWhereWithAggregatesInput | UserInteractionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserInteraction"> | string
+    userId?: StringNullableWithAggregatesFilter<"UserInteraction"> | string | null
+    targetId?: StringWithAggregatesFilter<"UserInteraction"> | string
+    targetType?: EnumTargetTypeWithAggregatesFilter<"UserInteraction"> | $Enums.TargetType
+    actionType?: EnumActionTypeWithAggregatesFilter<"UserInteraction"> | $Enums.ActionType
+    createdAt?: DateTimeWithAggregatesFilter<"UserInteraction"> | Date | string
+  }
+
   export type DestinationTrendWhereInput = {
     AND?: DestinationTrendWhereInput | DestinationTrendWhereInput[]
     OR?: DestinationTrendWhereInput[]
@@ -38218,6 +39569,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -38238,6 +39590,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -38258,6 +39611,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -38278,6 +39632,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -39576,6 +40931,68 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserInteractionCreateInput = {
+    id?: string
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutUserInteractionsInput
+  }
+
+  export type UserInteractionUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt?: Date | string
+  }
+
+  export type UserInteractionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutUserInteractionsNestedInput
+  }
+
+  export type UserInteractionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserInteractionCreateManyInput = {
+    id?: string
+    userId?: string | null
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt?: Date | string
+  }
+
+  export type UserInteractionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserInteractionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DestinationTrendCreateInput = {
     id?: string
     period: string
@@ -40710,6 +42127,12 @@ export namespace Prisma {
     none?: DestinationInteractionWhereInput
   }
 
+  export type UserInteractionListRelationFilter = {
+    every?: UserInteractionWhereInput
+    some?: UserInteractionWhereInput
+    none?: UserInteractionWhereInput
+  }
+
   export type ItineraryListRelationFilter = {
     every?: ItineraryWhereInput
     some?: ItineraryWhereInput
@@ -40738,6 +42161,10 @@ export namespace Prisma {
   }
 
   export type DestinationInteractionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserInteractionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -41827,6 +43254,67 @@ export namespace Prisma {
     _max?: NestedEnumInteractionTypeFilter<$PrismaModel>
   }
 
+  export type EnumTargetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TargetType | EnumTargetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTargetTypeFilter<$PrismaModel> | $Enums.TargetType
+  }
+
+  export type EnumActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActionType | EnumActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumActionTypeFilter<$PrismaModel> | $Enums.ActionType
+  }
+
+  export type UserInteractionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    targetType?: SortOrder
+    actionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserInteractionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    targetType?: SortOrder
+    actionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserInteractionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    targetType?: SortOrder
+    actionType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumTargetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TargetType | EnumTargetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTargetTypeWithAggregatesFilter<$PrismaModel> | $Enums.TargetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTargetTypeFilter<$PrismaModel>
+    _max?: NestedEnumTargetTypeFilter<$PrismaModel>
+  }
+
+  export type EnumActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActionType | EnumActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.ActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumActionTypeFilter<$PrismaModel>
+  }
+
   export type DestinationTrendDestinationIdPeriodPeriodStartCompoundUniqueInput = {
     destinationId: string
     period: string
@@ -42537,6 +44025,13 @@ export namespace Prisma {
     connect?: DestinationInteractionWhereUniqueInput | DestinationInteractionWhereUniqueInput[]
   }
 
+  export type UserInteractionCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput> | UserInteractionCreateWithoutUserInput[] | UserInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserInteractionCreateOrConnectWithoutUserInput | UserInteractionCreateOrConnectWithoutUserInput[]
+    createMany?: UserInteractionCreateManyUserInputEnvelope
+    connect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+  }
+
   export type ItineraryCreateNestedManyWithoutUserInput = {
     create?: XOR<ItineraryCreateWithoutUserInput, ItineraryUncheckedCreateWithoutUserInput> | ItineraryCreateWithoutUserInput[] | ItineraryUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ItineraryCreateOrConnectWithoutUserInput | ItineraryCreateOrConnectWithoutUserInput[]
@@ -42577,6 +44072,13 @@ export namespace Prisma {
     connectOrCreate?: DestinationInteractionCreateOrConnectWithoutUserInput | DestinationInteractionCreateOrConnectWithoutUserInput[]
     createMany?: DestinationInteractionCreateManyUserInputEnvelope
     connect?: DestinationInteractionWhereUniqueInput | DestinationInteractionWhereUniqueInput[]
+  }
+
+  export type UserInteractionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput> | UserInteractionCreateWithoutUserInput[] | UserInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserInteractionCreateOrConnectWithoutUserInput | UserInteractionCreateOrConnectWithoutUserInput[]
+    createMany?: UserInteractionCreateManyUserInputEnvelope
+    connect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
   }
 
   export type ItineraryUncheckedCreateNestedManyWithoutUserInput = {
@@ -42680,6 +44182,20 @@ export namespace Prisma {
     deleteMany?: DestinationInteractionScalarWhereInput | DestinationInteractionScalarWhereInput[]
   }
 
+  export type UserInteractionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput> | UserInteractionCreateWithoutUserInput[] | UserInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserInteractionCreateOrConnectWithoutUserInput | UserInteractionCreateOrConnectWithoutUserInput[]
+    upsert?: UserInteractionUpsertWithWhereUniqueWithoutUserInput | UserInteractionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserInteractionCreateManyUserInputEnvelope
+    set?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    disconnect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    delete?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    connect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    update?: UserInteractionUpdateWithWhereUniqueWithoutUserInput | UserInteractionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserInteractionUpdateManyWithWhereWithoutUserInput | UserInteractionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserInteractionScalarWhereInput | UserInteractionScalarWhereInput[]
+  }
+
   export type ItineraryUpdateManyWithoutUserNestedInput = {
     create?: XOR<ItineraryCreateWithoutUserInput, ItineraryUncheckedCreateWithoutUserInput> | ItineraryCreateWithoutUserInput[] | ItineraryUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ItineraryCreateOrConnectWithoutUserInput | ItineraryCreateOrConnectWithoutUserInput[]
@@ -42762,6 +44278,20 @@ export namespace Prisma {
     update?: DestinationInteractionUpdateWithWhereUniqueWithoutUserInput | DestinationInteractionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: DestinationInteractionUpdateManyWithWhereWithoutUserInput | DestinationInteractionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: DestinationInteractionScalarWhereInput | DestinationInteractionScalarWhereInput[]
+  }
+
+  export type UserInteractionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput> | UserInteractionCreateWithoutUserInput[] | UserInteractionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserInteractionCreateOrConnectWithoutUserInput | UserInteractionCreateOrConnectWithoutUserInput[]
+    upsert?: UserInteractionUpsertWithWhereUniqueWithoutUserInput | UserInteractionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserInteractionCreateManyUserInputEnvelope
+    set?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    disconnect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    delete?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    connect?: UserInteractionWhereUniqueInput | UserInteractionWhereUniqueInput[]
+    update?: UserInteractionUpdateWithWhereUniqueWithoutUserInput | UserInteractionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserInteractionUpdateManyWithWhereWithoutUserInput | UserInteractionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserInteractionScalarWhereInput | UserInteractionScalarWhereInput[]
   }
 
   export type ItineraryUncheckedUpdateManyWithoutUserNestedInput = {
@@ -43808,6 +45338,30 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDestinationInteractionsInput, UserUpdateWithoutDestinationInteractionsInput>, UserUncheckedUpdateWithoutDestinationInteractionsInput>
   }
 
+  export type UserCreateNestedOneWithoutUserInteractionsInput = {
+    create?: XOR<UserCreateWithoutUserInteractionsInput, UserUncheckedCreateWithoutUserInteractionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserInteractionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumTargetTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TargetType
+  }
+
+  export type EnumActionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ActionType
+  }
+
+  export type UserUpdateOneWithoutUserInteractionsNestedInput = {
+    create?: XOR<UserCreateWithoutUserInteractionsInput, UserUncheckedCreateWithoutUserInteractionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserInteractionsInput
+    upsert?: UserUpsertWithoutUserInteractionsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserInteractionsInput, UserUpdateWithoutUserInteractionsInput>, UserUncheckedUpdateWithoutUserInteractionsInput>
+  }
+
   export type DestinationCreateNestedOneWithoutTrendsInput = {
     create?: XOR<DestinationCreateWithoutTrendsInput, DestinationUncheckedCreateWithoutTrendsInput>
     connectOrCreate?: DestinationCreateOrConnectWithoutTrendsInput
@@ -44688,6 +46242,40 @@ export namespace Prisma {
     _max?: NestedEnumInteractionTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTargetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TargetType | EnumTargetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTargetTypeFilter<$PrismaModel> | $Enums.TargetType
+  }
+
+  export type NestedEnumActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActionType | EnumActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumActionTypeFilter<$PrismaModel> | $Enums.ActionType
+  }
+
+  export type NestedEnumTargetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TargetType | EnumTargetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TargetType[] | ListEnumTargetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTargetTypeWithAggregatesFilter<$PrismaModel> | $Enums.TargetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTargetTypeFilter<$PrismaModel>
+    _max?: NestedEnumTargetTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActionType | EnumActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ActionType[] | ListEnumActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.ActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumActionTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumSentimentLabelFilter<$PrismaModel = never> = {
     equals?: $Enums.SentimentLabel | EnumSentimentLabelFieldRefInput<$PrismaModel>
     in?: $Enums.SentimentLabel[] | ListEnumSentimentLabelFieldRefInput<$PrismaModel>
@@ -44919,6 +46507,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserInteractionCreateWithoutUserInput = {
+    id?: string
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt?: Date | string
+  }
+
+  export type UserInteractionUncheckedCreateWithoutUserInput = {
+    id?: string
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
+    createdAt?: Date | string
+  }
+
+  export type UserInteractionCreateOrConnectWithoutUserInput = {
+    where: UserInteractionWhereUniqueInput
+    create: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserInteractionCreateManyUserInputEnvelope = {
+    data: UserInteractionCreateManyUserInput | UserInteractionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ItineraryCreateWithoutUserInput = {
     id?: string
     title: string
@@ -45113,6 +46727,34 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"DestinationInteraction"> | Date | string
   }
 
+  export type UserInteractionUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserInteractionWhereUniqueInput
+    update: XOR<UserInteractionUpdateWithoutUserInput, UserInteractionUncheckedUpdateWithoutUserInput>
+    create: XOR<UserInteractionCreateWithoutUserInput, UserInteractionUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserInteractionUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserInteractionWhereUniqueInput
+    data: XOR<UserInteractionUpdateWithoutUserInput, UserInteractionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserInteractionUpdateManyWithWhereWithoutUserInput = {
+    where: UserInteractionScalarWhereInput
+    data: XOR<UserInteractionUpdateManyMutationInput, UserInteractionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserInteractionScalarWhereInput = {
+    AND?: UserInteractionScalarWhereInput | UserInteractionScalarWhereInput[]
+    OR?: UserInteractionScalarWhereInput[]
+    NOT?: UserInteractionScalarWhereInput | UserInteractionScalarWhereInput[]
+    id?: StringFilter<"UserInteraction"> | string
+    userId?: StringNullableFilter<"UserInteraction"> | string | null
+    targetId?: StringFilter<"UserInteraction"> | string
+    targetType?: EnumTargetTypeFilter<"UserInteraction"> | $Enums.TargetType
+    actionType?: EnumActionTypeFilter<"UserInteraction"> | $Enums.ActionType
+    createdAt?: DateTimeFilter<"UserInteraction"> | Date | string
+  }
+
   export type ItineraryUpsertWithWhereUniqueWithoutUserInput = {
     where: ItineraryWhereUniqueInput
     update: XOR<ItineraryUpdateWithoutUserInput, ItineraryUncheckedUpdateWithoutUserInput>
@@ -45160,6 +46802,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -45179,6 +46822,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45214,6 +46858,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -45233,6 +46878,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45252,6 +46898,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -45271,6 +46918,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45306,6 +46954,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -45325,6 +46974,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -47139,6 +48789,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -47158,6 +48809,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47395,6 +49047,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -47414,6 +49067,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -47726,6 +49380,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -47745,6 +49400,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -47853,6 +49509,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -47872,6 +49529,103 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
+    itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutUserInteractionsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
+    destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    itineraries?: ItineraryCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUserInteractionsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    role?: string
+    banned?: boolean | null
+    banReason?: string | null
+    banExpires?: Date | string | null
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
+    destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUserInteractionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserInteractionsInput, UserUncheckedCreateWithoutUserInteractionsInput>
+  }
+
+  export type UserUpsertWithoutUserInteractionsInput = {
+    update: XOR<UserUpdateWithoutUserInteractionsInput, UserUncheckedUpdateWithoutUserInteractionsInput>
+    create: XOR<UserCreateWithoutUserInteractionsInput, UserUncheckedCreateWithoutUserInteractionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserInteractionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserInteractionsInput, UserUncheckedUpdateWithoutUserInteractionsInput>
+  }
+
+  export type UserUpdateWithoutUserInteractionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
+    destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    itineraries?: ItineraryUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserInteractionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    banned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    banReason?: NullableStringFieldUpdateOperationsInput | string | null
+    banExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
+    destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -48096,6 +49850,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutItinerariesInput = {
@@ -48115,6 +49870,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     halalValidations?: HalalValidationUncheckedCreateNestedManyWithoutValidatorInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutItinerariesInput = {
@@ -48178,6 +49934,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutItinerariesInput = {
@@ -48197,6 +49954,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     halalValidations?: HalalValidationUncheckedUpdateManyWithoutValidatorNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ItineraryItemUpsertWithWhereUniqueWithoutItineraryInput = {
@@ -49438,6 +51196,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     destinationInteractions?: DestinationInteractionCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionCreateNestedManyWithoutUserInput
     itineraries?: ItineraryCreateNestedManyWithoutUserInput
   }
 
@@ -49457,6 +51216,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     destinationInteractions?: DestinationInteractionUncheckedCreateNestedManyWithoutUserInput
+    userInteractions?: UserInteractionUncheckedCreateNestedManyWithoutUserInput
     itineraries?: ItineraryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -49628,6 +51388,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     destinationInteractions?: DestinationInteractionUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUpdateManyWithoutUserNestedInput
   }
 
@@ -49647,6 +51408,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     destinationInteractions?: DestinationInteractionUncheckedUpdateManyWithoutUserNestedInput
+    userInteractions?: UserInteractionUncheckedUpdateManyWithoutUserNestedInput
     itineraries?: ItineraryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -49806,6 +51568,14 @@ export namespace Prisma {
     keyword?: string | null
     source?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type UserInteractionCreateManyUserInput = {
+    id?: string
+    targetId: string
+    targetType: $Enums.TargetType
+    actionType: $Enums.ActionType
     createdAt?: Date | string
   }
 
@@ -50001,6 +51771,30 @@ export namespace Prisma {
     keyword?: NullableStringFieldUpdateOperationsInput | string | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserInteractionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserInteractionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserInteractionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    targetType?: EnumTargetTypeFieldUpdateOperationsInput | $Enums.TargetType
+    actionType?: EnumActionTypeFieldUpdateOperationsInput | $Enums.ActionType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

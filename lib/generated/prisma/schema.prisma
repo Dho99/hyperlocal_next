@@ -42,6 +42,7 @@ model User {
   reviews                 Review[]
   halalValidations        HalalValidation[]
   destinationInteractions DestinationInteraction[]
+  userInteractions        UserInteraction[]
   itineraries             Itinerary[]
 
   @@unique([email])
@@ -302,6 +303,17 @@ model Review {
   @@map("reviews")
 }
 
+enum TargetType {
+  DESTINASI
+  UMKM
+}
+
+enum ActionType {
+  CLICK_ROUTE
+  CLICK_WHATSAPP
+  BOOKMARK
+}
+
 enum InteractionType {
   VIEW
   SEARCH
@@ -334,6 +346,23 @@ model DestinationInteraction {
   @@index([userId])
   @@index([createdAt])
   @@map("destination_interactions")
+}
+
+model UserInteraction {
+  id         String     @id @default(uuid())
+  userId     String?    @map("user_id")
+  targetId   String     @map("target_id")
+  targetType TargetType @map("target_type")
+  actionType ActionType @map("action_type")
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([targetId, targetType])
+  @@index([targetId, targetType, actionType])
+  @@index([createdAt])
+  @@map("user_interactions")
 }
 
 model DestinationTrend {

@@ -26,7 +26,6 @@ import UserLocationMarker from "./user-location-marker";
 import FacilityRoutePolyline from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
 
-
 fixLeafletIcons();
 
 function MapController({
@@ -146,169 +145,159 @@ export default function PetaMapClient() {
     }
 
     return (
-        <div className="flex h-[calc(100dvh-4rem)]">
-                <PetaSidebar
-                    destinations={filteredDestinations}
-                    userLocation={userLocation}
-                    radius={radius}
-                    searchQuery={searchQuery}
-                    activeCategory={activeCategory}
-                    selectedDestination={selectedDestination}
-                    locationDenied={locationDenied}
-                    onRadiusChange={setRadius}
-                    onSearchChange={setSearchQuery}
-                    onCategoryChange={setActiveCategory}
-                    onDestinationSelect={(d) => {
-                        setSelectedDestination(d);
-                        if (d && d.latitude != null && d.longitude != null) {
-                            setRadius((prev) => prev);
-                        }
-                    }}
-                    onLocateMe={handleLocateMe}
-                />
+        <div className="flex h-[calc(100dvh-4rem)] w-full">
+            <PetaSidebar
+                destinations={filteredDestinations}
+                userLocation={userLocation}
+                radius={radius}
+                searchQuery={searchQuery}
+                activeCategory={activeCategory}
+                selectedDestination={selectedDestination}
+                locationDenied={locationDenied}
+                onRadiusChange={setRadius}
+                onSearchChange={setSearchQuery}
+                onCategoryChange={setActiveCategory}
+                onDestinationSelect={(d) => {
+                    setSelectedDestination(d);
+                    if (d && d.latitude != null && d.longitude != null) {
+                        setRadius((prev) => prev);
+                    }
+                }}
+                onLocateMe={handleLocateMe}
+            />
 
-                <main className="relative flex-1">
-                    <MapContainer
-                        center={mapCenter}
-                        zoom={DEFAULT_ZOOM}
-                        scrollWheelZoom={true}
-                        className="h-full w-full"
-                    >
-                        <TileLayer
-                            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                        />
+            <main className="relative flex-1 w-full">
+                <MapContainer
+                    center={mapCenter}
+                    zoom={DEFAULT_ZOOM}
+                    scrollWheelZoom={true}
+                    className="h-full w-full"
+                >
+                    <TileLayer
+                        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    />
 
-                        <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
+                    <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 
-                        {userLocation && (
-                            <>
-                                <UserLocationMarker location={userLocation} />
-                                <Circle
-                                    center={[
-                                        userLocation.lat,
-                                        userLocation.lng,
-                                    ]}
-                                    radius={radius * 1000}
-                                    pathOptions={{
-                                        color: "#4f378a",
-                                        fillColor: "#eaddff",
-                                        fillOpacity: 0.15,
-                                        weight: 2,
-                                        dashArray: "4, 4",
-                                    }}
-                                />
-                            </>
-                        )}
+                    {userLocation && (
+                        <>
+                            <UserLocationMarker location={userLocation} />
+                            <Circle
+                                center={[userLocation.lat, userLocation.lng]}
+                                radius={radius * 1000}
+                                pathOptions={{
+                                    color: "#4f378a",
+                                    fillColor: "#eaddff",
+                                    fillOpacity: 0.15,
+                                    weight: 2,
+                                    dashArray: "4, 4",
+                                }}
+                            />
+                        </>
+                    )}
 
-                        {filteredDestinations.map((d) => {
-                            if (d.latitude == null || d.longitude == null)
-                                return null;
-                            const color = getCategoryColor(d.category?.name);
-                            const icon = L.divIcon({
-                                className: "",
-                                html: createPinSvg(color),
-                                iconSize: [28, 42],
-                                iconAnchor: [14, 42],
-                                popupAnchor: [0, -44],
-                            });
-                            const isSelected = selectedDestination?.id === d.id;
-                            return (
-                                <Marker
-                                    key={d.id}
-                                    position={[d.latitude, d.longitude]}
-                                    icon={
-                                        isSelected
-                                            ? L.divIcon({
-                                                  className: "",
-                                                  html: createPinSvg("#4f378a"),
-                                                  iconSize: [36, 54],
-                                                  iconAnchor: [18, 54],
-                                                  popupAnchor: [0, -56],
-                                              })
-                                            : icon
-                                    }
-                                    eventHandlers={{
-                                        click: () => setSelectedDestination(d),
-                                    }}
-                                >
-                                    <Popup>
-                                        <div className="p-1">
-                                            <p className="m-0 text-sm font-bold text-[#4f378a]">
-                                                {d.name}
+                    {filteredDestinations.map((d) => {
+                        if (d.latitude == null || d.longitude == null)
+                            return null;
+                        const color = getCategoryColor(d.category?.name);
+                        const icon = L.divIcon({
+                            className: "",
+                            html: createPinSvg(color),
+                            iconSize: [28, 42],
+                            iconAnchor: [14, 42],
+                            popupAnchor: [0, -44],
+                        });
+                        const isSelected = selectedDestination?.id === d.id;
+                        return (
+                            <Marker
+                                key={d.id}
+                                position={[d.latitude, d.longitude]}
+                                icon={
+                                    isSelected
+                                        ? L.divIcon({
+                                              className: "",
+                                              html: createPinSvg("#4f378a"),
+                                              iconSize: [36, 54],
+                                              iconAnchor: [18, 54],
+                                              popupAnchor: [0, -56],
+                                          })
+                                        : icon
+                                }
+                                eventHandlers={{
+                                    click: () => setSelectedDestination(d),
+                                }}
+                            >
+                                <Popup>
+                                    <div className="p-1">
+                                        <p className="m-0 text-sm font-bold text-[#4f378a]">
+                                            {d.name}
+                                        </p>
+                                        {d.category?.name && (
+                                            <p className="m-0 mt-0.5 text-xs text-[#7a7380]">
+                                                {d.category.name}
                                             </p>
-                                            {d.category?.name && (
-                                                <p className="m-0 mt-0.5 text-xs text-[#7a7380]">
-                                                    {d.category.name}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            );
-                        })}
+                                        )}
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        );
+                    })}
 
-                        {selectedDestination &&
-                            selectedDestination.latitude != null &&
-                            selectedDestination.longitude != null &&
-                            (() => {
-                                const destLat = selectedDestination.latitude;
-                                const destLng = selectedDestination.longitude;
-                                return selectedFacilities.map((dhf) => {
-                                    if (
-                                        dhf.latitude == null ||
-                                        dhf.longitude == null
-                                    )
-                                        return null;
-                                    const facilityIcon = L.divIcon({
-                                        className: "",
-                                        html: `<div style="
+                    {selectedDestination &&
+                        selectedDestination.latitude != null &&
+                        selectedDestination.longitude != null &&
+                        (() => {
+                            const destLat = selectedDestination.latitude;
+                            const destLng = selectedDestination.longitude;
+                            return selectedFacilities.map((dhf) => {
+                                if (
+                                    dhf.latitude == null ||
+                                    dhf.longitude == null
+                                )
+                                    return null;
+                                const facilityIcon = L.divIcon({
+                                    className: "",
+                                    html: `<div style="
                                         width:22px;height:22px;border-radius:50%;
                                         background:#3B82F6;border:2px solid white;
                                         box-shadow:0 2px 6px rgba(0,0,0,0.25);
                                     "></div>`,
-                                        iconSize: [22, 22],
-                                        iconAnchor: [11, 11],
-                                    });
-                                    return (
-                                        <Marker
-                                            key={dhf.id}
-                                            position={[
-                                                dhf.latitude,
-                                                dhf.longitude,
-                                            ]}
-                                            icon={facilityIcon}
-                                        >
-                                            <Popup>
-                                                <div className="p-1">
-                                                    <p className="m-0 text-sm font-bold text-[#4f378a]">
-                                                        {dhf.facility?.name ??
-                                                            "Fasilitas"}
-                                                    </p>
-                                                    {dhf.facility
-                                                        ?.facilityType && (
-                                                        <p className="m-0 mt-0.5 text-xs text-[#7a7380] capitalize">
-                                                            {dhf.facility.facilityType.replace(
-                                                                /_/g,
-                                                                " ",
-                                                            )}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </Popup>
-                                            <FacilityRoutePolyline
-                                                from={[destLat, destLng]}
-                                                to={[
-                                                    dhf.latitude,
-                                                    dhf.longitude,
-                                                ]}
-                                            />
-                                        </Marker>
-                                    );
+                                    iconSize: [22, 22],
+                                    iconAnchor: [11, 11],
                                 });
-                            })()}
-                    </MapContainer>
-                </main>
-            </div>
+                                return (
+                                    <Marker
+                                        key={dhf.id}
+                                        position={[dhf.latitude, dhf.longitude]}
+                                        icon={facilityIcon}
+                                    >
+                                        <Popup>
+                                            <div className="p-1">
+                                                <p className="m-0 text-sm font-bold text-[#4f378a]">
+                                                    {dhf.facility?.name ??
+                                                        "Fasilitas"}
+                                                </p>
+                                                {dhf.facility?.facilityType && (
+                                                    <p className="m-0 mt-0.5 text-xs text-[#7a7380] capitalize">
+                                                        {dhf.facility.facilityType.replace(
+                                                            /_/g,
+                                                            " ",
+                                                        )}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </Popup>
+                                        <FacilityRoutePolyline
+                                            from={[destLat, destLng]}
+                                            to={[dhf.latitude, dhf.longitude]}
+                                        />
+                                    </Marker>
+                                );
+                            });
+                        })()}
+                </MapContainer>
+            </main>
+        </div>
     );
 }

@@ -2,7 +2,9 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma";
 import { 
   InteractionType, 
-  SentimentLabel, 
+  SentimentLabel,
+  ActionType,
+  TargetType,
 } from "@/lib/generated/prisma/client";
 import { subDays, startOfDay, startOfWeek, startOfMonth } from "date-fns";
 
@@ -675,4 +677,160 @@ export async function getHalalReadinessDashboard(regionType: "city" | "province"
     where: { regionType },
     orderBy: { totalScore: "desc" }
   });
+}
+
+export async function trackUserInteraction(data: {
+  userId?: string;
+  targetId: string;
+  targetType: "DESTINASI" | "UMKM";
+  actionType: "CLICK_ROUTE" | "CLICK_WHATSAPP" | "BOOKMARK";
+}) {
+  return await prisma.userInteraction.create({
+    data: {
+      userId: data.userId ?? null,
+      targetId: data.targetId,
+      targetType: data.targetType as TargetType,
+      actionType: data.actionType as ActionType,
+    },
+  });
+}
+
+export async function toggleBookmark(data: {
+  userId: string;
+  targetId: string;
+  targetType: "DESTINASI" | "UMKM";
+}): Promise<{ bookmarked: boolean }> {
+  const existing = await prisma.userInteraction.findFirst({
+    where: {
+      userId: data.userId,
+      targetId: data.targetId,
+      targetType: data.targetType as TargetType,
+      actionType: "BOOKMARK" as ActionType,
+    },
+  });
+
+  if (existing) {
+    await prisma.userInteraction.delete({ where: { id: existing.id } });
+    return { bookmarked: false };
+  }
+
+  await prisma.userInteraction.create({
+    data: {
+      userId: data.userId,
+      targetId: data.targetId,
+      targetType: data.targetType as TargetType,
+      actionType: "BOOKMARK" as ActionType,
+    },
+  });
+  return { bookmarked: true };
+}
+
+export async function getUserBookmarks(userId: string) {
+  const records = await prisma.userInteraction.findMany({
+    where: {
+      userId,
+      actionType: "BOOKMARK" as ActionType,
+    },
+    select: {
+      targetId: true,
+      targetType: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  return records;
+}
+
+export async function getTopBookmarkedDestinations(limit = 5) {
+  const result = await prisma.userInteraction.groupBy({
+    by: ["targetId"],
+    where: {
+      actionType: "BOOKMARK" as ActionType,
+      targetType: "DESTINASI" as TargetType,
+    },
+    _count: { _all: true },
+    orderBy: { _count: { targetId: "desc" } },
+    take: limit,
+  });
+
+  if (result.length === 0) return [];
+
+  const ids = result.map((r) => r.targetId);
+  const idOrder = Object.fromEntries(ids.map((id, i) => [id, i]));
+
+  const destinations = await prisma.destination.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, name: true, city: true, slug: true },
+  });
+
+  return destinations
+    .map((d) => ({
+      id: d.id,
+      name: d.name,
+      city: d.city || "-",
+      slug: d.slug,
+      bookmarkCount: result[idOrder[d.id]]?._count._all ?? 0,
+    }))
+    .sort((a, b) => b.bookmarkCount - a.bookmarkCount);
+}
+
+export async function getTopWhatsappClickedUmkms(limit = 5) {
+  const result = await prisma.userInteraction.groupBy({
+    by: ["targetId"],
+    where: {
+      actionType: "CLICK_WHATSAPP" as ActionType,
+      targetType: "UMKM" as TargetType,
+    },
+    _count: { _all: true },
+    orderBy: { _count: { targetId: "desc" } },
+    take: limit,
+  });
+
+  if (result.length === 0) return [];
+
+  const ids = result.map((r) => r.targetId);
+  const idOrder = Object.fromEntries(ids.map((id, i) => [id, i]));
+
+  const umkms = await prisma.umkm.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, name: true, address: true, slug: true },
+  });
+
+  return umkms
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      address: u.address || "-",
+      slug: u.slug,
+      whatsappClickCount: result[idOrder[u.id]]?._count._all ?? 0,
+    }))
+    .sort((a, b) => b.whatsappClickCount - a.whatsappClickCount);
+}
+
+export async function getCtaSummary() {
+  const [routeClicks, whatsappClicks, totalBookmarks, uniqueBookmarkUsers] = await Promise.all([
+    prisma.userInteraction.count({
+      where: { actionType: "CLICK_ROUTE" as ActionType },
+    }),
+    prisma.userInteraction.count({
+      where: { actionType: "CLICK_WHATSAPP" as ActionType },
+    }),
+    prisma.userInteraction.count({
+      where: { actionType: "BOOKMARK" as ActionType },
+    }),
+    prisma.userInteraction.groupBy({
+      by: ["userId"],
+      where: {
+        actionType: "BOOKMARK" as ActionType,
+        userId: { not: null },
+      },
+    }),
+  ]);
+
+  return {
+    totalRouteClicks: routeClicks,
+    totalWhatsappClicks: whatsappClicks,
+    totalBookmarks,
+    uniqueBookmarkUsers: uniqueBookmarkUsers.length,
+  };
 }

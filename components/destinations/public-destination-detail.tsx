@@ -12,7 +12,6 @@ import { authClient } from "@/lib/auth-client";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import {
-    getSavedDestinationIds,
     googleMapsUrl,
     type NearbyUmkm,
 } from "@/fitur/destinasi/data/destinasi-detail-data";
@@ -39,7 +38,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
-    const [saved, setSaved] = useState(false);
     const [shareCopied, setShareCopied] = useState(false);
     const { data: session, isPending: sessionPending } =
         authClient.useSession();
@@ -62,11 +60,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             }
         }
         fetchData();
-    }, [id]);
-
-    useEffect(() => {
-        const savedIds = getSavedDestinationIds();
-        queueMicrotask(() => setSaved(savedIds.includes(id)));
     }, [id]);
 
     useEffect(() => {
@@ -202,20 +195,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         [id],
     );
 
-    const handleSave = useCallback(() => {
-        const savedIds = getSavedDestinationIds();
-        const nextSaved = !saved;
-        const nextIds = nextSaved
-            ? Array.from(new Set([...savedIds, id]))
-            : savedIds.filter((savedId) => savedId !== id);
-        window.localStorage.setItem(
-            "savedDestinations",
-            JSON.stringify(nextIds),
-        );
-        setSaved(nextSaved);
-        if (nextSaved) trackInteraction("SAVE");
-    }, [id, saved, trackInteraction]);
-
     const handleShare = useCallback(async () => {
         if (!destination) return;
         const url = window.location.href;
@@ -236,12 +215,21 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const handleRoute = useCallback(() => {
         if (!destination) return;
         trackInteraction("ROUTE");
+        fetch("/api/track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                targetId: id,
+                targetType: "DESTINASI",
+                actionType: "CLICK_ROUTE",
+            }),
+        }).catch(() => undefined);
         window.open(
             googleMapsUrl(destination),
             "_blank",
             "noopener,noreferrer",
         );
-    }, [destination, trackInteraction]);
+    }, [destination, id, trackInteraction]);
 
     const handleReviewSubmitted = useCallback(
         (_updatedReviews: PublicReview[]) => {},
@@ -260,10 +248,9 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     primaryImage={primaryImage}
                     secondaryImages={secondaryImages}
                     name={destination.name}
-                    saved={saved}
-                    onSave={handleSave}
                     heroLoaded={heroLoaded}
                     onHeroLoad={() => setHeroLoaded(true)}
+                    destinationId={id}
                 />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -292,11 +279,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     <MapSidebar
                         destination={destination}
                         mapData={mapData}
-                        saved={saved}
                         shareCopied={shareCopied}
                         onRoute={handleRoute}
-                        onSave={handleSave}
                         onShare={handleShare}
+                        destinationId={id}
                     />
                 </div>
 

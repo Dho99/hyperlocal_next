@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { InteractionType, SentimentLabel } from "@/lib/generated/prisma/client";
 
+export const userInteractionSchema = z.object({
+  targetId: z.string().min(1),
+  targetType: z.enum(["DESTINASI", "UMKM"]),
+  actionType: z.enum(["CLICK_ROUTE", "CLICK_WHATSAPP", "BOOKMARK"]),
+});
+
 export const interactionSchema = z.object({
   type: z.nativeEnum(InteractionType),
   keyword: z.string().optional(),

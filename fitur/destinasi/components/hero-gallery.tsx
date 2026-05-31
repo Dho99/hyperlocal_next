@@ -1,26 +1,25 @@
 import Image from "next/image";
-import { Heart, ImageIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BookmarkButton } from "@/components/destinations/bookmark-button";
 import type { GalleryImage } from "@/fitur/destinasi/data/destinasi-detail-data";
 
 interface HeroGalleryProps {
     primaryImage: string | null;
     secondaryImages: GalleryImage[];
     name: string;
-    saved: boolean;
-    onSave: () => void;
     heroLoaded: boolean;
     onHeroLoad: () => void;
+    destinationId: string;
 }
 
 export function HeroGallery({
     primaryImage,
     secondaryImages,
     name,
-    saved,
-    onSave,
     heroLoaded,
     onHeroLoad,
+    destinationId,
 }: HeroGalleryProps) {
     return (
         <section className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">
@@ -42,24 +41,12 @@ export function HeroGallery({
                         <ImageIcon className="h-16 w-16 text-border" />
                     </div>
                 )}
-                <button
-                    type="button"
-                    onClick={onSave}
-                    aria-pressed={saved}
-                    aria-label={
-                        saved ? "Hapus dari simpanan" : "Simpan destinasi"
-                    }
-                    className={cn(
-                        "absolute top-4 right-4 bg-background/70 backdrop-blur-md p-2 rounded-full transition-colors shadow-sm",
-                        saved
-                            ? "text-primary"
-                            : "text-muted-foreground hover:text-primary",
-                    )}
-                >
-                    <Heart
-                        className={cn("size-5", saved && "fill-current")}
+                <div className="absolute top-4 right-4">
+                    <BookmarkButton
+                        destinationId={destinationId}
+                        variant="icon"
                     />
-                </button>
+                </div>
             </div>
             <div className="hidden md:flex flex-col gap-2 md:gap-3">
                 {secondaryImages.slice(0, 2).map((img, idx) => (

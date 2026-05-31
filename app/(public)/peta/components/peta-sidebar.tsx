@@ -8,7 +8,10 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
-import { getCategoryColor, getAllCategoryNames } from "@/lib/config/map-categories";
+import {
+    getCategoryColor,
+    getAllCategoryNames,
+} from "@/lib/config/map-categories";
 import type { UserLocation } from "./peta-types";
 
 const RADIUS_PRESETS = [1, 3, 5, 10, 25] as const;
@@ -59,7 +62,7 @@ export default function PetaSidebar({
         const facilities = d.destinationHalalFacilities ?? [];
 
         return (
-            <aside className="flex h-full flex-col border-r border-[#cbc4d2] bg-white">
+            <aside className="flex h-full flex-col border-r border-[#cbc4d2] bg-white max-w-xl">
                 <div className="shrink-0 space-y-4 border-b border-[#cbc4d2] p-4">
                     <div className="flex items-center justify-between">
                         <h2 className="font-heading text-lg font-semibold text-[#4f378a]">
@@ -75,7 +78,7 @@ export default function PetaSidebar({
                     </div>
                 </div>
 
-                <ScrollArea className="flex-1">
+                <ScrollArea className="flex-1 w-full">
                     <div className="p-4 space-y-4">
                         <div>
                             <h3 className="font-heading text-base font-semibold">
@@ -128,18 +131,29 @@ export default function PetaSidebar({
                                             className="rounded-lg bg-[#f2ecf4] px-3 py-2 text-sm"
                                         >
                                             <p className="font-medium text-[#4f378a]">
-                                                {dhf.facility?.name ?? "Fasilitas"}
+                                                {dhf.facility?.name ??
+                                                    "Fasilitas"}
                                             </p>
                                             {dhf.facility?.facilityType && (
                                                 <p className="text-xs text-[#7a7380] capitalize">
-                                                    {dhf.facility.facilityType.replace(/_/g, " ")}
+                                                    {dhf.facility.facilityType.replace(
+                                                        /_/g,
+                                                        " ",
+                                                    )}
                                                 </p>
                                             )}
-                                            {dhf.latitude != null && dhf.longitude != null && (
-                                                <p className="mt-1 text-[10px] font-mono text-[#7a7380]">
-                                                    {dhf.latitude.toFixed(6)}, {dhf.longitude.toFixed(6)}
-                                                </p>
-                                            )}
+                                            {dhf.latitude != null &&
+                                                dhf.longitude != null && (
+                                                    <p className="mt-1 text-[10px] font-mono text-[#7a7380]">
+                                                        {dhf.latitude.toFixed(
+                                                            6,
+                                                        )}
+                                                        ,{" "}
+                                                        {dhf.longitude.toFixed(
+                                                            6,
+                                                        )}
+                                                    </p>
+                                                )}
                                         </div>
                                     ))}
                                 </div>
@@ -247,7 +261,9 @@ export default function PetaSidebar({
                             <button
                                 key={cat}
                                 type="button"
-                                onClick={() => onCategoryChange(isActive ? null : cat)}
+                                onClick={() =>
+                                    onCategoryChange(isActive ? null : cat)
+                                }
                                 className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                                     isActive
                                         ? "text-white"
@@ -276,7 +292,9 @@ export default function PetaSidebar({
                                     backgroundColor: getCategoryColor(cat),
                                 }}
                             />
-                            <span className="text-xs text-[#494551]">{cat}</span>
+                            <span className="text-xs text-[#494551]">
+                                {cat}
+                            </span>
                         </div>
                     ))}
                 </div>

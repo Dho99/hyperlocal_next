@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Star, Search, Loader2, Building } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Accommodation } from "@/types/accommodation";
 
 function AccommodationCard({ item }: { item: Accommodation }) {

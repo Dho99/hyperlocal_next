@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Navigation } from "lucide-react";
+import { Search, Navigation, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,9 +36,10 @@ export function HeroSearch() {
     const [query, setQuery] = useState("");
     const [showGpsModal, setShowGpsModal] = useState(false);
     const [gpsError, setGpsError] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const trimmed = query.trim();
         if (!trimmed) return;
@@ -63,7 +65,37 @@ export function HeroSearch() {
             return;
         }
 
-        router.push(`/explore?q=${encodeURIComponent(trimmed)}`);
+        setLoading(true);
+        const toastId = toast.loading("Menganalisis permintaan...");
+
+        try {
+            const res = await fetch("/api/assistant/route-finder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: trimmed }),
+            });
+
+            if (!res.ok) throw new Error("Gagal memproses permintaan");
+
+            const data = await res.json();
+            toast.dismiss(toastId);
+
+            if (data.intent === "DESTINATION_SEARCH") {
+                router.push(data.redirectTo);
+            } else if (data.intent === "ITINERARY_RECOMMENDATION") {
+                sessionStorage.setItem(
+                    "itinerary_payload",
+                    JSON.stringify(data.payload),
+                );
+                toast.success("Rencana perjalanan siap!");
+                router.push("/itinerary-recommendation");
+            }
+        } catch {
+            toast.dismiss(toastId);
+            toast.error("Terjadi kesalahan. Coba lagi nanti.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -75,19 +107,25 @@ export function HeroSearch() {
                 onSubmit={handleSubmit}
                 className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
             >
-                <Search className="ml-3 size-5 shrink-0 text-stone-500" />
+                {loading ? (
+                    <Loader2 className="ml-3 size-5 shrink-0 animate-spin text-emerald-700" />
+                ) : (
+                    <Search className="ml-3 size-5 shrink-0 text-stone-500" />
+                )}
                 <input
                     aria-label="Cari destinasi"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-stone-500"
-                    placeholder="Cari destinasi, kuliner, atau UMKM halal..."
+                    placeholder="Cari destinasi, buat rencana perjalanan..."
+                    disabled={loading}
                 />
                 <button
-                    className="hidden h-12 rounded-xl bg-emerald-900 px-6 text-sm font-bold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-emerald-800 sm:block"
+                    className="hidden h-12 rounded-xl bg-emerald-900 px-6 text-sm font-bold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-emerald-800 sm:block disabled:opacity-50"
                     type="submit"
+                    disabled={loading}
                 >
-                    Cari Sekarang
+                    {loading ? "Memproses..." : "Cari Sekarang"}
                 </button>
             </motion.form>
 
