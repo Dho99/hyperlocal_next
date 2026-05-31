@@ -5,15 +5,15 @@ const CATEGORY_STYLES: Record<string, { color: string; label: string }> = {
     "Kuliner": { color: "#ea580c", label: "Kuliner" },
     "Penginapan": { color: "#d97706", label: "Penginapan" },
     "Hotel": { color: "#d97706", label: "Hotel" },
-    "Masjid": { color: "#7c3aed", label: "Masjid" },
-    "Tempat Ibadah": { color: "#7c3aed", label: "Tempat Ibadah" },
+    "Masjid": { color: "#059669", label: "Masjid" },
+    "Tempat Ibadah": { color: "#0d9488", label: "Tempat Ibadah" },
     "Wisata Budaya": { color: "#ec4899", label: "Wisata Budaya" },
     "Sejarah": { color: "#ec4899", label: "Sejarah" },
     "Oleh-Oleh": { color: "#14b8a6", label: "Oleh-Oleh" },
     "Belanja": { color: "#14b8a6", label: "Belanja" },
 };
 
-const DEFAULT_COLOR = "#6b21a8";
+const DEFAULT_COLOR = "#047857";
 
 export function getCategoryColor(category?: string): string {
     if (!category) return DEFAULT_COLOR;

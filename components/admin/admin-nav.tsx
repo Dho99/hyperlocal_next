@@ -15,6 +15,8 @@ import {
     Building2,
     ChevronRight,
     ChevronDown,
+    Flag,
+    Lightbulb,
 } from "lucide-react";
 
 export const navItems = [
@@ -86,6 +88,16 @@ export const navItems = [
         title: "Statistik",
         href: "/statistics",
         icon: BarChart3,
+    },
+    {
+        title: "Laporan",
+        href: "/reports",
+        icon: Flag,
+    },
+    {
+        title: "Rekomendasi & Laporan",
+        href: "/rekomendasi",
+        icon: Lightbulb,
     },
     {
         title: "Pengaturan",

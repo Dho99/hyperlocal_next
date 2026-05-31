@@ -1,13 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import type { DestinationFormValues } from "@/types/destination";
 import type { Destination } from "@/types/destination";
-import type { Prisma, CategoryType } from "@/lib/generated/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+
+export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
 async function validateDestinationCategory(categoryId: string): Promise<void> {
     const category = await prisma.category.findUnique({
@@ -71,8 +73,12 @@ export async function getPaginatedDestinations(
         categoryId?: string;
         search?: string;
         status?: string;
+        minScore?: number;
+        sort?: DestinationSort;
     },
 ) {
+    const orderBy = getDestinationOrderBy(params.sort);
+
     return withCursorPagination(
         async (take, cursor, skip) => {
             const destinations = await prisma.destination.findMany({
@@ -90,9 +96,18 @@ export async function getPaginatedDestinations(
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),
+                    ...(params.minScore != null && {
+                        OR: [
+                            { validatedScore: { gte: params.minScore } },
+                            {
+                                validatedScore: null,
+                                halalScore: { gte: params.minScore },
+                            },
+                        ],
+                    }),
                 },
                 include: destinationIncludes,
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                orderBy,
             });
 
             return destinations.map(serializeDestination);
@@ -100,6 +115,29 @@ export async function getPaginatedDestinations(
         params,
         "Destinations fetched successfully",
     );
+}
+
+export type DestinationSort =
+    | "newest"
+    | "rating"
+    | "score"
+    | "reviews"
+    | "name";
+
+function getDestinationOrderBy(sort: DestinationSort = "newest") {
+    const orderByMap = {
+        newest: [{ createdAt: "desc" }, { id: "desc" }],
+        rating: [{ rating: "desc" }, { reviewCount: "desc" }, { id: "desc" }],
+        score: [
+            { validatedScore: { sort: "desc", nulls: "last" } },
+            { halalScore: { sort: "desc", nulls: "last" } },
+            { id: "desc" },
+        ],
+        reviews: [{ reviewCount: "desc" }, { rating: "desc" }, { id: "desc" }],
+        name: [{ name: "asc" }, { id: "asc" }],
+    } satisfies Record<DestinationSort, Prisma.DestinationOrderByWithRelationInput[]>;
+
+    return orderByMap[sort];
 }
 
 export async function getDestinations(): Promise<Destination[]> {
@@ -189,6 +227,7 @@ export async function createDestination(values: DestinationFormValues) {
             data: {
                 destinationId: destination.id,
                 status: "PENDING",
+                ...(halalScore < 50 && { notes: TRIAGE_NOTE }),
             },
         });
 

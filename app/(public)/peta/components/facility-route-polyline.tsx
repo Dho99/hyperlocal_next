@@ -15,7 +15,7 @@ export default function FacilityRoutePolyline({
         <Polyline
             positions={[from, to]}
             pathOptions={{
-                color: "#4f378a",
+                color: "#047857",
                 dashArray: "8, 6",
                 weight: 2,
                 opacity: 0.7,

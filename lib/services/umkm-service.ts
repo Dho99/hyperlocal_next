@@ -7,6 +7,9 @@ import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
+import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
+
+const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
 async function validateUmkmCategory(categoryId: string | null | undefined): Promise<void> {
     if (!categoryId) return;
@@ -151,9 +154,21 @@ export async function getUmkm(id: string) {
     return umkm ? serializeUmkm(umkm) : null;
 }
 
-export async function createUmkm(values: UmkmFormValues) {
+export async function createUmkm(values: UmkmFormValues, facilityIds?: string[]) {
     const { images, ...data } = values;
     await validateUmkmCategory(data.categoryId);
+
+    let halalScore = 0;
+    if (facilityIds && facilityIds.length > 0) {
+        const masterFacilities = await prisma.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+        const facilityWeights = masterFacilities.map((mf) => ({
+            facilityType: mf.facilityType,
+            weight: mf.weight ?? 0,
+        }));
+        halalScore = calculateHalalScoreFromWeights(facilityWeights);
+    }
 
     const umkm = await prisma.umkm.create({
         data: {
@@ -167,11 +182,24 @@ export async function createUmkm(values: UmkmFormValues) {
                       })),
                   }
                 : undefined,
+            ...(facilityIds && facilityIds.length > 0
+                ? {
+                      umkmHalalFacilities: {
+                          create: facilityIds.map((fid) => ({
+                              facilityId: fid,
+                          })),
+                      },
+                  }
+                : {}),
+            ...(halalScore < 50 && facilityIds && facilityIds.length > 0
+                ? { surveyorNote: TRIAGE_NOTE }
+                : {}),
         },
         include: {
             category: true,
             destination: true,
             images: true,
+            umkmHalalFacilities: true,
         },
     });
 

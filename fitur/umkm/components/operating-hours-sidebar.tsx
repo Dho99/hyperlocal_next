@@ -1,16 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
     Clock,
     Navigation,
     Bookmark,
     BookmarkCheck,
     Phone,
+    MessageCircle,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 import { ScrollReveal } from "./scroll-reveal";
 
 interface OperatingHoursSidebarProps {
+    id: string;
     openingHours:
         | Record<string, { open: string; close: string }>
         | { open: string; close: string }
@@ -87,6 +92,7 @@ function isOpenNow(
 }
 
 export function OperatingHoursSidebar({
+    id,
     openingHours,
     phone,
     latitude,
@@ -94,30 +100,92 @@ export function OperatingHoursSidebar({
     address,
     name,
 }: OperatingHoursSidebarProps) {
+    const router = useRouter();
     const [saved, setSaved] = useState(false);
+    const { data: session } = authClient.useSession();
 
     useEffect(() => {
-        try {
-            const stored = localStorage.getItem("savedUmkm");
-            const ids: string[] = stored ? JSON.parse(stored) : [];
-            setSaved(ids.includes(name));
-        } catch {
-            // ignore
-        }
-    }, [name]);
+        fetch("/api/bookmarks")
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.data && json.data[id]) {
+                    setSaved(true);
+                }
+            })
+            .catch(() => undefined);
+    }, [id]);
 
     const toggleSave = () => {
-        try {
-            const stored = localStorage.getItem("savedUmkm");
-            const ids: string[] = stored ? JSON.parse(stored) : [];
-            const next = saved
-                ? ids.filter((id) => id !== name)
-                : [...ids, name];
-            localStorage.setItem("savedUmkm", JSON.stringify(next));
-            setSaved(!saved);
-        } catch {
-            // ignore
+        if (!session) {
+            toast.error("Silakan login terlebih dahulu untuk menyimpan favorit", {
+                action: {
+                    label: "Login",
+                    onClick: () => router.push("/user/login"),
+                },
+            });
+            return;
         }
+
+        const prev = saved;
+        setSaved(!prev);
+
+        fetch("/api/track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                targetId: id,
+                targetType: "UMKM",
+                actionType: "BOOKMARK",
+            }),
+        })
+            .then((res) => {
+                if (!res.ok && res.status === 401) {
+                    setSaved(prev);
+                    toast.error("Silakan login terlebih dahulu untuk menyimpan favorit");
+                    return null;
+                }
+                return res.json();
+            })
+            .then((json) => {
+                if (json && json.data) {
+                    setSaved(json.data.bookmarked);
+                }
+            })
+            .catch(() => {
+                setSaved(prev);
+            });
+    };
+
+    const handleRoute = () => {
+        fetch("/api/track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                targetId: id,
+                targetType: "UMKM",
+                actionType: "CLICK_ROUTE",
+            }),
+        }).catch(() => undefined);
+    };
+
+    const handleWhatsApp = () => {
+        if (!phone) return;
+        fetch("/api/track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                targetId: id,
+                targetType: "UMKM",
+                actionType: "CLICK_WHATSAPP",
+            }),
+        }).catch(() => undefined);
+
+        const waNumber = phone.replace(/[^0-9]/g, "");
+        window.open(
+            `https://wa.me/${waNumber}`,
+            "_blank",
+            "noopener,noreferrer",
+        );
     };
 
     const mapsUrl =
@@ -226,11 +294,21 @@ export function OperatingHoursSidebar({
                         href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={handleRoute}
                         className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-orange-700"
                     >
                         <Navigation size={18} />
                         Arahkan Rute
                     </a>
+                    {phone && (
+                        <button
+                            onClick={handleWhatsApp}
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1da851]"
+                        >
+                            <MessageCircle size={18} />
+                            Hubungi via WhatsApp
+                        </button>
+                    )}
                     <button
                         onClick={toggleSave}
                         className={`flex w-full items-center justify-center gap-2 rounded-lg border px-5 py-3 text-sm font-medium transition-colors ${

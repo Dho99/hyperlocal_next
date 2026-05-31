@@ -16,6 +16,8 @@ import {
     Utensils,
 } from "lucide-react";
 import { DashboardMapSection } from "@/components/admin/dashboard/dashboard-map-section";
+import EngagementMetrics from "@/components/admin/dashboard/engagement-metrics";
+import TrendChart from "@/components/admin/dashboard/trend-chart";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -377,39 +379,10 @@ export default async function DashboardPage() {
                 </Card>
             </section>
 
+            <EngagementMetrics />
+
             <section className="grid gap-6 pt-2 xl:grid-cols-3">
-                <Card className="rounded-xl border-[#cbc4d2] bg-white shadow-none">
-                    <CardHeader>
-                        <CardTitle className="font-heading text-2xl">
-                            Dashboard Chart
-                        </CardTitle>
-                        <CardDescription>
-                            Aktivitas wisatawan tujuh hari terakhir.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex h-48 items-end gap-3 rounded-lg bg-[#f8f2fa] px-4 pb-4 pt-6">
-                            {dashboard.chart.days.map((day) => (
-                                <div
-                                    key={day.key}
-                                    className="flex flex-1 flex-col items-center gap-2"
-                                >
-                                    <div className="flex h-32 w-full max-w-10 items-end rounded-full bg-white/80 p-1">
-                                        <div
-                                            className="w-full rounded-full bg-[#4f378a]"
-                                            style={{
-                                                height: `${day.height}%`,
-                                            }}
-                                        />
-                                    </div>
-                                    <span className="text-xs font-medium">
-                                        {day.label}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                <TrendChart />
 
                 <Card className="rounded-xl border-[#cbc4d2] bg-white shadow-none">
                     <CardHeader className="flex flex-row items-center justify-between">

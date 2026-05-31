@@ -10,8 +10,8 @@ export default async function ExplorePage({ searchParams }: PageProps) {
 
     return (
         <div className="min-h-screen bg-background">
-            <Navbar />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
+            {/* <Navbar /> */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-15 pb-12">
                 <ExploreResults query={q ?? ""} lat={lat} lng={lng} />
             </main>
         </div>

@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import {
     MapPin,
     Navigation,
-    Bookmark,
     Share2,
     Copy,
     Star,
@@ -12,6 +11,8 @@ import {
 import { cn } from "@/lib/utils";
 import type { Destination } from "@/types/destination";
 import type { MapData } from "@/fitur/destinasi/data/destinasi-detail-data";
+import { BookmarkButton } from "@/components/destinations/bookmark-button";
+import { WhatsappButton } from "@/components/destinations/whatsapp-button";
 
 const DynamicContextMap = dynamic(
     () => import("@/components/maps").then((m) => m.DynamicContextMap),
@@ -21,21 +22,19 @@ const DynamicContextMap = dynamic(
 interface MapSidebarProps {
     destination: Destination;
     mapData: MapData | null;
-    saved: boolean;
     shareCopied: boolean;
     onRoute: () => void;
-    onSave: () => void;
     onShare: () => void;
+    destinationId: string;
 }
 
 export function MapSidebar({
     destination,
     mapData,
-    saved,
     shareCopied,
     onRoute,
-    onSave,
     onShare,
+    destinationId,
 }: MapSidebarProps) {
     return (
         <div className="lg:col-span-1">
@@ -82,25 +81,14 @@ export function MapSidebar({
                             <Navigation className="size-4" />
                             Arahkan Rute
                         </button>
-                        <button
-                            type="button"
-                            onClick={onSave}
-                            aria-pressed={saved}
-                            className={cn(
-                                "w-full border text-xs font-semibold tracking-wider py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2",
-                                saved
-                                    ? "bg-primary/10 border-primary/30 text-primary"
-                                    : "bg-transparent border-border text-foreground hover:bg-muted",
-                            )}
-                        >
-                            <Bookmark
-                                className={cn(
-                                    "size-4",
-                                    saved && "fill-current",
-                                )}
-                            />
-                            {saved ? "Tersimpan" : "Simpan Destinasi"}
-                        </button>
+                        <WhatsappButton
+                            destinationId={destinationId}
+                            phoneNumber={null}
+                        />
+                        <BookmarkButton
+                            destinationId={destinationId}
+                            variant="full"
+                        />
                         <button
                             type="button"
                             onClick={onShare}

@@ -1,0 +1,35 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { createReport } from "@/lib/services/report-service";
+import { getErrorMessage } from "@/lib/api-error";
+import { createReportSchema } from "@/lib/validations/report.schema";
+
+export async function POST(request: Request) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    // We allow anonymous reports but link them if user is logged in
+    const userId = session?.user?.id;
+
+    const body = await request.json();
+    const validated = createReportSchema.safeParse(body);
+
+    if (!validated.success) {
+      return NextResponse.json(
+        { error: "Data tidak valid", issues: validated.error.flatten() },
+        { status: 400 },
+      );
+    }
+
+    const report = await createReport(userId, validated.data);
+    return NextResponse.json({ data: report }, { status: 201 });
+  } catch (error: unknown) {
+    return NextResponse.json(
+      { error: getErrorMessage(error) },
+      { status: 500 }
+    );
+  }
+}
