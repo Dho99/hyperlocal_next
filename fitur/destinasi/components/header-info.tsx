@@ -1,9 +1,11 @@
 import { ShieldCheck, MapPin, Star } from "lucide-react";
 import type { Destination } from "@/types/destination";
+import { ReportDialog } from "@/components/report/report-dialog";
 
 interface HeaderInfoProps {
     destination: Pick<
         Destination,
+        | "id"
         | "name"
         | "status"
         | "city"
@@ -32,9 +34,12 @@ export function HeaderInfo({ destination }: HeaderInfoProps) {
                         .join(", ") || "Lokasi"}
                 </span>
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
-                {destination.name}
-            </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+                    {destination.name}
+                </h1>
+                <ReportDialog targetId={destination.id} targetType="DESTINATION" />
+            </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                 {destination.rating != null && (
                     <div className="flex items-center gap-1">

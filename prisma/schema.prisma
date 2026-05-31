@@ -44,6 +44,7 @@ model User {
   destinationInteractions DestinationInteraction[]
   userInteractions        UserInteraction[]
   itineraries             Itinerary[]
+  reports                 Report[]
 
   @@unique([email])
   @@map("user")
@@ -585,4 +586,36 @@ model ExternalPlaceSource {
 
   @@unique([vendor, vendorPlaceId])
   @@map("external_place_sources")
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  REJECTED
+}
+
+enum ReportTargetType {
+  DESTINATION
+  UMKM
+  ACCOMMODATION
+}
+
+model Report {
+  id          String           @id @default(uuid())
+  reporterId  String?          @map("reporter_id")
+  targetId    String           @map("target_id")
+  targetType  ReportTargetType @map("target_type")
+  reason      String
+  description String?
+  status      ReportStatus     @default(PENDING)
+  adminNotes  String?          @map("admin_notes")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  reporter    User?            @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+
+  @@index([targetId, targetType])
+  @@index([reporterId])
+  @@map("reports")
 }
