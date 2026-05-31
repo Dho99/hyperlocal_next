@@ -9,6 +9,8 @@ import {
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 
+export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+
 async function validateDestinationCategory(categoryId: string): Promise<void> {
     const category = await prisma.category.findUnique({
         where: { id: categoryId },
@@ -189,6 +191,7 @@ export async function createDestination(values: DestinationFormValues) {
             data: {
                 destinationId: destination.id,
                 status: "PENDING",
+                ...(halalScore < 50 && { notes: TRIAGE_NOTE }),
             },
         });
 

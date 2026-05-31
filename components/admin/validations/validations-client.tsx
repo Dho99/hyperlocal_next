@@ -36,6 +36,7 @@ import {
     Loader2,
     Building2,
     MapPin,
+    AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
 import { id as localeId } from "date-fns/locale";
@@ -69,6 +70,13 @@ interface HalalValidation {
         name: string;
         email: string;
     } | null;
+}
+
+const TRIAGE_NOTE =
+    "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+
+function isTriageNote(notes: string | null): boolean {
+    return notes?.includes(TRIAGE_NOTE) ?? false;
 }
 
 export function ValidationsClient() {
@@ -266,10 +274,16 @@ export function ValidationsClient() {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filtered.map((v) => (
+                            filtered.map((v) => {
+                                const hasTriage = isTriageNote(v.notes);
+                                return (
                                 <TableRow
                                     key={v.id}
-                                    className="group hover:bg-muted/50 transition-colors"
+                                    className={`group transition-colors ${
+                                        hasTriage
+                                            ? "border-l-4 border-amber-400 bg-amber-50/50 hover:bg-amber-50/80"
+                                            : "hover:bg-muted/50"
+                                    }`}
                                 >
                                     <TableCell>
                                         <div className="flex items-center gap-2">
@@ -291,6 +305,15 @@ export function ValidationsClient() {
                                             <span className="font-semibold text-sm leading-tight">
                                                 {getEntityName(v)}
                                             </span>
+                                            {hasTriage && (
+                                                <Badge
+                                                    variant="outline"
+                                                    className="bg-amber-100 text-amber-700 border-amber-300 gap-1 text-[10px] px-1.5 py-0"
+                                                >
+                                                    <AlertTriangle className="h-3 w-3" />
+                                                    Perlu Atensi Khusus
+                                                </Badge>
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -349,8 +372,9 @@ export function ValidationsClient() {
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        )}
+                            );
+                        })
+                    )}
                     </TableBody>
                 </Table>
                 <InfiniteScroll
