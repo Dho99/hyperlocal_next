@@ -1,19 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, unlink } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 import { UPLOAD_CONFIG } from "@/lib/upload/config";
-import {
-    ensureUploadDir,
-    generateUniqueFilename,
-    validateSafePath,
-} from "@/lib/upload/storage";
 import { optimizeImage } from "@/lib/upload/optimizeImage";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+function extractPublicId(url: string): string | null {
+    try {
+        const { pathname } = new URL(url);
+        const match = pathname.match(/\/image\/upload\/v\d+\/(.+)\.\w+$/);
+        if (match) return match[1];
+        const match2 = pathname.match(/\/image\/upload\/(.+)\.\w+$/);
+        if (match2) return match2[1];
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 export async function POST(req: NextRequest) {
     try {
-        // Optional: Check auth
         const session = await auth.api.getSession({
             headers: await headers(),
         });
@@ -36,7 +48,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Validation
         if (!UPLOAD_CONFIG.allowedMimeTypes.includes(file.type)) {
             return NextResponse.json(
                 { success: false, message: "Invalid file type" },
@@ -59,28 +70,34 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-
-        // Optimization
         const optimizedBuffer = await optimizeImage(buffer);
 
-        // Storage
-        const targetDir = await ensureUploadDir(folder);
-        const filename = generateUniqueFilename(folder);
-        const filePath = path.join(targetDir, filename);
-
-        await writeFile(filePath, optimizedBuffer);
-
-        const publicUrl = `${UPLOAD_CONFIG.publicPath}/${folder}/${filename}`;
+        const result = await new Promise<{
+            public_id: string;
+            secure_url: string;
+            bytes: number;
+            format: string;
+        }>((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { folder, resource_type: "image" },
+                (error, result) => {
+                    if (error) reject(error);
+                    else if (result) resolve(result);
+                    else reject(new Error("Upload returned no result"));
+                },
+            );
+            uploadStream.end(optimizedBuffer);
+        });
 
         return NextResponse.json({
             success: true,
             message: "Image uploaded successfully",
             data: {
-                filename,
-                path: publicUrl,
-                url: `${publicUrl}`,
-                size: optimizedBuffer.length,
-                mimeType: "image/webp",
+                filename: result.public_id,
+                path: result.secure_url,
+                url: result.secure_url,
+                size: result.bytes,
+                mimeType: result.format,
             },
         });
     } catch (error: unknown) {
@@ -117,9 +134,16 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        const fullPath = validateSafePath(url);
+        const publicId = extractPublicId(url);
 
-        await unlink(fullPath);
+        if (!publicId) {
+            return NextResponse.json(
+                { success: false, message: "Invalid Cloudinary URL" },
+                { status: 400 },
+            );
+        }
+
+        await cloudinary.uploader.destroy(publicId);
 
         return NextResponse.json({
             success: true,
