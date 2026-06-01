@@ -8,10 +8,10 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 const adapter = new PrismaPg({ connectionString });
 export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter,
-    log: ["query", "error", "warn"],
-  });
+    globalForPrisma.prisma ||
+    new PrismaClient({
+        adapter,
+        // log: ["query", "error", "warn"],
+    });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

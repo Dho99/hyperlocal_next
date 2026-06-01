@@ -80,7 +80,7 @@ function ResultCard({
 }) {
     return (
         <Link
-            href={`/destinasi/${destination.id}`}
+            href={`/destinasi/${destination.slug}`}
             className="group overflow-hidden rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
         >
             <div className="relative aspect-[16/10] overflow-hidden bg-[#f2ecf4]">

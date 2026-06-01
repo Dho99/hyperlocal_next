@@ -32,7 +32,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 const TABS = [
     { key: "profil", label: "Profil Saya", icon: User },
     { key: "password", label: "Ubah Password", icon: Lock },
-    { key: "saved", label: "Destinasi Tersimpan", icon: Bookmark },
+    { key: "saved", label: "Tersimpan", icon: Bookmark },
     { key: "my-itinerary", label: "Rencana Saya", icon: Calendar },
 ] as const;
 
@@ -51,11 +51,12 @@ const changePasswordSchema = z
         path: ["confirmPassword"],
     });
 
-interface SavedDestination {
+interface SavedItem {
     id: string;
     name: string;
     slug: string;
-    city: string;
+    type: "DESTINASI" | "UMKM";
+    subtitle: string;
     imageUrl: string | null;
     savedAt: string;
 }
@@ -456,7 +457,7 @@ function PasswordTab() {
 }
 
 function SavedTab() {
-    const [items, setItems] = useState<SavedDestination[]>([]);
+    const [items, setItems] = useState<SavedItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [removingIds, setRemovingIds] = useState<Set<string>>(new Set());
 
@@ -466,12 +467,12 @@ function SavedTab() {
             .then((json) => {
                 if (json.data) setItems(json.data);
             })
-            .catch(() => toast.error("Gagal memuat destinasi tersimpan"))
+            .catch(() => toast.error("Gagal memuat item tersimpan"))
             .finally(() => setLoading(false));
     }, []);
 
     const handleRemove = useCallback(
-        async (item: SavedDestination) => {
+        async (item: SavedItem) => {
             setRemovingIds((prev) => new Set(prev).add(item.id));
             const prev = items;
             setItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
@@ -482,7 +483,7 @@ function SavedTab() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         targetId: item.id,
-                        targetType: "DESTINASI",
+                        targetType: item.type,
                         actionType: "BOOKMARK",
                     }),
                 });
@@ -520,19 +521,28 @@ function SavedTab() {
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-stone-700">
-                            Belum Ada Destinasi Tersimpan
+                            Belum Ada Item Tersimpan
                         </h3>
                         <p className="mt-1 text-sm text-stone-500">
-                            Jelajahi destinasi dan klik ikon hati untuk
-                            menyimpannya.
+                            Jelajahi destinasi atau UMKM dan klik ikon bookmark
+                            untuk menyimpannya.
                         </p>
                     </div>
-                    <Button
-                        onClick={() => (window.location.href = "/destinasi")}
-                        className="bg-emerald-700 hover:bg-emerald-800 text-white"
-                    >
-                        Jelajahi Destinasi
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={() => (window.location.href = "/destinasi")}
+                            className="bg-emerald-700 hover:bg-emerald-800 text-white"
+                        >
+                            Jelajahi Destinasi
+                        </Button>
+                        <Button
+                            onClick={() => (window.location.href = "/umkm")}
+                            variant="outline"
+                            className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                        >
+                            Jelajahi UMKM
+                        </Button>
+                    </div>
                 </div>
             </div>
         );
@@ -540,70 +550,82 @@ function SavedTab() {
 
     return (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-                <div
-                    key={item.id}
-                    className={`group relative overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm transition-all hover:shadow-md ${
-                        removingIds.has(item.id)
-                            ? "opacity-50 pointer-events-none"
-                            : ""
-                    }`}
-                >
-                    <button
-                        type="button"
-                        onClick={() => handleRemove(item)}
-                        disabled={removingIds.has(item.id)}
-                        className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-stone-500 opacity-0 shadow-sm transition-opacity hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100"
-                        aria-label="Hapus dari tersimpan"
+            {items.map((item) => {
+                const itemHref =
+                    item.type === "DESTINASI"
+                        ? `/destinasi/${item.slug}`
+                        : `/umkm/${item.slug}`;
+
+                return (
+                    <div
+                        key={item.id}
+                        className={`group relative overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm transition-all hover:shadow-md ${
+                            removingIds.has(item.id)
+                                ? "opacity-50 pointer-events-none"
+                                : ""
+                        }`}
                     >
-                        <X className="h-4 w-4" />
-                    </button>
-
-                    <a href={`/destinasi/${item.slug}`} className="block">
-                        <div className="relative h-40 w-full bg-stone-100">
-                            {item.imageUrl ? (
-                                <Image
-                                    src={item.imageUrl}
-                                    alt={item.name}
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                />
-                            ) : (
-                                <div className="flex h-full items-center justify-center">
-                                    <MapPin className="h-8 w-8 text-stone-300" />
-                                </div>
-                            )}
-                        </div>
-                    </a>
-
-                    <div className="p-4">
-                        <a href={`/destinasi/${item.slug}`}>
-                            <h3 className="font-semibold text-stone-800 truncate hover:text-emerald-700 transition-colors">
-                                {item.name}
-                            </h3>
-                        </a>
-                        <p className="mt-0.5 text-sm text-stone-500">
-                            {item.city}
-                        </p>
-                        <Button
+                        <button
                             type="button"
-                            variant="ghost"
-                            size="sm"
                             onClick={() => handleRemove(item)}
                             disabled={removingIds.has(item.id)}
-                            className="mt-3 w-full text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                            className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-stone-500 opacity-0 shadow-sm transition-opacity hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100"
+                            aria-label="Hapus dari tersimpan"
                         >
-                            {removingIds.has(item.id) ? (
-                                <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                            ) : (
-                                <X className="mr-1 h-3 w-3" />
-                            )}
-                            Hapus
-                        </Button>
+                            <X className="h-4 w-4" />
+                        </button>
+
+                        <a href={itemHref} className="block">
+                            <div className="relative h-40 w-full bg-stone-100">
+                                {item.imageUrl ? (
+                                    <Image
+                                        src={item.imageUrl}
+                                        alt={item.name}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                    />
+                                ) : (
+                                    <div className="flex h-full items-center justify-center">
+                                        <MapPin className="h-8 w-8 text-stone-300" />
+                                    </div>
+                                )}
+                                <div className="absolute bottom-2 left-2">
+                                    <span className="rounded-md bg-black/60 backdrop-blur-sm px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wider">
+                                        {item.type}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+
+                        <div className="p-4">
+                            <a href={itemHref}>
+                                <h3 className="font-semibold text-stone-800 truncate hover:text-emerald-700 transition-colors">
+                                    {item.name}
+                                </h3>
+                            </a>
+                            <p className="mt-0.5 text-sm text-stone-500 truncate">
+                                {item.subtitle}
+                            </p>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemove(item)}
+                                disabled={removingIds.has(item.id)}
+                                className="mt-3 w-full text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                            >
+                                {removingIds.has(item.id) ? (
+                                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                ) : (
+                                    <X className="mr-1 h-3 w-3" />
+                                )}
+                                Hapus
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

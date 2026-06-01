@@ -43,8 +43,9 @@ export function HeroGallery({
                 )}
                 <div className="absolute top-4 right-4">
                     <BookmarkButton
-                        destinationId={destinationId}
-                        variant="icon"
+                        targetId={destinationId}
+                        targetType="DESTINASI"
+                        showLabel={false}
                     />
                 </div>
             </div>

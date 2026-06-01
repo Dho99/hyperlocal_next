@@ -27,9 +27,13 @@ export async function getAccommodations() {
     return accommodations.map(serializeAccommodation);
 }
 
-export async function getAccommodation(id: string) {
-    const accommodation = await prisma.accommodation.findUnique({
-        where: { id },
+export async function getAccommodation(idOrSlug: string) {
+    const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            idOrSlug,
+        );
+    const accommodation = await prisma.accommodation.findFirst({
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
         include: {
             images: true,
             facilities: { include: { facility: true } },

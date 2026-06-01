@@ -2,16 +2,18 @@ import { prisma } from "@/lib/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
 import type { PublicReview } from "@/types/review";
-import type { CategoryType } from "@/lib/generated/prisma";
+import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
-import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 
-const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+const TRIAGE_NOTE =
+    "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
-async function validateUmkmCategory(categoryId: string | null | undefined): Promise<void> {
+async function validateUmkmCategory(
+    categoryId: string | null | undefined,
+): Promise<void> {
     if (!categoryId) return;
     const category = await prisma.category.findUnique({
         where: { id: categoryId },
@@ -29,10 +31,12 @@ function serializeUmkm(raw: unknown): Umkm {
     const umkm = raw as Umkm & {
         latitude: unknown | null;
         longitude: unknown | null;
-        destination: (Destination & {
-            latitude: unknown | null;
-            longitude: unknown | null;
-        }) | null;
+        destination:
+            | (Destination & {
+                  latitude: unknown | null;
+                  longitude: unknown | null;
+              })
+            | null;
         certifications?: Array<Record<string, unknown>>;
     };
     return {
@@ -75,6 +79,7 @@ function serializeUmkm(raw: unknown): Umkm {
 export async function getPaginatedUmkms(
     params: CursorPaginationParams & {
         categoryId?: string;
+        categorySlug?: string;
         destinationId?: string;
         search?: string;
     },
@@ -86,12 +91,23 @@ export async function getPaginatedUmkms(
                 skip,
                 cursor: cursor ? { id: cursor } : undefined,
                 where: {
+                    category: { type: "UMKM" },
                     ...(params.categoryId && { categoryId: params.categoryId }),
+                    ...(params.categorySlug && params.categorySlug !== "Semua" && {
+                        category: { slug: params.categorySlug },
+                    }),
                     ...(params.destinationId && {
                         destinationId: params.destinationId,
                     }),
                     ...(params.search && {
-                        name: { contains: params.search, mode: "insensitive" },
+                        OR: [
+                            { name: { contains: params.search, mode: "insensitive" } },
+                            {
+                                destination: {
+                                    name: { contains: params.search, mode: "insensitive" },
+                                },
+                            },
+                        ],
                     }),
                 },
                 include: {
@@ -154,7 +170,10 @@ export async function getUmkm(id: string) {
     return umkm ? serializeUmkm(umkm) : null;
 }
 
-export async function createUmkm(values: UmkmFormValues, facilityIds?: string[]) {
+export async function createUmkm(
+    values: UmkmFormValues,
+    facilityIds?: string[],
+) {
     const { images, ...data } = values;
     await validateUmkmCategory(data.categoryId);
 
@@ -224,11 +243,11 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
                 ...data,
                 images: images
                     ? {
-                              create: images.map((img, idx) => ({
-                                  imageUrl: img.imageUrl,
-                                  isPrimary: idx === 0,
-                                  caption: `Foto ${idx + 1}`,
-                              })),
+                          create: images.map((img, idx) => ({
+                              imageUrl: img.imageUrl,
+                              isPrimary: idx === 0,
+                              caption: `Foto ${idx + 1}`,
+                          })),
                       }
                     : undefined,
             },
@@ -260,9 +279,13 @@ export interface UmkmDetail extends Umkm {
     destinationFacilities: FacilityInfo[];
 }
 
-export async function getUmkmDetail(id: string) {
-    const umkm = await prisma.umkm.findUnique({
-        where: { id },
+export async function getUmkmDetail(idOrSlug: string) {
+    const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            idOrSlug,
+        );
+    const umkm = await prisma.umkm.findFirst({
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
         include: {
             category: true,
             destination: {
