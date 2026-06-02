@@ -6,5 +6,5 @@ interface PageProps {
 
 export default async function PenginapanDetailPage({ params }: PageProps) {
     const { id } = await params;
-    return <PublicAccommodationDetail id={id} />;
+    return <PublicAccommodationDetail identifier={id} />;
 }
