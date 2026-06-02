@@ -66,28 +66,34 @@ export function LoginForm({ role = "user" }: { role?: "admin" | "user" }) {
                     router.refresh();
                 },
                 onError: (ctx) => {
-                    setError(ctx.error.message || "Gagal masuk. Silakan cek email dan password Anda.");
+                    setError(
+                        ctx.error.message ||
+                            "Gagal masuk. Silakan cek email dan password Anda.",
+                    );
                 },
             },
         });
-        
+
         setIsLoading(false);
     }
 
     return (
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold">Masuk {is_admin ? "Admin" : "User"}</CardTitle>
+                <CardTitle className="text-2xl font-bold">Masuk User</CardTitle>
                 <CardDescription>
-                    {is_admin 
+                    {is_admin
                         ? "Masukkan email dan password admin Anda untuk mengakses dashboard."
                         : "Masukkan email dan password Anda untuk mulai menjelajah."}
                 </CardDescription>
             </CardHeader>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <CardContent className="space-y-4">
                     {error && (
-                        <Alert variant="destructive" className="bg-destructive/10 text-destructive border-destructive/20">
+                        <Alert
+                            variant="destructive"
+                            className="bg-destructive/10 text-destructive border-destructive/20"
+                        >
                             <AlertCircle className="h-4 w-4" />
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
@@ -99,7 +105,7 @@ export function LoginForm({ role = "user" }: { role?: "admin" | "user" }) {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder={is_admin ? "admin@perusahaan.com" : "user@email.com"}
+                                placeholder={"user@email.com"}
                                 className="pl-10 focus-visible:ring-primary/20"
                                 disabled={isLoading}
                                 {...form.register("email")}
@@ -139,17 +145,22 @@ export function LoginForm({ role = "user" }: { role?: "admin" | "user" }) {
                     </div>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
-                    <Button 
-                        type="submit" 
-                        className="w-full font-semibold shadow-md transition-all active:scale-95" 
+                    <Button
+                        type="submit"
+                        className="w-full font-semibold shadow-md transition-all active:scale-95"
                         disabled={isLoading}
                     >
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {isLoading && (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        )}
                         Masuk Sekarang
                     </Button>
                     <div className="text-center text-sm text-muted-foreground">
                         Belum punya akun?{" "}
-                        <Link href={registerPath} className="font-semibold text-primary hover:underline">
+                        <Link
+                            href={registerPath}
+                            className="font-semibold text-primary hover:underline"
+                        >
                             Daftar Gratis
                         </Link>
                     </div>

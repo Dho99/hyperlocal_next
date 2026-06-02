@@ -77,7 +77,7 @@ function DestinationCard({ dest }: { dest: Destination }) {
 
     return (
         <Link
-            href={`/destinasi/${dest.id}`}
+            href={`/destinasi/${dest.slug}`}
             className="group block rounded-xl overflow-hidden bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
             <div className="relative h-48 bg-[#f2ecf4] overflow-hidden">

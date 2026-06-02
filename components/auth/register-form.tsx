@@ -90,9 +90,8 @@ export function RegisterForm({ role = "user" }: { role?: "admin" | "user" }) {
                         Pendaftaran Berhasil!
                     </CardTitle>
                     <CardDescription className="text-base">
-                        Akun {is_admin ? "Admin" : "User"} Anda telah berhasil
-                        dibuat. Anda akan diarahkan ke halaman masuk dalam
-                        beberapa detik...
+                        Akun Anda telah berhasil dibuat. Anda akan diarahkan ke
+                        halaman masuk dalam beberapa detik...
                     </CardDescription>
                 </CardContent>
             </Card>
@@ -103,7 +102,7 @@ export function RegisterForm({ role = "user" }: { role?: "admin" | "user" }) {
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold">
-                    Daftar Akun {is_admin ? "Admin" : "Traveller"}
+                    Daftar Akun User
                 </CardTitle>
                 <CardDescription>
                     {is_admin
@@ -111,7 +110,7 @@ export function RegisterForm({ role = "user" }: { role?: "admin" | "user" }) {
                         : "Buat akun baru untuk mulai menjelajahi destinasi halal."}
                 </CardDescription>
             </CardHeader>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <CardContent className="space-y-4">
                     {error && (
                         <Alert
@@ -128,9 +127,7 @@ export function RegisterForm({ role = "user" }: { role?: "admin" | "user" }) {
                             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
                                 id="name"
-                                placeholder={
-                                    is_admin ? "Admin Baru" : "Nama Anda"
-                                }
+                                placeholder="Nama Anda"
                                 className="pl-10 focus-visible:ring-primary/20"
                                 disabled={isLoading}
                                 {...form.register("name")}

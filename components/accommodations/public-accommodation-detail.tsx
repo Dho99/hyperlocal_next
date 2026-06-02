@@ -15,17 +15,17 @@ const RichTextRenderer = dynamic(
 );
 
 interface PublicAccommodationDetailProps {
-  id: string;
+  identifier: string;
 }
 
-export function PublicAccommodationDetail({ id }: PublicAccommodationDetailProps) {
+export function PublicAccommodationDetail({ identifier }: PublicAccommodationDetailProps) {
   const router = useRouter();
   const [accommodation, setAccommodation] = useState<Accommodation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/accommodations/${id}`)
+    fetch(`/api/accommodations/${identifier}`)
       .then((r) => r.json())
       .then((res) => {
         if (res.error) throw new Error(res.error);
@@ -33,7 +33,7 @@ export function PublicAccommodationDetail({ id }: PublicAccommodationDetailProps
       })
       .catch((err) => setError(getApiErrorMessage(err)))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [identifier]);
 
   const primaryImage = useMemo(() => {
     if (!accommodation?.images?.length) return null;

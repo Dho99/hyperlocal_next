@@ -148,9 +148,15 @@ export async function getDestinations(): Promise<Destination[]> {
     return data.map(serializeDestination);
 }
 
-export async function getDestination(id: string): Promise<Destination | null> {
-    const data = await prisma.destination.findUnique({
-        where: { id },
+export async function getDestination(
+    idOrSlug: string,
+): Promise<Destination | null> {
+    const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            idOrSlug,
+        );
+    const data = await prisma.destination.findFirst({
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
         include: destinationIncludes,
     });
     return data ? serializeDestination(data) : null;

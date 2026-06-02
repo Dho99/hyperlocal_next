@@ -18,10 +18,10 @@ export async function GET() {
       where: {
         userId: session.user.id,
         actionType: "BOOKMARK",
-        targetType: "DESTINASI",
       },
       select: {
         targetId: true,
+        targetType: true,
         createdAt: true,
       },
       orderBy: { createdAt: "desc" },
@@ -31,39 +31,80 @@ export async function GET() {
       return NextResponse.json({ data: [] });
     }
 
-    const targetIds = bookmarks.map((b) => b.targetId);
+    const destinationIds = bookmarks
+      .filter((b) => b.targetType === "DESTINASI")
+      .map((b) => b.targetId);
+    
+    const umkmIds = bookmarks
+      .filter((b) => b.targetType === "UMKM")
+      .map((b) => b.targetId);
+
     const savedAtMap = Object.fromEntries(
       bookmarks.map((b) => [b.targetId, b.createdAt])
     );
+    
+    const typeMap = Object.fromEntries(
+      bookmarks.map((b) => [b.targetId, b.targetType])
+    );
 
-    const destinations = await prisma.destination.findMany({
-      where: { id: { in: targetIds } },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        city: true,
-        images: {
-          where: { isPrimary: true },
-          take: 1,
-          select: { imageUrl: true },
+    const [destinations, umkms] = await Promise.all([
+      prisma.destination.findMany({
+        where: { id: { in: destinationIds } },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          city: true,
+          images: {
+            where: { isPrimary: true },
+            take: 1,
+            select: { imageUrl: true },
+          },
         },
-      },
-    });
+      }),
+      prisma.umkm.findMany({
+        where: { id: { in: umkmIds } },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          address: true,
+          images: {
+            where: { isPrimary: true },
+            take: 1,
+            select: { imageUrl: true },
+          },
+          destination: {
+            select: { city: true }
+          }
+        },
+      })
+    ]);
 
-    const result = destinations
-      .map((d) => ({
-        id: d.id,
-        name: d.name,
-        slug: d.slug,
-        city: d.city || "-",
-        imageUrl: d.images[0]?.imageUrl ?? null,
-        savedAt: savedAtMap[d.id],
-      }))
-      .sort(
-        (a, b) =>
-          new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
-      );
+    const formattedDestinations = destinations.map((d) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      type: "DESTINASI",
+      subtitle: d.city || "-",
+      imageUrl: d.images[0]?.imageUrl ?? null,
+      savedAt: savedAtMap[d.id],
+    }));
+
+    const formattedUmkms = umkms.map((u) => ({
+      id: u.id,
+      name: u.name,
+      slug: u.slug,
+      type: "UMKM",
+      subtitle: u.destination?.city || u.address || "-",
+      imageUrl: u.images[0]?.imageUrl ?? null,
+      savedAt: savedAtMap[u.id],
+    }));
+
+    const result = [...formattedDestinations, ...formattedUmkms].sort(
+      (a, b) =>
+        new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
+    );
 
     return NextResponse.json({ data: result });
   } catch (error: unknown) {

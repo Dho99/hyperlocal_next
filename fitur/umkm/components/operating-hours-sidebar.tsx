@@ -16,6 +16,7 @@ import { ScrollReveal } from "./scroll-reveal";
 
 interface OperatingHoursSidebarProps {
     id: string;
+    slug: string;
     openingHours:
         | Record<string, { open: string; close: string }>
         | { open: string; close: string }
@@ -93,6 +94,7 @@ function isOpenNow(
 
 export function OperatingHoursSidebar({
     id,
+    slug,
     openingHours,
     phone,
     latitude,
@@ -105,15 +107,15 @@ export function OperatingHoursSidebar({
     const { data: session } = authClient.useSession();
 
     useEffect(() => {
-        fetch("/api/bookmarks")
+        fetch(`/api/user/saved-items?targetSlug=${slug}`)
             .then((res) => res.json())
             .then((json) => {
-                if (json.data && json.data[id]) {
+                if (json.data && json.data[slug]) {
                     setSaved(true);
                 }
             })
             .catch(() => undefined);
-    }, [id]);
+    }, [slug]);
 
     const toggleSave = () => {
         if (!session) {
@@ -129,13 +131,12 @@ export function OperatingHoursSidebar({
         const prev = saved;
         setSaved(!prev);
 
-        fetch("/api/track", {
+        fetch("/api/user/saved-items", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                targetId: id,
+                targetSlug: slug,
                 targetType: "UMKM",
-                actionType: "BOOKMARK",
             }),
         })
             .then((res) => {

@@ -18,7 +18,7 @@ export function DestinationCardComponent({ destination }: DestinationCardProps) 
         <MotionLink
             whileHover={{ scale: 1.02, y: -4 }}
             className="group block overflow-hidden rounded-2xl border border-stone-200/50 bg-white shadow-lg shadow-stone-900/5"
-            href={`/destinasi/${destination.id}`}
+            href={`/destinasi/${destination.slug}`}
         >
             <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                 {destination.imageUrl ? (

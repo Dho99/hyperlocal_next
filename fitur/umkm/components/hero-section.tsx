@@ -5,6 +5,7 @@ import { Star, BadgeCheck, Store } from "lucide-react";
 import type { UmkmDetail } from "@/lib/services/umkm-service";
 import { ScrollReveal } from "./scroll-reveal";
 import { ReportDialog } from "@/components/report/report-dialog";
+import { BookmarkButton } from "@/components/destinations/bookmark-button";
 
 interface HeroSectionProps {
     umkm: UmkmDetail;
@@ -76,7 +77,14 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                                 </span>
                             </div>
                         </div>
-                        <ReportDialog targetId={umkm.id} targetType="UMKM" />
+                        <div className="flex items-center gap-2">
+                            <BookmarkButton
+                                targetSlug={umkm.slug}
+                                targetType="UMKM"
+                                className="bg-white border-stone-200 shadow-sm"
+                            />
+                            <ReportDialog targetId={umkm.id} targetType="UMKM" />
+                        </div>
                     </div>
                 </div>
             </div>

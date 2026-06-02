@@ -293,7 +293,7 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                     return (
                                         <Link
                                             key={umkm.id}
-                                            href={`/umkm/${umkm.id}`}
+                                            href={`/umkm/${umkm.slug}`}
                                             className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg"
                                         >
                                             <div className="relative h-48 overflow-hidden">
