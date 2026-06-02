@@ -182,15 +182,19 @@ export async function POST(request: Request) {
             } catch {
                 console.log("[AI_INTENT_TRACE] AI returned invalid JSON");
 
-                prisma.aiIntentLog.create({
-                    data: {
-                        userQuery: query,
-                        intent: "PARSE_ERROR",
-                        redirectTo: "",
-                        isValid: false,
-                        errorMessage: "AI returned non-JSON response",
-                    },
-                }).catch(() => {});
+                try {
+                    await prisma.aiIntentLog.create({
+                        data: {
+                            userQuery: query,
+                            intent: "PARSE_ERROR",
+                            redirectTo: "",
+                            isValid: false,
+                            errorMessage: "AI returned non-JSON response",
+                        },
+                    });
+                } catch {
+                    // Silently ignore — DB logging must never crash the response
+                }
 
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
@@ -203,15 +207,19 @@ export async function POST(request: Request) {
             if (!isValidStructure) {
                 console.log("[AI_INTENT_TRACE] AI returned invalid structure");
 
-                prisma.aiIntentLog.create({
-                    data: {
-                        userQuery: query,
-                        intent: "STRUCTURE_ERROR",
-                        redirectTo: "",
-                        isValid: false,
-                        errorMessage: `Missing keys: ${requiredKeys.filter((k) => !(k in aiResult)).join(", ")}`,
-                    },
-                }).catch(() => {});
+                try {
+                    await prisma.aiIntentLog.create({
+                        data: {
+                            userQuery: query,
+                            intent: "STRUCTURE_ERROR",
+                            redirectTo: "",
+                            isValid: false,
+                            errorMessage: `Missing keys: ${requiredKeys.filter((k) => !(k in aiResult)).join(", ")}`,
+                        },
+                    });
+                } catch {
+                    // Silently ignore
+                }
 
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
@@ -223,15 +231,19 @@ export async function POST(request: Request) {
             if (!validIntents.includes(aiResult.intent as typeof validIntents[number])) {
                 console.log("[AI_INTENT_TRACE] AI returned unknown intent:", aiResult.intent);
 
-                prisma.aiIntentLog.create({
-                    data: {
-                        userQuery: query,
-                        intent: `UNKNOWN:${aiResult.intent}`,
-                        redirectTo: aiResult.redirectTo ?? "",
-                        isValid: false,
-                        errorMessage: `Unknown intent: ${aiResult.intent}`,
-                    },
-                }).catch(() => {});
+                try {
+                    await prisma.aiIntentLog.create({
+                        data: {
+                            userQuery: query,
+                            intent: `UNKNOWN:${aiResult.intent}`,
+                            redirectTo: aiResult.redirectTo ?? "",
+                            isValid: false,
+                            errorMessage: `Unknown intent: ${aiResult.intent}`,
+                        },
+                    });
+                } catch {
+                    // Silently ignore
+                }
 
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
@@ -247,14 +259,18 @@ export async function POST(request: Request) {
                 redirectTo: aiResult.redirectTo,
             });
 
-            prisma.aiIntentLog.create({
-                data: {
-                    userQuery: query,
-                    intent: aiResult.intent,
-                    redirectTo: aiResult.redirectTo ?? "",
-                    payload: aiResult.payload as unknown as Prisma.InputJsonValue,
-                },
-            }).catch((err) => console.error("[AI_INTENT_AUDIT] DB log failed:", err));
+            try {
+                await prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: aiResult.intent,
+                        redirectTo: aiResult.redirectTo ?? "",
+                        payload: aiResult.payload as unknown as Prisma.InputJsonValue,
+                    },
+                });
+            } catch (err) {
+                console.error("[AI_INTENT_AUDIT] DB log failed:", err);
+            }
 
             if (aiResult.intent === "FACILITY_CHECK") {
                 return NextResponse.json<RouteFinderResponse>(aiResult);
@@ -309,15 +325,19 @@ export async function POST(request: Request) {
         } catch (error) {
             console.error("[AI_INTENT_TRACE] AI error:", getErrorMessage(error));
 
-            prisma.aiIntentLog.create({
-                data: {
-                    userQuery: query,
-                    intent: "RUNTIME_ERROR",
-                    redirectTo: "",
-                    isValid: false,
-                    errorMessage: getErrorMessage(error),
-                },
-            }).catch(() => {});
+            try {
+                await prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: "RUNTIME_ERROR",
+                        redirectTo: "",
+                        isValid: false,
+                        errorMessage: getErrorMessage(error),
+                    },
+                });
+            } catch {
+                // Silently ignore — DB logging must never crash the response
+            }
 
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),

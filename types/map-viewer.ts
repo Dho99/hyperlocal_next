@@ -17,6 +17,7 @@ export interface MapDestination {
 export interface DashboardMapDestination {
     id: string;
     name: string;
+    slug: string;
     category?: string;
     status?: string;
     latitude: number;

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "HyperLocal - Eksplorasi Halal Indonesia",
-        short_name: "HyperLocal",
+        name: "Priangan Halal Tourism",
+        short_name: "Priangan Halal",
         description:
             "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis data hyperlocal.",
         start_url: "/",
