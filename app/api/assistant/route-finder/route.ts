@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma";
 import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
-import { createGeminiModel } from "@/lib/utils/ai-gemini";
+import OpenAI from "openai";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
 import { extractCityFromQuery, getLocationNames } from "@/lib/utils/ai-location";
 
@@ -41,10 +41,7 @@ interface RouteFinderResponse {
     payload: ItineraryPayload | null;
 }
 
-function buildPrompt(
-    candidates: string,
-    userQuery: string,
-): string {
+function buildSystemPrompt(candidates: string): string {
     return `Anda adalah asisten rekomendasi wisata halal yang cerdas. Analisis query pengguna dan klasifikasikan ke dalam salah satu intent berikut:
 
 1. DESTINATION_SEARCH — pengguna mencari atau ingin melihat destinasi wisata, kuliner, atau penginapan.
@@ -62,9 +59,6 @@ Petunjuk penting:
 
 KANDIDAT DESTINASI:
 ${candidates}
-
-QUERY PENGGUNA:
-${userQuery}
 
 Response HARUS JSON tanpa teks lain, dengan format EXACT berikut:
 
@@ -143,27 +137,44 @@ export async function POST(request: Request) {
             );
         }
 
-        const model = createGeminiModel();
-
-        if (!model) {
-            console.log("[AI_INTENT_TRACE] Gemini unavailable, skip AI");
+        if (!process.env.GROQ_API_KEY) {
+            console.log("[AI_INTENT_TRACE] GROQ_API_KEY not configured, skip AI");
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),
                 { status: 200 },
             );
         }
 
+        const aiClient = new OpenAI({
+            apiKey: process.env.GROQ_API_KEY,
+            baseURL: "https://api.groq.com/openai/v1",
+        });
+
         try {
             const candidateData = candidates.map(mapToCandidateData);
-            const prompt = buildPrompt(
-                JSON.stringify(candidateData),
-                query,
-            );
 
             console.log("[AI_INTENT_TRACE] AI invoked");
 
-            const result = await model.generateContent(prompt);
-            const text = result.response.text();
+            const response = await aiClient.chat.completions.create({
+                model: "llama-3.1-8b-instant",
+                response_format: { type: "json_object" },
+                messages: [
+                    {
+                        role: "system",
+                        content: buildSystemPrompt(JSON.stringify(candidateData)),
+                    },
+                    {
+                        role: "user",
+                        content: query,
+                    },
+                ],
+            });
+
+            const jsonString = response.choices[0]?.message?.content;
+            if (!jsonString) {
+                throw new Error("AI returned an empty response");
+            }
+            const text = jsonString;
 
             let aiResult: RouteFinderResponse;
             try {

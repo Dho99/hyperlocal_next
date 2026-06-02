@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createGeminiModel } from "@/lib/utils/ai-gemini";
+import OpenAI from "openai";
 import { getErrorMessage } from "@/lib/api-error";
 
 const TEST_CASES = [
@@ -22,27 +22,28 @@ interface TestResult {
 }
 
 export async function GET() {
-    const model = createGeminiModel();
-
-    if (!model) {
+    if (!process.env.GROQ_API_KEY) {
         return NextResponse.json(
-            { error: "Gemini API key not configured" },
+            { error: "GROQ_API_KEY not configured" },
             { status: 500 },
         );
     }
 
+    const aiClient = new OpenAI({
+        apiKey: process.env.GROQ_API_KEY,
+        baseURL: "https://api.groq.com/openai/v1",
+    });
+
     const results: TestResult[] = [];
 
     for (const tc of TEST_CASES) {
-        const prompt = `Anda adalah asisten rekomendasi wisata halal. Klasifikasikan query berikut ke dalam salah satu intent berikut:
+        const systemPrompt = `Anda adalah asisten rekomendasi wisata halal. Klasifikasikan query pengguna ke dalam salah satu intent berikut:
 
 1. DESTINATION_SEARCH — pengguna mencari atau ingin melihat destinasi wisata, kuliner, atau penginapan.
 2. ITINERARY_RECOMMENDATION — pengguna ingin rencana perjalanan / itinerary / rute wisata yang terstruktur (misalnya "1 hari", "2 hari", "3 hari", atau menyebutkan durasi).
 3. FACILITY_CHECK — pengguna ingin mengecek ketersediaan fasilitas halal tertentu di suatu destinasi (misalnya musala, tempat wudu, sertifikat halal, dll).
 
-QUERY: "${tc.query}"
-
-Response HARUS JSON tanpa teks lain dalam format EXACT berikut:
+Response HARUS JSON dalam format EXACT berikut:
 { "intent": "DESTINATION_SEARCH" }
 { "intent": "ITINERARY_RECOMMENDATION" }
 { "intent": "FACILITY_CHECK" }
@@ -50,9 +51,19 @@ Response HARUS JSON tanpa teks lain dalam format EXACT berikut:
 HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
 
         try {
-            const result = await model.generateContent(prompt);
-            const text = result.response.text();
-            const parsed = JSON.parse(text);
+            const response = await aiClient.chat.completions.create({
+                model: "llama-3.1-8b-instant",
+                response_format: { type: "json_object" },
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: tc.query },
+                ],
+            });
+
+            const jsonString = response.choices[0]?.message?.content;
+            if (!jsonString) throw new Error("AI returned empty response");
+
+            const parsed = JSON.parse(jsonString);
             const actual: string | null = parsed?.intent ?? null;
 
             results.push({
@@ -60,7 +71,7 @@ HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
                 expected: tc.expected,
                 actual,
                 passed: actual === tc.expected,
-                rawResponse: text.slice(0, 200),
+                rawResponse: jsonString.slice(0, 200),
             });
         } catch (err) {
             results.push({
