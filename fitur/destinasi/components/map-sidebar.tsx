@@ -86,7 +86,7 @@ export function MapSidebar({
                             phoneNumber={null}
                         />
                         <BookmarkButton
-                            targetId={destinationId}
+                            targetSlug={destinationId}
                             targetType="DESTINASI"
                             className="flex-1"
                         />

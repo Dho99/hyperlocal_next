@@ -478,13 +478,12 @@ function SavedTab() {
             setItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
 
             try {
-                const res = await fetch("/api/track", {
+                const res = await fetch("/api/user/saved-items", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        targetId: item.id,
+                        targetSlug: item.slug,
                         targetType: item.type,
-                        actionType: "BOOKMARK",
                     }),
                 });
 

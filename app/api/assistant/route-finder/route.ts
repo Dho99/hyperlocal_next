@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/lib/generated/prisma";
 import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
@@ -135,6 +136,7 @@ export async function POST(request: Request) {
         });
 
         if (candidates.length === 0) {
+            console.log("[AI_INTENT_TRACE] No candidates found, skip AI");
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),
                 { status: 200 },
@@ -144,7 +146,7 @@ export async function POST(request: Request) {
         const model = createGeminiModel();
 
         if (!model) {
-            console.log("Gemini not available, using fallback search");
+            console.log("[AI_INTENT_TRACE] Gemini unavailable, skip AI");
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),
                 { status: 200 },
@@ -158,6 +160,8 @@ export async function POST(request: Request) {
                 query,
             );
 
+            console.log("[AI_INTENT_TRACE] AI invoked");
+
             const result = await model.generateContent(prompt);
             const text = result.response.text();
 
@@ -165,11 +169,81 @@ export async function POST(request: Request) {
             try {
                 aiResult = JSON.parse(text) as RouteFinderResponse;
             } catch {
+                console.log("[AI_INTENT_TRACE] AI returned invalid JSON");
+
+                prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: "PARSE_ERROR",
+                        redirectTo: "",
+                        isValid: false,
+                        errorMessage: "AI returned non-JSON response",
+                    },
+                }).catch(() => {});
+
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
                     { status: 200 },
                 );
             }
+
+            const requiredKeys: (keyof RouteFinderResponse)[] = ["intent", "redirectTo", "payload"];
+            const isValidStructure = requiredKeys.every((key) => key in aiResult);
+            if (!isValidStructure) {
+                console.log("[AI_INTENT_TRACE] AI returned invalid structure");
+
+                prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: "STRUCTURE_ERROR",
+                        redirectTo: "",
+                        isValid: false,
+                        errorMessage: `Missing keys: ${requiredKeys.filter((k) => !(k in aiResult)).join(", ")}`,
+                    },
+                }).catch(() => {});
+
+                return NextResponse.json<RouteFinderResponse>(
+                    buildFallbackSearch(query),
+                    { status: 200 },
+                );
+            }
+
+            const validIntents = ["DESTINATION_SEARCH", "ITINERARY_RECOMMENDATION", "FACILITY_CHECK"] as const;
+            if (!validIntents.includes(aiResult.intent as typeof validIntents[number])) {
+                console.log("[AI_INTENT_TRACE] AI returned unknown intent:", aiResult.intent);
+
+                prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: `UNKNOWN:${aiResult.intent}`,
+                        redirectTo: aiResult.redirectTo ?? "",
+                        isValid: false,
+                        errorMessage: `Unknown intent: ${aiResult.intent}`,
+                    },
+                }).catch(() => {});
+
+                return NextResponse.json<RouteFinderResponse>(
+                    buildFallbackSearch(query),
+                    { status: 200 },
+                );
+            }
+
+            console.log("[AI_INTENT_TRACE] AI success:", aiResult.intent);
+            console.log("[AI_INTENT_AUDIT]", {
+                timestamp: new Date(),
+                query,
+                parsedIntent: aiResult.intent,
+                redirectTo: aiResult.redirectTo,
+            });
+
+            prisma.aiIntentLog.create({
+                data: {
+                    userQuery: query,
+                    intent: aiResult.intent,
+                    redirectTo: aiResult.redirectTo ?? "",
+                    payload: aiResult.payload as unknown as Prisma.InputJsonValue,
+                },
+            }).catch((err) => console.error("[AI_INTENT_AUDIT] DB log failed:", err));
 
             if (aiResult.intent === "FACILITY_CHECK") {
                 return NextResponse.json<RouteFinderResponse>(aiResult);
@@ -222,7 +296,18 @@ export async function POST(request: Request) {
                 payload: null,
             });
         } catch (error) {
-            console.error("AI error:", getErrorMessage(error));
+            console.error("[AI_INTENT_TRACE] AI error:", getErrorMessage(error));
+
+            prisma.aiIntentLog.create({
+                data: {
+                    userQuery: query,
+                    intent: "RUNTIME_ERROR",
+                    redirectTo: "",
+                    isValid: false,
+                    errorMessage: getErrorMessage(error),
+                },
+            }).catch(() => {});
+
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),
                 { status: 200 },

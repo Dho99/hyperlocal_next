@@ -7,14 +7,14 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 interface BookmarkButtonProps {
-    targetId: string;
+    targetSlug: string;
     targetType?: "DESTINASI" | "UMKM";
     className?: string;
     showLabel?: boolean;
 }
 
 export function BookmarkButton({
-    targetId,
+    targetSlug,
     targetType = "DESTINASI",
     className,
     showLabel = true,
@@ -24,7 +24,7 @@ export function BookmarkButton({
     const { data: session } = authClient.useSession();
 
     useEffect(() => {
-        if (!session || !targetId) {
+        if (!session || !targetSlug) {
             setIsLoading(false);
             return;
         }
@@ -32,11 +32,11 @@ export function BookmarkButton({
         async function checkStatus() {
             try {
                 const res = await fetch(
-                    `/api/track?targetId=${targetId}&targetType=${targetType}&actionType=BOOKMARK`,
+                    `/api/user/saved-items?targetSlug=${targetSlug}`,
                 );
                 if (res.ok) {
-                    const data = await res.json();
-                    setIsBookmarked(data.hasInteracted);
+                    const json = await res.json();
+                    setIsBookmarked(json.data?.[targetSlug] ?? false);
                 }
             } catch (err) {
                 console.error("Failed to check bookmark status:", err);
@@ -46,7 +46,7 @@ export function BookmarkButton({
         }
 
         checkStatus();
-    }, [targetId, targetType, session]);
+    }, [targetSlug, targetType, session]);
 
     const handleToggleBookmark = useCallback(async () => {
         if (!session) {
@@ -64,13 +64,12 @@ export function BookmarkButton({
         const originalStatus = !newStatus;
 
         try {
-            const res = await fetch("/api/track", {
+            const res = await fetch("/api/user/saved-items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    targetId,
+                    targetSlug,
                     targetType,
-                    actionType: "BOOKMARK",
                 }),
             });
 
@@ -85,7 +84,7 @@ export function BookmarkButton({
             setIsBookmarked(originalStatus);
             toast.error("Gagal memperbarui status simpan");
         }
-    }, [session, targetId, targetType, isBookmarked]);
+    }, [session, targetSlug, targetType, isBookmarked]);
 
     return (
         <button

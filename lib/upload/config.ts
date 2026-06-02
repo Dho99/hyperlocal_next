@@ -14,3 +14,14 @@ export const UPLOAD_CONFIG = {
         "accommodations",
     ],
 };
+
+export const FOLDER_MAPPING: Record<string, string> = {
+    destinations: "hyperlocal/destinations",
+    umkm: "hyperlocal/umkm",
+    users: "hyperlocal/profiles",
+    validations: "hyperlocal/validations",
+    categories: "hyperlocal/categories",
+    facilities: "hyperlocal/facilities",
+    "facility-evidences": "hyperlocal/facility-evidences",
+    accommodations: "hyperlocal/accommodations",
+};

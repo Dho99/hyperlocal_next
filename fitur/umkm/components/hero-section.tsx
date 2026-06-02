@@ -79,7 +79,7 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                         </div>
                         <div className="flex items-center gap-2">
                             <BookmarkButton
-                                targetId={umkm.id}
+                                targetSlug={umkm.slug}
                                 targetType="UMKM"
                                 className="bg-white border-stone-200 shadow-sm"
                             />

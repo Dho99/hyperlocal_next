@@ -619,3 +619,18 @@ model Report {
   @@index([reporterId])
   @@map("reports")
 }
+
+model AiIntentLog {
+  id           String   @id @default(uuid())
+  userQuery    String   @map("user_query")
+  intent       String
+  redirectTo   String   @map("redirect_to")
+  payload      Json?    @map("payload")
+  isValid      Boolean  @default(true) @map("is_valid")
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([intent])
+  @@index([createdAt])
+  @@map("ai_intent_logs")
+}

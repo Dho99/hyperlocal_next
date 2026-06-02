@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-import { UPLOAD_CONFIG } from "@/lib/upload/config";
+import { UPLOAD_CONFIG, FOLDER_MAPPING } from "@/lib/upload/config";
 import { optimizeImage } from "@/lib/upload/optimizeImage";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -72,6 +72,8 @@ export async function POST(req: NextRequest) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const optimizedBuffer = await optimizeImage(buffer);
 
+        const cloudinaryFolder = FOLDER_MAPPING[folder] ?? `hyperlocal/${folder}`;
+
         const result = await new Promise<{
             public_id: string;
             secure_url: string;
@@ -79,7 +81,13 @@ export async function POST(req: NextRequest) {
             format: string;
         }>((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
-                { folder, resource_type: "image" },
+                {
+                    folder: cloudinaryFolder,
+                    resource_type: "auto",
+                    quality: "auto",
+                    fetch_format: "auto",
+                    upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+                },
                 (error, result) => {
                     if (error) reject(error);
                     else if (result) resolve(result);

@@ -158,6 +158,11 @@ export type ExternalPlaceSource = $Result.DefaultSelection<Prisma.$ExternalPlace
  * 
  */
 export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
+/**
+ * Model AiIntentLog
+ * 
+ */
+export type AiIntentLog = $Result.DefaultSelection<Prisma.$AiIntentLogPayload>
 
 /**
  * Enums
@@ -707,6 +712,16 @@ export class PrismaClient<
     * ```
     */
   get report(): Prisma.ReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiIntentLog`: Exposes CRUD operations for the **AiIntentLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiIntentLogs
+    * const aiIntentLogs = await prisma.aiIntentLog.findMany()
+    * ```
+    */
+  get aiIntentLog(): Prisma.AiIntentLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1169,7 +1184,8 @@ export namespace Prisma {
     HalalValidation: 'HalalValidation',
     ValidationEvidence: 'ValidationEvidence',
     ExternalPlaceSource: 'ExternalPlaceSource',
-    Report: 'Report'
+    Report: 'Report',
+    AiIntentLog: 'AiIntentLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1185,7 +1201,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "accommodation" | "accommodationImage" | "accommodationHalalFacility" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "userInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "umkmHalalFacility" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource" | "report"
+      modelProps: "user" | "session" | "account" | "verification" | "category" | "destination" | "accommodation" | "accommodationImage" | "accommodationHalalFacility" | "destinationImage" | "destinationHalalFacility" | "destinationFacilityEvidence" | "halalFacility" | "review" | "destinationInteraction" | "userInteraction" | "destinationTrend" | "reviewSentiment" | "itinerary" | "itineraryItem" | "halalReadinessScore" | "umkm" | "umkmImage" | "umkmHalalFacility" | "halalCertification" | "halalValidation" | "validationEvidence" | "externalPlaceSource" | "report" | "aiIntentLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3335,6 +3351,80 @@ export namespace Prisma {
           }
         }
       }
+      AiIntentLog: {
+        payload: Prisma.$AiIntentLogPayload<ExtArgs>
+        fields: Prisma.AiIntentLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiIntentLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiIntentLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          findFirst: {
+            args: Prisma.AiIntentLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiIntentLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          findMany: {
+            args: Prisma.AiIntentLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>[]
+          }
+          create: {
+            args: Prisma.AiIntentLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          createMany: {
+            args: Prisma.AiIntentLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiIntentLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>[]
+          }
+          delete: {
+            args: Prisma.AiIntentLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          update: {
+            args: Prisma.AiIntentLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiIntentLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiIntentLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiIntentLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiIntentLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiIntentLogPayload>
+          }
+          aggregate: {
+            args: Prisma.AiIntentLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiIntentLog>
+          }
+          groupBy: {
+            args: Prisma.AiIntentLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiIntentLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiIntentLogCountArgs<ExtArgs>
+            result: $Utils.Optional<AiIntentLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3472,6 +3562,7 @@ export namespace Prisma {
     validationEvidence?: ValidationEvidenceOmit
     externalPlaceSource?: ExternalPlaceSourceOmit
     report?: ReportOmit
+    aiIntentLog?: AiIntentLogOmit
   }
 
   /* Types for Logging */
@@ -37913,6 +38004,1041 @@ export namespace Prisma {
 
 
   /**
+   * Model AiIntentLog
+   */
+
+  export type AggregateAiIntentLog = {
+    _count: AiIntentLogCountAggregateOutputType | null
+    _min: AiIntentLogMinAggregateOutputType | null
+    _max: AiIntentLogMaxAggregateOutputType | null
+  }
+
+  export type AiIntentLogMinAggregateOutputType = {
+    id: string | null
+    userQuery: string | null
+    intent: string | null
+    redirectTo: string | null
+    isValid: boolean | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type AiIntentLogMaxAggregateOutputType = {
+    id: string | null
+    userQuery: string | null
+    intent: string | null
+    redirectTo: string | null
+    isValid: boolean | null
+    errorMessage: string | null
+    createdAt: Date | null
+  }
+
+  export type AiIntentLogCountAggregateOutputType = {
+    id: number
+    userQuery: number
+    intent: number
+    redirectTo: number
+    payload: number
+    isValid: number
+    errorMessage: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AiIntentLogMinAggregateInputType = {
+    id?: true
+    userQuery?: true
+    intent?: true
+    redirectTo?: true
+    isValid?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type AiIntentLogMaxAggregateInputType = {
+    id?: true
+    userQuery?: true
+    intent?: true
+    redirectTo?: true
+    isValid?: true
+    errorMessage?: true
+    createdAt?: true
+  }
+
+  export type AiIntentLogCountAggregateInputType = {
+    id?: true
+    userQuery?: true
+    intent?: true
+    redirectTo?: true
+    payload?: true
+    isValid?: true
+    errorMessage?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AiIntentLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiIntentLog to aggregate.
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiIntentLogs to fetch.
+     */
+    orderBy?: AiIntentLogOrderByWithRelationInput | AiIntentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiIntentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiIntentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiIntentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiIntentLogs
+    **/
+    _count?: true | AiIntentLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiIntentLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiIntentLogMaxAggregateInputType
+  }
+
+  export type GetAiIntentLogAggregateType<T extends AiIntentLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiIntentLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiIntentLog[P]>
+      : GetScalarType<T[P], AggregateAiIntentLog[P]>
+  }
+
+
+
+
+  export type AiIntentLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiIntentLogWhereInput
+    orderBy?: AiIntentLogOrderByWithAggregationInput | AiIntentLogOrderByWithAggregationInput[]
+    by: AiIntentLogScalarFieldEnum[] | AiIntentLogScalarFieldEnum
+    having?: AiIntentLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiIntentLogCountAggregateInputType | true
+    _min?: AiIntentLogMinAggregateInputType
+    _max?: AiIntentLogMaxAggregateInputType
+  }
+
+  export type AiIntentLogGroupByOutputType = {
+    id: string
+    userQuery: string
+    intent: string
+    redirectTo: string
+    payload: JsonValue | null
+    isValid: boolean
+    errorMessage: string | null
+    createdAt: Date
+    _count: AiIntentLogCountAggregateOutputType | null
+    _min: AiIntentLogMinAggregateOutputType | null
+    _max: AiIntentLogMaxAggregateOutputType | null
+  }
+
+  type GetAiIntentLogGroupByPayload<T extends AiIntentLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiIntentLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiIntentLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiIntentLogGroupByOutputType[P]>
+            : GetScalarType<T[P], AiIntentLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiIntentLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userQuery?: boolean
+    intent?: boolean
+    redirectTo?: boolean
+    payload?: boolean
+    isValid?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["aiIntentLog"]>
+
+  export type AiIntentLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userQuery?: boolean
+    intent?: boolean
+    redirectTo?: boolean
+    payload?: boolean
+    isValid?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["aiIntentLog"]>
+
+  export type AiIntentLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userQuery?: boolean
+    intent?: boolean
+    redirectTo?: boolean
+    payload?: boolean
+    isValid?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["aiIntentLog"]>
+
+  export type AiIntentLogSelectScalar = {
+    id?: boolean
+    userQuery?: boolean
+    intent?: boolean
+    redirectTo?: boolean
+    payload?: boolean
+    isValid?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+  }
+
+  export type AiIntentLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userQuery" | "intent" | "redirectTo" | "payload" | "isValid" | "errorMessage" | "createdAt", ExtArgs["result"]["aiIntentLog"]>
+
+  export type $AiIntentLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiIntentLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userQuery: string
+      intent: string
+      redirectTo: string
+      payload: Prisma.JsonValue | null
+      isValid: boolean
+      errorMessage: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["aiIntentLog"]>
+    composites: {}
+  }
+
+  type AiIntentLogGetPayload<S extends boolean | null | undefined | AiIntentLogDefaultArgs> = $Result.GetResult<Prisma.$AiIntentLogPayload, S>
+
+  type AiIntentLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiIntentLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiIntentLogCountAggregateInputType | true
+    }
+
+  export interface AiIntentLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiIntentLog'], meta: { name: 'AiIntentLog' } }
+    /**
+     * Find zero or one AiIntentLog that matches the filter.
+     * @param {AiIntentLogFindUniqueArgs} args - Arguments to find a AiIntentLog
+     * @example
+     * // Get one AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiIntentLogFindUniqueArgs>(args: SelectSubset<T, AiIntentLogFindUniqueArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiIntentLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiIntentLogFindUniqueOrThrowArgs} args - Arguments to find a AiIntentLog
+     * @example
+     * // Get one AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiIntentLogFindUniqueOrThrowArgs>(args: SelectSubset<T, AiIntentLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiIntentLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogFindFirstArgs} args - Arguments to find a AiIntentLog
+     * @example
+     * // Get one AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiIntentLogFindFirstArgs>(args?: SelectSubset<T, AiIntentLogFindFirstArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiIntentLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogFindFirstOrThrowArgs} args - Arguments to find a AiIntentLog
+     * @example
+     * // Get one AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiIntentLogFindFirstOrThrowArgs>(args?: SelectSubset<T, AiIntentLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiIntentLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiIntentLogs
+     * const aiIntentLogs = await prisma.aiIntentLog.findMany()
+     * 
+     * // Get first 10 AiIntentLogs
+     * const aiIntentLogs = await prisma.aiIntentLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiIntentLogWithIdOnly = await prisma.aiIntentLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiIntentLogFindManyArgs>(args?: SelectSubset<T, AiIntentLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiIntentLog.
+     * @param {AiIntentLogCreateArgs} args - Arguments to create a AiIntentLog.
+     * @example
+     * // Create one AiIntentLog
+     * const AiIntentLog = await prisma.aiIntentLog.create({
+     *   data: {
+     *     // ... data to create a AiIntentLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiIntentLogCreateArgs>(args: SelectSubset<T, AiIntentLogCreateArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiIntentLogs.
+     * @param {AiIntentLogCreateManyArgs} args - Arguments to create many AiIntentLogs.
+     * @example
+     * // Create many AiIntentLogs
+     * const aiIntentLog = await prisma.aiIntentLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiIntentLogCreateManyArgs>(args?: SelectSubset<T, AiIntentLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiIntentLogs and returns the data saved in the database.
+     * @param {AiIntentLogCreateManyAndReturnArgs} args - Arguments to create many AiIntentLogs.
+     * @example
+     * // Create many AiIntentLogs
+     * const aiIntentLog = await prisma.aiIntentLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiIntentLogs and only return the `id`
+     * const aiIntentLogWithIdOnly = await prisma.aiIntentLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiIntentLogCreateManyAndReturnArgs>(args?: SelectSubset<T, AiIntentLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiIntentLog.
+     * @param {AiIntentLogDeleteArgs} args - Arguments to delete one AiIntentLog.
+     * @example
+     * // Delete one AiIntentLog
+     * const AiIntentLog = await prisma.aiIntentLog.delete({
+     *   where: {
+     *     // ... filter to delete one AiIntentLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiIntentLogDeleteArgs>(args: SelectSubset<T, AiIntentLogDeleteArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiIntentLog.
+     * @param {AiIntentLogUpdateArgs} args - Arguments to update one AiIntentLog.
+     * @example
+     * // Update one AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiIntentLogUpdateArgs>(args: SelectSubset<T, AiIntentLogUpdateArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiIntentLogs.
+     * @param {AiIntentLogDeleteManyArgs} args - Arguments to filter AiIntentLogs to delete.
+     * @example
+     * // Delete a few AiIntentLogs
+     * const { count } = await prisma.aiIntentLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiIntentLogDeleteManyArgs>(args?: SelectSubset<T, AiIntentLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiIntentLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiIntentLogs
+     * const aiIntentLog = await prisma.aiIntentLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiIntentLogUpdateManyArgs>(args: SelectSubset<T, AiIntentLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiIntentLogs and returns the data updated in the database.
+     * @param {AiIntentLogUpdateManyAndReturnArgs} args - Arguments to update many AiIntentLogs.
+     * @example
+     * // Update many AiIntentLogs
+     * const aiIntentLog = await prisma.aiIntentLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiIntentLogs and only return the `id`
+     * const aiIntentLogWithIdOnly = await prisma.aiIntentLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiIntentLogUpdateManyAndReturnArgs>(args: SelectSubset<T, AiIntentLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiIntentLog.
+     * @param {AiIntentLogUpsertArgs} args - Arguments to update or create a AiIntentLog.
+     * @example
+     * // Update or create a AiIntentLog
+     * const aiIntentLog = await prisma.aiIntentLog.upsert({
+     *   create: {
+     *     // ... data to create a AiIntentLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiIntentLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiIntentLogUpsertArgs>(args: SelectSubset<T, AiIntentLogUpsertArgs<ExtArgs>>): Prisma__AiIntentLogClient<$Result.GetResult<Prisma.$AiIntentLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiIntentLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogCountArgs} args - Arguments to filter AiIntentLogs to count.
+     * @example
+     * // Count the number of AiIntentLogs
+     * const count = await prisma.aiIntentLog.count({
+     *   where: {
+     *     // ... the filter for the AiIntentLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiIntentLogCountArgs>(
+      args?: Subset<T, AiIntentLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiIntentLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiIntentLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiIntentLogAggregateArgs>(args: Subset<T, AiIntentLogAggregateArgs>): Prisma.PrismaPromise<GetAiIntentLogAggregateType<T>>
+
+    /**
+     * Group by AiIntentLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiIntentLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiIntentLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiIntentLogGroupByArgs['orderBy'] }
+        : { orderBy?: AiIntentLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiIntentLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiIntentLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiIntentLog model
+   */
+  readonly fields: AiIntentLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiIntentLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiIntentLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiIntentLog model
+   */
+  interface AiIntentLogFieldRefs {
+    readonly id: FieldRef<"AiIntentLog", 'String'>
+    readonly userQuery: FieldRef<"AiIntentLog", 'String'>
+    readonly intent: FieldRef<"AiIntentLog", 'String'>
+    readonly redirectTo: FieldRef<"AiIntentLog", 'String'>
+    readonly payload: FieldRef<"AiIntentLog", 'Json'>
+    readonly isValid: FieldRef<"AiIntentLog", 'Boolean'>
+    readonly errorMessage: FieldRef<"AiIntentLog", 'String'>
+    readonly createdAt: FieldRef<"AiIntentLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiIntentLog findUnique
+   */
+  export type AiIntentLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AiIntentLog to fetch.
+     */
+    where: AiIntentLogWhereUniqueInput
+  }
+
+  /**
+   * AiIntentLog findUniqueOrThrow
+   */
+  export type AiIntentLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AiIntentLog to fetch.
+     */
+    where: AiIntentLogWhereUniqueInput
+  }
+
+  /**
+   * AiIntentLog findFirst
+   */
+  export type AiIntentLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AiIntentLog to fetch.
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiIntentLogs to fetch.
+     */
+    orderBy?: AiIntentLogOrderByWithRelationInput | AiIntentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiIntentLogs.
+     */
+    cursor?: AiIntentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiIntentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiIntentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiIntentLogs.
+     */
+    distinct?: AiIntentLogScalarFieldEnum | AiIntentLogScalarFieldEnum[]
+  }
+
+  /**
+   * AiIntentLog findFirstOrThrow
+   */
+  export type AiIntentLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AiIntentLog to fetch.
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiIntentLogs to fetch.
+     */
+    orderBy?: AiIntentLogOrderByWithRelationInput | AiIntentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiIntentLogs.
+     */
+    cursor?: AiIntentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiIntentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiIntentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiIntentLogs.
+     */
+    distinct?: AiIntentLogScalarFieldEnum | AiIntentLogScalarFieldEnum[]
+  }
+
+  /**
+   * AiIntentLog findMany
+   */
+  export type AiIntentLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AiIntentLogs to fetch.
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiIntentLogs to fetch.
+     */
+    orderBy?: AiIntentLogOrderByWithRelationInput | AiIntentLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiIntentLogs.
+     */
+    cursor?: AiIntentLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiIntentLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiIntentLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiIntentLogs.
+     */
+    distinct?: AiIntentLogScalarFieldEnum | AiIntentLogScalarFieldEnum[]
+  }
+
+  /**
+   * AiIntentLog create
+   */
+  export type AiIntentLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AiIntentLog.
+     */
+    data: XOR<AiIntentLogCreateInput, AiIntentLogUncheckedCreateInput>
+  }
+
+  /**
+   * AiIntentLog createMany
+   */
+  export type AiIntentLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiIntentLogs.
+     */
+    data: AiIntentLogCreateManyInput | AiIntentLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiIntentLog createManyAndReturn
+   */
+  export type AiIntentLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiIntentLogs.
+     */
+    data: AiIntentLogCreateManyInput | AiIntentLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiIntentLog update
+   */
+  export type AiIntentLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AiIntentLog.
+     */
+    data: XOR<AiIntentLogUpdateInput, AiIntentLogUncheckedUpdateInput>
+    /**
+     * Choose, which AiIntentLog to update.
+     */
+    where: AiIntentLogWhereUniqueInput
+  }
+
+  /**
+   * AiIntentLog updateMany
+   */
+  export type AiIntentLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiIntentLogs.
+     */
+    data: XOR<AiIntentLogUpdateManyMutationInput, AiIntentLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AiIntentLogs to update
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * Limit how many AiIntentLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiIntentLog updateManyAndReturn
+   */
+  export type AiIntentLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * The data used to update AiIntentLogs.
+     */
+    data: XOR<AiIntentLogUpdateManyMutationInput, AiIntentLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AiIntentLogs to update
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * Limit how many AiIntentLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiIntentLog upsert
+   */
+  export type AiIntentLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AiIntentLog to update in case it exists.
+     */
+    where: AiIntentLogWhereUniqueInput
+    /**
+     * In case the AiIntentLog found by the `where` argument doesn't exist, create a new AiIntentLog with this data.
+     */
+    create: XOR<AiIntentLogCreateInput, AiIntentLogUncheckedCreateInput>
+    /**
+     * In case the AiIntentLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiIntentLogUpdateInput, AiIntentLogUncheckedUpdateInput>
+  }
+
+  /**
+   * AiIntentLog delete
+   */
+  export type AiIntentLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+    /**
+     * Filter which AiIntentLog to delete.
+     */
+    where: AiIntentLogWhereUniqueInput
+  }
+
+  /**
+   * AiIntentLog deleteMany
+   */
+  export type AiIntentLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiIntentLogs to delete
+     */
+    where?: AiIntentLogWhereInput
+    /**
+     * Limit how many AiIntentLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiIntentLog without action
+   */
+  export type AiIntentLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiIntentLog
+     */
+    select?: AiIntentLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiIntentLog
+     */
+    omit?: AiIntentLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -38365,6 +39491,20 @@ export namespace Prisma {
   };
 
   export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+  export const AiIntentLogScalarFieldEnum: {
+    id: 'id',
+    userQuery: 'userQuery',
+    intent: 'intent',
+    redirectTo: 'redirectTo',
+    payload: 'payload',
+    isValid: 'isValid',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt'
+  };
+
+  export type AiIntentLogScalarFieldEnum = (typeof AiIntentLogScalarFieldEnum)[keyof typeof AiIntentLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -40981,6 +42121,73 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Report"> | Date | string
   }
 
+  export type AiIntentLogWhereInput = {
+    AND?: AiIntentLogWhereInput | AiIntentLogWhereInput[]
+    OR?: AiIntentLogWhereInput[]
+    NOT?: AiIntentLogWhereInput | AiIntentLogWhereInput[]
+    id?: StringFilter<"AiIntentLog"> | string
+    userQuery?: StringFilter<"AiIntentLog"> | string
+    intent?: StringFilter<"AiIntentLog"> | string
+    redirectTo?: StringFilter<"AiIntentLog"> | string
+    payload?: JsonNullableFilter<"AiIntentLog">
+    isValid?: BoolFilter<"AiIntentLog"> | boolean
+    errorMessage?: StringNullableFilter<"AiIntentLog"> | string | null
+    createdAt?: DateTimeFilter<"AiIntentLog"> | Date | string
+  }
+
+  export type AiIntentLogOrderByWithRelationInput = {
+    id?: SortOrder
+    userQuery?: SortOrder
+    intent?: SortOrder
+    redirectTo?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    isValid?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiIntentLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiIntentLogWhereInput | AiIntentLogWhereInput[]
+    OR?: AiIntentLogWhereInput[]
+    NOT?: AiIntentLogWhereInput | AiIntentLogWhereInput[]
+    userQuery?: StringFilter<"AiIntentLog"> | string
+    intent?: StringFilter<"AiIntentLog"> | string
+    redirectTo?: StringFilter<"AiIntentLog"> | string
+    payload?: JsonNullableFilter<"AiIntentLog">
+    isValid?: BoolFilter<"AiIntentLog"> | boolean
+    errorMessage?: StringNullableFilter<"AiIntentLog"> | string | null
+    createdAt?: DateTimeFilter<"AiIntentLog"> | Date | string
+  }, "id">
+
+  export type AiIntentLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    userQuery?: SortOrder
+    intent?: SortOrder
+    redirectTo?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    isValid?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AiIntentLogCountOrderByAggregateInput
+    _max?: AiIntentLogMaxOrderByAggregateInput
+    _min?: AiIntentLogMinOrderByAggregateInput
+  }
+
+  export type AiIntentLogScalarWhereWithAggregatesInput = {
+    AND?: AiIntentLogScalarWhereWithAggregatesInput | AiIntentLogScalarWhereWithAggregatesInput[]
+    OR?: AiIntentLogScalarWhereWithAggregatesInput[]
+    NOT?: AiIntentLogScalarWhereWithAggregatesInput | AiIntentLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiIntentLog"> | string
+    userQuery?: StringWithAggregatesFilter<"AiIntentLog"> | string
+    intent?: StringWithAggregatesFilter<"AiIntentLog"> | string
+    redirectTo?: StringWithAggregatesFilter<"AiIntentLog"> | string
+    payload?: JsonNullableWithAggregatesFilter<"AiIntentLog">
+    isValid?: BoolWithAggregatesFilter<"AiIntentLog"> | boolean
+    errorMessage?: StringNullableWithAggregatesFilter<"AiIntentLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AiIntentLog"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -43558,6 +44765,83 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AiIntentLogCreateInput = {
+    id?: string
+    userQuery: string
+    intent: string
+    redirectTo: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AiIntentLogUncheckedCreateInput = {
+    id?: string
+    userQuery: string
+    intent: string
+    redirectTo: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AiIntentLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userQuery?: StringFieldUpdateOperationsInput | string
+    intent?: StringFieldUpdateOperationsInput | string
+    redirectTo?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiIntentLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userQuery?: StringFieldUpdateOperationsInput | string
+    intent?: StringFieldUpdateOperationsInput | string
+    redirectTo?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiIntentLogCreateManyInput = {
+    id?: string
+    userQuery: string
+    intent: string
+    redirectTo: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: boolean
+    errorMessage?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AiIntentLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userQuery?: StringFieldUpdateOperationsInput | string
+    intent?: StringFieldUpdateOperationsInput | string
+    redirectTo?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiIntentLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userQuery?: StringFieldUpdateOperationsInput | string
+    intent?: StringFieldUpdateOperationsInput | string
+    redirectTo?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    isValid?: BoolFieldUpdateOperationsInput | boolean
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -45594,6 +46878,37 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumReportStatusFilter<$PrismaModel>
     _max?: NestedEnumReportStatusFilter<$PrismaModel>
+  }
+
+  export type AiIntentLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    userQuery?: SortOrder
+    intent?: SortOrder
+    redirectTo?: SortOrder
+    payload?: SortOrder
+    isValid?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiIntentLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userQuery?: SortOrder
+    intent?: SortOrder
+    redirectTo?: SortOrder
+    isValid?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiIntentLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    userQuery?: SortOrder
+    intent?: SortOrder
+    redirectTo?: SortOrder
+    isValid?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type SessionCreateNestedManyWithoutUserInput = {
