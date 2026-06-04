@@ -5,10 +5,8 @@ export default async function proxy(request: NextRequest) {
 
     // Define public and auth paths
     const isPublicPath = path === "/" || path === "/unauthorized";
-    const isAuthPath = path.startsWith("/admin/login") || 
-                       path.startsWith("/admin/register") || 
-                       path.startsWith("/user/login") || 
-                       path.startsWith("/user/register");
+    const isAuthPath = path.startsWith("/login") || 
+                       path.startsWith("/register");
     const isStaticPath =
         path.startsWith("/_next") ||
         path.startsWith("/api") ||
@@ -62,7 +60,7 @@ export default async function proxy(request: NextRequest) {
 
     if (isAdminPath) {
         if (!isLoggedIn) {
-            return NextResponse.redirect(new URL("/admin/login", request.url));
+            return NextResponse.redirect(new URL("/login", request.url));
         }
 
         if (session.user.role !== "admin") {

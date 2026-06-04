@@ -73,7 +73,7 @@ function ProfilePageContent() {
 
     useEffect(() => {
         if (!sessionPending && !session) {
-            router.push("/user/login");
+            router.push("/login");
         }
     }, [session, sessionPending, router]);
 
