@@ -11,6 +11,9 @@ export const registerSchema = z
         email: z.string().email({ message: "Email tidak valid" }),
         password: z.string().min(8, { message: "Password minimal 8 karakter" }),
         confirmPassword: z.string(),
+        terms: z.boolean().refine((val) => val === true, {
+            message: "Anda harus menyetujui Syarat & Ketentuan",
+        }),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Konfirmasi password tidak cocok",

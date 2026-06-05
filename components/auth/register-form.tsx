@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { registerSchema } from "@/lib/validations/auth.schema";
 import type { RegisterFormValues } from "@/types/auth";
 import {
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
 
@@ -43,6 +44,7 @@ export default function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      terms: false,
     },
   });
 
@@ -192,6 +194,49 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-start gap-2 pt-2">
+              <div className="flex items-center h-5">
+                <Controller
+                  name="terms"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="terms"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isLoading}
+                    />
+                  )}
+                />
+              </div>
+              <Label
+                htmlFor="terms"
+                className="block text-sm font-medium leading-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Saya menyetujui{" "}
+                <Link
+                  href="/terms"
+                  className="text-primary hover:underline font-semibold"
+                >
+                  Syarat & Ketentuan
+                </Link>{" "}
+                dan{" "}
+                <Link
+                  href="/privacy"
+                  className="text-primary hover:underline font-semibold"
+                >
+                  Kebijakan Privasi
+                </Link>
+              </Label>
+            </div>
+            {form.formState.errors.terms && (
+              <p className="text-xs font-medium text-destructive pl-6">
+                {form.formState.errors.terms.message}
+              </p>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
