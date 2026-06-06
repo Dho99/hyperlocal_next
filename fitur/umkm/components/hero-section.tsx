@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Star, BadgeCheck, Store } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Star, BadgeCheck, Store, ArrowLeft } from "lucide-react";
 import type { UmkmDetail } from "@/lib/services/umkm-service";
 import { ScrollReveal } from "./scroll-reveal";
 import { ReportDialog } from "@/components/report/report-dialog";
@@ -12,6 +13,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ umkm }: HeroSectionProps) {
+    const router = useRouter();
     const coverImage = umkm.images?.[0]?.imageUrl;
     const hasCertification = umkm.certifications?.some(
         (c) => c.status === "VALID",
@@ -42,6 +44,14 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                     </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-stone-900/70 via-stone-900/20 to-transparent" />
+                <button
+                    type="button"
+                    onClick={() => router.push("/umkm")}
+                    aria-label="Kembali ke menu kuliner"
+                    className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white bg-white/90 text-stone-700 shadow-sm transition hover:bg-stone-100"
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                </button>
             </div>
 
             <div className="mx-auto max-w-7xl px-4 -mt-10 relative z-10">
