@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import axios from 'axios';
-import { PaginatedResponse } from '@/lib/pagination/cursorPagination';
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import axios from "axios";
+import { PaginatedResponse } from "@/lib/pagination/cursorPagination";
 
 interface UseCursorPaginationOptions {
   url: string;
   limit?: number;
-  params?: Record<string, any>;
-  onSuccess?: (data: any[]) => void;
+  params?: Record<string, string | number | boolean | null | undefined>;
+  onSuccess?: (data: unknown[]) => void;
 }
 
 export function useCursorPagination<T>({
@@ -20,22 +20,38 @@ export function useCursorPagination<T>({
   const [error, setError] = useState<Error | null>(null);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
-  
-  // Track current params to detect changes and reset
-  const prevParamsRef = useRef(JSON.stringify(params));
+  const requestIdRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
+  const paramsKey = useMemo(() => JSON.stringify(params), [params]);
 
   const fetchData = useCallback(async (cursor?: string | null, isInitial = false) => {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+    abortRef.current?.abort();
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    await Promise.resolve();
+    if (controller.signal.aborted) return;
+
     setIsLoading(true);
     setError(null);
     
     try {
       const response = await axios.get<PaginatedResponse<T>>(url, {
         params: {
-          ...params,
+          ...(JSON.parse(paramsKey) as Record<
+            string,
+            string | number | boolean | null | undefined
+          >),
           limit,
           cursor: cursor || undefined,
         },
+        signal: controller.signal,
       });
+
+      if (requestIdRef.current !== requestId) return;
 
       const result = response.data;
       
@@ -48,27 +64,33 @@ export function useCursorPagination<T>({
           onSuccess(result.data);
         }
       } else {
-        throw new Error(result.message || 'Failed to fetch data');
+        throw new Error(result.message || "Failed to fetch data");
       }
-    } catch (err: any) {
-      setError(err instanceof Error ? err : new Error(err.message || 'An error occurred'));
+    } catch (err: unknown) {
+      if (axios.isCancel(err) || requestIdRef.current !== requestId) return;
+
+      const message =
+        err instanceof Error ? err.message : "An error occurred";
+      setError(err instanceof Error ? err : new Error(message));
     } finally {
-      setIsLoading(false);
+      if (requestIdRef.current === requestId) {
+        setIsLoading(false);
+      }
     }
-  }, [url, limit, params, onSuccess]);
+  }, [url, limit, paramsKey, onSuccess]);
 
-  // Initial fetch or reset on param changes
   useEffect(() => {
-    const currentParamsJson = JSON.stringify(params);
-    if (prevParamsRef.current !== currentParamsJson) {
-      prevParamsRef.current = currentParamsJson;
-      fetchData(null, true);
-    }
-  }, [params, fetchData]);
+    const timeoutId = window.setTimeout(() => {
+      void fetchData(null, true);
+    }, 0);
 
-  // Trigger first load
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchData, paramsKey]);
+
   useEffect(() => {
-    fetchData(null, true);
+    return () => {
+      abortRef.current?.abort();
+    };
   }, []);
 
   const loadMore = useCallback(() => {

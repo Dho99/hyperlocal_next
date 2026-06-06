@@ -1,12 +1,28 @@
 import { prisma } from "@/lib/prisma";
 import type { DestinationFormValues } from "@/types/destination";
 import type { Destination } from "@/types/destination";
+import type { Prisma } from "@/lib/generated/prisma";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+
+export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+
+async function validateDestinationCategory(categoryId: string): Promise<void> {
+    const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { type: true },
+    });
+    if (!category) throw new Error("Kategori tidak ditemukan");
+    if (category.type !== "DESTINATION") {
+        throw new Error(
+            "Kategori yang dipilih bukan kategori destinasi. Pilih kategori dengan tipe destinasi.",
+        );
+    }
+}
 
 const destinationIncludes = {
     category: true,
@@ -16,16 +32,53 @@ const destinationIncludes = {
             evidences: true,
         },
     },
+    umkms: {
+        include: {
+            category: true,
+            images: true,
+            certifications: true,
+        },
+        orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+        take: 8,
+    },
     images: true,
-} as const;
+} satisfies Prisma.DestinationInclude;
+
+type DestinationWithIncludes = Prisma.DestinationGetPayload<{
+    include: typeof destinationIncludes;
+}>;
+
+function serializeDestination(raw: DestinationWithIncludes): Destination {
+    return {
+        ...raw,
+        latitude: raw.latitude ? Number(raw.latitude) : null,
+        longitude: raw.longitude ? Number(raw.longitude) : null,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+        destinationHalalFacilities: raw.destinationHalalFacilities?.map((dhf) => ({
+            ...dhf,
+            latitude: dhf.latitude ? Number(dhf.latitude) : null,
+            longitude: dhf.longitude ? Number(dhf.longitude) : null,
+        })),
+        umkms: raw.umkms?.map((umkm) => ({
+            ...umkm,
+            latitude: umkm.latitude ? Number(umkm.latitude) : null,
+            longitude: umkm.longitude ? Number(umkm.longitude) : null,
+        })),
+    };
+}
 
 export async function getPaginatedDestinations(
     params: CursorPaginationParams & {
         categoryId?: string;
         search?: string;
         status?: string;
+        minScore?: number;
+        sort?: DestinationSort;
     },
 ) {
+    const orderBy = getDestinationOrderBy(params.sort);
+
     return withCursorPagination(
         async (take, cursor, skip) => {
             const destinations = await prisma.destination.findMany({
@@ -43,16 +96,48 @@ export async function getPaginatedDestinations(
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),
+                    ...(params.minScore != null && {
+                        OR: [
+                            { validatedScore: { gte: params.minScore } },
+                            {
+                                validatedScore: null,
+                                halalScore: { gte: params.minScore },
+                            },
+                        ],
+                    }),
                 },
                 include: destinationIncludes,
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                orderBy,
             });
 
-            return destinations as unknown as typeof destinations;
+            return destinations.map(serializeDestination);
         },
         params,
         "Destinations fetched successfully",
     );
+}
+
+export type DestinationSort =
+    | "newest"
+    | "rating"
+    | "score"
+    | "reviews"
+    | "name";
+
+function getDestinationOrderBy(sort: DestinationSort = "newest") {
+    const orderByMap = {
+        newest: [{ createdAt: "desc" }, { id: "desc" }],
+        rating: [{ rating: "desc" }, { reviewCount: "desc" }, { id: "desc" }],
+        score: [
+            { validatedScore: { sort: "desc", nulls: "last" } },
+            { halalScore: { sort: "desc", nulls: "last" } },
+            { id: "desc" },
+        ],
+        reviews: [{ reviewCount: "desc" }, { rating: "desc" }, { id: "desc" }],
+        name: [{ name: "asc" }, { id: "asc" }],
+    } satisfies Record<DestinationSort, Prisma.DestinationOrderByWithRelationInput[]>;
+
+    return orderByMap[sort];
 }
 
 export async function getDestinations(): Promise<Destination[]> {
@@ -60,19 +145,26 @@ export async function getDestinations(): Promise<Destination[]> {
         include: destinationIncludes,
         orderBy: { createdAt: "desc" },
     });
-    return data as unknown as Destination[];
+    return data.map(serializeDestination);
 }
 
-export async function getDestination(id: string): Promise<Destination | null> {
-    const data = await prisma.destination.findUnique({
-        where: { id },
+export async function getDestination(
+    idOrSlug: string,
+): Promise<Destination | null> {
+    const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            idOrSlug,
+        );
+    const data = await prisma.destination.findFirst({
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
         include: destinationIncludes,
     });
-    return data as unknown as Destination | null;
+    return data ? serializeDestination(data) : null;
 }
 
 export async function createDestination(values: DestinationFormValues) {
     const { facilities, images, ...data } = values;
+    await validateDestinationCategory(data.categoryId);
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -122,6 +214,7 @@ export async function createDestination(values: DestinationFormValues) {
                     create:
                         facilities?.map((f) => ({
                             facilityId: f.facilityId,
+                            name: f.name,
                             latitude: f.latitude,
                             longitude: f.longitude,
                             evidences: {
@@ -140,13 +233,14 @@ export async function createDestination(values: DestinationFormValues) {
             data: {
                 destinationId: destination.id,
                 status: "PENDING",
+                ...(halalScore < 50 && { notes: TRIAGE_NOTE }),
             },
         });
 
         return destination;
     });
 
-    return destination as unknown as Destination;
+    return serializeDestination(destination);
 }
 
 export async function updateDestination(
@@ -154,6 +248,7 @@ export async function updateDestination(
     values: DestinationFormValues,
 ) {
     const { facilities, images, ...data } = values;
+    await validateDestinationCategory(data.categoryId);
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -202,6 +297,7 @@ export async function updateDestination(
                     create:
                         facilities?.map((f) => ({
                             facilityId: f.facilityId,
+                            name: f.name,
                             latitude: f.latitude,
                             longitude: f.longitude,
                             evidences: {
@@ -239,7 +335,7 @@ export async function updateDestination(
         return destination;
     });
 
-    return destination as unknown as Destination;
+    return serializeDestination(destination);
 }
 
 export async function deleteDestination(id: string) {

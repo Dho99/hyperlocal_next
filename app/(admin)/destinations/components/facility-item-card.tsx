@@ -162,6 +162,28 @@ export function FacilityItemCard({
                     )}
                 />
 
+                <FormField
+                    control={control}
+                    name={`facilities.${index}.name`}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Nama Fasilitas{" "}
+                                <span className="text-muted-foreground font-normal">
+                                    (Opsional)
+                                </span>
+                            </FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="Contoh: Masjid At-Taqwa Tasikmalaya"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
                 <div className="space-y-2">
                     <FormLabel className="text-xs font-medium flex items-center gap-1">
                         <MapPin className="h-3 w-3" />

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
+import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,7 +24,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Hyperlocal - Eksplorasi Halal Indonesia",
+    title: "HyperLocal - Eksplorasi Halal Indonesia",
     description:
         "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis data hyperlocal.",
 };
@@ -48,6 +49,7 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <body className="min-h-full flex flex-col">
+                <ServiceWorkerRegistration />
                 <NextTopLoader />
                 {children} <Toaster richColors position="top-right" />
             </body>

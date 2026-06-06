@@ -76,7 +76,7 @@ export function HeroMapSection() {
     const handleDetail = useCallback(() => {
         if (!selected) return;
         setDialogOpen(false);
-        router.push(`/destinasi/${selected.id}`);
+        router.push(`/destinasi/${selected.slug}`);
     }, [selected, router]);
 
     const statusBadge = (status?: string) => {

@@ -12,8 +12,11 @@ import {
     ShieldCheck,
     BarChart3,
     Settings,
+    Building2,
     ChevronRight,
     ChevronDown,
+    Flag,
+    Lightbulb,
 } from "lucide-react";
 
 export const navItems = [
@@ -51,17 +54,50 @@ export const navItems = [
                 title: "Daftar UMKM",
                 href: "/umkms",
             },
+            {
+                title: "Manajemen Kategori",
+                href: "/umkms/categories",
+            },
         ],
     },
     {
+        title: "Penginapan",
+        href: "/accommodations",
+        icon: Building2,
+    },
+    {
         title: "Validasi",
-        href: "/validations",
+        href: "/validasi/destinasi",
         icon: ShieldCheck,
+        subItems: [
+            {
+                title: "Validasi Destinasi",
+                href: "/validasi/destinasi",
+            },
+            {
+                title: "Validasi UMKM",
+                href: "/validasi/umkm",
+            },
+            {
+                title: "Validasi Penginapan",
+                href: "/validasi/penginapan",
+            },
+        ],
     },
     {
         title: "Statistik",
         href: "/statistics",
         icon: BarChart3,
+    },
+    {
+        title: "Laporan",
+        href: "/reports",
+        icon: Flag,
+    },
+    {
+        title: "Rekomendasi & Laporan",
+        href: "/rekomendasi",
+        icon: Lightbulb,
     },
     {
         title: "Pengaturan",
@@ -118,8 +154,6 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                     isRouteActive(item.href) ||
                     (hasSubItems &&
                         item.subItems?.some((sub) => isRouteActive(sub.href)));
-                const isDirectActive = pathname === item.href;
-
                 return (
                     <div key={item.title} className="flex flex-col gap-1">
                         {hasSubItems ? (
@@ -128,7 +162,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                 className={cn(
                                     "group flex w-full items-center justify-between rounded-lg px-5 py-4 text-left text-xl font-medium transition-all duration-200",
                                     isParentActive
-                                        ? "bg-[#6750a4] text-white"
+                                        ? "bg-white/10"
                                         : "text-white/35 hover:bg-white/10 hover:text-white/80",
                                 )}
                             >
@@ -155,8 +189,8 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                 onClick={onItemClick}
                                 className={cn(
                                     "group flex items-center justify-between rounded-lg px-5 py-4 text-xl font-medium transition-all duration-200",
-                                    isDirectActive
-                                        ? "bg-[#6750a4] text-white shadow-sm"
+                                    isRouteActive(item.href)
+                                        ? "bg-white/10"
                                         : "text-white/35 hover:bg-white/10 hover:text-white/80",
                                 )}
                             >
@@ -164,7 +198,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                     <item.icon
                                         className={cn(
                                             "h-6 w-6 shrink-0 transition-colors",
-                                            isDirectActive
+                                            isRouteActive(item.href)
                                                 ? "text-white"
                                                 : "group-hover:text-white/80",
                                         )}
@@ -188,7 +222,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                             className={cn(
                                                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
                                                 isSubActive
-                                                    ? "bg-[#6750a4] text-white shadow-sm"
+                                                    ? "bg-white/10"
                                                     : "text-white/35 hover:bg-white/10 hover:text-white/80",
                                             )}
                                         >

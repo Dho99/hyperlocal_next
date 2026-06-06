@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
-    Search,
     Map,
     Utensils,
     ShieldCheck,
@@ -23,36 +23,50 @@ import {
 } from "@/components/ui/dialog";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 import { cn } from "@/lib/utils";
+import { HeroSearch } from "./hero-search";
+import { TopographicPattern } from "@/components/ui/topographic-pattern";
 
 const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ssr: false,
     loading: () => (
-        <div className="h-full w-full bg-[#f2ecf4] animate-pulse flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-[#6750a4]" />
+        <div className="h-full w-full bg-stone-100 animate-pulse flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-emerald-900" />
         </div>
     ),
 });
 
-const statData = [
-    { label: "Total Destinasi", value: "1,345", icon: Map },
-    { label: "Total UMKM", value: "2,412", icon: Utensils },
-    { label: "Sertifikasi Halal", value: "88%", icon: ShieldCheck },
+const iconMap = {
+    map: Map,
+    utensils: Utensils,
+    shield: ShieldCheck,
+} as const;
+
+const defaultStats = [
+    { label: "Total Destinasi", value: "0", icon: "map" as const },
+    { label: "Total UMKM", value: "0", icon: "utensils" as const },
+    { label: "Terverifikasi", value: "0%", icon: "shield" as const },
 ];
 
-const categories = [
-    { label: "Wisata Alam", href: "#popular" },
-    { label: "Kuliner Halal", href: "#facilities" },
-    { label: "Masjid", href: "#nearby" },
-    { label: "Penginapan", href: "#verified" },
-];
+const statsContainerVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.12 },
+    },
+};
 
-export function HeroSection() {
+const statsItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+export function HeroSection({ stats = defaultStats }: { stats?: { label: string; value: string; icon: "map" | "utensils" | "shield" }[] }) {
     const router = useRouter();
     const [destinations, setDestinations] = useState<DashboardMapDestination[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selected, setSelected] = useState<DashboardMapDestination | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const fetchMapData = useCallback(async () => {
         setLoading(true);
@@ -82,8 +96,18 @@ export function HeroSection() {
     }, []);
 
     useEffect(() => {
-        fetchMapData();
+        queueMicrotask(fetchMapData);
     }, [fetchMapData]);
+
+    const availableCategories = useMemo(() => {
+        const cats = new Set(destinations.map((d) => d.category).filter(Boolean));
+        return Array.from(cats) as string[];
+    }, [destinations]);
+
+    const filteredDestinations = useMemo(() => {
+        if (!activeCategory) return destinations;
+        return destinations.filter((d) => d.category === activeCategory);
+    }, [destinations, activeCategory]);
 
     const handleMarkerClick = useCallback((dest: DashboardMapDestination) => {
         setSelected(dest);
@@ -93,7 +117,7 @@ export function HeroSection() {
     const handleDetail = useCallback(() => {
         if (!selected) return;
         setDialogOpen(false);
-        router.push(`/destinasi/${selected.id}`);
+        router.push(`/destinasi/${selected.slug}`);
     }, [selected, router]);
 
     const statusBadge = (status?: string) => {
@@ -117,78 +141,96 @@ export function HeroSection() {
         <section className="relative w-full h-[100dvh] overflow-hidden" id="home">
             <div className="absolute inset-0 z-0">
                 {loading ? (
-                    <div className="h-full w-full bg-[#f2ecf4] animate-pulse flex items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-[#6750a4]" />
+                    <div className="h-full w-full bg-stone-100 animate-pulse flex items-center justify-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-emerald-900" />
                     </div>
                 ) : (
                     <HeroMapClient
-                        destinations={destinations}
+                        destinations={filteredDestinations}
                         onMarkerClick={handleMarkerClick}
                     />
                 )}
             </div>
 
-            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-white/15 via-transparent to-white/30" />
+            <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-stone-50/20 via-transparent to-stone-50/30" />
+            <TopographicPattern className="pointer-events-none absolute inset-0 z-[1] select-none text-emerald-900" />
 
             <div className="relative z-10 pointer-events-none flex flex-col items-center justify-center h-full px-4 sm:px-6 lg:px-8">
-                <div className="pointer-events-auto mx-auto w-full max-w-4xl text-center">
-                    <p className="font-heading text-sm font-semibold text-[#6750a4]">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="pointer-events-auto mx-auto w-full max-w-4xl text-center"
+                >
+                    <p className="font-heading text-sm font-semibold text-emerald-900">
                         Eksplorasi berbasis data halal dan hyperlocal
                     </p>
-                    <h1 className="mt-3 font-heading text-4xl font-bold leading-tight text-[#4f378a] sm:text-5xl lg:text-6xl">
+                    <h1 className="mt-3 font-heading text-4xl font-bold leading-tight tracking-tighter text-emerald-900 sm:text-5xl lg:text-6xl">
                         Eksplorasi Halal Indonesia
                     </h1>
-                    <form
-                        action="#popular"
-                        className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
-                    >
-                        <Search className="ml-3 size-5 shrink-0 text-[#7a7582]" />
-                        <input
-                            aria-label="Cari destinasi"
-                            name="q"
-                            className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7a7582]"
-                            placeholder="Cari destinasi, kuliner, atau UMKM halal..."
-                        />
-                        <button
-                            className="hidden h-12 rounded-xl bg-[#4f378a] px-6 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/25 transition hover:bg-[#3f2a78] sm:block"
-                            type="submit"
-                        >
-                            Cari Sekarang
-                        </button>
-                    </form>
+                    <HeroSearch />
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
-                        {categories.map((cat) => (
-                            <a
-                                key={cat.label}
-                                href={cat.href}
-                                className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-semibold text-[#1d1b20] shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5 hover:bg-white/90"
+                        <button
+                            onClick={() => setActiveCategory(null)}
+                            className={cn(
+                                "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
+                                activeCategory === null
+                                    ? "bg-emerald-900 text-white"
+                                    : "bg-white/70 text-stone-900 hover:bg-white/90",
+                            )}
+                        >
+                            Semua
+                        </button>
+                        {availableCategories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() =>
+                                    setActiveCategory(
+                                        cat === activeCategory ? null : cat,
+                                    )
+                                }
+                                className={cn(
+                                    "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
+                                    activeCategory === cat
+                                        ? "bg-emerald-900 text-white"
+                                        : "bg-white/70 text-stone-900 hover:bg-white/90",
+                                )}
                             >
-                                {cat.label}
-                            </a>
+                                {cat}
+                            </button>
                         ))}
                     </div>
-                </div>
+                </motion.div>
 
-                <div className="pointer-events-auto mt-10 grid w-full max-w-4xl gap-4 md:grid-cols-3">
-                    {statData.map((stat) => (
-                        <div
-                            key={stat.label}
-                            className="flex items-center gap-4 rounded-xl border border-white/40 bg-white/70 p-5 shadow-lg shadow-black/5 backdrop-blur-lg"
-                        >
-                            <div className="flex size-11 items-center justify-center rounded-xl bg-[#4f378a] text-white">
-                                <stat.icon className="size-5" />
-                            </div>
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#494551]">
-                                    {stat.label}
-                                </p>
-                                <p className="font-heading text-xl font-bold text-[#1d1b20]">
-                                    {stat.value}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <motion.div
+                    variants={statsContainerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="pointer-events-auto mt-10 grid w-full max-w-4xl gap-4 md:grid-cols-3"
+                >
+                    {stats.map((stat) => {
+                        const StatIcon = iconMap[stat.icon];
+                        return (
+                            <motion.div
+                                key={stat.label}
+                                variants={statsItemVariants}
+                                className="flex items-center gap-4 rounded-xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-black/5 backdrop-blur-xl"
+                            >
+                                <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-900 text-white">
+                                    <StatIcon className="size-5" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+                                        {stat.label}
+                                    </p>
+                                    <p className="font-heading text-xl font-bold text-stone-900">
+                                        {stat.value}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                </motion.div>
             </div>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -203,7 +245,7 @@ export function HeroSection() {
                                     <>
                                         <div className="flex flex-wrap items-center gap-2">
                                             {selected.category && (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-[#e1d4fd] px-3 py-1 text-xs font-semibold text-[#4f378a]">
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-900">
                                                     <MapPin className="size-3" />
                                                     {selected.category}
                                                 </span>
@@ -220,16 +262,16 @@ export function HeroSection() {
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="rounded-lg bg-[#f8f2fa] p-3 space-y-1.5">
+                                        <div className="rounded-lg bg-stone-50 p-3 space-y-1.5">
                                             <div className="flex justify-between text-xs">
-                                                <span className="text-[#494551]">Latitude</span>
-                                                <span className="font-mono font-medium text-[#1d1b20]">
+                                                <span className="text-stone-600">Latitude</span>
+                                                <span className="font-mono font-medium text-stone-900">
                                                     {selected.latitude.toFixed(6)}
                                                 </span>
                                             </div>
                                             <div className="flex justify-between text-xs">
-                                                <span className="text-[#494551]">Longitude</span>
-                                                <span className="font-mono font-medium text-[#1d1b20]">
+                                                <span className="text-stone-600">Longitude</span>
+                                                <span className="font-mono font-medium text-stone-900">
                                                     {selected.longitude.toFixed(6)}
                                                 </span>
                                             </div>
@@ -237,7 +279,7 @@ export function HeroSection() {
                                         <button
                                             type="button"
                                             onClick={handleDetail}
-                                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#4f378a] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/20 transition hover:bg-[#3f2a78]"
+                                            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/20 transition hover:bg-emerald-800"
                                         >
                                             Lihat Detail
                                             <ChevronRight className="size-4" />

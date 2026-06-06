@@ -14,3 +14,12 @@ export async function getDestinationReviews(
     });
     return response.data.data;
 }
+
+export async function createDestinationReview(payload: {
+    destinationId: string;
+    rating: number;
+    comment?: string;
+}) {
+    const response = await api.post("/reviews", payload);
+    return response.data.data;
+}

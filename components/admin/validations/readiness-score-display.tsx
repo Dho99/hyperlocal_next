@@ -64,7 +64,7 @@ export function ReadinessScoreDisplay({
         if (weightedFacilities && weightedFacilities.length > 0) {
             const typeMaxWeight = new Map<string, number>();
             for (const f of weightedFacilities) {
-                const type = f.facilityType ?? "GENERAL";
+                const type = f.facilityType ?? "ADDITIONAL";
                 const current = typeMaxWeight.get(type) ?? 0;
                 typeMaxWeight.set(type, Math.max(current, f.weight));
             }

@@ -4,19 +4,36 @@ import { generateHTML } from "@tiptap/html";
 import { extensions } from "@/lib/editor/extensions";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import type { JsonValue } from "@/lib/generated/prisma/runtime/client";
+
+interface ProseMirrorNode {
+    type: string;
+    content?: ProseMirrorNode[];
+    marks?: Array<{ type: string; attrs?: Record<string, unknown> }>;
+    text?: string;
+    attrs?: Record<string, unknown>;
+}
+
+interface ProseMirrorDoc {
+    type: "doc";
+    content: ProseMirrorNode[];
+}
 
 interface RichTextRendererProps {
-  content: any;
+  content: JsonValue;
   className?: string;
 }
 
 export function RichTextRenderer({ content, className }: RichTextRendererProps) {
   const html = useMemo(() => {
     if (!content) return "";
-    
-    // Fallback for plain text if migration data is still raw string
+
     if (typeof content === "string") {
       return `<p>${content}</p>`;
+    }
+
+    if (typeof content !== "object" || content === null) {
+      return `<p>${String(content)}</p>`;
     }
 
     try {

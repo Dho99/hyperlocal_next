@@ -3,17 +3,30 @@ import { prisma } from "@/lib/prisma";
 import type { CertificationStatus } from "../generated/prisma";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 
-export async function getAllMapDestinations(): Promise<DashboardMapDestination[]> {
+export async function getAllMapDestinations(): Promise<
+    DashboardMapDestination[]
+> {
     const destinations = await prisma.destination.findMany({
         orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-        include: {
-            category: true,
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            status: true,
+            latitude: true,
+            longitude: true,
+            category: {
+                select: {
+                    name: true,
+                },
+            },
         },
     });
 
     return destinations.map((d) => ({
         id: d.id,
         name: d.name,
+        slug: d.slug,
         category: d.category?.name || "Destinasi",
         status: d.status,
         latitude: d.latitude != null ? Number(d.latitude) : 0,
@@ -110,6 +123,18 @@ export async function getDashboardOverview() {
         },
     });
 
+    const pTrendingDestinations = prisma.destination.findMany({
+        take: 5,
+        orderBy: { reviewCount: "desc" },
+        include: {
+            category: true,
+            images: {
+                take: 1,
+                orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+            },
+        },
+    });
+
     const pRecentInteractions = prisma.destinationInteraction.findMany({
         take: 6,
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -154,6 +179,7 @@ export async function getDashboardOverview() {
         readinessScores,
         latestDestinations,
         topDestinations,
+        trendingDestinations,
         recentInteractions,
         interactionWindow,
         recentValidations,
@@ -170,6 +196,7 @@ export async function getDashboardOverview() {
         pReadinessScores,
         pLatestDestinations,
         pTopDestinations,
+        pTrendingDestinations,
         pRecentInteractions,
         pInteractionWindow,
         pRecentValidations,
@@ -296,11 +323,19 @@ export async function getDashboardOverview() {
             engagement: destination._count.interactions,
             imageUrl: destination.images[0]?.imageUrl || null,
         })),
+        trendingDestinations: trendingDestinations.map((destination) => ({
+            id: destination.id,
+            name: destination.name,
+            category: destination.category?.name || "Destinasi",
+            city: destination.city || destination.province || "Tanpa wilayah",
+            viewCount: destination.reviewCount,
+            imageUrl: destination.images[0]?.imageUrl || null,
+        })),
         recentActivities: recentInteractions.map((interaction) => ({
             id: interaction.id,
             title: activityLabel(interaction.type),
             destination: interaction.destination.name,
-            city: interaction.destination.city || "Hyperlocal",
+            city: interaction.destination.city || "HyperLocal",
             createdAt: interaction.createdAt,
             type: interaction.type,
         })),

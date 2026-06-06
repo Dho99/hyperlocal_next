@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { useMemo, useEffect, useRef, useCallback } from "react";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -11,18 +11,67 @@ import {
     DEFAULT_ZOOM,
 } from "@/lib/maps/geo-utils";
 import type { DashboardMapDestination } from "@/types/map-viewer";
+import { getCategoryColor, createPinSvg } from "@/lib/config/map-categories";
 
 fixLeafletIcons();
+
+function createPinIcon(category?: string): L.DivIcon {
+    const color = getCategoryColor(category);
+    const svg = createPinSvg(color);
+    const encodedSvg = encodeURIComponent(svg);
+    return L.divIcon({
+        className: "",
+        html: `<img src="data:image/svg+xml;utf8,${encodedSvg}" alt="" style="pointer-events:none;display:block;" />`,
+        iconSize: [28, 42],
+        iconAnchor: [14, 42],
+        popupAnchor: [0, -42],
+    });
+}
+
+const CLUSTER_CATEGORY_COLORS: Record<string, string> = {
+    "Wisata Alam": "#16a34a",
+    "Pantai": "#2563eb",
+    "Kuliner Halal": "#ea580c",
+    "Kuliner": "#ea580c",
+    "Penginapan": "#d97706",
+    "Hotel": "#d97706",
+    "Masjid": "#7c3aed",
+    "Tempat Ibadah": "#7c3aed",
+};
+
+function getClusterColor(cluster: L.MarkerCluster): string {
+    const markers = cluster.getAllChildMarkers();
+    const categoryCounts: Record<string, number> = {};
+    for (const m of markers) {
+        const cat = (m as unknown as { category?: string }).category;
+        if (cat) {
+            categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        }
+    }
+    let maxCount = 0;
+    let dominantCat = "";
+    for (const [cat, count] of Object.entries(categoryCounts)) {
+        if (count > maxCount) {
+            maxCount = count;
+            dominantCat = cat;
+        }
+    }
+    if (dominantCat && CLUSTER_CATEGORY_COLORS[dominantCat]) {
+        return CLUSTER_CATEGORY_COLORS[dominantCat];
+    }
+    return "#6b21a8";
+}
 
 const createClusterIcon = (cluster: L.MarkerCluster) => {
     const count = cluster.getChildCount();
     const size = count < 10 ? 36 : count < 100 ? 44 : 52;
+    const color = getClusterColor(cluster);
 
     return L.divIcon({
         html: `<div style="
             width: ${size}px;
             height: ${size}px;
-            background: #3B82F6;
+            background: ${color};
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -31,7 +80,7 @@ const createClusterIcon = (cluster: L.MarkerCluster) => {
             font-weight: 700;
             font-size: ${size < 44 ? 12 : 14}px;
             font-family: system-ui, sans-serif;
-            box-shadow: 0 2px 8px rgba(59,130,246,0.35);
+            box-shadow: 0 2px 8px ${color}59;
         ">${count}</div>`,
         className: "",
         iconSize: L.point(size, size),
@@ -39,23 +88,27 @@ const createClusterIcon = (cluster: L.MarkerCluster) => {
     });
 };
 
-const MARKER_ICON = L.divIcon({
-    className: "",
-    html: `<div style="
-        width: 32px; height: 32px;
-        background: #4f378a;
-        border: 3px solid white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        color: white;
-        box-shadow: 0 2px 8px rgba(79,55,138,0.3);
-    ">★</div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-});
+function MapBoundsFitter({ destinations }: { destinations: DashboardMapDestination[] }) {
+    const map = useMap();
+    const prevCountRef = useRef(destinations.length);
+
+    useEffect(() => {
+        if (destinations.length === 0) return;
+
+        if (destinations.length === prevCountRef.current) return;
+        prevCountRef.current = destinations.length;
+
+        const bounds = L.latLngBounds(
+            destinations.map((d) => [d.latitude, d.longitude]),
+        );
+
+        if (bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
+        }
+    }, [destinations, map]);
+
+    return null;
+}
 
 interface HeroMapClientProps {
     destinations: DashboardMapDestination[];
@@ -99,13 +152,15 @@ export default function HeroMapClient({
                         <Marker
                             key={dest.id}
                             position={[dest.latitude, dest.longitude]}
-                            icon={MARKER_ICON}
+                            icon={createPinIcon(dest.category)}
                             eventHandlers={{
                                 click: () => onMarkerClick(dest),
                             }}
                         />
                     ))}
                 </MarkerClusterGroup>
+
+                <MapBoundsFitter destinations={validDestinations} />
             </MapContainer>
         </div>
     );

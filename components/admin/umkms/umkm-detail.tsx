@@ -3,42 +3,112 @@
 import { useState, useEffect } from "react";
 import { getUmkm } from "@/lib/api/umkm";
 import { getApiErrorMessage } from "@/lib/api-error";
-import { Umkm } from "@/types/umkm";
+import type { Umkm } from "@/types/umkm";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-    MapPin,
+    Store,
     ArrowLeft,
-    Calendar,
     Clock,
-    Tag,
-    Navigation,
     ShieldCheck,
-    Image as ImageIcon,
+    Award,
+    Info,
+    Phone,
+    Globe,
+    Mail,
+    MapPin,
+    ImagePlus,
     Loader2,
     AlertCircle,
-    Store,
-    Phone,
-    FileCheck,
-    CheckCircle2,
-    XCircle,
-    Info,
-    User as UserIcon,
+    Pencil,
 } from "lucide-react";
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
 import { ReadonlyMap } from "@/components/maps";
 
 interface UmkmDetailProps {
     id: string;
+}
+
+function formatDate(date: Date | string) {
+    return new Date(date).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+function getHalalStatus(umkm: Umkm) {
+    const cert = umkm.certifications?.[0];
+    if (!cert) return { label: "Belum Terdaftar", color: "bg-muted text-muted-foreground" };
+    switch (cert.status) {
+        case "VALID":
+            return { label: "Tervalidasi", color: "bg-primary/15 text-primary" };
+        case "PENDING":
+            return { label: "Dalam Proses", color: "bg-amber-100 text-amber-800" };
+        case "EXPIRED":
+            return { label: "Kedaluwarsa", color: "bg-red-100 text-red-800" };
+        case "REVOKED":
+            return { label: "Dicabut", color: "bg-red-100 text-red-800" };
+        default:
+            return { label: "Belum Terdaftar", color: "bg-muted text-muted-foreground" };
+    }
+}
+
+type SimpleHours = { open: string; close: string };
+type DayHours = Record<string, SimpleHours>;
+
+function renderOpeningHours(openingHours: Umkm["openingHours"]) {
+    if (!openingHours) return null;
+
+    if ("open" in openingHours && "close" in openingHours) {
+        const h = openingHours as SimpleHours;
+        return (
+            <li className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Setiap Hari</span>
+                <span className="font-medium text-foreground">
+                    {h.open} - {h.close}
+                </span>
+            </li>
+        );
+    }
+
+    const dayNames: Record<string, string> = {
+        monday: "Senin",
+        tuesday: "Selasa",
+        wednesday: "Rabu",
+        thursday: "Kamis",
+        friday: "Jumat",
+        saturday: "Sabtu",
+        sunday: "Minggu",
+    };
+
+    const entries = Object.entries(openingHours as DayHours);
+    if (entries.length === 0) return null;
+
+    const isWeekSame = entries.length >= 2 &&
+        entries.slice(0, 2).every(([, v]) => v.open === entries[0][1].open && v.close === entries[0][1].close) &&
+        entries.every(([, v]) => v.open === entries[0][1].open && v.close === entries[0][1].close);
+
+    if (isWeekSame) {
+        return (
+            <li className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Setiap Hari</span>
+                <span className="font-medium text-foreground">
+                    {entries[0][1].open} - {entries[0][1].close}
+                </span>
+            </li>
+        );
+    }
+
+    return entries.map(([day, hours]) => (
+        <li key={day} className="flex justify-between text-sm">
+            <span className="text-muted-foreground">{dayNames[day] || day}</span>
+            <span className="font-medium text-foreground">
+                {hours.open} - {hours.close}
+            </span>
+        </li>
+    ));
 }
 
 export function UmkmDetail({ id }: UmkmDetailProps) {
@@ -59,7 +129,6 @@ export function UmkmDetail({ id }: UmkmDetailProps) {
                 setIsLoading(false);
             }
         }
-
         fetchData();
     }, [id]);
 
@@ -73,375 +142,236 @@ export function UmkmDetail({ id }: UmkmDetailProps) {
 
     if (error) {
         return (
-            <Card className="border-destructive/50 bg-destructive/5">
-                <CardContent className="flex flex-col items-center justify-center p-10 text-center">
-                    <AlertCircle className="h-10 w-10 text-destructive mb-4" />
-                    <h3 className="text-lg font-bold text-destructive">
-                        Gagal Memuat Data
-                    </h3>
-                    <p className="text-muted-foreground mt-2">{error}</p>
-                    <Button
-                        variant="outline"
-                        className="mt-6"
-                        onClick={() => router.push("/umkms")}
-                    >
-                        Kembali ke Daftar
-                    </Button>
-                </CardContent>
-            </Card>
+            <div className="rounded-xl border border-red-200 bg-red-50 p-10 text-center">
+                <AlertCircle className="mx-auto mb-4 h-10 w-10 text-destructive" />
+                <h3 className="text-lg font-bold text-destructive">Gagal Memuat Data</h3>
+                <p className="mt-2 text-muted-foreground">{error}</p>
+                <Button variant="outline" className="mt-6" onClick={() => router.push("/umkms")}>
+                    Kembali ke Daftar
+                </Button>
+            </div>
         );
     }
 
     if (!umkm) {
         return (
-            <div className="text-center p-20">
+            <div className="p-20 text-center">
                 <h3 className="text-lg font-bold">UMKM tidak ditemukan</h3>
-                <Button
-                    variant="ghost"
-                    className="mt-4"
-                    onClick={() => router.push("/umkms")}
-                >
+                <Button variant="ghost" className="mt-4" onClick={() => router.push("/umkms")}>
                     Kembali
                 </Button>
             </div>
         );
     }
 
-    const formatDate = (date: Date | string) => {
-        return new Date(date).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        });
-    };
-
-    const getStatusBadge = () => {
-        const cert = umkm.certifications?.[0];
-        if (!cert) return <Badge variant="outline">Belum Terdaftar</Badge>;
-
-        switch (cert.status) {
-            case "VALID":
-                return (
-                    <Badge variant="success" className="gap-1 font-bold">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Terverifikasi Halal
-                    </Badge>
-                );
-            case "PENDING":
-                return (
-                    <Badge variant="secondary" className="gap-1 font-bold">
-                        <Clock className="h-3 w-3" />
-                        Dalam Proses
-                    </Badge>
-                );
-            case "EXPIRED":
-            case "REVOKED":
-                return (
-                    <Badge variant="destructive" className="gap-1 font-bold">
-                        <XCircle className="h-3 w-3" />
-                        {cert.status === "EXPIRED"
-                            ? "Kedaluwarsa"
-                            : "Sertifikat Dicabut"}
-                    </Badge>
-                );
-            default:
-                return <Badge variant="outline">{cert.status}</Badge>;
-        }
-    };
+    const status = getHalalStatus(umkm);
+    const coverImage = umkm.images?.[0]?.imageUrl;
+    const hasHours = !!umkm.openingHours;
+    const hasCoordinates = umkm.latitude != null && umkm.longitude != null;
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-4">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => router.push("/umkms")}
-                    className="h-8 w-8"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Button>
+        <div>
+            <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight font-heading">
-                        Detail UMKM
-                    </h1>
-                    <p className="text-sm text-muted-foreground">
-                        Melihat informasi lengkap mengenai {umkm.name}
-                    </p>
+                    <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
+                        <Store className="h-4 w-4" />
+                        <span>UMKM Management / Detail</span>
+                    </div>
+                    <h2 className="text-[32px] font-semibold leading-tight text-foreground font-heading">
+                        {umkm.name}
+                    </h2>
+                </div>
+                <div className="flex gap-3">
+                    <Button
+                        variant="outline"
+                        className="h-9 gap-2 border-border text-primary hover:bg-muted"
+                        onClick={() => router.push(`/umkms/${umkm.id}/edit`)}
+                    >
+                        <Pencil className="h-4 w-4" />
+                        Edit
+                    </Button>
+                    <Button
+                        className="h-9 gap-2 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                        onClick={() => router.push(`/validasi/umkm/${umkm.id}`)}
+                    >
+                        <ShieldCheck className="h-4 w-4" />
+                        Validasi
+                    </Button>
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
-                <div className="md:col-span-2 space-y-6">
-                    <Card className="overflow-hidden border-none shadow-sm ring-1 ring-border/50">
-                        <div className="relative aspect-video bg-muted">
-                            {umkm.images && umkm.images.length > 0 ? (
-                                <Image
-                                    src={umkm.images[0].imageUrl}
-                                    alt={umkm.name}
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-full items-center justify-center text-muted-foreground">
-                                    <Store className="h-12 w-12 opacity-20" />
+            <div className="relative mb-6 h-[300px] overflow-hidden rounded-xl border border-border">
+                {coverImage ? (
+                    <Image src={coverImage} alt={umkm.name} fill className="object-cover" />
+                ) : (
+                    <div className="flex h-full items-center justify-center bg-muted">
+                        <Store className="h-16 w-16 text-muted-foreground/30" />
+                    </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-6 left-6">
+                    <span className="mb-2 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-800">
+                        {umkm.category?.name || "Kategori"}
+                    </span>
+                    <h3 className="text-2xl font-semibold text-white font-heading">
+                        {umkm.name}
+                    </h3>
+                </div>
+            </div>
+
+            <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-12">
+                <div className="flex flex-col rounded-xl border border-border bg-background p-6 shadow-sm md:col-span-4">
+                    <div className="mb-6 flex items-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15">
+                            <ShieldCheck className="text-2xl font-bold text-primary" />
+                        </div>
+                        <div>
+                            <h4 className="text-base font-semibold text-foreground">Status Halal</h4>
+                            <p className={`text-sm font-semibold ${status.color}`}>{status.label}</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-1 flex-col gap-4">
+                        {umkm.certifications?.[0]?.certificateNo && (
+                            <div className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
+                                <Award className="mt-0.5 text-primary" />
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Sertifikasi MUI</p>
+                                    <p className="text-sm text-muted-foreground">{umkm.certifications[0].certificateNo}</p>
                                 </div>
-                            )}
-                            <div className="absolute bottom-4 left-4">
-                                <Badge className="bg-primary text-primary-foreground border-none px-3 py-1 shadow-lg">
-                                    {umkm.category?.name || "Kategori UMKM"}
-                                </Badge>
+                            </div>
+                        )}
+                        <div className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
+                            <ShieldCheck className="mt-0.5 text-primary" />
+                            <div>
+                                <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Standar CHSE</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {umkm.certifications?.[0]?.status === "VALID" ? "Memenuhi Standar" : "Belum Tervalidasi"}
+                                </p>
                             </div>
                         </div>
-                        <CardHeader className="pb-2">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <CardTitle className="text-2xl font-bold font-heading">
-                                        {umkm.name}
-                                    </CardTitle>
-                                    <div className="flex items-center gap-2 mt-2 text-muted-foreground text-sm">
-                                        <MapPin className="h-4 w-4" />
-                                        <span>
-                                            {umkm.address ||
-                                                "Alamat belum diatur"}
-                                        </span>
-                                    </div>
-                                </div>
-                                {getStatusBadge()}
-                            </div>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-3">
-                                <h3 className="font-bold flex items-center gap-2">
-                                    <Tag className="h-4 w-4 text-primary" />
-                                    Tentang Usaha
-                                </h3>
-                                <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
-                                    {umkm.description ||
-                                        "Tidak ada deskripsi tersedia."}
-                                </p>
-                            </div>
-
-                            <Separator />
-
-                            <div className="space-y-3">
-                                <h3 className="font-bold flex items-center gap-2">
-                                    <Navigation className="h-4 w-4 text-primary" />
-                                    Kontak & Lokasi
-                                </h3>
-                                <div className="grid gap-4 sm:grid-cols-2">
-                                    <div className="space-y-1 p-3 rounded-lg bg-muted/30">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                            Nomor Telepon
-                                        </p>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <Phone className="h-3 w-3 text-primary" />
-                                            {umkm.phone || "-"}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1 p-3 rounded-lg bg-muted/30">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                            Destinasi Terkait
-                                        </p>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <MapPin className="h-3 w-3 text-primary" />
-                                            {umkm.destination?.name ||
-                                                "Mandiri (Tidak Terikat)"}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1 p-3 rounded-lg bg-muted/30 col-span-full">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground mb-2">
-                                            Peta Lokasi
-                                        </p>
-                                        <ReadonlyMap
-                                            className="h-[300px] w-full rounded-lg"
-                                            markers={
-                                                umkm.latitude && umkm.longitude
-                                                    ? [
-                                                          {
-                                                              id: umkm.id,
-                                                              latitude: Number(
-                                                                  umkm.latitude,
-                                                              ),
-                                                              longitude: Number(
-                                                                  umkm.longitude,
-                                                              ),
-                                                              title: umkm.name,
-                                                              subtitle:
-                                                                  umkm.address ||
-                                                                  "",
-                                                          },
-                                                      ]
-                                                    : []
-                                            }
-                                        />
-                                    </div>
-                                    <div className="space-y-1 p-3 rounded-lg bg-muted/30 col-span-full">
-                                        <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                            Koordinat Peta
-                                        </p>
-                                        <p className="text-sm">
-                                            <>{umkm.latitude || "-"}</>,{" "}
-                                            <>{umkm.longitude || "-"}</>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {umkm.certifications && umkm.certifications.length > 0 && (
-                        <Card className="border-none shadow-sm ring-1 ring-border/50">
-                            <CardHeader>
-                                <CardTitle className="text-lg font-heading flex items-center gap-2">
-                                    <FileCheck className="h-5 w-5 text-primary" />
-                                    Informasi Sertifikasi Halal
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {umkm.certifications.map((cert) => (
-                                        <div
-                                            key={cert.id}
-                                            className="grid gap-4 sm:grid-cols-2 border rounded-lg p-4"
-                                        >
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                                    Nomor Sertifikat
-                                                </p>
-                                                <p className="text-sm font-medium">
-                                                    {cert.certificateNo ||
-                                                        "Sedang diproses"}
-                                                </p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                                    Penerbit
-                                                </p>
-                                                <p className="text-sm">
-                                                    {cert.issuer || "-"}
-                                                </p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                                    Tanggal Terbit
-                                                </p>
-                                                <p className="text-sm">
-                                                    {cert.issuedAt
-                                                        ? formatDate(
-                                                              cert.issuedAt,
-                                                          )
-                                                        : "-"}
-                                                </p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                                                    Masa Berlaku
-                                                </p>
-                                                <p className="text-sm">
-                                                    {cert.expiredAt
-                                                        ? formatDate(
-                                                              cert.expiredAt,
-                                                          )
-                                                        : "-"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-                </div>
-
-                <div className="space-y-6">
-                    <Card className="border-none shadow-sm ring-1 ring-border/50">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-heading flex items-center gap-2">
-                                <ImageIcon className="h-5 w-5 text-primary" />
-                                Foto Galeri
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {umkm.images && umkm.images.length > 0 ? (
-                                <div className="grid grid-cols-2 gap-2">
-                                    {umkm.images.map((image, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="relative aspect-square rounded bg-muted overflow-hidden border"
-                                        >
-                                            <Image
-                                                src={image.imageUrl}
-                                                alt={`${umkm.name} ${idx + 1}`}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-lg">
-                                    Belum ada foto.
-                                </p>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-none shadow-sm ring-1 ring-border/50">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-heading flex items-center gap-2">
-                                <Info className="h-5 w-5 text-primary" />
-                                Metadata
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <UserIcon className="h-4 w-4" />
-                                    <span>Pemilik</span>
-                                </div>
-                                <span className="font-medium">
-                                    {umkm.owner || "Tidak ada pemilik"}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Calendar className="h-4 w-4" />
-                                    <span>Pendaftaran</span>
-                                </div>
-                                <span className="font-medium">
-                                    {formatDate(umkm.createdAt)}
-                                </span>
-                            </div>
-                            <Separator />
-                            <div className="space-y-2">
-                                <p className="text-xs font-bold text-muted-foreground uppercase">
-                                    Slug URL
-                                </p>
-                                <div className="bg-muted p-2 rounded text-xs font-mono break-all italic">
-                                    {umkm.slug}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            className="w-full"
-                            onClick={() =>
-                                router.push(`/umkms/${umkm.id}/edit`)
-                            }
-                        >
-                            Edit UMKM
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => router.push("/umkms")}
-                        >
-                            Kembali ke Daftar
-                        </Button>
                     </div>
                 </div>
+
+                <div className="rounded-xl border border-border bg-background p-6 shadow-sm md:col-span-8">
+                    <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+                        <Info className="text-muted-foreground" />
+                        Deskripsi
+                    </h4>
+                    <p className="mb-4 text-base leading-relaxed text-muted-foreground">
+                        {umkm.description || "Tidak ada deskripsi tersedia."}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {umkm.destination?.destinationHalalFacilities?.slice(0, 4).map((df) => (
+                            <span key={df.id} className="rounded-md bg-secondary/20 px-3 py-1 text-sm text-secondary-foreground">
+                                {df.facility?.name || df.name || "Fasilitas"}
+                            </span>
+                        ))}
+                        {(!umkm.destination?.destinationHalalFacilities || umkm.destination.destinationHalalFacilities.length === 0) && (
+                            <span className="text-sm text-muted-foreground">Tidak ada label fasilitas</span>
+                        )}
+                    </div>
+                </div>
+
+                <div className="rounded-xl border border-border bg-background p-6 shadow-sm md:col-span-4">
+                    <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+                        <Info className="text-muted-foreground" />
+                        Kontak
+                    </h4>
+                    <ul className="space-y-4">
+                        {umkm.phone && (
+                            <li className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                    <Phone className="text-[18px] text-muted-foreground" />
+                                </div>
+                                <span className="text-sm text-foreground">{umkm.phone}</span>
+                            </li>
+                        )}
+                        {!umkm.phone && (
+                            <li className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                    <Phone className="text-[18px] text-muted-foreground" />
+                                </div>
+                                <span className="text-sm text-muted-foreground">Belum tersedia</span>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+
+                {hasHours && (
+                    <div className="rounded-xl border border-border bg-background p-6 shadow-sm md:col-span-4">
+                        <h4 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+                            <Clock className="text-muted-foreground" />
+                            Jam Operasional
+                        </h4>
+                        <ul className="space-y-2">
+                            {renderOpeningHours(umkm.openingHours)}
+                        </ul>
+                    </div>
+                )}
+
+                <div className="flex flex-col rounded-xl border border-border bg-background p-6 shadow-sm md:col-span-4">
+                    <h4 className="mb-2 flex items-center gap-2 text-base font-semibold text-foreground">
+                        <MapPin className="text-muted-foreground" />
+                        Lokasi
+                    </h4>
+                    <p className="mb-4 flex-1 text-sm text-muted-foreground">
+                        {umkm.address || "Alamat belum diatur"}
+                    </p>
+                    <div className="relative h-32 overflow-hidden rounded-lg border border-border bg-muted">
+                        {hasCoordinates ? (
+                            <ReadonlyMap
+                                className="h-full w-full"
+                                markers={[
+                                    {
+                                        id: umkm.id,
+                                        latitude: Number(umkm.latitude),
+                                        longitude: Number(umkm.longitude),
+                                        title: umkm.name,
+                                        subtitle: umkm.address || "",
+                                    },
+                                ]}
+                            />
+                        ) : (
+                            <div className="flex h-full items-center justify-center">
+                                <MapPin className="text-muted-foreground/40" />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 className="mb-4 text-2xl font-semibold text-foreground font-heading">Galeri</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    {umkm.images?.slice(0, 3).map((image, idx) => (
+                        <div
+                            key={image.id}
+                            className="group aspect-square overflow-hidden rounded-xl border border-border"
+                        >
+                            <Image
+                                src={image.imageUrl}
+                                alt={`${umkm.name} ${idx + 1}`}
+                                width={400}
+                                height={400}
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                        </div>
+                    ))}
+                    <div className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border border-border bg-muted/30 transition-colors hover:bg-muted group">
+                        <div className="text-center">
+                            <ImagePlus className="mx-auto text-3xl text-primary transition-transform group-hover:scale-110" />
+                            <p className="mt-2 text-sm font-medium text-primary">
+                                Lihat Semua ({umkm.images?.length ?? 0})
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {(!umkm.images || umkm.images.length === 0) && (
+                    <div className="rounded-xl border border-dashed border-border bg-muted/20 p-10 text-center">
+                        <ImagePlus className="mx-auto text-muted-foreground/40" />
+                        <p className="mt-2 text-sm text-muted-foreground">Belum ada foto.</p>
+                    </div>
+                )}
             </div>
         </div>
     );

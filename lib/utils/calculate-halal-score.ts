@@ -11,7 +11,7 @@ export function calculateHalalScoreFromWeights(
     const typeMaxWeight = new Map<string, number>();
 
     for (const f of facilities) {
-        const type = f.facilityType ?? "GENERAL";
+        const type = f.facilityType ?? "ADDITIONAL";
         const current = typeMaxWeight.get(type) ?? 0;
         typeMaxWeight.set(type, Math.max(current, f.weight));
     }

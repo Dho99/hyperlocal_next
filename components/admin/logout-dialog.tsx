@@ -32,7 +32,7 @@ export function LogoutDialog({ children }: LogoutDialogProps) {
                 fetchOptions: {
                     onSuccess: () => {
                         toast.success("Berhasil keluar");
-                        router.push("/admin/login");
+                        router.push("/login");
                         router.refresh();
                     },
                 },
@@ -53,7 +53,7 @@ export function LogoutDialog({ children }: LogoutDialogProps) {
                 <AlertDialogHeader>
                     <AlertDialogTitle className="font-heading">Konfirmasi Logout</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Apakah Anda yakin ingin keluar dari dashboard HalalAdmin? Sesi Anda akan berakhir.
+                        Apakah Anda yakin ingin keluar dari dashboard HyperLocal? Sesi Anda akan berakhir.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

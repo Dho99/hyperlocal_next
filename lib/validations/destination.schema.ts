@@ -26,6 +26,7 @@ export const destinationSchema = z.object({
         .array(
             z.object({
                 facilityId: z.string().uuid("Pilih fasilitas yang valid"),
+                name: z.string().optional(),
                 latitude: z.number().nullable(),
                 longitude: z.number().nullable(),
                 evidenceUrls: z

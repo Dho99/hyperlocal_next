@@ -16,12 +16,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
+import { CategoryType } from "@/lib/generated/prisma";
+
 interface CategoryFormProps {
     initialData?: Category;
     onSuccess?: () => void;
+    type?: CategoryType;
 }
 
-export function CategoryForm({ initialData, onSuccess }: CategoryFormProps) {
+export function CategoryForm({ initialData, onSuccess, type = CategoryType.DESTINATION }: CategoryFormProps) {
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -32,6 +35,7 @@ export function CategoryForm({ initialData, onSuccess }: CategoryFormProps) {
             name: initialData?.name || "",
             slug: initialData?.slug || "",
             description: initialData?.description || "",
+            type: initialData?.type || type,
         },
     });
 
@@ -40,8 +44,9 @@ export function CategoryForm({ initialData, onSuccess }: CategoryFormProps) {
             name: initialData?.name || "",
             slug: initialData?.slug || "",
             description: initialData?.description || "",
+            type: initialData?.type || type,
         });
-    }, [form, initialData]);
+    }, [form, initialData, type]);
 
     async function onSubmit(values: CategoryFormValues) {
         setError(null);

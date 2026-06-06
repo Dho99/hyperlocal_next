@@ -1,19 +1,42 @@
 import { prisma } from "@/lib/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import type { PublicReview } from "@/types/review";
+import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 
+const TRIAGE_NOTE =
+    "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+
+async function validateUmkmCategory(
+    categoryId: string | null | undefined,
+): Promise<void> {
+    if (!categoryId) return;
+    const category = await prisma.category.findUnique({
+        where: { id: categoryId },
+        select: { type: true },
+    });
+    if (!category) throw new Error("Kategori tidak ditemukan");
+    if (category.type !== "UMKM") {
+        throw new Error(
+            "Kategori yang dipilih bukan kategori UMKM. Pilih kategori dengan tipe UMKM.",
+        );
+    }
+}
+
 function serializeUmkm(raw: unknown): Umkm {
     const umkm = raw as Umkm & {
         latitude: unknown | null;
         longitude: unknown | null;
-        destination: (Destination & {
-            latitude: unknown | null;
-            longitude: unknown | null;
-        }) | null;
+        destination:
+            | (Destination & {
+                  latitude: unknown | null;
+                  longitude: unknown | null;
+              })
+            | null;
         certifications?: Array<Record<string, unknown>>;
     };
     return {
@@ -56,6 +79,7 @@ function serializeUmkm(raw: unknown): Umkm {
 export async function getPaginatedUmkms(
     params: CursorPaginationParams & {
         categoryId?: string;
+        categorySlug?: string;
         destinationId?: string;
         search?: string;
     },
@@ -67,12 +91,23 @@ export async function getPaginatedUmkms(
                 skip,
                 cursor: cursor ? { id: cursor } : undefined,
                 where: {
+                    category: { type: "UMKM" },
                     ...(params.categoryId && { categoryId: params.categoryId }),
+                    ...(params.categorySlug && params.categorySlug !== "Semua" && {
+                        category: { slug: params.categorySlug },
+                    }),
                     ...(params.destinationId && {
                         destinationId: params.destinationId,
                     }),
                     ...(params.search && {
-                        name: { contains: params.search, mode: "insensitive" },
+                        OR: [
+                            { name: { contains: params.search, mode: "insensitive" } },
+                            {
+                                destination: {
+                                    name: { contains: params.search, mode: "insensitive" },
+                                },
+                            },
+                        ],
                     }),
                 },
                 include: {
@@ -135,8 +170,24 @@ export async function getUmkm(id: string) {
     return umkm ? serializeUmkm(umkm) : null;
 }
 
-export async function createUmkm(values: UmkmFormValues) {
+export async function createUmkm(
+    values: UmkmFormValues,
+    facilityIds?: string[],
+) {
     const { images, ...data } = values;
+    await validateUmkmCategory(data.categoryId);
+
+    let halalScore = 0;
+    if (facilityIds && facilityIds.length > 0) {
+        const masterFacilities = await prisma.halalFacility.findMany({
+            where: { id: { in: facilityIds } },
+        });
+        const facilityWeights = masterFacilities.map((mf) => ({
+            facilityType: mf.facilityType,
+            weight: mf.weight ?? 0,
+        }));
+        halalScore = calculateHalalScoreFromWeights(facilityWeights);
+    }
 
     const umkm = await prisma.umkm.create({
         data: {
@@ -150,11 +201,24 @@ export async function createUmkm(values: UmkmFormValues) {
                       })),
                   }
                 : undefined,
+            ...(facilityIds && facilityIds.length > 0
+                ? {
+                      umkmHalalFacilities: {
+                          create: facilityIds.map((fid) => ({
+                              facilityId: fid,
+                          })),
+                      },
+                  }
+                : {}),
+            ...(halalScore < 50 && facilityIds && facilityIds.length > 0
+                ? { surveyorNote: TRIAGE_NOTE }
+                : {}),
         },
         include: {
             category: true,
             destination: true,
             images: true,
+            umkmHalalFacilities: true,
         },
     });
 
@@ -163,6 +227,7 @@ export async function createUmkm(values: UmkmFormValues) {
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
     const { images, ...data } = values;
+    await validateUmkmCategory(data.categoryId);
 
     const umkm = await prisma.$transaction(async (tx) => {
         // Delete old images if new ones are provided
@@ -178,11 +243,11 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
                 ...data,
                 images: images
                     ? {
-                              create: images.map((img, idx) => ({
-                                  imageUrl: img.imageUrl,
-                                  isPrimary: idx === 0,
-                                  caption: `Foto ${idx + 1}`,
-                              })),
+                          create: images.map((img, idx) => ({
+                              imageUrl: img.imageUrl,
+                              isPrimary: idx === 0,
+                              caption: `Foto ${idx + 1}`,
+                          })),
                       }
                     : undefined,
             },
@@ -200,4 +265,85 @@ export async function deleteUmkm(id: string) {
     return await prisma.umkm.delete({
         where: { id },
     });
+}
+
+export interface FacilityInfo {
+    id: string;
+    name: string;
+    instanceName: string | null;
+    type: string | null;
+}
+
+export interface UmkmDetail extends Umkm {
+    reviews: PublicReview[];
+    destinationFacilities: FacilityInfo[];
+}
+
+export async function getUmkmDetail(idOrSlug: string) {
+    const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            idOrSlug,
+        );
+    const umkm = await prisma.umkm.findFirst({
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
+        include: {
+            category: true,
+            destination: {
+                include: {
+                    destinationHalalFacilities: {
+                        include: {
+                            facility: true,
+                        },
+                    },
+                },
+            },
+            images: true,
+            certifications: {
+                include: {
+                    validations: {
+                        include: {
+                            evidences: true,
+                        },
+                    },
+                },
+            },
+            reviews: {
+                include: {
+                    user: {
+                        select: { id: true, name: true, image: true },
+                    },
+                    sentiment: true,
+                },
+                orderBy: { createdAt: "desc" },
+                take: 10,
+            },
+        },
+    });
+
+    if (!umkm) return null;
+
+    const facilities: FacilityInfo[] =
+        umkm.destination?.destinationHalalFacilities?.map((dhf) => ({
+            id: dhf.facility.id,
+            name: dhf.facility.name,
+            instanceName: dhf.name,
+            type: dhf.facility.facilityType,
+        })) || [];
+
+    const reviews: PublicReview[] = umkm.reviews.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.createdAt,
+        user: { id: r.user.id, name: r.user.name, image: r.user.image },
+        sentiment: r.sentiment ? { label: r.sentiment.label } : null,
+    }));
+
+    const serialized = serializeUmkm(umkm);
+
+    return {
+        ...serialized,
+        reviews,
+        destinationFacilities: facilities,
+    } as UmkmDetail;
 }

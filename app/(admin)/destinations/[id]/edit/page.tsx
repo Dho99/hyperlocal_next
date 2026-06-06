@@ -3,6 +3,7 @@ import { getCategories } from "@/lib/services/category-service";
 import { DestinationForm } from "../../components/destination-form";
 import type { Destination } from "@/types/destination";
 import { notFound } from "next/navigation";
+import { CategoryType } from "@/lib/generated/prisma";
 
 interface EditDestinationPageProps {
     params: Promise<{ id: string }>;
@@ -14,7 +15,7 @@ export default async function EditDestinationPage({
     const { id } = await params;
     const [destination, categories] = await Promise.all([
         getDestination(id),
-        getCategories(),
+        getCategories(CategoryType.DESTINATION),
     ]);
 
     if (!destination) {
