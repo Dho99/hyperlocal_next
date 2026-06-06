@@ -18,20 +18,20 @@ interface HeaderInfoProps {
 }
 
 export function HeaderInfo({ destination }: HeaderInfoProps) {
+    const locationLabel = [destination.city, destination.province].filter(Boolean).join(", ") || "Lokasi";
+
     return (
         <div className="space-y-2 pb-4 border-b border-border/30">
             <div className="flex flex-wrap items-center gap-2 mb-2">
                 {destination.status === "APPROVED" && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#e1d4fd] text-[#645a7d] text-xs font-semibold tracking-wide">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0f9d58] text-white text-xs font-semibold tracking-wide">
                         <ShieldCheck className="size-3.5" />
                         Verifikasi Halal
                     </span>
                 )}
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-accent text-muted-foreground text-xs font-semibold tracking-wide">
+                <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${locationLabel === 'Tasikmalaya, Jawa Barat' ? 'bg-[#ff8a3d] text-white' : 'bg-[#0f9d58] text-white'}`}>
                     <MapPin className="size-3.5" />
-                    {[destination.city, destination.province]
-                        .filter(Boolean)
-                        .join(", ") || "Lokasi"}
+                    {locationLabel}
                 </span>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

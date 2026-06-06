@@ -122,7 +122,7 @@ export function OperatingHoursSidebar({
             toast.error("Silakan login terlebih dahulu untuk menyimpan favorit", {
                 action: {
                     label: "Login",
-                    onClick: () => router.push("/user/login"),
+                    onClick: () => router.push("/login"),
                 },
             });
             return;

@@ -99,7 +99,7 @@ function DestinationCard({ dest }: { dest: Destination }) {
                 </div>
             </div>
             <div className="p-4 space-y-2">
-                <h3 className="font-heading font-semibold text-[#1f1635] group-hover:text-[#4f378a] transition-colors line-clamp-1">
+                <h3 className="font-heading font-semibold text-[#1f1635] group-hover:text-[#0f9d58] transition-colors line-clamp-1">
                     {dest.name}
                 </h3>
                 {dest.city && (
@@ -110,7 +110,7 @@ function DestinationCard({ dest }: { dest: Destination }) {
                     </p>
                 )}
                 {dest.category && (
-                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-[#eaddff] text-[#4f378a] font-medium">
+                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-[#e6f6ec] text-[#0f9d58] font-medium">
                         {dest.category.name}
                     </span>
                 )}
@@ -156,7 +156,7 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                             placeholder="Cari destinasi..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="h-10 w-full rounded-md border border-stone-200 bg-white pl-10 pr-4 text-sm text-[#1f1635] shadow-xs placeholder:text-[#494551]/60 focus:border-[#4f378a] focus:outline-none focus:ring-2 focus:ring-[#4f378a]/20"
+                            className="h-10 w-full rounded-md border border-stone-200 bg-white pl-10 pr-4 text-sm text-[#1f1635] shadow-xs placeholder:text-[#494551]/60 focus:border-[#0f9d58] focus:outline-none focus:ring-2 focus:ring-[#0f9d58]/20"
                         />
                     </div>
 

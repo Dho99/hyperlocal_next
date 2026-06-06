@@ -67,10 +67,10 @@ export const FACILITY_ICONS: Record<string, ComponentType<{ className?: string }
 };
 
 export const FACILITY_BG: Record<string, string> = {
-    masjid: "bg-[#e9ddff] text-[#22005d]",
-    mosque: "bg-[#e9ddff] text-[#22005d]",
-    restaurant: "bg-[#e9ddff] text-[#1f1635]",
-    kuliner: "bg-[#e9ddff] text-[#1f1635]",
+    masjid: "bg-emerald-600 text-white",
+    mosque: "bg-emerald-600 text-white",
+    restaurant: "bg-emerald-600 text-white",
+    kuliner: "bg-emerald-600 text-white",
     hotel: "bg-[#ffdf93] text-[#241a00]",
     penginapan: "bg-[#ffdf93] text-[#241a00]",
 };
@@ -80,7 +80,7 @@ export function getFacilityIcon(type: string | null | undefined): ComponentType<
 }
 
 export function getFacilityIconBg(type: string | null | undefined): string {
-    return FACILITY_BG[type?.toLowerCase() ?? ""] ?? "bg-[#e9ddff] text-[#22005d]";
+    return FACILITY_BG[type?.toLowerCase() ?? ""] ?? "bg-emerald-600 text-white";
 }
 
 export function isMosqueFacility(type: string | null | undefined, name: string): boolean {

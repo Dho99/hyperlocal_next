@@ -13,7 +13,7 @@ export default async function Layout({
     });
 
     if (!session) {
-        redirect("/admin/login");
+        redirect("/login");
     }
 
     if (session.user.role !== "admin") {

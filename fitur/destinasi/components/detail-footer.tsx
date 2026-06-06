@@ -5,7 +5,7 @@ export function DetailFooter() {
         <footer className="mt-8 bg-card w-full rounded-t-xl border-t border-border/30">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
                 <div className="space-y-3">
-                    <h3 className="font-heading text-xl font-bold text-[#4f378a]">
+                    <h3 className="font-heading text-xl font-bold text-emerald-700">
                         HyperLocal
                     </h3>
                     <p className="text-sm text-muted-foreground">
@@ -14,7 +14,7 @@ export function DetailFooter() {
                     </p>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <h4 className="text-xs font-bold tracking-widest text-[#4f378a]">
+                    <h4 className="text-xs font-bold tracking-widest text-emerald-700">
                         PERUSAHAAN
                     </h4>
                     <Link
@@ -31,7 +31,7 @@ export function DetailFooter() {
                     </Link>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <h4 className="text-xs font-bold tracking-widest text-[#4f378a]">
+                    <h4 className="text-xs font-bold tracking-widest text-emerald-700">
                         LEGAL
                     </h4>
                     <Link
