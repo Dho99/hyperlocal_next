@@ -51,7 +51,7 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                         <MotionLink
                             whileHover={{ scale: 1.02, y: -4 }}
                             className="block overflow-hidden rounded-2xl border border-stone-200/60 bg-white shadow-lg shadow-stone-900/5"
-                            href={`/destinasi/${destination.id}`}
+                            href={`/destinasi/${destination.slug}`}
                         >
                             <div className="relative aspect-[16/9] bg-stone-100">
                                 {destination.imageUrl ? (

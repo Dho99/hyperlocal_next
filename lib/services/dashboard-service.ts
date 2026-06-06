@@ -11,6 +11,7 @@ export async function getAllMapDestinations(): Promise<
         select: {
             id: true,
             name: true,
+            slug: true,
             status: true,
             latitude: true,
             longitude: true,
@@ -25,6 +26,7 @@ export async function getAllMapDestinations(): Promise<
     return destinations.map((d) => ({
         id: d.id,
         name: d.name,
+        slug: d.slug,
         category: d.category?.name || "Destinasi",
         status: d.status,
         latitude: d.latitude != null ? Number(d.latitude) : 0,

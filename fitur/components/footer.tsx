@@ -79,6 +79,8 @@ export function Footer({ stats }: FooterProps) {
                         ["Fasilitas", "#facilities"],
                         ["Ulasan", "#reviews"],
                         ["Peta", "/peta"],
+                        ["Syarat & Ketentuan", "/terms"],
+                        ["Kebijakan Privasi", "/privacy"],
                     ]}
                     title="Dukungan"
                 />

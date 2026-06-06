@@ -1,134 +1,119 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Bookmark, Heart, Loader2 } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 interface BookmarkButtonProps {
-  destinationId: string;
-  variant?: "icon" | "full";
-  className?: string;
+    targetSlug: string;
+    targetType?: "DESTINASI" | "UMKM";
+    className?: string;
+    showLabel?: boolean;
 }
 
 export function BookmarkButton({
-  destinationId,
-  variant = "full",
-  className,
+    targetSlug,
+    targetType = "DESTINASI",
+    className,
+    showLabel = true,
 }: BookmarkButtonProps) {
-  const router = useRouter();
-  const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [mutating, setMutating] = useState(false);
-  const { data: session } = authClient.useSession();
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const { data: session } = authClient.useSession();
 
-  useEffect(() => {
-    fetch("/api/bookmarks")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data && json.data[destinationId]) {
-          setSaved(true);
+    useEffect(() => {
+        if (!session || !targetSlug) {
+            setIsLoading(false);
+            return;
         }
-      })
-      .catch(() => undefined)
-      .finally(() => setLoading(false));
-  }, [destinationId]);
 
-  const handleClick = useCallback(() => {
-    if (!session) {
-      toast.error("Silakan login terlebih dahulu untuk menyimpan favorit", {
-        action: {
-          label: "Login",
-          onClick: () => router.push("/user/login"),
-        },
-      });
-      return;
-    }
-
-    setMutating(true);
-    const prev = saved;
-    setSaved(!prev);
-
-    fetch("/api/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        targetId: destinationId,
-        targetType: "DESTINASI",
-        actionType: "BOOKMARK",
-      }),
-    })
-      .then((res) => {
-        if (!res.ok && res.status === 401) {
-          setSaved(prev);
-          toast.error("Silakan login terlebih dahulu untuk menyimpan favorit");
-          return null;
+        async function checkStatus() {
+            try {
+                const res = await fetch(
+                    `/api/user/saved-items?targetSlug=${targetSlug}`,
+                );
+                if (res.ok) {
+                    const json = await res.json();
+                    setIsBookmarked(json.data?.[targetSlug] ?? false);
+                }
+            } catch (err) {
+                console.error("Failed to check bookmark status:", err);
+            } finally {
+                setIsLoading(false);
+            }
         }
-        return res.json();
-      })
-      .then((json) => {
-        if (json?.data) {
-          setSaved(json.data.bookmarked);
-        }
-      })
-      .catch(() => {
-        setSaved(prev);
-      })
-      .finally(() => setMutating(false));
-  }, [destinationId, saved, session, router]);
 
-  if (loading) {
+        checkStatus();
+    }, [targetSlug, targetType, session]);
+
+    const handleToggleBookmark = useCallback(async () => {
+        if (!session) {
+            toast.error("Silakan login untuk menyimpan item", {
+                action: {
+                    label: "Login",
+                    onClick: () => (window.location.href = "/login"),
+                },
+            });
+            return;
+        }
+
+        const newStatus = !isBookmarked;
+        setIsBookmarked(newStatus);
+        const originalStatus = !newStatus;
+
+        try {
+            const res = await fetch("/api/user/saved-items", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    targetSlug,
+                    targetType,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to toggle bookmark");
+            }
+
+            toast.success(
+                newStatus ? "Tersimpan ke favorit" : "Dihapus dari favorit",
+            );
+        } catch (err) {
+            setIsBookmarked(originalStatus);
+            toast.error("Gagal memperbarui status simpan");
+        }
+    }, [session, targetSlug, targetType, isBookmarked]);
+
     return (
-      <div className={cn("flex items-center justify-center", className)}>
-        <Loader2 className="size-4 animate-spin text-muted-foreground" />
-      </div>
+        <button
+            type="button"
+            onClick={handleToggleBookmark}
+            disabled={isLoading}
+            className={cn(
+                "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors",
+                showLabel ? "px-4 py-2 text-sm" : "p-2",
+                isBookmarked
+                    ? "bg-rose-50 text-rose-600 hover:bg-rose-100"
+                    : "bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900",
+                isLoading && "opacity-50 cursor-not-allowed",
+                className,
+            )}
+            title={isBookmarked ? "Hapus dari tersimpan" : "Simpan ke favorit"}
+        >
+            <Bookmark
+                className={cn(
+                    "h-4 w-4 transition-transform",
+                    isBookmarked && "fill-current scale-110",
+                    !isBookmarked && "hover:scale-110",
+                )}
+            />
+            {showLabel && (
+                <span className="hidden sm:inline">
+                    {isBookmarked ? "Tersimpan" : "Simpan"}
+                </span>
+            )}
+        </button>
     );
-  }
-
-  if (variant === "icon") {
-    return (
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={mutating}
-        aria-pressed={saved}
-        aria-label={saved ? "Hapus dari simpanan" : "Simpan destinasi"}
-        className={cn(
-          "flex items-center justify-center rounded-full transition-colors",
-          "bg-background/70 backdrop-blur-md p-2 shadow-sm",
-          saved ? "text-primary" : "text-muted-foreground hover:text-primary",
-          mutating && "opacity-60 pointer-events-none",
-          className,
-        )}
-      >
-        <Heart className={cn("size-5", saved && "fill-current")} />
-      </button>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={mutating}
-      aria-pressed={saved}
-      className={cn(
-        "w-full border text-xs font-semibold tracking-wider py-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2",
-        saved
-          ? "bg-primary/10 border-primary/30 text-primary"
-          : "bg-transparent border-border text-foreground hover:bg-muted",
-        mutating && "opacity-60 pointer-events-none",
-        className,
-      )}
-    >
-      {mutating ? (
-        <Loader2 className="size-4 animate-spin" />
-      ) : (
-        <Bookmark className={cn("size-4", saved && "fill-current")} />
-      )}
-      {saved ? "Telah Tersimpan" : "Simpan Destinasi"}
-    </button>
-  );
 }

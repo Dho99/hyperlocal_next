@@ -45,6 +45,7 @@ export default async function UmkmDetailPage({
                     <aside className="lg:sticky lg:top-28 lg:self-start">
                         <OperatingHoursSidebar
                             id={umkm.id}
+                            slug={umkm.slug}
                             openingHours={umkm.openingHours}
                             phone={umkm.phone}
                             latitude={umkm.latitude}

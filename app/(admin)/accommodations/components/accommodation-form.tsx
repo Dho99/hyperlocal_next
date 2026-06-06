@@ -103,7 +103,7 @@ const images = form.watch("images") || [];
 const handleRemoveImage = useCallback(async (index: number) => {
     const current = form.getValues("images") || [];
     const removed = current[index];
-    if (removed?.imageUrl && removed.imageUrl.startsWith("/uploads/")) {
+    if (removed?.imageUrl) {
         try {
             await axios.delete("/api/upload", { data: { url: removed.imageUrl } });
         } catch {

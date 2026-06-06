@@ -10,7 +10,7 @@ export default async function ProfilePage() {
     });
 
     if (!session) {
-        redirect("/admin/login");
+        redirect("/login");
     }
 
     const user = {

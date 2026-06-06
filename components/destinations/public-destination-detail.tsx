@@ -213,13 +213,13 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     }, [destination, trackInteraction]);
 
     const handleRoute = useCallback(() => {
-        if (!destination) return;
+        if (!destination?.id) return;
         trackInteraction("ROUTE");
         fetch("/api/track", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                targetId: id,
+                targetId: destination.id,
                 targetType: "DESTINASI",
                 actionType: "CLICK_ROUTE",
             }),
@@ -229,7 +229,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             "_blank",
             "noopener,noreferrer",
         );
-    }, [destination, id, trackInteraction]);
+    }, [destination, trackInteraction]);
 
     const handleReviewSubmitted = useCallback(
         (_updatedReviews: PublicReview[]) => {},

@@ -695,36 +695,6 @@ export async function trackUserInteraction(data: {
   });
 }
 
-export async function toggleBookmark(data: {
-  userId: string;
-  targetId: string;
-  targetType: "DESTINASI" | "UMKM";
-}): Promise<{ bookmarked: boolean }> {
-  const existing = await prisma.userInteraction.findFirst({
-    where: {
-      userId: data.userId,
-      targetId: data.targetId,
-      targetType: data.targetType as TargetType,
-      actionType: "BOOKMARK" as ActionType,
-    },
-  });
-
-  if (existing) {
-    await prisma.userInteraction.delete({ where: { id: existing.id } });
-    return { bookmarked: false };
-  }
-
-  await prisma.userInteraction.create({
-    data: {
-      userId: data.userId,
-      targetId: data.targetId,
-      targetType: data.targetType as TargetType,
-      actionType: "BOOKMARK" as ActionType,
-    },
-  });
-  return { bookmarked: true };
-}
-
 export async function getUserBookmarks(userId: string) {
   const records = await prisma.userInteraction.findMany({
     where: {

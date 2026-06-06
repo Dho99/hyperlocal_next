@@ -10,6 +10,7 @@ export type { Reason, Step, Faq };
 export interface DestinationCard {
     id: string;
     name: string;
+    slug: string;
     location: string;
     category: string;
     rating: number;
@@ -80,6 +81,7 @@ export function scoreLabel(score: number | null) {
 export function toDestinationCard(destination: {
     id: string;
     name: string;
+    slug: string;
     city: string | null;
     province: string | null;
     status: string;
@@ -91,6 +93,7 @@ export function toDestinationCard(destination: {
     return {
         id: destination.id,
         name: destination.name,
+        slug: destination.slug,
         location: locationLabel(destination.city, destination.province),
         category: destination.category?.name || "Destinasi",
         rating: destination.rating || 0,

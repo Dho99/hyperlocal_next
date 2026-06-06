@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
+import { InstallButton } from "@/components/pwa/install-button";
 
 const navItems = [
     { label: "Home", href: "/" },
@@ -77,6 +78,7 @@ export default function Navbar() {
                     })}
                 </div>
                 <div className="hidden items-center gap-4 text-stone-600 md:flex">
+                    <InstallButton />
                     <Bell className="size-4" />
                     <Compass className="size-4" />
                     {user ? (
@@ -156,7 +158,7 @@ export default function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <Link
-                            href="/user/login"
+                            href="/login"
                             className="size-8 overflow-hidden rounded-full bg-emerald-100 ring-2 ring-transparent transition-all hover:ring-emerald-300"
                         >
                             <Avatar className="h-8 w-8">

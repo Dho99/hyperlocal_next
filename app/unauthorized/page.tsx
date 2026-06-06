@@ -33,7 +33,7 @@ export default function UnauthorizedPage() {
                     </Button>
                     <Button
                         type="button"
-                        onClick={() => router.push("/admin/login")}
+                        onClick={() => router.push("/login")}
                         variant="ghost"
                         className="w-full gap-2"
                     >

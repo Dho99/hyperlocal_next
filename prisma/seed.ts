@@ -7,6 +7,7 @@ import {
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import "dotenv/config";
+import { auth } from "@/lib/auth";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new pg.Pool({ connectionString });
@@ -15,6 +16,8 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
     console.log("Cleaning up database...");
+    await prisma.user.deleteMany();
+    await prisma.account.deleteMany();
     await prisma.destinationFacilityEvidence.deleteMany();
     await prisma.destinationInteraction.deleteMany();
     await prisma.destinationTrend.deleteMany();
@@ -41,6 +44,27 @@ async function main() {
     await prisma.category.deleteMany();
 
     console.log("Seeding Tasikmalaya halal tourism data...\n");
+
+    const usersData = [
+        {
+            email: "admin@gmail.com",
+            password: "password",
+            name: "Administrator",
+            role: "admin",
+        },
+        {
+            email: "user@gmail.com",
+            password: "password",
+            name: "Regular User",
+            role: "user",
+        }
+    ];
+
+    for (const data of usersData) {
+        await auth.api.signUpEmail({ body: data });
+    }
+
+    console.log(`  ✓ ${usersData.length} users created`);
 
     // ── 1. Categories ──────────────────────────────────────────────────
     const categoryData = [
