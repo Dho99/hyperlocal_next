@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 
 export default async function proxy(request: NextRequest) {
     const path = request.nextUrl.pathname;
@@ -15,22 +16,10 @@ export default async function proxy(request: NextRequest) {
 
     if (isStaticPath) return NextResponse.next();
 
-    // Fetch session
-    const sessionResponse = await fetch(
-        `${request.nextUrl.origin}/api/auth/get-session`,
-        {
-            headers: {
-                cookie: request.headers.get("cookie") || "",
-            },
-        },
-    );
-
-    let session = null;
-    try {
-        session = await sessionResponse.json();
-    } catch (e) {
-        // Handle JSON parse error or empty response
-    }
+    // Get session directly from Better Auth API
+    const session = await auth.api.getSession({
+        headers: request.headers,
+    });
 
     const isLoggedIn = !!session && !!session.user;
 

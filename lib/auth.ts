@@ -25,4 +25,7 @@ export const auth = betterAuth({
         // admin(),
         nextCookies(),
     ],
+    advanced: {
+        trustedProxyHeaders: true,
+    },
 });
