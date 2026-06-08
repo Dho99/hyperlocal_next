@@ -7,6 +7,7 @@ import {
     Marker,
     Popup,
     Circle,
+    GeoJSON,
     useMap,
 } from "react-leaflet";
 import L from "leaflet";
@@ -16,7 +17,6 @@ import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/lib/maps/geo-utils";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { getCategoryColor, createPinSvg } from "@/lib/config/map-categories";
-import { getDestinations } from "@/lib/api/destination";
 import type {
     Destination,
     DestinationHalalFacility,
@@ -27,6 +27,14 @@ import FacilityRoutePolyline from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
 
 fixLeafletIcons();
+
+interface CoverageArea {
+    id: string;
+    name: string;
+    level: string;
+    geoJsonData: unknown;
+    colorHex: string | null;
+}
 
 function MapController({
     center,
@@ -42,6 +50,23 @@ function MapController({
     return null;
 }
 
+function GeoJSONBoundsFitter({ geoJsonData }: { geoJsonData: unknown }) {
+    const map = useMap();
+    useEffect(() => {
+        if (!geoJsonData) return;
+        try {
+            const layer = L.geoJSON(geoJsonData as GeoJSON.GeoJsonObject);
+            const bounds = layer.getBounds();
+            if (bounds.isValid()) {
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+            }
+        } catch {
+            // ignore invalid geojson bounds
+        }
+    }, [map, geoJsonData]);
+    return null;
+}
+
 export default function PetaMapClient() {
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
@@ -52,17 +77,39 @@ export default function PetaMapClient() {
         useState<Destination | null>(null);
     const [locationDenied, setLocationDenied] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [coverageAreas, setCoverageAreas] = useState<CoverageArea[]>([]);
+    const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+    const [selectedAreaGeo, setSelectedAreaGeo] = useState<unknown>(null);
 
     useEffect(() => {
         fixLeafletIcons();
     }, []);
 
     useEffect(() => {
+        async function fetchAreas() {
+            try {
+                const res = await fetch("/api/coverage-areas");
+                const json = await res.json();
+                if (res.ok) setCoverageAreas(json.data);
+            } catch {
+                // coverage areas are optional
+            }
+        }
+        fetchAreas();
+    }, []);
+
+    useEffect(() => {
         let cancelled = false;
         async function fetchData() {
             try {
-                const data = await getDestinations();
-                if (!cancelled) setDestinations(data);
+                const url = selectedAreaId
+                    ? `/api/destinations?areaId=${selectedAreaId}`
+                    : "/api/destinations";
+                const res = await fetch(url);
+                const json = await res.json();
+                if (!cancelled) {
+                    setDestinations(json.data ?? json);
+                }
             } catch {
                 if (!cancelled) toast.error("Gagal memuat data destinasi");
             } finally {
@@ -73,7 +120,7 @@ export default function PetaMapClient() {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [selectedAreaId]);
 
     const handleLocateMe = useCallback(() => {
         if (!navigator.geolocation) {
@@ -131,6 +178,23 @@ export default function PetaMapClient() {
         ? [userLocation.lat, userLocation.lng]
         : DEFAULT_CENTER;
 
+    const handleAreaChange = useCallback(async (areaId: string | null) => {
+        setSelectedAreaId(areaId);
+        if (areaId) {
+            try {
+                const res = await fetch(`/api/coverage-areas/${areaId}`);
+                const json = await res.json();
+                if (res.ok) {
+                    setSelectedAreaGeo(json.data.geoJsonData);
+                }
+            } catch {
+                setSelectedAreaGeo(null);
+            }
+        } else {
+            setSelectedAreaGeo(null);
+        }
+    }, []);
+
     const selectedFacilities: DestinationHalalFacility[] = useMemo(
         () => selectedDestination?.destinationHalalFacilities ?? [],
         [selectedDestination],
@@ -154,6 +218,8 @@ export default function PetaMapClient() {
                 activeCategory={activeCategory}
                 selectedDestination={selectedDestination}
                 locationDenied={locationDenied}
+                coverageAreas={coverageAreas}
+                selectedAreaId={selectedAreaId}
                 onRadiusChange={setRadius}
                 onSearchChange={setSearchQuery}
                 onCategoryChange={setActiveCategory}
@@ -164,6 +230,7 @@ export default function PetaMapClient() {
                     }
                 }}
                 onLocateMe={handleLocateMe}
+                onAreaChange={handleAreaChange}
             />
 
             <main className="relative flex-1 w-full">
@@ -179,6 +246,21 @@ export default function PetaMapClient() {
                     />
 
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
+
+                    <GeoJSONBoundsFitter geoJsonData={selectedAreaGeo} />
+
+                    {!!selectedAreaGeo && (
+                        <GeoJSON
+                            key={selectedAreaId ?? "none"}
+                            data={selectedAreaGeo as GeoJSON.GeoJsonObject}
+                            style={() => ({
+                                color: "#047857",
+                                weight: 2,
+                                fillColor: "#d1fae5",
+                                fillOpacity: 0.2,
+                            })}
+                        />
+                    )}
 
                     {userLocation && (
                         <>

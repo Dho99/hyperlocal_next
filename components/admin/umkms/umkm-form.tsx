@@ -29,6 +29,13 @@ import { MapPicker } from "@/components/maps";
 import { DEFAULT_CENTER } from "@/lib/maps/geo-utils";
 import { ImageDropzone } from "@/components/upload/image-dropzone";
 
+interface CoverageAreaOption {
+    id: string;
+    name: string;
+    level: string;
+    isActive: boolean;
+}
+
 interface UmkmFormProps {
     initialData?: Umkm;
     categories: Category[];
@@ -37,6 +44,7 @@ interface UmkmFormProps {
 export function UmkmForm({ initialData, categories }: UmkmFormProps) {
     const [isPending, startTransition] = useTransition();
     const [destinations, setDestinations] = useState<Destination[]>([]);
+    const [coverageAreas, setCoverageAreas] = useState<CoverageAreaOption[]>([]);
     const router = useRouter();
 
     const form = useForm<UmkmFormValues>({
@@ -47,6 +55,7 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
             name: initialData?.name || "",
             slug: initialData?.slug || "",
             owner: initialData?.owner || "",
+            coverageAreaId: initialData?.coverageAreaId || null,
             destinationId: initialData?.destinationId || null,
             categoryId: initialData?.categoryId || null,
             description: initialData?.description || "",
@@ -75,6 +84,19 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
             }
         }
         fetchDestinations();
+    }, []);
+
+    useEffect(() => {
+        async function fetchCoverageAreas() {
+            try {
+                const res = await fetch("/api/admin/coverage-areas");
+                if (res.ok) {
+                    const json = await res.json();
+                    setCoverageAreas((json.data ?? []).filter((a: CoverageAreaOption) => a.isActive));
+                }
+            } catch { /* ignore */ }
+        }
+        fetchCoverageAreas();
     }, []);
 
     async function onSubmit(values: UmkmFormValues) {
@@ -197,6 +219,25 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                                             }
                                         </p>
                                     )}
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="coverageAreaId">Coverage Area</Label>
+                                    <select
+                                        id="coverageAreaId"
+                                        className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        value={form.watch("coverageAreaId") ?? ""}
+                                        onChange={(e) => form.setValue("coverageAreaId", e.target.value || null)}
+                                    >
+                                        <option value="">Tidak ada (default)</option>
+                                        {coverageAreas.map((a) => (
+                                            <option key={a.id} value={a.id}>
+                                                {a.name} ({a.level})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-[10px] text-muted-foreground">
+                                        Hanya visible secara publik jika area aktif.
+                                    </p>
                                 </div>
                             </div>
 

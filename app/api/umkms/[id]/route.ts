@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
 import { getUmkm, updateUmkm, deleteUmkm } from "@/lib/services/umkm-service";
 import { UmkmFormValues, umkmSchema } from "@/lib/validations/umkm.schema";
 import { getErrorMessage } from "@/lib/api-error";
@@ -11,7 +12,7 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const umkm = await getUmkm(id);
+        const umkm = await getUmkm(id, "public");
         if (!umkm) {
             return NextResponse.json(
                 { error: "UMKM tidak ditemukan" },
@@ -71,6 +72,18 @@ export async function PATCH(
                 },
                 { status: 400 },
             );
+        }
+
+        if (validated.data.coverageAreaId) {
+            const area = await prisma.coverageArea.findUnique({
+                where: { id: validated.data.coverageAreaId },
+            });
+            if (!area || !area.isActive) {
+                return NextResponse.json(
+                    { error: "Coverage area tidak valid atau tidak aktif" },
+                    { status: 400 },
+                );
+            }
         }
 
         const updated = await updateUmkm(id, validated.data as UmkmFormValues);

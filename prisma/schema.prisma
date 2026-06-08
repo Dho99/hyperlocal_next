@@ -25,6 +25,22 @@ enum ValidationStatus {
   REJECTED
 }
 
+model CoverageArea {
+  id          String   @id @default(cuid())
+  name        String
+  level       String
+  geoJsonData Json
+  colorHex    String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  destinations Destination[]
+  umkms        Umkm[]
+
+  @@map("coverage_areas")
+}
+
 model User {
   id                      String                   @id
   name                    String
@@ -124,6 +140,7 @@ model Category {
 model Destination {
   id              String           @id @default(uuid())
   categoryId      String           @map("category_id")
+  coverageAreaId  String?          @map("coverage_area_id")
   name            String
   slug            String           @unique
   description     Json?
@@ -145,6 +162,7 @@ model Destination {
   updatedAt       DateTime         @updatedAt @map("updated_at")
 
   category                   Category                   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  coverageArea               CoverageArea?              @relation(fields: [coverageAreaId], references: [id], onDelete: SetNull)
   images                     DestinationImage[]
   reviews                    Review[]
   umkms                      Umkm[]
@@ -155,6 +173,7 @@ model Destination {
   itineraryItems             ItineraryItem[]
 
   @@index([categoryId])
+  @@index([coverageAreaId])
   @@index([externalId])
   @@map("destinations")
 }
@@ -459,6 +478,7 @@ model Umkm {
   id             String   @id @default(uuid())
   destinationId  String?  @map("destination_id")
   categoryId     String?  @map("category_id")
+  coverageAreaId String?  @map("coverage_area_id")
   name           String
   slug           String   @unique
   description    String?
@@ -479,6 +499,7 @@ model Umkm {
 
   destination    Destination?         @relation(fields: [destinationId], references: [id], onDelete: SetNull)
   category       Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  coverageArea   CoverageArea?        @relation(fields: [coverageAreaId], references: [id], onDelete: SetNull)
   images         UmkmImage[]
   reviews        Review[]
   certifications HalalCertification[]
@@ -486,6 +507,7 @@ model Umkm {
 
   @@index([destinationId])
   @@index([categoryId])
+  @@index([coverageAreaId])
   @@index([externalId])
   @@map("umkms")
 }

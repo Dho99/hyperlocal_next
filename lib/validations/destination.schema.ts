@@ -10,6 +10,7 @@ export const destinationSchema = z.object({
             "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung",
         ),
     categoryId: z.string().uuid("Pilih kategori yang valid"),
+    coverageAreaId: z.string().nullable().optional(),
     description: z.any().optional(),
     address: z.string().min(5, "Alamat minimal 5 karakter"),
     city: z.string().min(2, "Kota minimal 2 karakter"),

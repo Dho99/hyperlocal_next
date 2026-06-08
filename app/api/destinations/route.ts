@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
 import {
     getPaginatedDestinations,
     createDestination,
@@ -17,6 +18,7 @@ export async function GET(request: Request) {
             : undefined;
         const cursor = searchParams.get("cursor") || undefined;
         const categoryId = searchParams.get("categoryId") || undefined;
+        const areaId = searchParams.get("areaId") || undefined;
         const search = searchParams.get("search") || undefined;
         const status = searchParams.get("status") || undefined;
         const minScore = parseMinScore(searchParams.get("minScore"));
@@ -26,10 +28,12 @@ export async function GET(request: Request) {
             limit,
             cursor,
             categoryId,
+            areaId,
             search,
             status,
             minScore,
             sort,
+            scope: "public",
         });
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
@@ -88,6 +92,18 @@ export async function POST(request: Request) {
                 },
                 { status: 400 },
             );
+        }
+
+        if (validated.data.coverageAreaId) {
+            const area = await prisma.coverageArea.findUnique({
+                where: { id: validated.data.coverageAreaId },
+            });
+            if (!area || !area.isActive) {
+                return NextResponse.json(
+                    { error: "Coverage area tidak valid atau tidak aktif" },
+                    { status: 400 },
+                );
+            }
         }
 
         const destination = await createDestination(validated.data);

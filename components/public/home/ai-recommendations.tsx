@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Sparkles, MapPin, Loader2, AlertCircle, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HalalBadge } from "@/components/ui/halal-badge";
 import { getApiErrorMessage } from "@/lib/api-error";
 
 interface Category {
@@ -97,6 +98,7 @@ function ResultCard({
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
+                <HalalBadge score={destination.halalScore} />
                 <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold text-[#4f378a] shadow-sm backdrop-blur-md">
                     <Star className="size-3.5 fill-[#e7c365] text-[#e7c365]" />
                     {matchScore}

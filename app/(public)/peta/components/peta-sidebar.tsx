@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, MapPin, X, Navigation, Star } from "lucide-react";
+import { Search, MapPin, X, Navigation, Star, Globe } from "lucide-react";
 import type { Destination } from "@/types/destination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,26 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     getCategoryColor,
     getAllCategoryNames,
 } from "@/lib/config/map-categories";
 import type { UserLocation } from "./peta-types";
 
 const RADIUS_PRESETS = [1, 3, 5, 10, 25] as const;
+
+interface CoverageArea {
+    id: string;
+    name: string;
+    level: string;
+    colorHex: string | null;
+}
 
 interface PetaSidebarProps {
     destinations: Destination[];
@@ -24,11 +38,14 @@ interface PetaSidebarProps {
     activeCategory: string | null;
     selectedDestination: Destination | null;
     locationDenied: boolean;
+    coverageAreas: CoverageArea[];
+    selectedAreaId: string | null;
     onRadiusChange: (km: number) => void;
     onSearchChange: (q: string) => void;
     onCategoryChange: (cat: string | null) => void;
     onDestinationSelect: (d: Destination | null) => void;
     onLocateMe: () => void;
+    onAreaChange: (areaId: string | null) => void;
 }
 
 export default function PetaSidebar({
@@ -39,11 +56,14 @@ export default function PetaSidebar({
     activeCategory,
     selectedDestination,
     locationDenied,
+    coverageAreas,
+    selectedAreaId,
     onRadiusChange,
     onSearchChange,
     onCategoryChange,
     onDestinationSelect,
     onLocateMe,
+    onAreaChange,
 }: PetaSidebarProps) {
     const categories = getAllCategoryNames();
 
@@ -204,6 +224,30 @@ export default function PetaSidebar({
                         className="pl-8"
                     />
                 </div>
+
+                {coverageAreas.length > 0 && (
+                    <div className="flex items-center gap-2">
+                        <Globe className="size-4 shrink-0 text-stone-500" />
+                        <Select
+                            value={selectedAreaId ?? "all"}
+                            onValueChange={(v) =>
+                                onAreaChange(v === "all" ? null : v)
+                            }
+                        >
+                            <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder="Semua Area" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Semua Area</SelectItem>
+                                {coverageAreas.map((area) => (
+                                    <SelectItem key={area.id} value={area.id}>
+                                        {area.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )}
 
                 {locationDenied && (
                     <p className="text-xs text-amber-600">

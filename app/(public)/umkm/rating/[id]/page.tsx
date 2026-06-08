@@ -10,7 +10,7 @@ interface RatingPageProps {
 
 export default async function RatingPage({ params }: RatingPageProps) {
     const { id } = await params;
-    const umkm = await getUmkm(id);
+    const umkm = await getUmkm(id, "public");
 
     if (!umkm) {
         notFound();

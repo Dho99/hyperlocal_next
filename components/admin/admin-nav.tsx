@@ -17,6 +17,7 @@ import {
     ChevronDown,
     Flag,
     Lightbulb,
+    Globe,
 } from "lucide-react";
 
 export const navItems = [
@@ -24,6 +25,11 @@ export const navItems = [
         title: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
+    },
+    {
+        title: "Area Cakupan",
+        href: "/coverage-areas",
+        icon: Globe,
     },
     {
         title: "Destinasi",

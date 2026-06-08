@@ -3,9 +3,10 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, MapPin, ShieldCheck } from "lucide-react";
+import { MapPin, ShieldCheck } from "lucide-react";
 import type { DestinationCard } from "@/fitur/data/utils";
 import { SectionHeading } from "@/components/public/home/section-heading";
+import { HalalBadge } from "@/components/ui/halal-badge";
 
 interface VerifiedDestinationsProps {
     items: DestinationCard[];
@@ -67,13 +68,7 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                                         <ShieldCheck className="size-12" />
                                     </div>
                                 )}
-                                <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-sm backdrop-blur-md">
-                                    <CheckCircle2 className="size-4" />
-                                    Verified Halal
-                                </div>
-                                <div className="absolute bottom-4 right-4 rounded-full bg-emerald-900 px-3 py-2 text-sm font-bold text-white shadow-lg">
-                                    {destination.score ?? 0}%
-                                </div>
+                                <HalalBadge score={destination.score} />
                             </div>
                             <div className="p-5">
                                 <h3 className="line-clamp-2 font-heading text-xl font-bold text-stone-900">

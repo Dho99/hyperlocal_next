@@ -7,6 +7,7 @@ import { Sparkles, MapPin, Loader2, AlertCircle, Star, Search } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { EmptyState } from "./empty-state";
+import { HalalBadge } from "@/components/ui/halal-badge";
 
 interface ExploreDestination {
     id: string;
@@ -76,6 +77,7 @@ function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: Result
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
+                <HalalBadge score={destination.halalScore} />
             </div>
             <div className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">

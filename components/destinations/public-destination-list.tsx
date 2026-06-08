@@ -23,8 +23,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import type { Destination } from "@/types/destination";
+import { HalalBadge } from "@/components/ui/halal-badge";
 
 interface PublicDestinationListProps {
     categories: Array<{
@@ -46,27 +46,6 @@ const sortOptions = [
     { value: "reviews", label: "Ulasan terbanyak" },
     { value: "name", label: "Nama A-Z" },
 ] as const;
-
-function ScoreBadge({ score }: { score: number | null }) {
-    if (score === null) return null;
-    const color =
-        score >= 80
-            ? "bg-green-100 text-green-800 border-green-200"
-            : score >= 60
-              ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-              : "bg-red-100 text-red-800 border-red-200";
-    return (
-        <span
-            className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border",
-                color,
-            )}
-        >
-            <Star className="size-3 fill-current" />
-            {score}
-        </span>
-    );
-}
 
 function DestinationCard({ dest }: { dest: Destination }) {
     const primaryImage =
@@ -94,9 +73,7 @@ function DestinationCard({ dest }: { dest: Destination }) {
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
-                <div className="absolute top-3 right-3">
-                    <ScoreBadge score={displayScore} />
-                </div>
+                <HalalBadge score={displayScore} />
             </div>
             <div className="p-4 space-y-2">
                 <h3 className="font-heading font-semibold text-[#1f1635] group-hover:text-[#0f9d58] transition-colors line-clamp-1">

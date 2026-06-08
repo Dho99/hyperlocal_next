@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Star, Search, Loader2, Building } from "lucide-react";
 import type { Accommodation } from "@/types/accommodation";
+import { HalalBadge } from "@/components/ui/halal-badge";
 
 function AccommodationCard({ item }: { item: Accommodation }) {
     const primaryImage =
@@ -36,6 +37,7 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                         {item.rating.toFixed(1)}
                     </div>
                 )}
+                <HalalBadge score={item.validatedScore} />
             </div>
             <div className="p-4 space-y-2">
                 <h3 className="font-heading font-semibold text-stone-900 group-hover:text-emerald-700 transition-colors line-clamp-1">

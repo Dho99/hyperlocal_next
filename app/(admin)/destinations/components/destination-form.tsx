@@ -11,6 +11,13 @@ import type {
     DestinationFormValues,
 } from "@/types/destination";
 import { createDestination, updateDestination } from "@/lib/api/destination";
+
+interface CoverageAreaOption {
+    id: string;
+    name: string;
+    level: string;
+    isActive: boolean;
+}
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getFacilities } from "@/lib/api/facility";
 import { Button } from "@/components/ui/button";
@@ -55,8 +62,22 @@ export function DestinationForm({
     categories,
 }: DestinationFormProps) {
     const [isPending, startTransition] = useTransition();
-    const [masterFacilities, setMasterFacilities] = useState<Facility[]>([]);
     const router = useRouter();
+    const [masterFacilities, setMasterFacilities] = useState<Facility[]>([]);
+    const [coverageAreas, setCoverageAreas] = useState<CoverageAreaOption[]>([]);
+
+    useEffect(() => {
+        async function fetchCoverageAreas() {
+            try {
+                const res = await fetch("/api/admin/coverage-areas");
+                if (res.ok) {
+                    const json = await res.json();
+                    setCoverageAreas((json.data ?? []).filter((a: CoverageAreaOption) => a.isActive));
+                }
+            } catch { /* ignore */ }
+        }
+        fetchCoverageAreas();
+    }, []);
 
     useEffect(() => {
         async function load() {
@@ -78,6 +99,7 @@ export function DestinationForm({
             name: initialData?.name || "",
             slug: initialData?.slug || "",
             categoryId: initialData?.categoryId || "",
+            coverageAreaId: initialData?.coverageAreaId || null,
             description: initialData?.description ?? "",
             address: initialData?.address || "",
             city: initialData?.city || "",
@@ -222,35 +244,62 @@ export function DestinationForm({
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="categoryId"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    Kategori Wisata
-                                                </FormLabel>
-                                                <select
-                                                    className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                                    {...field}
-                                                >
-                                                    <option value="">
-                                                        Pilih Kategori
+                                <FormField
+                                    control={form.control}
+                                    name="categoryId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Kategori Wisata
+                                            </FormLabel>
+                                            <select
+                                                className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                {...field}
+                                            >
+                                                <option value="">
+                                                    Pilih Kategori
+                                                </option>
+                                                {categories.map((c) => (
+                                                    <option
+                                                        key={c.id}
+                                                        value={c.id}
+                                                    >
+                                                        {c.name}
                                                     </option>
-                                                    {categories.map((c) => (
-                                                        <option
-                                                            key={c.id}
-                                                            value={c.id}
-                                                        >
-                                                            {c.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
+                                                ))}
+                                            </select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="coverageAreaId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Coverage Area</FormLabel>
+                                            <select
+                                                className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                value={field.value ?? ""}
+                                                onChange={(e) => field.onChange(e.target.value || null)}
+                                            >
+                                                <option value="">
+                                                    Tidak ada (default)
+                                                </option>
+                                                {coverageAreas.map((a) => (
+                                                    <option key={a.id} value={a.id}>
+                                                        {a.name} ({a.level})
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <p className="text-[10px] text-muted-foreground mt-1">
+                                                Hanya visible secara publik jika area aktif.
+                                            </p>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
                                 <FormField
                                     control={form.control}
