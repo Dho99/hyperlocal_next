@@ -446,7 +446,7 @@ export async function generateExcel(data: ReportData[]): Promise<Buffer> {
       sheet.addRow(values);
     }
 
-    sheet.columns.forEach((column, i) => {
+    sheet.columns.forEach((column: { width?: number }, i: number) => {
       let maxLength = section.columns[i]?.label.length ?? 10;
       for (const row of section.rows) {
         const val = row[section.columns[i]?.key ?? ""];
@@ -484,6 +484,9 @@ export async function generateReport(
         contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         filename: `laporan-hyperlocal-${dateStr}.xlsx`,
       };
+    }
+    default: {
+      throw new Error(`Unsupported format: ${params.format}`);
     }
   }
 }

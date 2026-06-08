@@ -182,13 +182,13 @@ export function LaporanGenerator() {
   }, [reportData, startDate, endDate]);
 
   const handleExport = useCallback(
-    async (format: ExportFormat) => {
+    async (fmt: ExportFormat) => {
       if (!reportData || reportData.length === 0) {
         toast.error("Generate laporan terlebih dahulu");
         return;
       }
 
-      setExporting(format);
+      setExporting(fmt);
 
       try {
         const res = await api.post(
@@ -197,7 +197,7 @@ export function LaporanGenerator() {
             startDate,
             endDate,
             categories: selectedCategories,
-            format,
+            format: fmt,
           },
           { responseType: "blob" }
         );
@@ -209,7 +209,7 @@ export function LaporanGenerator() {
         const header = res.headers["content-disposition"];
         const filename =
           header?.match(/filename="?(.+?)"?$/)?.[1] ??
-          `laporan-hyperlocal-${format(new Date(), "yyyy-MM-dd")}.${format === "xlsx" ? "xlsx" : format === "pdf" ? "pdf" : "csv"}`;
+          `laporan-hyperlocal-${format(new Date(), "yyyy-MM-dd")}.${fmt === "xlsx" ? "xlsx" : fmt === "pdf" ? "pdf" : "csv"}`;
         link.download = filename;
         document.body.appendChild(link);
         link.click();
