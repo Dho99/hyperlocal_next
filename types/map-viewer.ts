@@ -22,4 +22,5 @@ export interface DashboardMapDestination {
     status?: string;
     latitude: number;
     longitude: number;
+    image?: string | null;
 }

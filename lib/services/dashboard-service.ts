@@ -20,6 +20,13 @@ export async function getAllMapDestinations(): Promise<
                     name: true,
                 },
             },
+            images: {
+                take: 1,
+                orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+                select: {
+                    imageUrl: true,
+                },
+            },
         },
     });
 
@@ -31,6 +38,7 @@ export async function getAllMapDestinations(): Promise<
         status: d.status,
         latitude: d.latitude != null ? Number(d.latitude) : 0,
         longitude: d.longitude != null ? Number(d.longitude) : 0,
+        image: d.images?.[0]?.imageUrl ?? null,
     }));
 }
 

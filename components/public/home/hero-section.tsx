@@ -26,6 +26,9 @@ import { cn } from "@/lib/utils";
 import { HeroSearch } from "./hero-search";
 import { TopographicPattern } from "@/components/ui/topographic-pattern";
 
+const DEFAULT_DESTINATION_IMAGE =
+    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'><rect width='320' height='180' fill='%23e2e8f0'/><text x='160' y='92' dominant-baseline='middle' text-anchor='middle' fill='%2372757a' font-family='system-ui, sans-serif' font-size='16'>No%20Image</text></svg>";
+
 const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ssr: false,
     loading: () => (
@@ -243,24 +246,36 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                             <div className="space-y-4 pt-2">
                                 {selected && (
                                     <>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            {selected.category && (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-900">
-                                                    <MapPin className="size-3" />
-                                                    {selected.category}
-                                                </span>
-                                            )}
-                                            {selected.status && (
-                                                <span
-                                                    className={cn(
-                                                        "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
-                                                        statusBadge(selected.status).cls,
+                                        <div className="grid gap-4 sm:grid-cols-[100px_minmax(0,1fr)]">
+                                            <div className="h-24 w-full overflow-hidden rounded-2xl bg-stone-100 shadow-inner shadow-stone-200">
+                                                <img
+                                                    src={selected.image ?? DEFAULT_DESTINATION_IMAGE}
+                                                    alt={selected.image ? `Foto ${selected.name}` : "Placeholder destinasi"}
+                                                    className="h-full w-full object-cover"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {selected.category && (
+                                                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-900">
+                                                            <MapPin className="size-3" />
+                                                            {selected.category}
+                                                        </span>
                                                     )}
-                                                >
-                                                    <Star className="size-3" />
-                                                    {statusBadge(selected.status).label}
-                                                </span>
-                                            )}
+                                                    {selected.status && (
+                                                        <span
+                                                            className={cn(
+                                                                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
+                                                                statusBadge(selected.status).cls,
+                                                            )}
+                                                        >
+                                                            <Star className="size-3" />
+                                                            {statusBadge(selected.status).label}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="rounded-lg bg-stone-50 p-3 space-y-1.5">
                                             <div className="flex justify-between text-xs">

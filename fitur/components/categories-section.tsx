@@ -21,15 +21,15 @@ interface CategoriesSectionProps {
     categories: CategoryWithCounts[];
 }
 
-const categoryBackgroundClasses: Record<string, string> = {
-    "Wisata Alam": "bg-[url('/wisata_alam.jpg')]",
-    Pantai: "bg-[url('/Pantai.jpg')]",
-    "Taman & Rekreasi": "bg-[url('/taman_rekreasi.jpg')]",
-    "Wisata Religi": "bg-[url('/Wisata_religi.jpg')]",
-    "Fashion Muslim": "bg-[url('/fashion_muslim.jpg')]",
-    "Hotel Syariah": "bg-[url('/Hotel_Syariah.jpg')]",
-    "Kuliner Halal": "bg-[url('/makanan_halal2.jpg')]",
-    "Oleh-Oleh & Souvenir": "bg-[url('/souvenir.jpg')]",
+const categoryBackgroundUrls: Record<string, string> = {
+    "Wisata Alam": "/wisata_alam.jpg",
+    Pantai: "/Pantai.jpg",
+    "Taman & Rekreasi": "/taman_rekreasi.jpg",
+    "Wisata Religi": "/Wisata_religi.jpg",
+    "Fashion Muslim": "/fashion_muslim.jpg",
+    "Hotel Syariah": "/Hotel_Syariah.jpg",
+    "Kuliner Halal": "/makanan_halal2.jpg",
+    "Oleh-Oleh & Souvenir": "/souvenir.jpg",
 };
 
 const containerVariants = {
@@ -84,10 +84,18 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                     className="md:col-span-2 md:row-span-2"
                 >
                     <Link
-                        className={`relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95 bg-cover bg-center bg-no-repeat ${categoryBackgroundClasses[hero.name] || "bg-stone-50/50"}`}
+                        suppressHydrationWarning
+                        className="relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95"
                         href={`/destinasi?category=${hero.id}`}
                     >
-                        <div className="absolute inset-0 bg-stone-950/20" />
+                        <div
+                            suppressHydrationWarning
+                            className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-2xl -z-10"
+                            style={{
+                                backgroundImage: `url('${categoryBackgroundUrls[hero.name] || '/stone-pattern.jpg'}')`,
+                            }}
+                        />
+                        <div suppressHydrationWarning className="absolute inset-0 bg-stone-950/20" />
                         <div className="relative z-10 flex items-center justify-between">
                             <div className="flex size-14 items-center justify-center rounded-xl bg-white/80 text-emerald-900 backdrop-blur-sm">
                                 <MapIcon className="size-6" />
@@ -108,10 +116,18 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                 {rest.map((category) => (
                     <motion.div key={category.id} variants={itemVariants}>
                         <Link
-                            className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95 bg-cover bg-center bg-no-repeat ${categoryBackgroundClasses[category.name] || "bg-stone-50/50"}`}
+                            suppressHydrationWarning
+                            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95"
                             href={`/destinasi?category=${category.id}`}
                         >
-                            <div className="absolute inset-0 bg-stone-950/20" />
+                            <div
+                                suppressHydrationWarning
+                                className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-2xl -z-10"
+                                style={{
+                                    backgroundImage: `url('${categoryBackgroundUrls[category.name] || '/stone-pattern.jpg'}')`,
+                                }}
+                            />
+                            <div suppressHydrationWarning className="absolute inset-0 bg-stone-950/20" />
                             <div className="relative z-10 flex items-center justify-between">
                                 <div className="flex size-11 items-center justify-center rounded-lg bg-white/80 text-emerald-900 backdrop-blur-sm">
                                     <MapIcon className="size-5" />

@@ -157,24 +157,42 @@ export function HeroMapSection() {
                             <div className="space-y-4 pt-2">
                                 {selected && (
                                     <>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            {selected.category && (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-[#e1d4fd] px-3 py-1 text-xs font-semibold text-[#4f378a]">
-                                                    <MapPin className="size-3" />
-                                                    {selected.category}
-                                                </span>
-                                            )}
-                                            {selected.status && (
-                                                <span
-                                                    className={cn(
-                                                        "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
-                                                        statusBadge(selected.status).cls,
+                                        <div className="grid gap-4 sm:grid-cols-[96px_minmax(0,1fr)]">
+                                            <div className="h-24 w-full overflow-hidden rounded-2xl bg-slate-100 shadow-inner shadow-slate-200">
+                                                {selected.image ? (
+                                                    <img
+                                                        src={selected.image}
+                                                        alt={`Foto ${selected.name}`}
+                                                        className="h-full w-full object-cover"
+                                                        loading="lazy"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs font-medium text-slate-500">
+                                                        Gambar tidak tersedia
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {selected.category && (
+                                                        <span className="inline-flex items-center gap-1 rounded-full bg-[#e1d4fd] px-3 py-1 text-xs font-semibold text-[#4f378a]">
+                                                            <MapPin className="size-3" />
+                                                            {selected.category}
+                                                        </span>
                                                     )}
-                                                >
-                                                    <Star className="size-3" />
-                                                    {statusBadge(selected.status).label}
-                                                </span>
-                                            )}
+                                                    {selected.status && (
+                                                        <span
+                                                            className={cn(
+                                                                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
+                                                                statusBadge(selected.status).cls,
+                                                            )}
+                                                        >
+                                                            <Star className="size-3" />
+                                                            {statusBadge(selected.status).label}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="rounded-lg bg-[#f8f2fa] p-3 space-y-1.5">
