@@ -46,6 +46,7 @@ interface PetaSidebarProps {
     onDestinationSelect: (d: Destination | null) => void;
     onLocateMe: () => void;
     onAreaChange: (areaId: string | null) => void;
+    isSidebarOpen: boolean;
 }
 
 export default function PetaSidebar({
@@ -64,6 +65,7 @@ export default function PetaSidebar({
     onDestinationSelect,
     onLocateMe,
     onAreaChange,
+    isSidebarOpen,
 }: PetaSidebarProps) {
     const categories = getAllCategoryNames();
 
@@ -82,7 +84,9 @@ export default function PetaSidebar({
         const facilities = d.destinationHalalFacilities ?? [];
 
         return (
-            <aside className="flex h-full flex-col border-r border-stone-200 bg-white max-w-xl">
+            <aside
+                className={`flex max-h-[calc(100dvh-4rem)] h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+            >
                 <div className="shrink-0 space-y-4 border-b border-stone-200 p-4">
                     <div className="flex items-center justify-between">
                         <h2 className="font-heading text-lg font-semibold text-emerald-900">
@@ -98,7 +102,7 @@ export default function PetaSidebar({
                     </div>
                 </div>
 
-                <ScrollArea className="flex-1 w-full">
+                <ScrollArea className="flex-1 w-full min-h-0">
                     <div className="p-4 space-y-4">
                         <div>
                             <h3 className="font-heading text-base font-semibold">
@@ -198,9 +202,11 @@ export default function PetaSidebar({
     }
 
     return (
-        <aside className="flex h-full flex-col border-r border-stone-200 bg-white">
+        <aside
+            className={`flex max-h-[calc(100dvh-4rem)] overflow-hidden h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+        >
             <div className="shrink-0 space-y-3 border-b border-stone-200 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between ">
                     <h2 className="font-heading text-lg font-semibold text-emerald-900">
                         Peta Interaktif
                     </h2>
@@ -226,7 +232,7 @@ export default function PetaSidebar({
                 </div>
 
                 {coverageAreas.length > 0 && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 ">
                         <Globe className="size-4 shrink-0 text-stone-500" />
                         <Select
                             value={selectedAreaId ?? "all"}
@@ -348,7 +354,7 @@ export default function PetaSidebar({
                 {filteredDestinations.length} destinasi ditemukan
             </div>
 
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 min-h-0">
                 <div className="divide-y divide-stone-200">
                     {filteredDestinations.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-12 text-center text-sm text-stone-500">

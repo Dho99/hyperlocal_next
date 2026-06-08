@@ -25,6 +25,7 @@ import PetaSidebar from "./peta-sidebar";
 import UserLocationMarker from "./user-location-marker";
 import FacilityRoutePolyline from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 fixLeafletIcons();
 
@@ -67,6 +68,15 @@ function GeoJSONBoundsFitter({ geoJsonData }: { geoJsonData: unknown }) {
     return null;
 }
 
+function MapResizer({ isOpen }: { isOpen: boolean }) {
+    const map = useMap();
+    useEffect(() => {
+        const timer = setTimeout(() => map.invalidateSize(), 300);
+        return () => clearTimeout(timer);
+    }, [map, isOpen]);
+    return null;
+}
+
 export default function PetaMapClient() {
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
@@ -80,6 +90,7 @@ export default function PetaMapClient() {
     const [coverageAreas, setCoverageAreas] = useState<CoverageArea[]>([]);
     const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
     const [selectedAreaGeo, setSelectedAreaGeo] = useState<unknown>(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     useEffect(() => {
         fixLeafletIcons();
@@ -209,7 +220,7 @@ export default function PetaMapClient() {
     }
 
     return (
-        <div className="flex h-[calc(100dvh-4rem)] w-full">
+        <div className="flex h-[calc(100dvh-4rem)] overflow-hidden w-full relative">
             <PetaSidebar
                 destinations={filteredDestinations}
                 userLocation={userLocation}
@@ -220,6 +231,7 @@ export default function PetaMapClient() {
                 locationDenied={locationDenied}
                 coverageAreas={coverageAreas}
                 selectedAreaId={selectedAreaId}
+                isSidebarOpen={isSidebarOpen}
                 onRadiusChange={setRadius}
                 onSearchChange={setSearchQuery}
                 onCategoryChange={setActiveCategory}
@@ -233,7 +245,20 @@ export default function PetaMapClient() {
                 onAreaChange={handleAreaChange}
             />
 
-            <main className="relative flex-1 w-full">
+            <button
+                type="button"
+                onClick={() => setIsSidebarOpen((prev) => !prev)}
+                className="absolute top-1/2 -translate-y-1/2 z-20 -ml-4 rounded-full bg-white border border-stone-200 shadow-md p-1.5 hover:bg-stone-50 transition-all duration-300"
+                style={{ left: isSidebarOpen ? "420px" : "40px" }}
+            >
+                {isSidebarOpen ? (
+                    <ChevronLeft className="size-8 text-stone-600" />
+                ) : (
+                    <ChevronRight className="size-8 text-stone-600" />
+                )}
+            </button>
+
+            <main className="relative flex-1 w-full transition-all duration-300">
                 <MapContainer
                     center={mapCenter}
                     zoom={DEFAULT_ZOOM}
@@ -248,6 +273,7 @@ export default function PetaMapClient() {
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 
                     <GeoJSONBoundsFitter geoJsonData={selectedAreaGeo} />
+                    <MapResizer isOpen={isSidebarOpen} />
 
                     {!!selectedAreaGeo && (
                         <GeoJSON

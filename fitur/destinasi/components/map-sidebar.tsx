@@ -1,18 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-    MapPin,
-    Navigation,
-    Share2,
-    Copy,
-    Star,
-} from "lucide-react";
+import { MapPin, Navigation, Share2, Copy, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Destination } from "@/types/destination";
 import type { MapData } from "@/fitur/destinasi/data/destinasi-detail-data";
 import { BookmarkButton } from "@/components/destinations/bookmark-button";
 import { WhatsappButton } from "@/components/destinations/whatsapp-button";
+import { Button } from "@/components/ui/button";
 
 const DynamicContextMap = dynamic(
     () => import("@/components/maps").then((m) => m.DynamicContextMap),
@@ -90,7 +85,7 @@ export function MapSidebar({
                             targetType="DESTINASI"
                             className="flex-1"
                         />
-                        <button
+                        <Button
                             type="button"
                             onClick={onShare}
                             className="w-full bg-transparent border border-border text-foreground text-xs font-semibold tracking-wider py-3 rounded-lg hover:bg-muted transition-colors flex items-center justify-center gap-2"
@@ -101,7 +96,7 @@ export function MapSidebar({
                                 <Share2 className="size-4" />
                             )}
                             {shareCopied ? "Link Disalin" : "Bagikan Destinasi"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
