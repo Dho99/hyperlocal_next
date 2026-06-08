@@ -21,6 +21,17 @@ interface CategoriesSectionProps {
     categories: CategoryWithCounts[];
 }
 
+const categoryBackgrounds: Record<string, string> = {
+    "Wisata Alam": "/wisata_alam.jpg",
+    Pantai: "/Pantai.jpg",
+    "Taman & Rekreasi": "/taman_rekreasi.jpg",
+    "Wisata Religi": "/Wisata_religi.jpg",
+    "Fashion Muslim": "/fashion_muslim.jpg",
+    "Hotel Syariah": "/Hotel_Syariah.jpg",
+    "Kuliner Halal": "/makanan_halal2.jpg",
+    "Oleh-Oleh & Souvenir": "/souvenir.jpg",
+};
+
 const containerVariants = {
     hidden: {},
     visible: {
@@ -73,21 +84,28 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                     className="md:col-span-2 md:row-span-2"
                 >
                     <Link
-                        className="flex h-full flex-col justify-end rounded-2xl border border-stone-200/60 bg-stone-50/50 p-7 transition hover:bg-stone-100"
+                        className="relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95"
+                        style={categoryBackgrounds[hero.name] ? {
+                            backgroundImage: `url(${categoryBackgrounds[hero.name]})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                        } : undefined}
                         href={`/destinasi?category=${hero.id}`}
                     >
-                        <div className="flex items-center justify-between">
-                            <div className="flex size-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-900">
+                        <div className="absolute inset-0 bg-stone-950/20" />
+                        <div className="relative z-10 flex items-center justify-between">
+                            <div className="flex size-14 items-center justify-center rounded-xl bg-white/80 text-emerald-900 backdrop-blur-sm">
                                 <MapIcon className="size-6" />
                             </div>
-                            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-amber-800 backdrop-blur-sm">
                                 {formatNumber(hero._count.destinations)} lokasi
                             </span>
                         </div>
-                        <h3 className="mt-5 font-heading text-2xl font-bold text-stone-900">
+                        <h3 className="relative z-10 mt-5 font-heading text-2xl font-bold text-white">
                             {hero.name}
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-stone-600">
+                        <p className="relative z-10 mt-2 text-sm leading-6 text-white">
                             {hero.description ||
                                 `${formatNumber(hero._count.umkms)} UMKM terkait kategori ini.`}
                         </p>
@@ -96,22 +114,28 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                 {rest.map((category) => (
                     <motion.div key={category.id} variants={itemVariants}>
                         <Link
-                            className="flex h-full flex-col rounded-2xl border border-stone-200/60 bg-stone-50/50 p-5 transition hover:bg-stone-100"
+                            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95"
+                            style={categoryBackgrounds[category.name] ? {
+                                backgroundImage: `url(${categoryBackgrounds[category.name]})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                            } : undefined}
                             href={`/destinasi?category=${category.id}`}
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex size-11 items-center justify-center rounded-lg bg-emerald-100 text-emerald-900">
+                            <div className="absolute inset-0 bg-stone-950/20" />
+                            <div className="relative z-10 flex items-center justify-between">
+                                <div className="flex size-11 items-center justify-center rounded-lg bg-white/80 text-emerald-900 backdrop-blur-sm">
                                     <MapIcon className="size-5" />
                                 </div>
-                                <span className="text-xs font-bold text-amber-700">
-                                    {formatNumber(category._count.destinations)}{" "}
-                                    lokasi
+                                <span className="relative z-10 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-amber-700 backdrop-blur-sm">
+                                    {formatNumber(category._count.destinations)} lokasi
                                 </span>
                             </div>
-                            <h3 className="mt-4 font-heading text-lg font-bold text-stone-900">
+                            <h3 className="relative z-10 mt-4 font-heading text-lg font-bold text-white">
                                 {category.name}
                             </h3>
-                            <p className="mt-2 text-sm text-stone-600">
+                            <p className="relative z-10 mt-2 text-sm text-white">
                                 {category.description ||
                                     `${formatNumber(category._count.umkms)} UMKM terkait.`}
                             </p>
