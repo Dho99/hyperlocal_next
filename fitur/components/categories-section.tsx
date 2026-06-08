@@ -21,15 +21,15 @@ interface CategoriesSectionProps {
     categories: CategoryWithCounts[];
 }
 
-const categoryBackgrounds: Record<string, string> = {
-    "Wisata Alam": "/wisata_alam.jpg",
-    Pantai: "/Pantai.jpg",
-    "Taman & Rekreasi": "/taman_rekreasi.jpg",
-    "Wisata Religi": "/Wisata_religi.jpg",
-    "Fashion Muslim": "/fashion_muslim.jpg",
-    "Hotel Syariah": "/Hotel_Syariah.jpg",
-    "Kuliner Halal": "/makanan_halal2.jpg",
-    "Oleh-Oleh & Souvenir": "/souvenir.jpg",
+const categoryBackgroundClasses: Record<string, string> = {
+    "Wisata Alam": "bg-[url('/wisata_alam.jpg')]",
+    Pantai: "bg-[url('/Pantai.jpg')]",
+    "Taman & Rekreasi": "bg-[url('/taman_rekreasi.jpg')]",
+    "Wisata Religi": "bg-[url('/Wisata_religi.jpg')]",
+    "Fashion Muslim": "bg-[url('/fashion_muslim.jpg')]",
+    "Hotel Syariah": "bg-[url('/Hotel_Syariah.jpg')]",
+    "Kuliner Halal": "bg-[url('/makanan_halal2.jpg')]",
+    "Oleh-Oleh & Souvenir": "bg-[url('/souvenir.jpg')]",
 };
 
 const containerVariants = {
@@ -84,13 +84,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                     className="md:col-span-2 md:row-span-2"
                 >
                     <Link
-                        className="relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95"
-                        style={categoryBackgrounds[hero.name] ? {
-                            backgroundImage: `url(${categoryBackgrounds[hero.name]})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                        } : undefined}
+                        className={`relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95 bg-cover bg-center bg-no-repeat ${categoryBackgroundClasses[hero.name] || "bg-stone-50/50"}`}
                         href={`/destinasi?category=${hero.id}`}
                     >
                         <div className="absolute inset-0 bg-stone-950/20" />
@@ -114,13 +108,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                 {rest.map((category) => (
                     <motion.div key={category.id} variants={itemVariants}>
                         <Link
-                            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95"
-                            style={categoryBackgrounds[category.name] ? {
-                                backgroundImage: `url(${categoryBackgrounds[category.name]})`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                            } : undefined}
+                            className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95 bg-cover bg-center bg-no-repeat ${categoryBackgroundClasses[category.name] || "bg-stone-50/50"}`}
                             href={`/destinasi?category=${category.id}`}
                         >
                             <div className="absolute inset-0 bg-stone-950/20" />
