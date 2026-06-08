@@ -68,6 +68,15 @@ function serializeDestination(raw: DestinationWithIncludes): Destination {
     };
 }
 
+function coverageAreaActiveFilter() {
+    return {
+        OR: [
+            { coverageAreaId: null },
+            { coverageArea: { isActive: true } },
+        ],
+    };
+}
+
 export async function getPaginatedDestinations(
     params: CursorPaginationParams & {
         categoryId?: string;
@@ -75,18 +84,40 @@ export async function getPaginatedDestinations(
         status?: string;
         minScore?: number;
         sort?: DestinationSort;
+        areaId?: string;
+        scope?: "admin" | "public";
     },
 ) {
     const orderBy = getDestinationOrderBy(params.sort);
 
+    const scopeOr = params.scope === "public"
+        ? [{ coverageAreaId: null }, { coverageArea: { isActive: true } }]
+        : undefined;
+
     return withCursorPagination(
         async (take, cursor, skip) => {
+            const andConditions: Prisma.DestinationWhereInput[] = [];
+
+            if (scopeOr) {
+                andConditions.push({ OR: scopeOr });
+            }
+
+            if (params.minScore != null) {
+                andConditions.push({
+                    OR: [
+                        { validatedScore: { gte: params.minScore } },
+                        { validatedScore: null, halalScore: { gte: params.minScore } },
+                    ],
+                });
+            }
+
             const destinations = await prisma.destination.findMany({
                 take,
                 skip,
                 cursor: cursor ? { id: cursor } : undefined,
                 where: {
                     ...(params.categoryId && { categoryId: params.categoryId }),
+                    ...(params.areaId && { coverageAreaId: params.areaId }),
                     ...(params.status && {
                         status: params.status as
                             | "PENDING"
@@ -96,15 +127,8 @@ export async function getPaginatedDestinations(
                     ...(params.search && {
                         name: { contains: params.search, mode: "insensitive" },
                     }),
-                    ...(params.minScore != null && {
-                        OR: [
-                            { validatedScore: { gte: params.minScore } },
-                            {
-                                validatedScore: null,
-                                halalScore: { gte: params.minScore },
-                            },
-                        ],
-                    }),
+                    ...(andConditions.length > 1 && { AND: andConditions }),
+                    ...(andConditions.length === 1 && andConditions[0] as Prisma.DestinationWhereInput),
                 },
                 include: destinationIncludes,
                 orderBy,
@@ -140,8 +164,18 @@ function getDestinationOrderBy(sort: DestinationSort = "newest") {
     return orderByMap[sort];
 }
 
-export async function getDestinations(): Promise<Destination[]> {
+export async function getDestinations(
+    scope?: "admin" | "public",
+): Promise<Destination[]> {
     const data = await prisma.destination.findMany({
+        where: {
+            ...(scope === "public" && {
+                OR: [
+                    { coverageAreaId: null },
+                    { coverageArea: { isActive: true } },
+                ],
+            }),
+        },
         include: destinationIncludes,
         orderBy: { createdAt: "desc" },
     });
@@ -150,13 +184,22 @@ export async function getDestinations(): Promise<Destination[]> {
 
 export async function getDestination(
     idOrSlug: string,
+    scope?: "admin" | "public",
 ): Promise<Destination | null> {
     const isUuid =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
             idOrSlug,
         );
     const data = await prisma.destination.findFirst({
-        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
+        where: {
+            ...(isUuid ? { id: idOrSlug } : { slug: idOrSlug }),
+            ...(scope === "public" && {
+                OR: [
+                    { coverageAreaId: null },
+                    { coverageArea: { isActive: true } },
+                ],
+            }),
+        },
         include: destinationIncludes,
     });
     return data ? serializeDestination(data) : null;

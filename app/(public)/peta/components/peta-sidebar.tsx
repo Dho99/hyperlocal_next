@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, MapPin, X, Navigation, Star } from "lucide-react";
+import { Search, MapPin, X, Navigation, Star, Globe } from "lucide-react";
 import type { Destination } from "@/types/destination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,26 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     getCategoryColor,
     getAllCategoryNames,
 } from "@/lib/config/map-categories";
 import type { UserLocation } from "./peta-types";
 
 const RADIUS_PRESETS = [1, 3, 5, 10, 25] as const;
+
+interface CoverageArea {
+    id: string;
+    name: string;
+    level: string;
+    colorHex: string | null;
+}
 
 interface PetaSidebarProps {
     destinations: Destination[];
@@ -24,11 +38,15 @@ interface PetaSidebarProps {
     activeCategory: string | null;
     selectedDestination: Destination | null;
     locationDenied: boolean;
+    coverageAreas: CoverageArea[];
+    selectedAreaId: string | null;
     onRadiusChange: (km: number) => void;
     onSearchChange: (q: string) => void;
     onCategoryChange: (cat: string | null) => void;
     onDestinationSelect: (d: Destination | null) => void;
     onLocateMe: () => void;
+    onAreaChange: (areaId: string | null) => void;
+    isSidebarOpen: boolean;
 }
 
 export default function PetaSidebar({
@@ -39,11 +57,15 @@ export default function PetaSidebar({
     activeCategory,
     selectedDestination,
     locationDenied,
+    coverageAreas,
+    selectedAreaId,
     onRadiusChange,
     onSearchChange,
     onCategoryChange,
     onDestinationSelect,
     onLocateMe,
+    onAreaChange,
+    isSidebarOpen,
 }: PetaSidebarProps) {
     const categories = getAllCategoryNames();
 
@@ -62,7 +84,9 @@ export default function PetaSidebar({
         const facilities = d.destinationHalalFacilities ?? [];
 
         return (
-            <aside className="flex h-full flex-col border-r border-stone-200 bg-white max-w-xl">
+            <aside
+                className={`flex max-h-[calc(100dvh-4rem)] h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+            >
                 <div className="shrink-0 space-y-4 border-b border-stone-200 p-4">
                     <div className="flex items-center justify-between">
                         <h2 className="font-heading text-lg font-semibold text-emerald-900">
@@ -78,7 +102,7 @@ export default function PetaSidebar({
                     </div>
                 </div>
 
-                <ScrollArea className="flex-1 w-full">
+                <ScrollArea className="flex-1 w-full min-h-0">
                     <div className="p-4 space-y-4">
                         <div>
                             <h3 className="font-heading text-base font-semibold">
@@ -178,9 +202,11 @@ export default function PetaSidebar({
     }
 
     return (
-        <aside className="flex h-full flex-col border-r border-stone-200 bg-white">
+        <aside
+            className={`flex max-h-[calc(100dvh-4rem)] overflow-hidden h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+        >
             <div className="shrink-0 space-y-3 border-b border-stone-200 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between ">
                     <h2 className="font-heading text-lg font-semibold text-emerald-900">
                         Peta Interaktif
                     </h2>
@@ -204,6 +230,30 @@ export default function PetaSidebar({
                         className="pl-8"
                     />
                 </div>
+
+                {coverageAreas.length > 0 && (
+                    <div className="flex items-center gap-2 ">
+                        <Globe className="size-4 shrink-0 text-stone-500" />
+                        <Select
+                            value={selectedAreaId ?? "all"}
+                            onValueChange={(v) =>
+                                onAreaChange(v === "all" ? null : v)
+                            }
+                        >
+                            <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder="Semua Area" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Semua Area</SelectItem>
+                                {coverageAreas.map((area) => (
+                                    <SelectItem key={area.id} value={area.id}>
+                                        {area.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )}
 
                 {locationDenied && (
                     <p className="text-xs text-amber-600">
@@ -304,7 +354,7 @@ export default function PetaSidebar({
                 {filteredDestinations.length} destinasi ditemukan
             </div>
 
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 min-h-0">
                 <div className="divide-y divide-stone-200">
                     {filteredDestinations.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-12 text-center text-sm text-stone-500">

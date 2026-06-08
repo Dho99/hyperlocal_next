@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Bookmark, CheckCircle2, MapPin, Star } from "lucide-react";
+import { Bookmark, MapPin, Star } from "lucide-react";
 import type { DestinationCard } from "@/fitur/data/utils";
-import { scoreLabel } from "@/fitur/data/utils";
+import { HalalBadge } from "@/components/ui/halal-badge";
 
 interface DestinationCardProps {
     destination: DestinationCard;
@@ -34,12 +34,7 @@ export function DestinationCardComponent({ destination }: DestinationCardProps) 
                         <MapPin className="size-10" />
                     </div>
                 )}
-                {destination.status === "APPROVED" && (
-                    <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold text-emerald-900 shadow-sm backdrop-blur-md">
-                        <CheckCircle2 className="size-3.5" />
-                        Verified
-                    </div>
-                )}
+                <HalalBadge score={destination.score} />
                 <span
                     aria-label={`Simpan ${destination.name}`}
                     className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/75 text-emerald-900 backdrop-blur-md"
@@ -64,9 +59,6 @@ export function DestinationCardComponent({ destination }: DestinationCardProps) 
                 <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-3 text-[11px] font-bold uppercase tracking-wide">
                     <span className="rounded bg-emerald-100 px-2 py-1 text-emerald-900">
                         {destination.category}
-                    </span>
-                    <span className="text-emerald-900">
-                        {scoreLabel(destination.score)}
                     </span>
                 </div>
             </div>

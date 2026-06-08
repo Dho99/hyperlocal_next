@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
 import type { PublicReview } from "@/types/review";
@@ -82,10 +83,35 @@ export async function getPaginatedUmkms(
         categorySlug?: string;
         destinationId?: string;
         search?: string;
+        areaId?: string;
+        scope?: "admin" | "public";
     },
 ) {
+    const scopeOr = params.scope === "public"
+        ? [{ coverageAreaId: null }, { coverageArea: { isActive: true } }]
+        : undefined;
+
     return withCursorPagination(
         async (take, cursor, skip) => {
+            const andConditions: Prisma.UmkmWhereInput[] = [];
+
+            if (scopeOr) {
+                andConditions.push({ OR: scopeOr });
+            }
+
+            if (params.search) {
+                andConditions.push({
+                    OR: [
+                        { name: { contains: params.search, mode: "insensitive" } },
+                        {
+                            destination: {
+                                name: { contains: params.search, mode: "insensitive" },
+                            },
+                        },
+                    ],
+                });
+            }
+
             const umkms = await prisma.umkm.findMany({
                 take,
                 skip,
@@ -96,19 +122,12 @@ export async function getPaginatedUmkms(
                     ...(params.categorySlug && params.categorySlug !== "Semua" && {
                         category: { slug: params.categorySlug },
                     }),
+                    ...(params.areaId && { coverageAreaId: params.areaId }),
                     ...(params.destinationId && {
                         destinationId: params.destinationId,
                     }),
-                    ...(params.search && {
-                        OR: [
-                            { name: { contains: params.search, mode: "insensitive" } },
-                            {
-                                destination: {
-                                    name: { contains: params.search, mode: "insensitive" },
-                                },
-                            },
-                        ],
-                    }),
+                    ...(andConditions.length > 1 && { AND: andConditions }),
+                    ...(andConditions.length === 1 && andConditions[0] as Prisma.UmkmWhereInput),
                 },
                 include: {
                     category: true,
@@ -130,8 +149,16 @@ export async function getPaginatedUmkms(
     );
 }
 
-export async function getUmkms() {
+export async function getUmkms(scope?: "admin" | "public") {
     const umkms = await prisma.umkm.findMany({
+        where: {
+            ...(scope === "public" && {
+                OR: [
+                    { coverageAreaId: null },
+                    { coverageArea: { isActive: true } },
+                ],
+            }),
+        },
         include: {
             category: true,
             destination: true,
@@ -148,9 +175,17 @@ export async function getUmkms() {
     return umkms.map((umkm) => serializeUmkm(umkm));
 }
 
-export async function getUmkm(id: string) {
+export async function getUmkm(id: string, scope?: "admin" | "public") {
     const umkm = await prisma.umkm.findUnique({
-        where: { id },
+        where: {
+            id,
+            ...(scope === "public" && {
+                OR: [
+                    { coverageAreaId: null },
+                    { coverageArea: { isActive: true } },
+                ],
+            }),
+        },
         include: {
             category: true,
             destination: true,
@@ -279,13 +314,21 @@ export interface UmkmDetail extends Umkm {
     destinationFacilities: FacilityInfo[];
 }
 
-export async function getUmkmDetail(idOrSlug: string) {
+export async function getUmkmDetail(idOrSlug: string, scope?: "admin" | "public") {
     const isUuid =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
             idOrSlug,
         );
     const umkm = await prisma.umkm.findFirst({
-        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
+        where: {
+            ...(isUuid ? { id: idOrSlug } : { slug: idOrSlug }),
+            ...(scope === "public" && {
+                OR: [
+                    { coverageAreaId: null },
+                    { coverageArea: { isActive: true } },
+                ],
+            }),
+        },
         include: {
             category: true,
             destination: {

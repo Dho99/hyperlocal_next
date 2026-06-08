@@ -18,7 +18,7 @@ export default async function UmkmDetailPage({
     params,
 }: UmkmDetailPageProps) {
     const { id } = await params;
-    const umkm = await getUmkmDetail(id);
+    const umkm = await getUmkmDetail(id, "public");
 
     if (!umkm) {
         notFound();

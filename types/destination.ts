@@ -43,6 +43,7 @@ export interface Destination {
     name: string;
     slug: string;
     categoryId: string;
+    coverageAreaId: string | null;
     description: JsonValue | null;
     address: string | null;
     city: string | null;

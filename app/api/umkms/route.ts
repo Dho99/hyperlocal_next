@@ -7,6 +7,7 @@ import {
     getPaginatedUmkms,
 } from "@/lib/services/umkm-service";
 import { umkmSchema } from "@/lib/validations/umkm.schema";
+import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
 
 export async function GET(request: Request) {
@@ -28,6 +29,7 @@ export async function GET(request: Request) {
             const categorySlug = searchParams.get("category") || undefined;
             const destinationId =
                 searchParams.get("destinationId") || undefined;
+            const areaId = searchParams.get("areaId") || undefined;
             const search = searchParams.get("search") || undefined;
 
             const result = await getPaginatedUmkms({
@@ -36,13 +38,15 @@ export async function GET(request: Request) {
                 categoryId,
                 categorySlug,
                 destinationId,
+                areaId,
                 search,
+                scope: "public",
             });
             return NextResponse.json(result, { status: 200 });
         }
 
         // Default to all UMKMs (for admin list etc)
-        const umkms = await getUmkms();
+        const umkms = await getUmkms("public");
         return NextResponse.json({ data: umkms }, { status: 200 });
     } catch (error: unknown) {
         console.log(error);
@@ -77,6 +81,18 @@ export async function POST(request: Request) {
                 },
                 { status: 400 },
             );
+        }
+
+        if (validated.data.coverageAreaId) {
+            const area = await prisma.coverageArea.findUnique({
+                where: { id: validated.data.coverageAreaId },
+            });
+            if (!area || !area.isActive) {
+                return NextResponse.json(
+                    { error: "Coverage area tidak valid atau tidak aktif" },
+                    { status: 400 },
+                );
+            }
         }
 
         const umkm = await createUmkm(validated.data);

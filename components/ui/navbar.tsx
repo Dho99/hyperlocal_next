@@ -2,7 +2,7 @@
 
 import { Bell, Bookmark, Compass, Lock, LogOut, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,6 +25,7 @@ const navItems = [
 
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
     const { data: session } = authClient.useSession();
 
     function isActive(item: (typeof navItems)[number]) {
@@ -43,7 +44,10 @@ export default function Navbar() {
             return pathname === "/umkm" || pathname.startsWith("/umkm/");
         }
         if (item.href === "/penginapan") {
-            return pathname === "/penginapan" || pathname.startsWith("/penginapan/");
+            return (
+                pathname === "/penginapan" ||
+                pathname.startsWith("/penginapan/")
+            );
         }
         return pathname.startsWith(item.href);
     }
@@ -79,8 +83,8 @@ export default function Navbar() {
                 </div>
                 <div className="hidden items-center gap-4 text-stone-600 md:flex">
                     <InstallButton />
-                    <Bell className="size-4" />
-                    <Compass className="size-4" />
+                    {/* <Bell className="size-4" />
+                    <Compass className="size-4" /> */}
                     {user ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -108,7 +112,9 @@ export default function Navbar() {
                                                 alt={user.name}
                                             />
                                             <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xs font-semibold">
-                                                {user.name.charAt(0).toUpperCase()}
+                                                {user.name
+                                                    .charAt(0)
+                                                    .toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="flex flex-col">
@@ -122,19 +128,28 @@ export default function Navbar() {
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem asChild className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50">
+                                <DropdownMenuItem
+                                    asChild
+                                    className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50"
+                                >
                                     <Link href="/profile?tab=edit">
                                         <User className="h-4 w-4" />
                                         <span>Profil Saya</span>
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50">
+                                <DropdownMenuItem
+                                    asChild
+                                    className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50"
+                                >
                                     <Link href="/profile?tab=password">
                                         <Lock className="h-4 w-4" />
                                         <span>Ubah Password</span>
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50">
+                                <DropdownMenuItem
+                                    asChild
+                                    className="cursor-pointer gap-2 text-stone-700 focus:bg-stone-50"
+                                >
                                     <Link href="/profile?tab=saved">
                                         <Bookmark className="h-4 w-4" />
                                         <span>Destinasi Tersimpan</span>
@@ -144,11 +159,9 @@ export default function Navbar() {
                                 <DropdownMenuItem
                                     className="cursor-pointer gap-2 text-rose-600 focus:bg-rose-50 focus:text-rose-700"
                                     onClick={() =>
-                                        authClient
-                                            .signOut()
-                                            .then(() => {
-                                                window.location.href = "/";
-                                            })
+                                        authClient.signOut().then(() => {
+                                            router.replace("/");
+                                        })
                                     }
                                 >
                                     <LogOut className="h-4 w-4" />

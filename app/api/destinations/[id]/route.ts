@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { prisma } from "@/lib/prisma";
 import {
     getDestination,
     updateDestination,
@@ -15,7 +16,7 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const destination = await getDestination(id);
+        const destination = await getDestination(id, "public");
 
         if (!destination) {
             return NextResponse.json(
@@ -61,6 +62,18 @@ export async function PATCH(
                 },
                 { status: 400 },
             );
+        }
+
+        if (validated.data.coverageAreaId) {
+            const area = await prisma.coverageArea.findUnique({
+                where: { id: validated.data.coverageAreaId },
+            });
+            if (!area || !area.isActive) {
+                return NextResponse.json(
+                    { error: "Coverage area tidak valid atau tidak aktif" },
+                    { status: 400 },
+                );
+            }
         }
 
         const destination = await updateDestination(id, validated.data);

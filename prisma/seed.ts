@@ -837,6 +837,57 @@ async function main() {
     }
     console.log(`  ✓ ${readinessData.length} halal readiness scores created`);
 
+    // ── 6. CoverageAreas (Pre-loaded cultural regions) ─────────────────
+    const prianganTimurGeoJson = {
+        type: "FeatureCollection",
+        features: [
+            {
+                type: "Feature",
+                properties: { name: "Priangan Timur" },
+                geometry: {
+                    type: "MultiPolygon",
+                    coordinates: [
+                        [
+                            [
+                                [108.0, -7.0],
+                                [108.8, -7.1],
+                                [108.9, -7.3],
+                                [108.7, -7.5],
+                                [108.5, -7.7],
+                                [108.3, -7.8],
+                                [108.1, -7.7],
+                                [107.9, -7.5],
+                                [107.8, -7.3],
+                                [107.9, -7.1],
+                                [108.0, -7.0],
+                            ],
+                        ],
+                    ],
+                },
+            },
+        ],
+    };
+
+    await prisma.coverageArea.upsert({
+        where: { id: "priangan-timur" },
+        update: {
+            name: "Priangan Timur",
+            level: "REGIONAL",
+            geoJsonData: prianganTimurGeoJson,
+            colorHex: "#047857",
+            isActive: true,
+        },
+        create: {
+            id: "priangan-timur",
+            name: "Priangan Timur",
+            level: "REGIONAL",
+            geoJsonData: prianganTimurGeoJson,
+            colorHex: "#047857",
+            isActive: true,
+        },
+    });
+    console.log("  ✓ Coverage area 'Priangan Timur' pre-loaded");
+
     console.log("\n✅ Seeding completed successfully!");
     console.log(`   Categories: ${categoryData.length}`);
     console.log(`   Halal Facilities: ${facilityData.length}`);

@@ -15,6 +15,7 @@ export const umkmSchema = z.object({
         .uuid("Pilih destinasi yang valid")
         .optional()
         .nullable(),
+    coverageAreaId: z.string().nullable().optional(),
     categoryId: z
         .string()
         .uuid("Pilih kategori yang valid")

@@ -5,6 +5,7 @@ import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface BookmarkButtonProps {
     targetSlug: string;
@@ -22,6 +23,7 @@ export function BookmarkButton({
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const { data: session } = authClient.useSession();
+    const router = useRouter();
 
     useEffect(() => {
         if (!session || !targetSlug) {
@@ -53,7 +55,7 @@ export function BookmarkButton({
             toast.error("Silakan login untuk menyimpan item", {
                 action: {
                     label: "Login",
-                    onClick: () => (window.location.href = "/login"),
+                    onClick: () => router.push("/login"),
                 },
             });
             return;
@@ -92,7 +94,7 @@ export function BookmarkButton({
             onClick={handleToggleBookmark}
             disabled={isLoading}
             className={cn(
-                "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors",
+                "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors w-full",
                 showLabel ? "px-4 py-2 text-sm" : "p-2",
                 isBookmarked
                     ? "bg-rose-50 text-rose-600 hover:bg-rose-100"
