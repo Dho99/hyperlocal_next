@@ -1,10 +1,7 @@
 # === STAGE 1: Install Dependencies ===
-# Menggunakan versi Node.js latest berbasis Alpine Linux
 FROM node:alpine AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
-
-# Copy package management files
 COPY package.json package-lock.json* ./
 RUN npm ci
 
@@ -14,34 +11,39 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Matikan telemetry Next.js
-ENV NEXT_TELEMETRY_DISABLED=1
+# Wajib: Generate Prisma Client di sini, sebelum proses Next build!
+# Hasil generate-nya akan masuk ke folder custom /app/lib
+RUN npx prisma generate
 
-# Jalankan proses kompilasi/build
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# === STAGE 3: Production Runner (Image Akhir) ===
+# === STAGE 3: Production Runner ===
 FROM node:alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Setup user non-root untuk keamanan
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy hasil kompilasi dari stage sebelumnya
+# Copy aset utama Next.js
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
+# Copy nyawa Prisma v7 & Client Custom-nya
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/lib ./lib
+
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+
 USER nextjs
 
-# Set environment bawaan
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Perintah utama saat kontainer menyala
 CMD ["npm", "start"]
