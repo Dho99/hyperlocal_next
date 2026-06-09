@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export function DetailFooter() {
     return (
         <footer className="mt-8 bg-card w-full rounded-t-xl border-t border-border/30">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
                 <div className="space-y-3">
-                    <h3 className="font-heading text-xl font-bold text-emerald-700">
-                        HyperLocal
-                    </h3>
+                    <BrandLogo />
                     <p className="text-sm text-muted-foreground">
                         Platform penemuan destinasi halal terpercaya untuk
                         perjalanan yang menenangkan.
@@ -49,7 +48,7 @@ export function DetailFooter() {
                 </div>
                 <div className="flex items-end text-sm text-muted-foreground">
                     <p>
-                        &copy; {new Date().getFullYear()} HyperLocal. Semua Hak
+                        &copy; {new Date().getFullYear()}. Semua Hak
                         Dilindungi.
                     </p>
                 </div>

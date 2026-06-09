@@ -61,7 +61,7 @@ export default function RegisterForm() {
         onSuccess: () => {
           setIsSuccess(true);
           setTimeout(() => {
-            router.push("/login");
+            router.push("/halal");
           }, 2000);
         },
         onError: (ctx) => {
@@ -253,7 +253,7 @@ export default function RegisterForm() {
           <div className="text-center text-sm text-muted-foreground">
             Sudah punya akun?{" "}
             <Link
-              href={"/login"}
+              href={"/halal"}
               className="font-semibold text-primary hover:underline"
             >
               Masuk

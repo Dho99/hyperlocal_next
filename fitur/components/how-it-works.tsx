@@ -27,7 +27,7 @@ export function HowItWorks() {
                     className="text-center"
                 >
                     <h2 className="font-heading text-3xl font-bold tracking-tighter text-white sm:text-4xl lg:text-5xl">
-                        Cara Kerja Hyperlocal
+                        Cara Kerja Platform
                     </h2>
                     <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-emerald-100">
                         Mulai dari pencarian sampai rencana perjalanan, semua

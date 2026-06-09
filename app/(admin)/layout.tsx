@@ -13,7 +13,7 @@ export default async function Layout({
     });
 
     if (!session) {
-        redirect("/login");
+        redirect("/halal");
     }
 
     if (session.user.role !== "admin") {

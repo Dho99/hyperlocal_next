@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { formatNumber } from "@/fitur/data/utils";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 interface FooterStats {
     approvedDestinations: number;
@@ -53,10 +54,11 @@ export function Footer({ stats }: FooterProps) {
             <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.3fr_0.7fr_0.7fr_1fr] lg:px-8">
                 <div>
                     <Link
-                        className="font-heading text-2xl font-bold text-emerald-900"
+                        className="inline-flex items-center"
                         href="/"
+                        aria-label="Beranda"
                     >
-                        Hyperlocal
+                        <BrandLogo size="lg" />
                     </Link>
                     <p className="mt-4 max-w-sm text-sm leading-7 text-stone-600">
                         Platform penemuan destinasi halal, fasilitas
@@ -97,7 +99,7 @@ export function Footer({ stats }: FooterProps) {
                 </div>
             </div>
             <div className="border-t border-stone-200 px-4 py-5 text-center text-xs text-stone-600 sm:px-6 lg:px-8">
-                © 2026 Hyperlocal. Semua hak dilindungi.
+                © 2026. Semua hak dilindungi.
             </div>
         </motion.footer>
     );

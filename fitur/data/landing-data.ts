@@ -1,10 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import {
-    ShieldCheck,
-    Landmark,
-    Utensils,
-    Hotel,
-} from "lucide-react";
+import { ShieldCheck, Landmark, Utensils, Hotel } from "lucide-react";
 import type { ComponentType } from "react";
 import type { Faq } from "./landing";
 
@@ -16,7 +11,7 @@ export interface DestinationCard {
     category: string;
     rating: number;
     reviewCount: number;
-    score: number | null;
+    halalScore: number | null;
     status: string;
     imageUrl: string | null;
 }
@@ -89,6 +84,7 @@ function toDestinationCard(destination: {
     rating: number | null;
     reviewCount: number | null;
     category: { name: string } | null;
+    halalScore: number | null;
     images: Array<{ imageUrl: string }>;
 }): DestinationCard {
     return {
@@ -99,10 +95,7 @@ function toDestinationCard(destination: {
         category: destination.category?.name || "Destinasi",
         rating: destination.rating || 0,
         reviewCount: destination.reviewCount || 0,
-        score:
-            destination.status === "APPROVED"
-                ? Math.round((destination.rating || 0) * 20)
-                : null,
+        halalScore: destination.halalScore || null,
         status: destination.status,
         imageUrl: safeImage(destination.images[0]?.imageUrl),
     };
@@ -170,6 +163,7 @@ export async function getLandingData() {
                 status: true,
                 rating: true,
                 reviewCount: true,
+                halalScore: true,
                 category: {
                     select: {
                         name: true,
@@ -201,6 +195,7 @@ export async function getLandingData() {
                 status: true,
                 rating: true,
                 reviewCount: true,
+                halalScore: true,
                 category: {
                     select: {
                         name: true,

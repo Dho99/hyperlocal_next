@@ -132,7 +132,7 @@ export function LaporanGenerator() {
 
       doc.setFontSize(18);
       doc.setTextColor("#065F46");
-      doc.text("Laporan Data HyperLocal", pageWidth / 2, 15, { align: "center" });
+      doc.text("Laporan Data", pageWidth / 2, 15, { align: "center" });
 
       doc.setFontSize(9);
       doc.setTextColor("#6B7280");
@@ -172,7 +172,7 @@ export function LaporanGenerator() {
         y = (doc as any).lastAutoTable.finalY + 8;
       }
 
-      doc.save(`laporan-hyperlocal-${format(new Date(), "yyyy-MM-dd")}.pdf`);
+      doc.save(`laporan-halal-tourism-${format(new Date(), "yyyy-MM-dd")}.pdf`);
       toast.success("PDF berhasil didownload");
     } catch {
       toast.error("Gagal generate PDF");
@@ -209,7 +209,7 @@ export function LaporanGenerator() {
         const header = res.headers["content-disposition"];
         const filename =
           header?.match(/filename="?(.+?)"?$/)?.[1] ??
-          `laporan-hyperlocal-${format(new Date(), "yyyy-MM-dd")}.${fmt === "xlsx" ? "xlsx" : fmt === "pdf" ? "pdf" : "csv"}`;
+          `laporan-halal-tourism-${format(new Date(), "yyyy-MM-dd")}.${fmt === "xlsx" ? "xlsx" : fmt === "pdf" ? "pdf" : "csv"}`;
         link.download = filename;
         document.body.appendChild(link);
         link.click();

@@ -71,7 +71,7 @@ function ItineraryContent() {
         //     toast.error(
         //         "Silakan login terlebih dahulu untuk menyimpan rencana",
         //     );
-        //     setTimeout(() => router.push("/login"), 1500);
+        //     setTimeout(() => router.push("/halal"), 1500);
         //     return;
         // }
 

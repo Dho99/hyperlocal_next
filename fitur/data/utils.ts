@@ -1,9 +1,5 @@
 import type { ComponentType } from "react";
-import type {
-    Reason,
-    Step,
-    Faq,
-} from "./landing";
+import type { Reason, Step, Faq } from "./landing";
 
 export type { Reason, Step, Faq };
 
@@ -15,7 +11,7 @@ export interface DestinationCard {
     category: string;
     rating: number;
     reviewCount: number;
-    score: number | null;
+    halalScore: number | null;
     status: string;
     imageUrl: string | null;
 }
@@ -87,6 +83,7 @@ export function toDestinationCard(destination: {
     status: string;
     rating: number | null;
     reviewCount: number | null;
+    halalScore: number | null;
     category: { name: string } | null;
     images: Array<{ imageUrl: string }>;
 }): DestinationCard {
@@ -98,7 +95,7 @@ export function toDestinationCard(destination: {
         category: destination.category?.name || "Destinasi",
         rating: destination.rating || 0,
         reviewCount: destination.reviewCount || 0,
-        score:
+        halalScore:
             destination.status === "APPROVED"
                 ? Math.round((destination.rating || 0) * 20)
                 : null,

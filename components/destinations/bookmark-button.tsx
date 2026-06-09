@@ -55,7 +55,7 @@ export function BookmarkButton({
             toast.error("Silakan login untuk menyimpan item", {
                 action: {
                     label: "Login",
-                    onClick: () => router.push("/login"),
+                    onClick: () => router.push("/halal"),
                 },
             });
             return;

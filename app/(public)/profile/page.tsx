@@ -71,7 +71,7 @@ function ProfilePageContent() {
 
     useEffect(() => {
         if (!sessionPending && !session) {
-            router.push("/login");
+            router.push("/halal");
         }
     }, [session, sessionPending, router]);
 

@@ -37,7 +37,7 @@ export function ReviewSection({
 
     const handleReviewLogin = useCallback(() => {
         const redirectTo = `${window.location.pathname}${window.location.search}`;
-        router.push(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+        router.push(`/halal?redirect=${encodeURIComponent(redirectTo)}`);
     }, [router]);
 
     const handleReviewSubmit = useCallback(

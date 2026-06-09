@@ -61,12 +61,13 @@ export function HalalBadge({
             <Image
                 src={config.imageSrc}
                 alt=""
-                className="w-4 h-4 object-contain"
-                width={16}
-                height={16}
+                className="h-10 w-10 object-contain"
+                width={100}
+                height={100}
+                quality={100}
             />
-            <span>{config.label}</span>
-            <span className={config.textClass}>{score}</span>
+            {/* <span>{config.label}</span> */}
+            <span className={"text-2xl"}>{score}</span>
         </div>
     );
 }

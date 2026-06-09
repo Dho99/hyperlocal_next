@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Bookmark, Compass, Lock, LogOut, User } from "lucide-react";
+import { Bookmark, Lock, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { InstallButton } from "@/components/pwa/install-button";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 const navItems = [
     { label: "Home", href: "/" },
@@ -58,10 +59,11 @@ export default function Navbar() {
         <header className="sticky top-0 z-50 border-b border-white/40 bg-white/65 shadow-sm backdrop-blur-xl">
             <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <Link
-                    className="font-heading text-xl font-bold text-emerald-900"
+                    className="flex shrink-0 items-center"
                     href="/"
+                    aria-label="Beranda"
                 >
-                    HyperLocal
+                    <BrandLogo priority />
                 </Link>
                 <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
                     {navItems.map((item) => {
@@ -171,7 +173,7 @@ export default function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <Link
-                            href="/login"
+                            href="/halal"
                             className="size-8 overflow-hidden rounded-full bg-emerald-100 ring-2 ring-transparent transition-all hover:ring-emerald-300"
                         >
                             <Avatar className="h-8 w-8">
