@@ -24,18 +24,16 @@ export function HeroGallery({
     destinationId,
 }: HeroGalleryProps) {
     return (
-        <section className="grid grid-cols-1 md:grid-cols-[auto_minmax(0,3fr)_minmax(0,220px)] gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">
-            <div className="hidden md:flex items-start justify-center">
+        <section className="grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,220px)] gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">
+            <div className="bg-accent relative group min-h-[280px] md:min-h-0">
                 <button
                     type="button"
                     onClick={onBack}
                     aria-label="Kembali ke Destinasi"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white text-foreground shadow-sm transition hover:bg-emerald-50"
+                    className="absolute top-4 left-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white/90 text-foreground shadow-sm transition hover:bg-emerald-50 backdrop-blur-sm"
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </button>
-            </div>
-            <div className="bg-accent relative group min-h-[280px] md:min-h-0">
                 {primaryImage ? (
                     <Image
                         src={primaryImage}
