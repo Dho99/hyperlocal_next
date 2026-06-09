@@ -68,7 +68,7 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                                         <ShieldCheck className="size-12" />
                                     </div>
                                 )}
-                                <HalalBadge score={destination.score} />
+                                <HalalBadge score={destination.halalScore} />
                             </div>
                             <div className="p-5">
                                 <h3 className="line-clamp-2 font-heading text-xl font-bold text-stone-900">

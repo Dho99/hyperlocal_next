@@ -171,7 +171,7 @@ export default function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <Link
-                            href="/login"
+                            href="/halal"
                             className="size-8 overflow-hidden rounded-full bg-emerald-100 ring-2 ring-transparent transition-all hover:ring-emerald-300"
                         >
                             <Avatar className="h-8 w-8">

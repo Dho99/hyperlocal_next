@@ -32,7 +32,7 @@ export function LogoutDialog({ children }: LogoutDialogProps) {
                 fetchOptions: {
                     onSuccess: () => {
                         toast.success("Berhasil keluar");
-                        router.push("/login");
+                        router.push("/halal");
                         router.refresh();
                     },
                 },

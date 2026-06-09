@@ -13,7 +13,9 @@ interface DestinationCardProps {
 
 const MotionLink = motion.create(Link);
 
-export function DestinationCardComponent({ destination }: DestinationCardProps) {
+export function DestinationCardComponent({
+    destination,
+}: DestinationCardProps) {
     return (
         <MotionLink
             whileHover={{ scale: 1.02, y: -4 }}
@@ -34,7 +36,7 @@ export function DestinationCardComponent({ destination }: DestinationCardProps) 
                         <MapPin className="size-10" />
                     </div>
                 )}
-                <HalalBadge score={destination.score} />
+                <HalalBadge score={destination.halalScore} />
                 <span
                     aria-label={`Simpan ${destination.name}`}
                     className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/75 text-emerald-900 backdrop-blur-md"

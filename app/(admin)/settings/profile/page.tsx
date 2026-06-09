@@ -10,7 +10,7 @@ export default async function ProfilePage() {
     });
 
     if (!session) {
-        redirect("/login");
+        redirect("/halal");
     }
 
     const user = {
