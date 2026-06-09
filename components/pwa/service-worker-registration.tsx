@@ -8,6 +8,15 @@ export function ServiceWorkerRegistration() {
             return;
         }
 
+        if (process.env.NODE_ENV === "development") {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                for (const registration of registrations) {
+                    registration.unregister();
+                }
+            });
+            return;
+        }
+
         const registerServiceWorker = () => {
             navigator.serviceWorker.register("/sw.js").catch(() => {
                 // Service worker registration should not block the app.
