@@ -15,8 +15,8 @@ const sections = [
 ];
 
 export const metadata: Metadata = {
-  title: "Kebijakan Privasi | Hyperlocal",
-  description: "Kebijakan Privasi platform Hyperlocal untuk perlindungan data pengguna.",
+  title: "Kebijakan Privasi",
+  description: "Kebijakan Privasi platform untuk perlindungan data pengguna.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -77,7 +77,7 @@ export default function PrivacyPolicyPage() {
               prose-strong:text-stone-900 prose-strong:font-bold">
 
               <p className="text-lg text-stone-500 leading-relaxed mb-12">
-                Di Hyperlocal, kami percaya bahwa transparansi adalah kunci kepercayaan. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda melalui platform kami.
+                Kami percaya bahwa transparansi adalah kunci kepercayaan. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda melalui platform kami.
               </p>
 
               <Separator className="my-12 opacity-50" />
@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
               <section id="pendahuluan" className="scroll-mt-8">
                 <h2>1. Pendahuluan</h2>
                 <p>
-                  Selamat datang di Hyperlocal. Kebijakan ini berlaku untuk seluruh layanan yang kami berikan, baik melalui website maupun aplikasi mobile. Dengan menggunakan platform kami, Anda setuju dengan praktik pengumpulan data yang dijelaskan di sini.
+                  Selamat datang di platform kami. Kebijakan ini berlaku untuk seluruh layanan yang kami berikan, baik melalui website maupun aplikasi mobile. Dengan menggunakan platform kami, Anda setuju dengan praktik pengumpulan data yang dijelaskan di sini.
                 </p>
               </section>
 
@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage() {
 
               <section id="penggunaan-informasi" className="scroll-mt-8">
                 <h2>3. Penggunaan Informasi</h2>
-                <p>Data Anda digunakan secara eksklusif untuk meningkatkan pengalaman Anda di Hyperlocal:</p>
+                <p>Data Anda digunakan secara eksklusif untuk meningkatkan pengalaman Anda di platform ini:</p>
                 <ul>
                   <li><strong>Personalisasi:</strong> Memberikan rekomendasi destinasi dan UMKM yang sesuai dengan preferensi Anda melalui teknologi AI.</li>
                   <li><strong>Verifikasi:</strong> Memproses dan memvalidasi sertifikasi halal untuk memastikan data yang ditampilkan akurat.</li>
@@ -152,7 +152,7 @@ export default function PrivacyPolicyPage() {
               <section id="perubahan" className="scroll-mt-8">
                 <h2>7. Perubahan Kebijakan</h2>
                 <p>
-                  Hyperlocal dapat memperbarui kebijakan ini untuk menyesuaikan dengan regulasi terbaru. Kami akan memberikan notifikasi melalui aplikasi atau email jika terdapat perubahan signifikan.
+                  Kami dapat memperbarui kebijakan ini untuk menyesuaikan dengan regulasi terbaru. Kami akan memberikan notifikasi melalui aplikasi atau email jika terdapat perubahan signifikan.
                 </p>
               </section>
 
@@ -160,7 +160,7 @@ export default function PrivacyPolicyPage() {
                 <h2>8. Kontak Kami</h2>
                 <p>
                   Jika Anda memiliki pertanyaan lebih lanjut, tim privasi kami siap membantu Anda melalui:
-                  <span className="font-bold"> support@hyperlocal.id</span>
+                  <span className="font-bold"> support@halaltourism.id</span>
                 </p>
               </section>
             </div>

@@ -166,7 +166,7 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                     className="pointer-events-auto mx-auto w-full max-w-4xl text-center"
                 >
                     <p className="font-heading text-sm font-semibold text-emerald-900">
-                        Eksplorasi berbasis data halal dan hyperlocal
+                        Eksplorasi berbasis data halal dan insight lokal
                     </p>
                     <h1 className="mt-3 font-heading text-4xl font-bold leading-tight tracking-tighter text-emerald-900 sm:text-5xl lg:text-6xl">
                         Eksplorasi Halal Indonesia

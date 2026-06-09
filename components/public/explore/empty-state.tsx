@@ -29,7 +29,7 @@ export function EmptyState({ query }: EmptyStateProps) {
                         &ldquo;{query}&rdquo;
                     </span>
                     . Coba kata kunci lain atau bantu kami memperkaya data dengan
-                    menyarankan tempat baru agar HyperLocal dapat memberikan
+                    menyarankan tempat baru agar platform ini dapat memberikan
                     manfaat bagi lebih banyak pelancong.
                 </p>
 

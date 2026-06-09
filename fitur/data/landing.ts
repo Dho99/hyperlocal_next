@@ -114,7 +114,7 @@ export const reasons: Reason[] = [
         icon: ShieldCheck,
     },
     {
-        title: "Informasi HyperLocal",
+        title: "Informasi Lokal",
         copy: "Temukan rekomendasi dari warga lokal untuk pengalaman wisata yang otentik dan mendalam.",
         icon: Compass,
     },

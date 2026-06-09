@@ -37,7 +37,7 @@ export function WhyChooseUs() {
                         Kenapa Memilih Kami
                     </h2>
                     <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-stone-600">
-                        Landing page ini membaca data operasional Hyperlocal,
+                        Landing page ini membaca data operasional platform,
                         sehingga jumlah, kategori, dan rekomendasi ikut berubah
                         saat database diperbarui.
                     </p>

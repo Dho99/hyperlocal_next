@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { LogoutDialog } from "./logout-dialog";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export function AdminSidebar() {
     return (
@@ -15,11 +16,9 @@ export function AdminSidebar() {
                 <div className="flex h-24 items-start px-8 pt-10">
                     <Link
                         href="/dashboard"
-                        className="flex flex-col font-heading tracking-tight"
+                        className="flex items-center"
                     >
-                        <span className="text-[40px] font-bold leading-none">
-                            HyperLocal
-                        </span>
+                        <BrandLogo className="rounded-md bg-white/95 p-1.5" size="lg" />
                     </Link>
                 </div>
                 <Separator className="bg-white/10" />
