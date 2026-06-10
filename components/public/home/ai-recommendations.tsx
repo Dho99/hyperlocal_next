@@ -82,9 +82,10 @@ function ResultCard({
     return (
         <Link
             href={`/destinasi/${destination.slug}`}
-            className="group overflow-hidden rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
+            className="group relative rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
         >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#f2ecf4]">
+            <HalalBadge score={destination.halalScore} />
+            <div className="relative aspect-[16/10] rounded-t-xl overflow-hidden bg-[#f2ecf4]">
                 {destination.imageUrl ? (
                     <Image
                         src={destination.imageUrl}
@@ -94,11 +95,10 @@ function ResultCard({
                         sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
-                <HalalBadge score={destination.halalScore} />
                 <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold text-[#4f378a] shadow-sm backdrop-blur-md">
                     <Star className="size-3.5 fill-[#e7c365] text-[#e7c365]" />
                     {matchScore}

@@ -12,32 +12,32 @@ function getBadgeConfig(score: number): BadgeConfig {
     if (score >= 80) {
         return {
             label: "Sangat siap",
-            imageSrc: "/%2315803d.png",
-            containerClass: "bg-green-50/90 border-green-200 text-green-700",
-            textClass: "text-green-700",
+            imageSrc: "/Tag/Tag_Hijau.png",
+            containerClass: "",
+            textClass: "",
         };
     }
     if (score >= 60) {
         return {
-            label: "Siap (Perbaikan)",
-            imageSrc: "/%23ea580c.png",
-            containerClass: "bg-orange-50/90 border-orange-200 text-orange-700",
-            textClass: "text-orange-700",
+            label: "Siap dengan perbaikan kecil",
+            imageSrc: "/Tag/Tag_Kuning.png",
+            containerClass: "",
+            textClass: "",
         };
     }
     if (score >= 40) {
         return {
             label: "Perlu pengembangan",
-            imageSrc: "/%23a16207.png",
-            containerClass: "bg-yellow-50/90 border-yellow-200 text-yellow-700",
-            textClass: "text-yellow-700",
+            imageSrc: "/Tag/Tag_Oren.png",
+            containerClass: "",
+            textClass: "",
         };
     }
     return {
         label: "Belum siap",
-        imageSrc: "/%23b91c1c.png",
-        containerClass: "bg-red-50/90 border-red-200 text-red-700",
-        textClass: "text-red-700",
+        imageSrc: "/Tag/Tag_Merah.png",
+        containerClass: "",
+        textClass: "",
     };
 }
 
@@ -56,18 +56,17 @@ export function HalalBadge({
 
     return (
         <div
-            className={`absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold shadow-sm backdrop-blur-md ${config.containerClass} ${className}`}
+            className={`absolute -top-[31px] -left-[52px] w-[120px] h-[90px] z-20 pointer-events-none drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)] ${className}`}
         >
             <Image
                 src={config.imageSrc}
-                alt=""
-                className="h-10 w-10 object-contain"
-                width={100}
-                height={100}
-                quality={100}
+                alt={config.label}
+                fill
+                sizes="120px"
+                className="object-contain"
+                priority
             />
-            {/* <span>{config.label}</span> */}
-            <span className={"text-2xl"}>{score}</span>
         </div>
     );
 }
+
