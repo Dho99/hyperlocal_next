@@ -48,13 +48,13 @@ export function HowItWorks() {
                             <motion.article
                                 key={step.title}
                                 variants={itemVariants}
-                                className="relative"
+                                className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10 hover:shadow-xl hover:shadow-emerald-950/20"
                             >
-                                <span className="font-heading text-7xl font-bold text-emerald-700/40">
+                                <span className="absolute -right-2 -top-4 font-heading text-8xl font-black text-white/15 select-none pointer-events-none">
                                     0{index + 1}
                                 </span>
-                                <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-700/40 text-white">
-                                    <Icon className="size-6" />
+                                <div className="flex size-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-100 border border-white/10 shadow-inner">
+                                    <Icon className="size-6 text-white" />
                                 </div>
                                 <h3 className="mt-5 font-heading text-xl font-bold text-white">
                                     {step.title}

@@ -52,7 +52,7 @@ export function Testimonials({ items }: TestimonialsProps) {
                         <motion.article
                             key={review.id}
                             variants={itemVariants}
-                            className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-md"
+                            className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/15 hover:border-white/30 hover:shadow-xl hover:shadow-emerald-950/20"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="flex size-11 items-center justify-center rounded-full bg-emerald-700/40 font-bold text-white">
