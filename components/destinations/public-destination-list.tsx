@@ -67,7 +67,7 @@ function DestinationCard({ dest }: { dest: Destination }) {
                         alt={dest.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
@@ -229,7 +229,7 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                     ) : null
                 }
             >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {data.map((dest) => (
                         <DestinationCard key={dest.id} dest={dest} />
                     ))}
