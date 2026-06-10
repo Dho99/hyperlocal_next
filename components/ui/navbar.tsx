@@ -63,7 +63,7 @@ export default function Navbar() {
                     href="/"
                     aria-label="Beranda"
                 >
-                    <BrandLogo priority />
+                    <BrandLogo priority size="sm" />
                 </Link>
                 <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
                     {navItems.map((item) => {
@@ -72,11 +72,10 @@ export default function Navbar() {
                             <Link
                                 key={item.label}
                                 href={item.href}
-                                className={`rounded-full px-4 py-2 transition ${
-                                    active
+                                className={`rounded-full px-4 py-2 transition ${active
                                         ? "bg-emerald-100 text-emerald-900 font-semibold shadow-sm"
                                         : "hover:bg-emerald-50 hover:text-emerald-900"
-                                }`}
+                                    }`}
                             >
                                 {item.label}
                             </Link>
