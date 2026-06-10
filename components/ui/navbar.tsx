@@ -63,7 +63,7 @@ export default function Navbar() {
                     href="/"
                     aria-label="Beranda"
                 >
-                    <BrandLogo priority />
+                    <BrandLogo className="-ml-10 sm:-ml-11 md:-ml-10" priority />
                 </Link>
                 <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
                     {navItems.map((item) => {
