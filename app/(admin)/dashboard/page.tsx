@@ -107,56 +107,58 @@ export default async function DashboardPage() {
             : dashboard.latestDestinations;
 
     return (
-        <div className="space-y-5 pb-5">
+        <div className="space-y-4 pb-5">
             <section className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <h1 className="font-heading text-[28px] font-bold leading-tight tracking-normal text-[#1d1b20]">
+                    <h1 className="font-heading text-2xl font-bold leading-tight tracking-normal text-[#1d1b20]">
                         Dashboard Overview
                     </h1>
-                    <p className="mt-1.5 text-sm text-[#494551]">
+                    <p className="mt-1 text-sm text-[#494551]">
                         Ringkasan data pariwisata halal terkini.
                     </p>
                 </div>
-                <Button className="h-9 gap-2 rounded-lg bg-[#047857] px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#065f46]">
-                    <Download className="h-4 w-4" />
+                <Button className="h-8 gap-2 rounded-lg bg-[#047857] px-3.5 text-xs font-semibold text-white shadow-sm hover:bg-[#065f46]">
+                    <Download className="h-3.5 w-3.5" />
                     Unduh Laporan
                 </Button>
             </section>
 
-            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-4">
                 {stats.map((stat) => (
                     <Card
                         key={stat.label}
-                        className="min-h-[132px] rounded-xl border-[#d7e5dc] bg-white shadow-none"
+                        className="min-h-0 rounded-lg border-[#d7e5dc] bg-white shadow-none"
                     >
-                        <CardContent className="p-5">
-                            <div className="flex items-start justify-between gap-3">
-                                <div
-                                    className={cn(
-                                        "flex h-10 w-10 items-center justify-center rounded-lg",
-                                        stat.tone,
-                                    )}
-                                >
-                                    <stat.icon className="h-5 w-5" />
-                                </div>
-                                <Badge
-                                    variant="outline"
-                                    className="h-6 rounded-md border-transparent bg-[#eef7f2] px-2.5 text-[11px] font-semibold tracking-[0.14em] text-[#1d1b20]"
-                                >
-                                    {stat.label}
-                                </Badge>
-                            </div>
-                            <p
+                        <CardContent className="flex items-center gap-4 p-4">
+                            <div
                                 className={cn(
-                                    "mt-5 font-heading text-[34px] font-bold leading-none",
-                                    stat.valueTone,
+                                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                                    stat.tone,
                                 )}
                             >
-                                {stat.value.toLocaleString("id-ID")}
-                            </p>
-                            <p className="mt-1.5 text-sm text-[#494551]">
-                                {stat.title}
-                            </p>
+                                <stat.icon className="h-5 w-5" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <div className="mb-1.5 flex items-center justify-between gap-2">
+                                    <p
+                                        className={cn(
+                                            "font-heading text-[32px] font-bold leading-none",
+                                            stat.valueTone,
+                                        )}
+                                    >
+                                        {stat.value.toLocaleString("id-ID")}
+                                    </p>
+                                    <Badge
+                                        variant="outline"
+                                        className="h-6 rounded-md border-transparent bg-[#eef7f2] px-2.5 text-[11px] font-semibold tracking-[0.14em] text-[#1d1b20]"
+                                    >
+                                        {stat.label}
+                                    </Badge>
+                                </div>
+                                <p className="truncate text-sm text-[#494551]">
+                                    {stat.title}
+                                </p>
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
@@ -387,7 +389,7 @@ export default async function DashboardPage() {
                 <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
-                            <CardTitle className="font-heading text-xl">
+                            <CardTitle className="font-heading text-lg">
                                 Top Destinasi
                             </CardTitle>
                             <CardDescription>
@@ -396,7 +398,7 @@ export default async function DashboardPage() {
                         </div>
                         <BarChart3 className="h-5 w-5 text-[#047857]" />
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent className="space-y-2.5">
                             {dashboard.topDestinations
                                     .slice(0, 3)
                                     .map((destination, index) => (
@@ -420,7 +422,7 @@ export default async function DashboardPage() {
                                                 )}
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <p className="truncate font-semibold">
+                                                <p className="truncate text-sm font-semibold">
                                                     #{index + 1} {destination.name}
                                                 </p>
                                                 <p className="truncate text-xs text-[#494551]">
@@ -445,14 +447,14 @@ export default async function DashboardPage() {
 
                 <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
                     <CardHeader>
-                            <CardTitle className="font-heading text-xl">
+                            <CardTitle className="font-heading text-lg">
                             Aktivitas Terbaru
                         </CardTitle>
                         <CardDescription>
                             Sinyal perilaku wisatawan terbaru.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent className="space-y-2.5">
                         {dashboard.recentActivities
                             .slice(0, 3)
                             .map((activity) => (
@@ -468,10 +470,10 @@ export default async function DashboardPage() {
                                         )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="font-medium">
+                                        <p className="text-sm font-medium">
                                             {activity.title}
                                         </p>
-                                        <p className="truncate text-sm text-[#494551]">
+                                        <p className="truncate text-xs text-[#494551]">
                                             {activity.destination}
                                         </p>
                                         <p className="mt-1 inline-flex items-center gap-1 text-xs text-[#494551]">
