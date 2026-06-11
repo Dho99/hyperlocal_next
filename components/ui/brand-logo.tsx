@@ -5,6 +5,7 @@ interface BrandLogoProps {
     className?: string;
     priority?: boolean;
     size?: "sm" | "md" | "lg";
+    variant?: "default" | "light";
 }
 
 const iconSizeClass = {
@@ -22,8 +23,11 @@ const textSizeClass = {
 export function BrandLogo({
     className,
     priority = false,
-    size = "md",
+    size = "sm",
+    variant = "default",
 }: BrandLogoProps) {
+    const isLight = variant === "light";
+
     return (
         <div className={cn("flex items-center gap-2.5", className)}>
             <Image
@@ -43,9 +47,15 @@ export function BrandLogo({
                     textSizeClass[size]
                 )}
             >
-                <span className="text-[#12384f]">Hyperlocal</span>{" "}
-                <span className="text-[#44a840]">Halal</span>{" "}
-                <span className="text-[#168f99]">Tourism</span>
+                <span className={isLight ? "text-white" : "text-[#12384f]"}>
+                    Hyperlocal
+                </span>{" "}
+                <span className={isLight ? "text-emerald-200" : "text-[#44a840]"}>
+                    Halal
+                </span>{" "}
+                <span className={isLight ? "text-cyan-100" : "text-[#168f99]"}>
+                    Tourism
+                </span>
             </span>
         </div>
     );
