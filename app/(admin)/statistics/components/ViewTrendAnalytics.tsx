@@ -27,7 +27,7 @@ export default async function ViewTrendAnalytics({
         <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#e1d4fd] text-[#4f378a]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#d1fae5] text-[#047857]">
                         <TrendingUp className="h-5 w-5" />
                     </div>
                     <div>
@@ -44,7 +44,7 @@ export default async function ViewTrendAnalytics({
                         </p>
                     </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#f2ecf4] px-3 py-1 text-xs font-bold text-[#4f378a]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef7f2] px-3 py-1 text-xs font-bold text-[#047857]">
                     <Eye className="h-3.5 w-3.5" />
                     Top Kunjungan
                 </span>
@@ -61,7 +61,7 @@ export default async function ViewTrendAnalytics({
                             key={item.id}
                             className="flex items-center gap-4 px-6 py-4 transition hover:bg-gray-50"
                         >
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#4f378a] text-sm font-bold text-white">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#047857] text-sm font-bold text-white">
                                 {index + 1}
                             </span>
                             <div className="min-w-0 flex-1">
@@ -74,9 +74,9 @@ export default async function ViewTrendAnalytics({
                                 </p>
                             </div>
                             <div className="hidden w-44 items-center gap-3 sm:flex">
-                                <div className="h-2.5 flex-1 rounded-full bg-[#f2ecf4]">
+                                <div className="h-2.5 flex-1 rounded-full bg-[#eef7f2]">
                                     <div
-                                        className="h-2.5 rounded-full bg-gradient-to-r from-[#4f378a] to-[#7c52c8] transition-all"
+                                        className="h-2.5 rounded-full bg-gradient-to-r from-[#047857] to-[#0f766e] transition-all"
                                         style={{ width: `${barWidth}%` }}
                                     />
                                 </div>

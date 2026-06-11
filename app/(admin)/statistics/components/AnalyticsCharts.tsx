@@ -23,7 +23,7 @@ interface AnalyticsChartsProps {
 export default function AnalyticsCharts({ categories, facilities, umkmStatus }: AnalyticsChartsProps) {
   const categoryColors = [
     'bg-emerald-500',
-    'bg-purple-600',
+    'bg-emerald-600',
     'bg-amber-500',
     'bg-blue-500',
     'bg-rose-500',
@@ -38,7 +38,7 @@ export default function AnalyticsCharts({ categories, facilities, umkmStatus }: 
         {/* Left Card - Destinasi by Category */}
         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-purple-900">Destinasi by Category</h2>
+            <h2 className="text-lg font-bold text-emerald-900">Destinasi by Category</h2>
             <button className="text-gray-400 hover:text-gray-600 transition-colors">
               <MoreHorizontal className="w-5 h-5" />
             </button>
@@ -62,7 +62,7 @@ export default function AnalyticsCharts({ categories, facilities, umkmStatus }: 
         {/* Right Card - Halal Facilities Distribution */}
         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm flex flex-col">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-purple-900">Facilities Statistics</h2>
+            <h2 className="text-lg font-bold text-emerald-900">Facilities Statistics</h2>
             <button className="text-gray-400 hover:text-gray-600 transition-colors">
               <MoreHorizontal className="w-5 h-5" />
             </button>
@@ -89,7 +89,7 @@ export default function AnalyticsCharts({ categories, facilities, umkmStatus }: 
 
       {/* UMKM Halal Status Card */}
       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm flex flex-col">
-        <h2 className="text-lg font-bold text-purple-900 mb-6">UMKM Halal Status</h2>
+        <h2 className="text-lg font-bold text-emerald-900 mb-6">UMKM Halal Status</h2>
         <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-8 lg:gap-16 py-4">
           {/* Donut Chart */}
           <div className="relative w-48 h-48 flex-shrink-0 drop-shadow-sm">
@@ -112,7 +112,7 @@ export default function AnalyticsCharts({ categories, facilities, umkmStatus }: 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div className="flex flex-col">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-purple-600"></div>
+                <div className="w-3 h-3 rounded-full bg-emerald-600"></div>
                 <span className="text-xs font-bold text-gray-500 uppercase">Verified</span>
               </div>
               <div className="text-xl font-bold text-gray-900">{umkmStatus.verified.toLocaleString()}</div>
