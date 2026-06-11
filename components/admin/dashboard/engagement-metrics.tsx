@@ -50,29 +50,29 @@ export default function EngagementMetrics() {
   if (loading) return null;
 
   return (
-    <section className="space-y-6">
-      <Card className="rounded-xl border-[#cbc4d2] bg-white shadow-none">
-        <CardHeader className="flex flex-row items-center justify-between border-b border-[#cbc4d2] px-8 py-7">
+    <section className="space-y-5">
+      <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
           <div>
-            <CardTitle className="font-heading text-[32px] font-semibold">
+            <CardTitle className="font-heading text-xl font-semibold">
               Engagement Metrics
             </CardTitle>
-            <CardDescription className="mt-2 text-lg text-[#494551]">
+            <CardDescription className="mt-1 text-sm text-[#494551]">
               User behavior tracking — bookmarks &amp; CTA conversions.
             </CardDescription>
           </div>
-          <TrendingUp className="h-6 w-6 text-[#4f378a]" />
+          <TrendingUp className="h-4.5 w-4.5 text-[#047857]" />
         </CardHeader>
-        <CardContent className="p-6">
-          <div className="grid gap-6 xl:grid-cols-2">
+        <CardContent className="p-5">
+          <div className="grid gap-4 xl:grid-cols-2">
             {/* Top Bookmarked Destinations */}
-            <div className="rounded-lg border border-[#e6e0e9] p-5">
-              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-stone-700">
-                <Bookmark className="h-4 w-4 text-[#4f378a]" />
+            <div className="rounded-lg border border-[#dbe7df] p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-xs font-bold text-stone-700">
+                <Bookmark className="h-4 w-4 text-[#047857]" />
                 Destinasi Paling Banyak Disimpan
               </h3>
               {bookmarked.length === 0 ? (
-                <p className="text-sm text-stone-400">Belum ada data bookmark.</p>
+                <p className="text-xs text-stone-400">Belum ada data bookmark.</p>
               ) : (
                 <div className="space-y-3">
                   {bookmarked.map((item, idx) => (
@@ -93,7 +93,7 @@ export default function EngagementMetrics() {
                           </p>
                         </div>
                       </div>
-                      <span className="shrink-0 text-sm font-bold text-[#4f378a]">
+                      <span className="shrink-0 text-sm font-bold text-[#047857]">
                         {item.bookmarkCount}
                       </span>
                     </div>
@@ -103,13 +103,13 @@ export default function EngagementMetrics() {
             </div>
 
             {/* Top WhatsApp Clicked UMKMs */}
-            <div className="rounded-lg border border-[#e6e0e9] p-5">
-              <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-stone-700">
+            <div className="rounded-lg border border-[#dbe7df] p-4">
+              <h3 className="mb-3 flex items-center gap-2 text-xs font-bold text-stone-700">
                 <MessageCircle className="h-4 w-4 text-[#25D366]" />
                 UMKM Populer (Klik WhatsApp Tertinggi)
               </h3>
               {whatsappUmkms.length === 0 ? (
-                <p className="text-sm text-stone-400">Belum ada data WhatsApp.</p>
+                <p className="text-xs text-stone-400">Belum ada data WhatsApp.</p>
               ) : (
                 <div className="space-y-3">
                   {whatsappUmkms.map((item, idx) => (
@@ -142,42 +142,42 @@ export default function EngagementMetrics() {
 
           {/* CTA Summary Bar */}
           {summary && (
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              <div className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-700">
-                  <Navigation className="h-5 w-5" />
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-orange-700">
+                  <Navigation className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
                     Route Maps
                   </p>
-                  <p className="text-xl font-bold text-stone-800">
+                  <p className="text-lg font-bold text-stone-800">
                     {summary.totalRouteClicks.toLocaleString("id-ID")}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 text-green-700">
-                  <MessageCircle className="h-5 w-5" />
+              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 text-green-700">
+                  <MessageCircle className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
                     WhatsApp
                   </p>
-                  <p className="text-xl font-bold text-stone-800">
+                  <p className="text-lg font-bold text-stone-800">
                     {summary.totalWhatsappClicks.toLocaleString("id-ID")}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border border-[#e6e0e9] p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-700">
-                  <Bookmark className="h-5 w-5" />
+              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
+                  <Bookmark className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
                     Total Bookmark
                   </p>
-                  <p className="text-xl font-bold text-stone-800">
+                  <p className="text-lg font-bold text-stone-800">
                     {summary.totalBookmarks.toLocaleString("id-ID")}
                   </p>
                 </div>

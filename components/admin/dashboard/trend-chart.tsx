@@ -31,14 +31,14 @@ type TooltipData = {
 } | null;
 
 const METRICS = [
-    { key: "bookmarks" as const, label: "Bookmark", color: "#4f378a" },
+    { key: "bookmarks" as const, label: "Bookmark", color: "#047857" },
     {
         key: "whatsappClicks" as const,
         label: "Klik WhatsApp",
         color: "#25D366",
     },
     { key: "routeClicks" as const, label: "Rute", color: "#c9a74d" },
-    { key: "totalViews" as const, label: "Kunjungan", color: "#6750a4" },
+    { key: "totalViews" as const, label: "Kunjungan", color: "#0f766e" },
 ];
 
 export default function TrendChart() {
@@ -64,6 +64,7 @@ export default function TrendChart() {
     }, []);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchTrends();
         const interval = setInterval(fetchTrends, 30000);
         return () => clearInterval(interval);
@@ -84,8 +85,8 @@ export default function TrendChart() {
         });
 
     return (
-        <Card className="rounded-xl border-[#cbc4d2] bg-white shadow-none">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-[#cbc4d2] px-8 py-7">
+        <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-8 py-7">
                 <div>
                     <CardTitle className="font-heading text-[32px] font-semibold">
                         Tren Interaksi
@@ -105,7 +106,7 @@ export default function TrendChart() {
                         size="icon"
                         onClick={fetchTrends}
                         disabled={loading}
-                        className="h-9 w-9 text-[#4f378a]"
+                        className="h-9 w-9 text-[#047857]"
                     >
                         <RefreshCw
                             className={`h-5 w-5 ${loading ? "animate-spin" : ""}`}
@@ -138,11 +139,11 @@ export default function TrendChart() {
                             >
                                 <div className="flex h-40 w-full max-w-12 items-end rounded-lg bg-white/80 p-1">
                                     <div
-                                        className="w-full animate-pulse rounded-md bg-[#e6e0e9]"
+                                        className="w-full animate-pulse rounded-md bg-[#dbe7df]"
                                         style={{ height: `${60}%` }}
                                     />
                                 </div>
-                                <span className="h-3 w-8 animate-pulse rounded bg-[#e6e0e9]" />
+                                <span className="h-3 w-8 animate-pulse rounded bg-[#dbe7df]" />
                             </div>
                         ))}
                     </div>
@@ -154,7 +155,7 @@ export default function TrendChart() {
                             variant="outline"
                             size="sm"
                             onClick={fetchTrends}
-                            className="border-[#cbc4d2] text-[#4f378a]"
+                            className="border-[#d7e5dc] text-[#047857]"
                         >
                             Coba Lagi
                         </Button>
@@ -169,9 +170,9 @@ export default function TrendChart() {
                         <div className="relative">
                             {/* Y-axis reference lines */}
                             <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-4 pb-4 pt-6">
-                                <span className="border-t border-dashed border-[#cbc4d2]/40 text-[10px] text-[#494551]" />
-                                <span className="border-t border-dashed border-[#cbc4d2]/40 text-[10px] text-[#494551]" />
-                                <span className="border-t border-dashed border-[#cbc4d2]/40 text-[10px] text-[#494551]" />
+                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
+                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
+                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
                             </div>
 
                             <div className="flex h-52 items-end gap-2 rounded-lg bg-[#f8f2fa] px-4 pb-4 pt-6">
@@ -242,7 +243,7 @@ export default function TrendChart() {
 
                         {/* Tooltip */}
                         {tooltip && (
-                            <div className="mt-4 rounded-lg border border-[#e6e0e9] bg-white p-4 shadow-sm">
+                            <div className="mt-4 rounded-lg border border-[#dbe7df] bg-white p-4 shadow-sm">
                                 <p className="mb-2 text-sm font-bold text-[#1d1b20]">
                                     {tooltip.period}
                                 </p>

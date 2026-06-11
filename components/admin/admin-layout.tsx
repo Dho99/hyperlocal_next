@@ -15,12 +15,12 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children, user }: AdminLayoutProps) {
     return (
-        <div className="flex min-h-screen bg-[#fdf7ff]">
+        <div className="admin-scale flex min-h-screen bg-[#f7fbf8]">
             <AdminSidebar />
             <div className="flex flex-1 flex-col overflow-hidden">
                 <AdminTopbar user={user} />
-                <main className="flex-1 overflow-y-auto px-5 py-8 md:px-8 lg:px-10">
-                    <div className="mx-auto w-full max-w-[1500px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <main className="flex-1 overflow-y-auto px-4 py-5 md:px-5 lg:px-6">
+                    <div className="mx-auto w-full max-w-[1360px] animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {children}
                     </div>
                 </main>
