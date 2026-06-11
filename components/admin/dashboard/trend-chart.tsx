@@ -85,17 +85,17 @@ export default function TrendChart() {
         });
 
     return (
-        <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-8 py-7">
-                <div>
-                    <CardTitle className="font-heading text-[32px] font-semibold">
+        <Card className="flex h-full min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+                <div className="min-w-0">
+                    <CardTitle className="font-heading text-lg font-semibold">
                         Tren Interaksi
                     </CardTitle>
-                    <CardDescription className="mt-2 text-lg text-[#494551]">
+                    <CardDescription className="mt-1 text-sm text-[#494551]">
                         Aktivitas pengguna 6 bulan terakhir.
                     </CardDescription>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex shrink-0 items-center gap-2">
                     {lastRefreshed && (
                         <span className="text-xs text-[#494551]">
                             {formatTime(lastRefreshed)}
@@ -106,24 +106,24 @@ export default function TrendChart() {
                         size="icon"
                         onClick={fetchTrends}
                         disabled={loading}
-                        className="h-9 w-9 text-[#047857]"
+                        className="h-8 w-8 text-[#047857]"
                     >
                         <RefreshCw
-                            className={`h-5 w-5 ${loading ? "animate-spin" : ""}`}
+                            className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
                         />
                     </Button>
                 </div>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="flex flex-1 flex-col p-5">
                 {/* Legend */}
-                <div className="mb-5 flex flex-wrap gap-5">
+                <div className="mb-4 grid grid-cols-2 gap-x-3 gap-y-2 sm:flex sm:flex-wrap">
                     {METRICS.map((m) => (
                         <div key={m.key} className="flex items-center gap-2">
                             <span
-                                className="h-3 w-3 rounded-sm"
+                                className="h-2.5 w-2.5 rounded-full"
                                 style={{ backgroundColor: m.color }}
                             />
-                            <span className="text-sm text-[#494551]">
+                            <span className="truncate text-xs text-[#494551]">
                                 {m.label}
                             </span>
                         </div>
@@ -131,13 +131,13 @@ export default function TrendChart() {
                 </div>
 
                 {loading ? (
-                    <div className="flex h-52 items-end gap-3 rounded-lg bg-[#f8f2fa] px-4 pb-4 pt-6">
+                    <div className="flex flex-1 items-end gap-2 rounded-lg bg-[#f7fbf8] px-3 pb-3 pt-4">
                         {Array.from({ length: 6 }).map((_, i) => (
                             <div
                                 key={i}
                                 className="flex flex-1 flex-col items-center gap-2"
                             >
-                                <div className="flex h-40 w-full max-w-12 items-end rounded-lg bg-white/80 p-1">
+                                <div className="flex h-28 w-full max-w-10 items-end rounded-lg bg-white/80 p-1">
                                     <div
                                         className="w-full animate-pulse rounded-md bg-[#dbe7df]"
                                         style={{ height: `${60}%` }}
@@ -148,8 +148,8 @@ export default function TrendChart() {
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="flex h-52 flex-col items-center justify-center gap-3 rounded-lg bg-[#f8f2fa] text-[#93000a]">
-                        <AlertCircle className="h-8 w-8" />
+                    <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-lg bg-[#f7fbf8] text-[#93000a]">
+                        <AlertCircle className="h-6 w-6" />
                         <p className="text-sm font-medium">{error}</p>
                         <Button
                             variant="outline"
@@ -161,21 +161,21 @@ export default function TrendChart() {
                         </Button>
                     </div>
                 ) : data.length === 0 ? (
-                    <div className="flex h-52 items-center justify-center rounded-lg bg-[#f8f2fa] text-[#494551]">
-                        <p className="text-base">Belum ada data interaksi.</p>
+                    <div className="flex flex-1 items-center justify-center rounded-lg bg-[#f7fbf8] text-[#494551]">
+                        <p className="text-sm">Belum ada data interaksi.</p>
                     </div>
                 ) : (
-                    <>
+                    <div className="flex flex-1 flex-col">
                         {/* Chart */}
-                        <div className="relative">
+                        <div className="relative flex-1">
                             {/* Y-axis reference lines */}
-                            <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-4 pb-4 pt-6">
+                            <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-3 pb-3 pt-4">
                                 <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
                                 <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
                                 <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
                             </div>
 
-                            <div className="flex h-52 items-end gap-2 rounded-lg bg-[#f8f2fa] px-4 pb-4 pt-6">
+                            <div className="flex h-full min-h-40 items-end gap-2 rounded-lg bg-[#f7fbf8] px-3 pb-3 pt-4">
                                 {data.map((item) => {
                                     const pct = (val: number) =>
                                         Math.max(2, (val / maxValue) * 100);
@@ -218,7 +218,7 @@ export default function TrendChart() {
                                                 setTooltip(null)
                                             }
                                         >
-                                            <div className="flex h-40 w-full max-w-14 flex-col justify-end gap-px rounded-lg bg-white/80 p-1">
+                                            <div className="flex h-28 w-full max-w-10 flex-col justify-end gap-px rounded-lg bg-white/80 p-1">
                                                 {sorted.map((m) => (
                                                     <div
                                                         key={m.key}
@@ -232,7 +232,7 @@ export default function TrendChart() {
                                                     />
                                                 ))}
                                             </div>
-                                            <span className="text-center text-xs font-medium text-[#494551]">
+                                            <span className="text-center text-[11px] font-medium text-[#494551]">
                                                 {item.label}
                                             </span>
                                         </div>
@@ -243,11 +243,11 @@ export default function TrendChart() {
 
                         {/* Tooltip */}
                         {tooltip && (
-                            <div className="mt-4 rounded-lg border border-[#dbe7df] bg-white p-4 shadow-sm">
-                                <p className="mb-2 text-sm font-bold text-[#1d1b20]">
+                            <div className="mt-3 rounded-lg border border-[#dbe7df] bg-white p-3 shadow-sm">
+                                <p className="mb-2 text-xs font-bold text-[#1d1b20]">
                                     {tooltip.period}
                                 </p>
-                                <div className="grid grid-cols-4 gap-4">
+                                <div className="grid grid-cols-4 gap-3">
                                     {METRICS.map((m) => {
                                         const val = tooltip[m.key];
                                         return (
@@ -256,7 +256,7 @@ export default function TrendChart() {
                                                     {m.label}
                                                 </p>
                                                 <p
-                                                    className="text-lg font-bold"
+                                                    className="text-base font-bold"
                                                     style={{ color: m.color }}
                                                 >
                                                     {val.toLocaleString(
@@ -269,7 +269,7 @@ export default function TrendChart() {
                                 </div>
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
             </CardContent>
         </Card>

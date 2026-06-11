@@ -1,33 +1,31 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { AdminNav } from "./admin-nav";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { LogoutDialog } from "./logout-dialog";
-import { BrandLogo } from "@/components/ui/brand-logo";
 
 export function AdminSidebar() {
     return (
         <aside className="hidden bg-emerald-900 text-white lg:block lg:w-64 lg:flex-none">
             <div className="flex h-full flex-col">
-                <div className="flex h-16 items-start px-4 pt-4">
-                    <Link
-                        href="/dashboard"
-                        className="flex w-full min-w-0 items-center overflow-hidden py-1.5"
-                        aria-label="Dashboard"
-                    >
-                        <BrandLogo
-                            className="min-w-0 gap-2 [&>img]:h-8 [&>img]:w-7 [&>span]:text-xs"
-                            size="sm"
+                <div className="flex h-16 items-center border-b border-white/10 px-5">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                        <Image
+                            src="/logo/Logo_Mobile.png"
+                            alt=""
+                            width={677}
+                            height={838}
                             priority
-                            variant="light"
+                            className="h-9 w-7 shrink-0 object-contain"
                         />
-                    </Link>
+                        <span className="truncate font-heading text-base font-extrabold leading-none text-white">
+                            Hyperlocal
+                        </span>
+                    </div>
                 </div>
-                <Separator className="bg-white/10" />
                 <ScrollArea className="flex-1">
                     <div className="px-2.5 py-4">
                         <AdminNav />

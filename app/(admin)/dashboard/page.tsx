@@ -386,78 +386,92 @@ export default async function DashboardPage() {
             <section className="grid gap-5 pt-1 xl:grid-cols-3">
                 <TrendChart />
 
-                <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between">
+                <Card className="flex min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
+                    <CardHeader className="flex flex-row items-start justify-between border-b border-[#d7e5dc] px-5 py-4">
                         <div>
                             <CardTitle className="font-heading text-lg">
                                 Top Destinasi
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="mt-1 text-sm">
                                 Berdasarkan rating dan engagement.
                             </CardDescription>
                         </div>
                         <BarChart3 className="h-5 w-5 text-[#047857]" />
                     </CardHeader>
-                    <CardContent className="space-y-2.5">
-                            {dashboard.topDestinations
-                                    .slice(0, 3)
-                                    .map((destination, index) => (
-                                        <div
-                                            key={destination.id}
-                            className="flex items-center gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
-                                        >
-                                            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-[#eef7f2]">
-                                                {destination.imageUrl ? (
-                                                    <Image
-                                                        src={destination.imageUrl}
-                                                        alt={destination.name}
-                                                        fill
-                                                        sizes="40px"
-                                                        className="object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="flex h-full w-full items-center justify-center">
-                                                        <MapPin className="h-5 w-5 text-[#047857]" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="truncate text-sm font-semibold">
-                                                    #{index + 1} {destination.name}
-                                                </p>
-                                                <p className="truncate text-xs text-[#494551]">
-                                                    {destination.category} •{" "}
-                                                    {destination.city}
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-col items-end gap-1 shrink-0">
-                                                <span className="inline-flex items-center gap-1 text-sm text-[#765b00]">
-                                                    <Star className="h-4 w-4 fill-current" />
-                                                    {destination.rating.toFixed(1)}
-                                                </span>
-                                                <span className="inline-flex items-center gap-1 text-xs text-[#494551]">
-                                                    <Eye className="h-3 w-3" />
-                                                    {destination.engagement}
-                                                </span>
-                                            </div>
+                    <CardContent className="flex flex-1 flex-col gap-2.5 p-5">
+                        {dashboard.topDestinations.length > 0 ? (
+                            dashboard.topDestinations
+                                .slice(0, 3)
+                                .map((destination, index) => (
+                                    <div
+                                        key={destination.id}
+                                        className="flex items-center gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
+                                    >
+                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-[#eef7f2]">
+                                            {destination.imageUrl ? (
+                                                <Image
+                                                    src={destination.imageUrl}
+                                                    alt={destination.name}
+                                                    fill
+                                                    sizes="40px"
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center">
+                                                    <MapPin className="h-5 w-5 text-[#047857]" />
+                                                </div>
+                                            )}
                                         </div>
-                                    ))}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm font-semibold">
+                                                #{index + 1} {destination.name}
+                                            </p>
+                                            <p className="truncate text-xs text-[#494551]">
+                                                {destination.category} •{" "}
+                                                {destination.city}
+                                            </p>
+                                        </div>
+                                        <div className="flex shrink-0 flex-col items-end gap-1">
+                                            <span className="inline-flex items-center gap-1 text-sm text-[#765b00]">
+                                                <Star className="h-4 w-4 fill-current" />
+                                                {destination.rating.toFixed(1)}
+                                            </span>
+                                            <span className="inline-flex items-center gap-1 text-xs text-[#494551]">
+                                                <Eye className="h-3 w-3" />
+                                                {destination.engagement}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-[#f7fbf8] px-5 text-center">
+                                <BarChart3 className="mb-3 h-7 w-7 text-[#047857]" />
+                                <p className="text-sm font-semibold text-[#1d1b20]">
+                                    Belum ada top destinasi
+                                </p>
+                                <p className="mt-1 max-w-52 text-xs text-[#494551]">
+                                    Data akan muncul setelah destinasi punya
+                                    rating atau interaksi.
+                                </p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
-                <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader>
-                            <CardTitle className="font-heading text-lg">
+                <Card className="flex min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
+                    <CardHeader className="border-b border-[#d7e5dc] px-5 py-4">
+                        <CardTitle className="font-heading text-lg">
                             Aktivitas Terbaru
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="mt-1 text-sm">
                             Sinyal perilaku wisatawan terbaru.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-2.5">
-                        {dashboard.recentActivities
-                            .slice(0, 3)
-                            .map((activity) => (
+                    <CardContent className="flex flex-1 flex-col gap-2.5 p-5">
+                        {dashboard.recentActivities.length > 0 ? (
+                            dashboard.recentActivities
+                                .slice(0, 3)
+                                .map((activity) => (
                                 <div
                                     key={activity.id}
                                     className="flex gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
@@ -482,7 +496,19 @@ export default async function DashboardPage() {
                                         </p>
                                     </div>
                                 </div>
-                            ))}
+                                ))
+                        ) : (
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-[#f7fbf8] px-5 text-center">
+                                <Activity className="mb-3 h-7 w-7 text-[#047857]" />
+                                <p className="text-sm font-semibold text-[#1d1b20]">
+                                    Belum ada aktivitas
+                                </p>
+                                <p className="mt-1 max-w-52 text-xs text-[#494551]">
+                                    Sinyal terbaru akan tampil setelah pengguna
+                                    mulai menyimpan atau membuka rute.
+                                </p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </section>
