@@ -343,7 +343,7 @@ export async function getDashboardOverview() {
             id: interaction.id,
             title: activityLabel(interaction.type),
             destination: interaction.destination.name,
-            city: interaction.destination.city || "HyperLocal",
+            city: interaction.destination.city || "Lokal",
             createdAt: interaction.createdAt,
             type: interaction.type,
         })),

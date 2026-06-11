@@ -1,12 +1,11 @@
+import { BrandLogo } from "@/components/ui/brand-logo";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="min-h-screen flex flex-col md:grid md:grid-cols-2">
             <div className="hidden md:flex flex-col justify-between p-8 bg-primary text-primary-foreground">
-                <div className="flex items-center gap-2 font-bold text-2xl tracking-tight">
-                    <div className="h-10 w-10 rounded-lg bg-primary-foreground flex items-center justify-center">
-                        <span className="text-primary text-xl">H</span>
-                    </div>
-                    <span>HyperLocal</span>
+                <div className="flex items-center">
+                    <BrandLogo className="rounded-md bg-white/95 p-1.5" size="lg" priority />
                 </div>
                 
                 <div className="space-y-4">
@@ -21,17 +20,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="text-sm opacity-70">
-                    &copy; {new Date().getFullYear()} HyperLocal. All rights reserved.
+                    &copy; {new Date().getFullYear()}. All rights reserved.
                 </div>
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 bg-muted/20">
                 <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="md:hidden flex flex-col items-center gap-4 mb-8">
-                        <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-lg">
-                            <span className="text-primary-foreground text-2xl font-bold">H</span>
-                        </div>
-                        <h1 className="text-2xl font-bold text-primary">HyperLocal</h1>
+                        <BrandLogo size="lg" priority />
                     </div>
                     {children}
                 </div>

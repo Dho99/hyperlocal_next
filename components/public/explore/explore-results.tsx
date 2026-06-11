@@ -61,9 +61,10 @@ function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: Result
     return (
         <Link
             href={`/destinasi/${destination.slug}`}
-            className="group overflow-hidden rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
+            className="group relative rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
         >
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#f2ecf4]">
+            <HalalBadge score={destination.halalScore} />
+            <div className="relative aspect-[16/10] rounded-t-xl overflow-hidden bg-[#f2ecf4]">
                 {destination.imageUrl ? (
                     <Image
                         src={destination.imageUrl}
@@ -73,11 +74,10 @@ function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: Result
                         sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
-                <HalalBadge score={destination.halalScore} />
             </div>
             <div className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">

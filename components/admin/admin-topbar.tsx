@@ -32,6 +32,7 @@ import { AdminNav } from "./admin-nav";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogoutDialog } from "./logout-dialog";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 interface User {
     id: string;
@@ -61,8 +62,8 @@ export function AdminTopbar({ user }: { user: User }) {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] p-0">
                     <SheetHeader className="h-16 flex items-center px-6 border-b">
-                        <SheetTitle className="text-left font-bold text-xl font-heading">
-                            HyperLocal
+                        <SheetTitle className="text-left">
+                            <BrandLogo />
                         </SheetTitle>
                     </SheetHeader>
                     <div className="py-2">
@@ -73,11 +74,7 @@ export function AdminTopbar({ user }: { user: User }) {
 
             {/* Logo for mobile only */}
             <div className="flex lg:hidden items-center gap-2 mr-4">
-                <div className="h-7 w-7 rounded bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground text-[10px] font-heading">
-                        HA
-                    </span>
-                </div>
+                <BrandLogo size="sm" />
             </div>
 
             {/* <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">

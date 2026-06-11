@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Priangan Halal Tourism",
         short_name: "Priangan Halal",
         description:
-            "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis data hyperlocal.",
+            "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis insight lokal.",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",

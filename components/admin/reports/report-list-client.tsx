@@ -11,17 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, ExternalLink, Eye, CheckCircle, Clock, XCircle, Search } from "lucide-react";
+import { Eye, ExternalLink, Clock } from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
 import {
@@ -158,25 +150,26 @@ export function ReportListClient({ initialReports }: ReportListClientProps) {
                 </TableCell>
                 <TableCell>{getStatusBadge(report.status)}</TableCell>
                 <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => openDetails(report)}>
-                        <Eye className="mr-2 h-4 w-4" /> Detail & Kelola
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={getTargetLink(report.targetId, report.targetType)} target="_blank">
-                          <ExternalLink className="mr-2 h-4 w-4" /> Lihat Target
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <div className="flex justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => openDetails(report)}
+                      title="Detail Laporan"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      asChild
+                      title="Lihat Target"
+                    >
+                      <Link href={getTargetLink(report.targetId, report.targetType)} target="_blank">
+                        <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

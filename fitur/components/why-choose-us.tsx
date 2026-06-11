@@ -37,7 +37,7 @@ export function WhyChooseUs() {
                         Kenapa Memilih Kami
                     </h2>
                     <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-stone-600">
-                        Landing page ini membaca data operasional Hyperlocal,
+                        Landing page ini membaca data operasional platform,
                         sehingga jumlah, kategori, dan rekomendasi ikut berubah
                         saat database diperbarui.
                     </p>
@@ -56,10 +56,12 @@ export function WhyChooseUs() {
                             <motion.article
                                 key={reason.title}
                                 variants={itemVariants}
-                                className={`${index === 1 ? "md:translate-y-8" : ""}`}
+                                className={`rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-lg hover:shadow-stone-950/5 ${
+                                    index === 1 ? "md:translate-y-8 md:hover:translate-y-7" : ""
+                                }`}
                             >
                                 <div className="flex items-start gap-5">
-                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-900">
+                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-100/80 text-emerald-900 border border-emerald-200/30 shadow-inner">
                                         <Icon className="size-6" />
                                     </div>
                                     <div>

@@ -23,7 +23,7 @@ export const reasons: Reason[] = [
         icon: ShieldCheck,
     },
     {
-        title: "Informasi Hyperlocal",
+        title: "Informasi Lokal",
         copy: "Kategori, kota, UMKM, dan aktivitas pengguna dirangkum dari data operasional yang terus bertambah.",
         icon: Compass,
     },

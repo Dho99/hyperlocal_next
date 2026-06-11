@@ -57,7 +57,7 @@ export function NearbyPlaces({ items }: NearbyPlacesProps) {
                         <motion.article
                             key={umkm.id}
                             variants={itemVariants}
-                            className="rounded-2xl border border-stone-200/60 bg-stone-50/50 p-5"
+                            className="rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-5 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-lg hover:shadow-stone-950/5"
                         >
                             <div className="flex size-11 items-center justify-center rounded-lg bg-emerald-100 text-emerald-900">
                                 <Utensils className="size-5" />

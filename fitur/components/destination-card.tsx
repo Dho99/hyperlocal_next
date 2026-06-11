@@ -19,10 +19,11 @@ export function DestinationCardComponent({
     return (
         <MotionLink
             whileHover={{ scale: 1.02, y: -4 }}
-            className="group block overflow-hidden rounded-2xl border border-stone-200/50 bg-white shadow-lg shadow-stone-900/5"
+            className="group relative block rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md shadow-lg shadow-stone-950/5 transition-all duration-300 hover:bg-white/70"
             href={`/destinasi/${destination.slug}`}
         >
-            <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
+            <HalalBadge score={destination.halalScore} />
+            <div className="relative aspect-[16/10] rounded-t-2xl overflow-hidden bg-stone-100">
                 {destination.imageUrl ? (
                     <Image
                         alt={destination.name}
@@ -32,11 +33,10 @@ export function DestinationCardComponent({
                         src={destination.imageUrl}
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center text-emerald-900">
+                    <div className="flex h-full items-center justify-center text-emerald-900 rounded-t-2xl overflow-hidden">
                         <MapPin className="size-10" />
                     </div>
                 )}
-                <HalalBadge score={destination.halalScore} />
                 <span
                     aria-label={`Simpan ${destination.name}`}
                     className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/75 text-emerald-900 backdrop-blur-md"

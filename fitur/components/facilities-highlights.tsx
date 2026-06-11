@@ -62,9 +62,9 @@ export function FacilitiesHighlights({
                     variants={itemVariants}
                     className="md:col-span-1 md:row-span-2"
                 >
-                    <div className="flex h-full flex-col justify-between rounded-2xl border border-stone-200/60 bg-stone-50/50 p-7">
+                    <div className="flex h-full flex-col justify-between rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-lg hover:shadow-stone-950/5">
                         <div>
-                            <div className="flex size-14 items-center justify-center rounded-xl bg-emerald-100 text-emerald-900">
+                            <div className="flex size-14 items-center justify-center rounded-xl bg-emerald-100/80 text-emerald-900 border border-emerald-200/30 shadow-inner">
                                 <first.icon className="size-6" />
                             </div>
                             <h3 className="mt-5 font-heading text-2xl font-bold text-stone-900">
@@ -77,9 +77,9 @@ export function FacilitiesHighlights({
                 </motion.div>
                 {rest.map((def, index) => (
                     <motion.div key={def.title} variants={itemVariants}>
-                        <div className="flex h-full flex-col rounded-2xl border border-stone-200/60 bg-stone-50/50 p-6">
+                        <div className="flex h-full flex-col rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-lg hover:shadow-stone-950/5">
                             <div className="flex items-center justify-between">
-                                <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-900">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-100/80 text-emerald-900 border border-emerald-200/30 shadow-inner">
                                     <def.icon className="size-5" />
                                 </div>
                                 <CheckCircle2 className="size-5 text-emerald-600" />

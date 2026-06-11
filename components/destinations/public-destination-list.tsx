@@ -57,23 +57,23 @@ function DestinationCard({ dest }: { dest: Destination }) {
     return (
         <Link
             href={`/destinasi/${dest.slug}`}
-            className="group block rounded-xl overflow-hidden bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group relative block rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
-            <div className="relative h-48 bg-[#f2ecf4] overflow-hidden">
+            <HalalBadge score={displayScore} />
+            <div className="relative h-48 bg-[#f2ecf4] rounded-t-xl overflow-hidden">
                 {primaryImage ? (
                     <Image
                         src={primaryImage}
                         alt={dest.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
                         <MapPin className="h-10 w-10 text-[#cbc4d2]" />
                     </div>
                 )}
-                <HalalBadge score={displayScore} />
             </div>
             <div className="p-4 space-y-2">
                 <h3 className="font-heading font-semibold text-[#1f1635] group-hover:text-[#0f9d58] transition-colors line-clamp-1">
@@ -229,7 +229,7 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                     ) : null
                 }
             >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {data.map((dest) => (
                         <DestinationCard key={dest.id} dest={dest} />
                     ))}

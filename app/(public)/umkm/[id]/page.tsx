@@ -26,9 +26,9 @@ export default async function UmkmDetailPage({
 
     return (
         <main className="min-h-screen bg-stone-50">
-            <HeroSection umkm={umkm} />
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 pb-8 space-y-6 sm:space-y-8">
+                <HeroSection umkm={umkm} />
 
-            <div className="mx-auto max-w-7xl px-4 py-8">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
                     <div className="space-y-12">
                         <AboutSection description={umkm.description} />

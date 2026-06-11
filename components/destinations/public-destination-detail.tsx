@@ -19,7 +19,6 @@ import { LoadingState } from "@/fitur/destinasi/components/loading-state";
 import { ErrorState } from "@/fitur/destinasi/components/error-state";
 import { NotFoundState } from "@/fitur/destinasi/components/not-found-state";
 import { HeroGallery } from "@/fitur/destinasi/components/hero-gallery";
-import { HeaderInfo } from "@/fitur/destinasi/components/header-info";
 import { FacilitiesSection } from "@/fitur/destinasi/components/facilities-section";
 import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
 import { ReviewSection } from "@/fitur/destinasi/components/review-section";
@@ -247,7 +246,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                 <HeroGallery
                     primaryImage={primaryImage}
                     secondaryImages={secondaryImages}
-                    name={destination.name}
+                    destination={destination}
                     heroLoaded={heroLoaded}
                     onHeroLoad={() => setHeroLoaded(true)}
                     onBack={() => router.push("/destinasi")}
@@ -256,8 +255,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                     <div className="lg:col-span-2 space-y-8">
-                        <HeaderInfo destination={destination} />
-
                         {destination.description && (
                             <div className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                                 <RichTextRenderer

@@ -420,7 +420,7 @@ export async function generateExcel(data: ReportData[]): Promise<Buffer> {
   const ExcelJS = require("exceljs");
   const workbook = new ExcelJS.Workbook();
 
-  workbook.creator = "HyperLocal Admin";
+  workbook.creator = "Admin";
   workbook.created = new Date();
 
   for (const section of data) {
@@ -474,7 +474,7 @@ export async function generateReport(
       return {
         data: Buffer.from(csvContent, "utf-8"),
         contentType: "text/csv; charset=utf-8",
-        filename: `laporan-hyperlocal-${dateStr}.csv`,
+        filename: `laporan-halal-tourism-${dateStr}.csv`,
       };
     }
     case "xlsx": {
@@ -482,7 +482,7 @@ export async function generateReport(
       return {
         data: buffer,
         contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        filename: `laporan-hyperlocal-${dateStr}.xlsx`,
+        filename: `laporan-halal-tourism-${dateStr}.xlsx`,
       };
     }
     default: {

@@ -1,13 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { MapPin, Navigation, Share2, Copy, Star } from "lucide-react";
+import { MapPin, Navigation, Share2, Copy, Star, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Destination } from "@/types/destination";
 import type { MapData } from "@/fitur/destinasi/data/destinasi-detail-data";
 import { BookmarkButton } from "@/components/destinations/bookmark-button";
 import { WhatsappButton } from "@/components/destinations/whatsapp-button";
 import { Button } from "@/components/ui/button";
+import { ReportDialog } from "@/components/report/report-dialog";
 
 const DynamicContextMap = dynamic(
     () => import("@/components/maps").then((m) => m.DynamicContextMap),
@@ -97,6 +98,20 @@ export function MapSidebar({
                             )}
                             {shareCopied ? "Link Disalin" : "Bagikan Destinasi"}
                         </Button>
+                        <ReportDialog
+                            targetId={destinationId}
+                            targetType="DESTINATION"
+                            trigger={
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full bg-transparent border border-border text-muted-foreground text-xs font-semibold tracking-wider py-3 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Flag className="size-4 text-red-500" />
+                                    Laporkan Masalah
+                                </Button>
+                            }
+                        />
                     </div>
                 </div>
 

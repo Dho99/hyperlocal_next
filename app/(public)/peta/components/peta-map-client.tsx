@@ -101,7 +101,9 @@ export default function PetaMapClient() {
             try {
                 const res = await fetch("/api/coverage-areas");
                 const json = await res.json();
-                if (res.ok) setCoverageAreas(json.data);
+                if (res.ok && Array.isArray(json.data)) {
+                    setCoverageAreas(json.data);
+                }
             } catch {
                 // coverage areas are optional
             }
@@ -119,10 +121,24 @@ export default function PetaMapClient() {
                 const res = await fetch(url);
                 const json = await res.json();
                 if (!cancelled) {
-                    setDestinations(json.data ?? json);
+                    if (!res.ok) {
+                        throw new Error(
+                            json.error ?? "Gagal memuat data destinasi",
+                        );
+                    }
+
+                    const data = Array.isArray(json.data)
+                        ? json.data
+                        : Array.isArray(json)
+                          ? json
+                          : [];
+                    setDestinations(data);
                 }
             } catch {
-                if (!cancelled) toast.error("Gagal memuat data destinasi");
+                if (!cancelled) {
+                    setDestinations([]);
+                    toast.error("Gagal memuat data destinasi");
+                }
             } finally {
                 if (!cancelled) setLoading(false);
             }

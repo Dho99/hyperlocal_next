@@ -15,9 +15,10 @@ function AccommodationCard({ item }: { item: Accommodation }) {
     return (
         <Link
             href={`/penginapan/${item.id}`}
-            className="group block rounded-xl overflow-hidden bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group relative block rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
-            <div className="relative h-48 bg-stone-100 overflow-hidden">
+            <HalalBadge score={item.validatedScore} />
+            <div className="relative h-48 bg-stone-100 rounded-t-xl overflow-hidden">
                 {primaryImage ? (
                     <Image
                         src={primaryImage}
@@ -27,7 +28,7 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
                         <Building className="h-10 w-10 text-stone-300" />
                     </div>
                 )}
@@ -37,7 +38,6 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                         {item.rating.toFixed(1)}
                     </div>
                 )}
-                <HalalBadge score={item.validatedScore} />
             </div>
             <div className="p-4 space-y-2">
                 <h3 className="font-heading font-semibold text-stone-900 group-hover:text-emerald-700 transition-colors line-clamp-1">

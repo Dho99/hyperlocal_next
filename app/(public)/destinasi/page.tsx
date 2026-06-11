@@ -2,7 +2,7 @@ import { PublicDestinationList } from "@/components/destinations/public-destinat
 import { getCategories } from "@/lib/services/category-service";
 
 export const metadata = {
-    title: "Destinasi - HyperLocal",
+    title: "Destinasi",
     description:
         "Jelajahi destinasi wisata halal terbaik di Indonesia. Temukan informasi lengkap, rating, dan fasilitas halal.",
 };

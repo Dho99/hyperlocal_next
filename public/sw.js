@@ -53,21 +53,27 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
+    if (isNextJsAsset(url) || url.pathname.startsWith("/_next/data/")) {
+        return;
+    }
+
     if (isStaticAsset(request, url)) {
         event.respondWith(staleWhileRevalidate(request));
     }
 });
 
+function isNextJsAsset(url) {
+    return url.pathname.startsWith("/_next/static/");
+}
+
 function isStaticAsset(request, url) {
     return (
-        url.pathname.startsWith("/_next/static/") ||
         url.pathname.startsWith("/icon-") ||
         url.pathname === "/favicon.ico" ||
         url.pathname === "/manifest.webmanifest" ||
         request.destination === "font" ||
         request.destination === "image" ||
-        request.destination === "style" ||
-        request.destination === "script"
+        request.destination === "style"
     );
 }
 

@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { Gavel, Scale } from "lucide-react";
+import { Gavel } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -15,8 +15,8 @@ const sections = [
 ];
 
 export const metadata: Metadata = {
-  title: "Syarat dan Ketentuan | Hyperlocal",
-  description: "Syarat dan Ketentuan penggunaan platform Hyperlocal.",
+  title: "Syarat dan Ketentuan",
+  description: "Syarat dan Ketentuan penggunaan platform.",
 };
 
 export default function TermsAndConditionsPage() {
@@ -77,7 +77,7 @@ export default function TermsAndConditionsPage() {
               prose-strong:text-stone-900 prose-strong:font-bold">
 
               <p className="text-lg text-stone-500 leading-relaxed mb-12">
-                Harap baca Syarat dan Ketentuan ini secara saksama sebelum menggunakan platform Hyperlocal. Penggunaan layanan kami berarti Anda menyetujui seluruh poin hukum yang berlaku.
+                Harap baca Syarat dan Ketentuan ini secara saksama sebelum menggunakan platform ini. Penggunaan layanan kami berarti Anda menyetujui seluruh poin hukum yang berlaku.
               </p>
 
               <Separator className="my-12 opacity-50" />
@@ -85,7 +85,7 @@ export default function TermsAndConditionsPage() {
               <section id="penggunaan" className="scroll-mt-8">
                 <h2>1. Penggunaan Layanan</h2>
                 <p>
-                  Platform Hyperlocal disediakan untuk membantu Anda menemukan destinasi lokal yang ramah muslim. Anda dilarang menggunakan data platform ini untuk tujuan komersial tanpa izin atau melakukan aktivitas yang merugikan stabilitas sistem kami.
+                  Platform ini disediakan untuk membantu Anda menemukan destinasi lokal yang ramah muslim. Anda dilarang menggunakan data platform ini untuk tujuan komersial tanpa izin atau melakukan aktivitas yang merugikan stabilitas sistem kami.
                 </p>
               </section>
 
@@ -108,7 +108,7 @@ export default function TermsAndConditionsPage() {
                 <div className="p-6 bg-stone-50 border-l-4 border-stone-900 rounded-r-xl my-8">
                   <p className="font-bold text-stone-900 mb-2">Penafian Penting (Disclaimer)</p>
                   <p className="text-sm text-stone-600 mb-0">
-                    Meskipun kami melakukan verifikasi, Hyperlocal tidak memberikan jaminan mutlak atas status halal sebuah lokasi. Status halal dapat berubah sewaktu-waktu. Selalu lakukan verifikasi mandiri di tempat tujuan.
+                    Meskipun kami melakukan verifikasi, platform ini tidak memberikan jaminan mutlak atas status halal sebuah lokasi. Status halal dapat berubah sewaktu-waktu. Selalu lakukan verifikasi mandiri di tempat tujuan.
                   </p>
                 </div>
               </section>
@@ -116,7 +116,7 @@ export default function TermsAndConditionsPage() {
               <section id="kekayaan-intelektual" className="scroll-mt-8">
                 <h2>5. Kekayaan Intelektual</h2>
                 <p>
-                  Seluruh kode sumber, desain antarmuka, dan algoritma rekomendasi di Hyperlocal dilindungi oleh hak cipta. Penggunaan tanpa izin dapat dikenakan sanksi sesuai hukum yang berlaku di Indonesia.
+                  Seluruh kode sumber, desain antarmuka, dan algoritma rekomendasi di platform ini dilindungi oleh hak cipta. Penggunaan tanpa izin dapat dikenakan sanksi sesuai hukum yang berlaku di Indonesia.
                 </p>
               </section>
 

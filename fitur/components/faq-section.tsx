@@ -52,7 +52,7 @@ export function FaqSection({ items }: FaqSectionProps) {
             >
                 {items.map((faq) => (
                     <motion.div key={faq.question} variants={itemVariants}>
-                        <details className="group rounded-2xl border border-stone-200/60 bg-stone-50/50 p-5">
+                        <details className="group rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-5 transition-all duration-300 hover:bg-white/60">
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-heading text-base font-semibold text-stone-900">
                                 {faq.question}
                                 <ChevronRight className="size-5 shrink-0 text-amber-700 transition group-open:rotate-90" />

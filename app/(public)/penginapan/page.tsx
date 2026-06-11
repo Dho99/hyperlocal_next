@@ -1,7 +1,7 @@
 import { PublicAccommodationList } from "@/components/accommodations/public-accommodation-list";
 
 export const metadata = {
-    title: "Penginapan - HyperLocal",
+    title: "Penginapan",
     description: "Temukan penginapan ramah muslim terbaik di Indonesia.",
 };
 
