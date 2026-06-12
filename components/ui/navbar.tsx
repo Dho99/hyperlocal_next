@@ -19,7 +19,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 const navItems = [
     { label: "Home", href: "/" },
     { label: "Destinasi", href: "/destinasi" },
-    { label: "Kuliner", href: "/umkm" },
+    { label: "UMKM", href: "/umkm" },
     { label: "Penginapan", href: "/penginapan" },
     { label: "Peta", href: "/peta" },
 ] as const;
