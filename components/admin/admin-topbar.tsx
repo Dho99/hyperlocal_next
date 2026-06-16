@@ -145,18 +145,19 @@ export function AdminTopbar({ user }: { user: User }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent">
+                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-emerald-50 focus:text-emerald-950">
                             <User className="h-4 w-4" />
                             <span>Profil Admin</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent">
+                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-emerald-50 focus:text-emerald-950">
                             <Settings className="h-4 w-4" />
                             <span>Pengaturan Akun</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <LogoutDialog>
                             <DropdownMenuItem
-                                className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                variant="destructive"
+                                className="cursor-pointer gap-2"
                                 onSelect={(e) => e.preventDefault()}
                             >
                                 <LogOut className="h-4 w-4" />

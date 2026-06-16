@@ -25,7 +25,7 @@ export function BottomNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-xl bg-white/80 px-4 py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] backdrop-blur-lg md:hidden">
+        <nav className="fixed bottom-0 left-0 z-50 grid w-full grid-cols-5 items-center rounded-t-2xl bg-white/80 py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] backdrop-blur-lg md:hidden">
             {bottomNavItems.map((item) => {
                 const active = isActive(pathname, item.href);
                 const Icon = item.icon;
@@ -33,14 +33,20 @@ export function BottomNav() {
                     <Link
                         key={item.label}
                         href={item.href}
-                        className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1 text-xs font-medium transition active:scale-90 ${
-                            active
-                                ? "rounded-full bg-emerald-100 text-emerald-900"
-                                : "text-stone-600 hover:text-emerald-900"
-                        }`}
+                        className="flex flex-col items-center justify-center"
                     >
-                        <Icon className="size-5" />
-                        <span>{item.label}</span>
+                        <div
+                            className={`flex flex-col items-center justify-center gap-1 px-3 py-1.5 transition active:scale-95 ${
+                                active
+                                    ? "rounded-xl bg-emerald-100 text-emerald-900"
+                                    : "text-stone-500 hover:text-emerald-900"
+                            }`}
+                        >
+                            <Icon className={`size-5 ${active ? "stroke-[2.5px]" : "stroke-2"}`} />
+                            <span className="text-[10px] font-semibold tracking-tight uppercase">
+                                {item.label}
+                            </span>
+                        </div>
                     </Link>
                 );
             })}

@@ -19,31 +19,31 @@ export function EmptyState({ query }: EmptyStateProps) {
             </div>
 
             <div className="max-w-2xl">
-                <h1 className="font-heading text-[28px] md:text-5xl text-primary mb-3 tracking-tight font-bold">
+                <h1 className="font-heading text-[28px] md:text-5xl text-emerald-900 mb-3 tracking-tight font-bold">
                     Maaf, Destinasi Belum Tersedia
                 </h1>
 
                 <p className="text-base md:text-lg text-[#494551] mb-10 leading-relaxed px-4">
                     Kami belum menemukan hasil untuk pencarian{" "}
-                    <span className="font-semibold text-primary">
+                    <span className="font-semibold text-emerald-900">
                         &ldquo;{query}&rdquo;
                     </span>
-                    . Coba kata kunci lain atau bantu kami memperkaya data dengan
-                    menyarankan tempat baru agar platform ini dapat memberikan
-                    manfaat bagi lebih banyak pelancong.
+                    . Coba kata kunci lain atau bantu kami memperkaya data
+                    dengan menyarankan tempat baru agar platform ini dapat
+                    memberikan manfaat bagi lebih banyak pelancong.
                 </p>
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <Link
                         href="/"
-                        className="w-full md:w-auto bg-[#5164b7] text-white px-10 py-4 rounded-xl font-heading text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-center"
+                        className="w-full md:w-auto bg-emerald-900 text-white px-10 py-4 rounded-xl font-heading text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-center"
                     >
                         Coba Pencarian Lain
                     </Link>
 
                     <Link
                         href="/"
-                        className="w-full md:w-auto text-[#5164b7] border-2 border-transparent hover:border-[#5164b7] px-10 py-4 rounded-xl font-heading text-base font-bold transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full md:w-auto text-emerald-900 border-2 border-transparent hover:border-emerald-900 px-10 py-4 rounded-xl font-heading text-base font-bold transition-all duration-300 flex items-center justify-center gap-2"
                     >
                         <MapPinPlus className="size-5" />
                         Saran Tempat Baru
