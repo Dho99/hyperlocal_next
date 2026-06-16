@@ -117,7 +117,7 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="relative group size-20 shrink-0 rounded-full overflow-hidden bg-[#eaddff] border-2 border-dashed border-[#cbc4d2] hover:border-[#4f378a] transition-colors"
+                        className="relative group size-20 shrink-0 rounded-full overflow-hidden bg-[#d1fae5] border-2 border-dashed border-[#cfe0d6] hover:border-[#047857] transition-colors"
                     >
                         {displayImage ? (
                             <Image
@@ -129,7 +129,7 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center">
-                                <User className="size-8 text-[#6750a4]" />
+                                <User className="size-8 text-[#047857]" />
                             </div>
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">

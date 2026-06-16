@@ -47,7 +47,7 @@ export function AdminTopbar({ user }: { user: User }) {
     void router;
 
     return (
-        <header className="sticky top-0 z-30 flex h-20 items-center border-b border-[#cbc4d2] bg-[#fdf7ff] px-6">
+        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-[#d7e5dc] bg-[#f7fbf8] px-4">
             {/* Mobile Sidebar */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
                 <SheetTrigger asChild>
@@ -60,20 +60,28 @@ export function AdminTopbar({ user }: { user: User }) {
                         <span className="sr-only">Toggle navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[300px] p-0">
-                    <SheetHeader className="h-16 flex items-center px-6 border-b">
-                        <SheetTitle className="text-left">
-                            <BrandLogo />
-                        </SheetTitle>
+                <SheetContent
+                    side="left"
+                    className="w-[280px] gap-0 border-emerald-800 bg-emerald-900 p-0 text-white"
+                >
+                    <SheetHeader className="flex h-16 items-center border-b border-white/10 px-4">
+                        <SheetTitle className="sr-only">Menu Admin</SheetTitle>
+                        <div className="overflow-hidden py-1.5">
+                            <BrandLogo
+                                className="[&>span]:text-sm"
+                                size="sm"
+                                variant="light"
+                            />
+                        </div>
                     </SheetHeader>
-                    <div className="py-2">
+                    <div className="py-3">
                         <AdminNav onItemClick={() => setIsMobileOpen(false)} />
                     </div>
                 </SheetContent>
             </Sheet>
 
             {/* Logo for mobile only */}
-            <div className="flex lg:hidden items-center gap-2 mr-4">
+            <div className="mr-4 flex min-w-0 items-center gap-2 lg:hidden">
                 <BrandLogo size="sm" />
             </div>
 
@@ -82,45 +90,45 @@ export function AdminTopbar({ user }: { user: User }) {
             </h2> */}
 
             {/* Desktop Search */}
-            <div className="relative hidden max-w-[560px] flex-1 items-center md:flex">
-                <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-[#494551]" />
+            <div className="relative hidden max-w-[460px] flex-1 items-center md:flex">
+                <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[#494551]" />
                 <Input
                     type="search"
                     placeholder="Cari destinasi, UMKM..."
-                    className="h-12 w-full rounded-full border-[#cbc4d2] bg-[#f2ecf4] pl-14 text-lg text-[#494551] shadow-none focus-visible:ring-primary/20"
+                    className="h-9 w-full rounded-full border-[#cfe0d6] bg-[#eef7f2] pl-10 text-sm text-[#3f4f47] shadow-none focus-visible:ring-primary/20"
                 />
             </div>
 
-            <div className="ml-auto flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-2">
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="relative rounded-full hover:bg-[#f2ecf4]"
+                    className="relative rounded-full hover:bg-[#eef7f2]"
                 >
-                    <Bell className="h-6 w-6 text-[#1d1b20]" />
+                    <Bell className="h-4.5 w-4.5 text-[#1d1b20]" />
                 </Button>
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full hover:bg-[#f2ecf4]"
+                    className="rounded-full hover:bg-[#eef7f2]"
                 >
-                    <HelpCircle className="h-6 w-6 text-[#1d1b20]" />
+                    <HelpCircle className="h-4.5 w-4.5 text-[#1d1b20]" />
                 </Button>
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full hover:bg-[#f2ecf4]"
+                    className="rounded-full hover:bg-[#eef7f2]"
                 >
-                    <Grid3X3 className="h-6 w-6 text-[#1d1b20]" />
+                    <Grid3X3 className="h-4.5 w-4.5 text-[#1d1b20]" />
                 </Button>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             variant="ghost"
-                            className="relative h-11 w-11 rounded-full p-0"
+                            className="relative h-9 w-9 rounded-full p-0"
                         >
-                            <Avatar className="h-10 w-10 border border-[#cbc4d2] shadow-sm transition-transform hover:scale-105">
+                            <Avatar className="h-8 w-8 border border-[#cfe0d6] shadow-sm transition-transform hover:scale-105">
                                 <AvatarImage
                                     src={user?.image ?? undefined}
                                     alt={user?.name}

@@ -136,6 +136,7 @@ export default function RekomendasiPage() {
     }, []);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchData();
     }, [fetchData]);
 
@@ -301,7 +302,7 @@ export default function RekomendasiPage() {
                                             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
                                                 item.type === "DESTINATION"
                                                     ? "bg-blue-100 text-blue-700"
-                                                    : "bg-purple-100 text-purple-700"
+                                                    : "bg-emerald-100 text-emerald-700"
                                             }`}
                                         >
                                             {item.type === "DESTINATION" ? (

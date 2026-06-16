@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
+import { BrandLogo } from "../ui/brand-logo";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -99,12 +100,17 @@ export default function RegisterForm() {
   return (
     <Card className="border-none shadow-xl ring-1 ring-border/50">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">
-          Daftar Akun User
-        </CardTitle>
-        <CardDescription>
-          Buat akun baru untuk mulai menjelajahi destinasi halal.
-        </CardDescription>
+        <div className="flex justify-center">
+          <BrandLogo size="lg" priority />
+        </div>
+        <div className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold">
+            Daftar Akun User
+          </CardTitle>
+          <CardDescription>
+            Buat akun baru untuk mulai menjelajahi destinasi halal.
+          </CardDescription>
+        </div>
       </CardHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <CardContent className="space-y-4">

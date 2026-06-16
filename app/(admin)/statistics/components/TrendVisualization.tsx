@@ -35,7 +35,7 @@ export default function TrendVisualization({ trend }: TrendVisualizationProps) {
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <h2 className="text-lg font-bold text-purple-900">Validation Activity Trend (Last 4 Weeks)</h2>
+        <h2 className="text-lg font-bold text-emerald-900">Validation Activity Trend (Last 4 Weeks)</h2>
 
         <div className="flex items-center gap-6 bg-slate-50 px-4 py-2 rounded-lg border border-gray-100">
           <div className="flex items-center gap-2.5">
@@ -43,7 +43,7 @@ export default function TrendVisualization({ trend }: TrendVisualizationProps) {
             <span className="text-sm font-bold text-gray-500">Submissions</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <div className="w-5 border-t-2 border-solid border-purple-600"></div>
+            <div className="w-5 border-t-2 border-solid border-emerald-600"></div>
             <span className="text-sm font-bold text-gray-700">Approvals</span>
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function TrendVisualization({ trend }: TrendVisualizationProps) {
       <div className="relative w-full h-[320px] pt-4">
         <svg viewBox="0 0 1000 280" className="w-full h-full overflow-visible" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#7C3AED" stopOpacity="0" />
             </linearGradient>
@@ -87,7 +87,7 @@ export default function TrendVisualization({ trend }: TrendVisualizationProps) {
           {/* Approvals Path (Solid with area fill) */}
           <polygon
             points={areaPoints}
-            fill="url(#purpleGradient)"
+            fill="url(#emeraldGradient)"
           />
           <polyline
             points={approvalPoints}

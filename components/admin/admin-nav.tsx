@@ -156,7 +156,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
     };
 
     return (
-        <nav className="grid items-start gap-3 px-0 py-0">
+        <nav className="grid items-start gap-1 px-0 py-0">
             {navItems.map((item) => {
                 const hasSubItems = item.subItems && item.subItems.length > 0;
                 const isExpanded =
@@ -172,27 +172,27 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                             <button
                                 onClick={() => toggleExpand(item.title)}
                                 className={cn(
-                                    "group flex w-full items-center justify-between rounded-lg px-5 py-4 text-left text-xl font-medium transition-all duration-200",
+                                    "group flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-sm font-medium transition-all duration-200",
                                     isParentActive
-                                        ? "bg-white/10"
-                                        : "text-white/35 hover:bg-white/10 hover:text-white/80",
+                                        ? "bg-white/15 text-white"
+                                        : "text-white/70 hover:bg-white/10 hover:text-white",
                                 )}
                             >
                                 <div className="flex items-center gap-3">
                                     <item.icon
                                         className={cn(
-                                            "h-6 w-6 shrink-0 transition-colors",
+                                            "h-4.5 w-4.5 shrink-0 transition-colors",
                                             isParentActive
                                                 ? "text-white"
-                                                : "group-hover:text-white/80",
+                                                : "text-white/70 group-hover:text-white",
                                         )}
                                     />
                                     <span>{item.title}</span>
                                 </div>
                                 {isExpanded ? (
-                                    <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+                                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                                 ) : (
-                                    <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+                                    <ChevronRight className="h-3.5 w-3.5 opacity-70" />
                                 )}
                             </button>
                         ) : (
@@ -200,19 +200,19 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                 href={item.href}
                                 onClick={onItemClick}
                                 className={cn(
-                                    "group flex items-center justify-between rounded-lg px-5 py-4 text-xl font-medium transition-all duration-200",
+                                    "group flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
                                     isRouteActive(item.href)
-                                        ? "bg-white/10"
-                                        : "text-white/35 hover:bg-white/10 hover:text-white/80",
+                                        ? "bg-white/15 text-white"
+                                        : "text-white/70 hover:bg-white/10 hover:text-white",
                                 )}
                             >
                                 <div className="flex items-center gap-3">
                                     <item.icon
                                         className={cn(
-                                            "h-6 w-6 shrink-0 transition-colors",
+                                            "h-4.5 w-4.5 shrink-0 transition-colors",
                                             isRouteActive(item.href)
                                                 ? "text-white"
-                                                : "group-hover:text-white/80",
+                                                : "text-white/70 group-hover:text-white",
                                         )}
                                     />
                                     <span>{item.title}</span>
@@ -221,7 +221,7 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                         )}
 
                         {hasSubItems && isExpanded && (
-                            <div className="mb-1 ml-6 mt-1 flex flex-col gap-1 border-l border-white/15 pl-3">
+                            <div className="mb-1 ml-4 mt-1 flex flex-col gap-1 border-l border-white/20 pl-2.5">
                                 {item.subItems?.map((subItem) => {
                                     const isSubActive =
                                         pathname === subItem.href;
@@ -232,10 +232,10 @@ export function AdminNav({ onItemClick }: AdminNavProps) {
                                             href={subItem.href}
                                             onClick={onItemClick}
                                             className={cn(
-                                                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
+                                                "flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-200",
                                                 isSubActive
-                                                    ? "bg-white/10"
-                                                    : "text-white/35 hover:bg-white/10 hover:text-white/80",
+                                                    ? "bg-white/15 text-white"
+                                                    : "text-white/65 hover:bg-white/10 hover:text-white",
                                             )}
                                         >
                                             {subItem.title}

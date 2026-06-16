@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -80,10 +81,15 @@ export default function LoginForm() {
     return (
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold">Masuk User</CardTitle>
-                <CardDescription>
-                    Masukkan email dan password Anda untuk mulai menjelajah.
-                </CardDescription>
+                <div className="flex justify-center">
+                    <BrandLogo size="lg" priority />
+                </div>
+                <div className="space-y-1 text-center">
+                    <CardTitle className="text-2xl font-bold">Masuk User</CardTitle>
+                    <CardDescription>
+                        Masukkan email dan password Anda untuk mulai menjelajah.
+                    </CardDescription>
+                </div>
             </CardHeader>
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

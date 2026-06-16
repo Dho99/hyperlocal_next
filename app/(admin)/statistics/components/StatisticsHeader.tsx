@@ -42,16 +42,16 @@ export default function StatisticsHeader({ data }: { data: DetailedStatistics })
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
-          <Calendar className="w-4 h-4 text-purple-600" />
+          <Calendar className="w-4 h-4 text-emerald-600" />
           Last 30 Days
         </button>
         <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
-          <MapPin className="w-4 h-4 text-purple-600" />
+          <MapPin className="w-4 h-4 text-emerald-600" />
           All Regions
         </button>
         <button 
           onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors"
         >
           <Download className="w-4 h-4" />
           Export CSV

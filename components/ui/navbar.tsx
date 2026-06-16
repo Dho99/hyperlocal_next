@@ -19,7 +19,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 const navItems = [
     { label: "Home", href: "/" },
     { label: "Destinasi", href: "/destinasi" },
-    { label: "Kuliner", href: "/umkm" },
+    { label: "UMKM", href: "/umkm" },
     { label: "Penginapan", href: "/penginapan" },
     { label: "Peta", href: "/peta" },
 ] as const;
@@ -63,7 +63,7 @@ export default function Navbar() {
                     href="/"
                     aria-label="Beranda"
                 >
-                    <BrandLogo priority size="sm" />
+                    <BrandLogo priority size="lg" />
                 </Link>
                 <div className="hidden items-center gap-2 rounded-full bg-white/55 p-1 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
                     {navItems.map((item) => {
