@@ -22,7 +22,11 @@ import { HeroGallery } from "@/fitur/destinasi/components/hero-gallery";
 import { FacilitiesSection } from "@/fitur/destinasi/components/facilities-section";
 import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
 import { ReviewSection } from "@/fitur/destinasi/components/review-section";
-import { ImageGallery } from "@/fitur/destinasi/components/image-gallery";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
+import {
+    ImageLightbox,
+    useImageLightbox,
+} from "@/components/ui/image-lightbox";
 import { MapSidebar } from "@/fitur/destinasi/components/map-sidebar";
 import { DetailFooter } from "@/fitur/destinasi/components/detail-footer";
 
@@ -38,6 +42,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
     const [shareCopied, setShareCopied] = useState(false);
+    const lightbox = useImageLightbox();
     const { data: session, isPending: sessionPending } =
         authClient.useSession();
 
@@ -251,6 +256,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     onHeroLoad={() => setHeroLoaded(true)}
                     onBack={() => router.push("/destinasi")}
                     destinationId={id}
+                    onImageClick={lightbox.openAt}
                 />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -284,11 +290,23 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     />
                 </div>
 
-                <ImageGallery
+                <PhotoGallery
                     images={destination.images ?? []}
                     name={destination.name}
+                    heading="Galeri Foto"
+                    controller={lightbox}
+                    minImages={2}
                 />
             </main>
+
+            <ImageLightbox
+                images={destination.images ?? []}
+                open={lightbox.open}
+                index={lightbox.index}
+                onOpenChange={lightbox.setOpen}
+                onIndexChange={lightbox.setIndex}
+                alt={destination.name}
+            />
 
             <DetailFooter />
         </div>

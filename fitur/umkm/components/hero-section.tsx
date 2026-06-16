@@ -7,6 +7,10 @@ import type { UmkmDetail } from "@/lib/services/umkm-service";
 import { ScrollReveal } from "./scroll-reveal";
 import { ReportDialog } from "@/components/report/report-dialog";
 import { BookmarkButton } from "@/components/destinations/bookmark-button";
+import {
+    ImageLightbox,
+    useImageLightbox,
+} from "@/components/ui/image-lightbox";
 import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
@@ -57,6 +61,8 @@ function getUmkmOpeningStatus(openingHours: any): { isOpen: boolean; text: strin
 
 export function HeroSection({ umkm }: HeroSectionProps) {
     const router = useRouter();
+    const lightbox = useImageLightbox();
+    const images = umkm.images ?? [];
     const coverImage = umkm.images?.[0]?.imageUrl;
     const hasCertification = umkm.certifications?.some(
         (c) => c.status === "VALID",
@@ -77,6 +83,7 @@ export function HeroSection({ umkm }: HeroSectionProps) {
     const openingStatus = getUmkmOpeningStatus(umkm.openingHours);
 
     return (
+        <>
         <ScrollReveal>
             <div className="relative h-64 w-full overflow-hidden sm:h-80 md:h-[450px] rounded-xl shadow-md border border-stone-200/50 bg-stone-100 group">
                 {coverImage ? (
@@ -92,7 +99,15 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                         <Store className="h-16 w-16 text-stone-400" />
                     </div>
                 )}
-                
+                {coverImage && (
+                    <button
+                        type="button"
+                        onClick={() => lightbox.openAt(0)}
+                        aria-label={`Lihat galeri foto ${umkm.name}`}
+                        className="absolute inset-0 z-[1] cursor-zoom-in focus:outline-none"
+                    />
+                )}
+
                 {/* Back Button (Floating on Left) */}
                 <button
                     type="button"
@@ -127,7 +142,7 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                 </div>
 
                 {/* Dark Gradient Overlay with Info Section (Image 2 style) */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pt-32 pb-6 px-6 sm:px-8 z-10 flex flex-col justify-end">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pt-32 pb-6 px-6 sm:px-8 z-10 flex flex-col justify-end pointer-events-none">
                     {/* Badges */}
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                         {hasCertification && (
@@ -186,5 +201,15 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                 </div>
             </div>
         </ScrollReveal>
+
+        <ImageLightbox
+            images={images}
+            open={lightbox.open}
+            index={lightbox.index}
+            onOpenChange={lightbox.setOpen}
+            onIndexChange={lightbox.setIndex}
+            alt={umkm.name}
+        />
+        </>
     );
 }

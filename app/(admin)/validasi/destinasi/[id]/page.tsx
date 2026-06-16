@@ -18,7 +18,6 @@ import {
     Clock,
     ShieldCheck,
     History,
-    ExternalLink,
     Loader2,
     Upload,
     X,
@@ -55,7 +54,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { DestinationValidationForm } from "./components/destination-validation-form";
 import { Validation, ValidationEvidence } from "@/types/validation";
-import Image from "next/image";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 
 export default function ProcessValidationPage() {
     const router = useRouter();
@@ -353,47 +352,15 @@ export default function ProcessValidationPage() {
 
                         {validation.evidences &&
                         validation.evidences.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {validation.evidences.map(
-                                    (ev: ValidationEvidence) => (
-                                        <Card
-                                            key={ev.id}
-                                            className="group relative overflow-hidden border shadow-sm transition-all hover:shadow-md"
-                                        >
-                                            <CardContent className="p-0 aspect-[4/3] bg-muted relative">
-                                                <Image
-                                                    src={ev.fileUrl}
-                                                    alt="Evidence"
-                                                    className="h-full w-full object-cover"
-                                                />
-                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                                    <Button
-                                                        size="sm"
-                                                        variant="secondary"
-                                                        asChild
-                                                    >
-                                                        <a
-                                                            href={ev.fileUrl}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                            <ExternalLink className="h-4 w-4 mr-2" />
-                                                            Lihat Penuh
-                                                        </a>
-                                                    </Button>
-                                                </div>
-                                            </CardContent>
-                                            {ev.description && (
-                                                <div className="p-3 bg-card border-t">
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {ev.description}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </Card>
-                                    ),
+                            <PhotoGallery
+                                images={validation.evidences.map(
+                                    (ev: ValidationEvidence) => ({
+                                        imageUrl: ev.fileUrl,
+                                        caption: ev.description,
+                                    }),
                                 )}
-                            </div>
+                                name="Bukti"
+                            />
                         ) : (
                             <div className="flex flex-col items-center justify-center p-12 bg-muted/20 border-2 border-dashed rounded-xl text-center">
                                 <ImageIcon className="h-10 w-10 text-muted-foreground mb-3 opacity-20" />

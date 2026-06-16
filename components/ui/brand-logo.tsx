@@ -31,13 +31,13 @@ export function BrandLogo({
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <Image
-        src="/logo/Logo_Mobile.png"
+        src="/logo/logo.png"
         alt=""
         width={1000}
         height={1000}
         priority={priority}
         className={cn(
-          "shrink-0 object-contain",
+          "shrink-0 object-contain -translate-y-1",
           iconSizeClass[size]
         )}
       />
@@ -47,9 +47,9 @@ export function BrandLogo({
           textSizeClass[size]
         )}
       >
-        {/* <span className={isLight ? "text-white" : "text-[#12384f]"}> */}
-        {/*     Hyperlocal */}
-        {/* </span>{" "} */}
+        <span className={isLight ? "text-white" : "text-[#12384f]"}>
+          SAFAR
+        </span>
         {/* <span className={isLight ? "text-emerald-200" : "text-[#44a840]"}> */}
         {/*     Halal */}
         {/* </span>{" "} */}
