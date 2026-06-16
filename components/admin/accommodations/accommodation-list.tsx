@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { deleteAccommodation } from "@/lib/api/accommodation";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -35,9 +37,6 @@ import {
 import { toast } from "sonner";
 import type { Accommodation } from "@/types/accommodation";
 
-interface AccommodationListProps {
-    initialAccommodations: Accommodation[];
-}
 
 const statusBadge: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "success" | "outline" }> = {
     PENDING: { label: "Pending", variant: "secondary" },
@@ -46,14 +45,29 @@ const statusBadge: Record<string, { label: string; variant: "default" | "seconda
     REVISION: { label: "Revisi", variant: "secondary" },
 };
 
-export function AccommodationList({ initialAccommodations }: AccommodationListProps) {
+export function AccommodationList() {
     const [search, setSearch] = useState("");
     const [selectedAccommodation, setSelectedAccommodation] = useState<Accommodation | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    const filtered = initialAccommodations.filter((a) => {
-        return a.name.toLowerCase().includes(search.toLowerCase());
+    const params = useMemo(
+        () => ({
+            scope: "admin",
+            search: search || undefined,
+        }),
+        [search],
+    );
+
+    const {
+        data: filtered,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Accommodation>({
+        url: "/api/accommodations",
+        params,
     });
 
     async function handleDelete() {
@@ -63,7 +77,7 @@ export function AccommodationList({ initialAccommodations }: AccommodationListPr
             await deleteAccommodation(selectedAccommodation.id);
             toast.success(`Penginapan ${selectedAccommodation.name} berhasil dihapus`);
             setSelectedAccommodation(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -137,7 +151,7 @@ export function AccommodationList({ initialAccommodations }: AccommodationListPr
                                 </TableRow>
                             );
                         })}
-                        {filtered.length === 0 && (
+                        {filtered.length === 0 && !isLoading && (
                             <TableRow>
                                 <TableCell colSpan={5} className="text-center py-8 text-stone-500">
                                     {search ? "Tidak ada penginapan yang sesuai" : "Belum ada penginapan"}
@@ -146,6 +160,11 @@ export function AccommodationList({ initialAccommodations }: AccommodationListPr
                         )}
                     </TableBody>
                 </Table>
+                <InfiniteScroll
+                    hasMore={hasMore}
+                    isLoading={isLoading}
+                    next={loadMore}
+                />
             </div>
 
             <AlertDialog open={!!selectedAccommodation} onOpenChange={() => setSelectedAccommodation(null)}>

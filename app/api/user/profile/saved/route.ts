@@ -3,8 +3,19 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { withCursorPagination } from "@/lib/pagination/cursorPagination";
 
-export async function GET() {
+interface SavedItem {
+  id: string;
+  name: string;
+  slug: string;
+  type: "DESTINASI" | "UMKM";
+  subtitle: string;
+  imageUrl: string | null;
+  savedAt: Date;
+}
+
+export async function GET(request: Request) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -14,99 +25,110 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const bookmarks = await prisma.userInteraction.findMany({
-      where: {
-        userId: session.user.id,
-        actionType: "BOOKMARK",
-      },
-      select: {
-        targetId: true,
-        targetType: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const userId = session.user.id;
+    const { searchParams } = new URL(request.url);
 
-    if (bookmarks.length === 0) {
-      return NextResponse.json({ data: [] });
-    }
-
-    const destinationIds = bookmarks
-      .filter((b) => b.targetType === "DESTINASI")
-      .map((b) => b.targetId);
-    
-    const umkmIds = bookmarks
-      .filter((b) => b.targetType === "UMKM")
-      .map((b) => b.targetId);
-
-    const savedAtMap = Object.fromEntries(
-      bookmarks.map((b) => [b.targetId, b.createdAt])
-    );
-    
-    const typeMap = Object.fromEntries(
-      bookmarks.map((b) => [b.targetId, b.targetType])
-    );
-
-    const [destinations, umkms] = await Promise.all([
-      prisma.destination.findMany({
-        where: { id: { in: destinationIds } },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          city: true,
-          images: {
-            where: { isPrimary: true },
-            take: 1,
-            select: { imageUrl: true },
+    const result = await withCursorPagination<SavedItem>(
+      async (take, cursor, skip) => {
+        const bookmarks = await prisma.userInteraction.findMany({
+          where: { userId, actionType: "BOOKMARK" },
+          select: {
+            id: true,
+            targetId: true,
+            targetType: true,
+            createdAt: true,
           },
-        },
-      }),
-      prisma.umkm.findMany({
-        where: { id: { in: umkmIds } },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          address: true,
-          images: {
-            where: { isPrimary: true },
-            take: 1,
-            select: { imageUrl: true },
-          },
-          destination: {
-            select: { city: true }
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take,
+          skip,
+          cursor: cursor ? { id: cursor } : undefined,
+        });
+
+        if (bookmarks.length === 0) return [];
+
+        const destinationIds = bookmarks
+          .filter((b) => b.targetType === "DESTINASI")
+          .map((b) => b.targetId);
+        const umkmIds = bookmarks
+          .filter((b) => b.targetType === "UMKM")
+          .map((b) => b.targetId);
+
+        const [destinations, umkms] = await Promise.all([
+          prisma.destination.findMany({
+            where: { id: { in: destinationIds } },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              city: true,
+              images: {
+                where: { isPrimary: true },
+                take: 1,
+                select: { imageUrl: true },
+              },
+            },
+          }),
+          prisma.umkm.findMany({
+            where: { id: { in: umkmIds } },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              address: true,
+              images: {
+                where: { isPrimary: true },
+                take: 1,
+                select: { imageUrl: true },
+              },
+              destination: { select: { city: true } },
+            },
+          }),
+        ]);
+
+        const destMap = new Map(destinations.map((d) => [d.id, d]));
+        const umkmMap = new Map(umkms.map((u) => [u.id, u]));
+
+        // Preserve bookmark order; cursor id is the interaction id.
+        const items: SavedItem[] = [];
+        for (const b of bookmarks) {
+          if (b.targetType === "DESTINASI") {
+            const d = destMap.get(b.targetId);
+            if (!d) continue;
+            items.push({
+              id: b.id,
+              name: d.name,
+              slug: d.slug,
+              type: "DESTINASI",
+              subtitle: d.city || "-",
+              imageUrl: d.images[0]?.imageUrl ?? null,
+              savedAt: b.createdAt,
+            });
+          } else if (b.targetType === "UMKM") {
+            const u = umkmMap.get(b.targetId);
+            if (!u) continue;
+            items.push({
+              id: b.id,
+              name: u.name,
+              slug: u.slug,
+              type: "UMKM",
+              subtitle: u.destination?.city || u.address || "-",
+              imageUrl: u.images[0]?.imageUrl ?? null,
+              savedAt: b.createdAt,
+            });
           }
-        },
-      })
-    ]);
-
-    const formattedDestinations = destinations.map((d) => ({
-      id: d.id,
-      name: d.name,
-      slug: d.slug,
-      type: "DESTINASI",
-      subtitle: d.city || "-",
-      imageUrl: d.images[0]?.imageUrl ?? null,
-      savedAt: savedAtMap[d.id],
-    }));
-
-    const formattedUmkms = umkms.map((u) => ({
-      id: u.id,
-      name: u.name,
-      slug: u.slug,
-      type: "UMKM",
-      subtitle: u.destination?.city || u.address || "-",
-      imageUrl: u.images[0]?.imageUrl ?? null,
-      savedAt: savedAtMap[u.id],
-    }));
-
-    const result = [...formattedDestinations, ...formattedUmkms].sort(
-      (a, b) =>
-        new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
+        }
+        return items;
+      },
+      {
+        limit: searchParams.get("limit")
+          ? Number(searchParams.get("limit"))
+          : undefined,
+        cursor: searchParams.get("cursor") || undefined,
+      },
+      "Saved items fetched successfully",
     );
 
-    return NextResponse.json({ data: result });
+    return NextResponse.json(result, { status: 200 });
   } catch (error: unknown) {
     return NextResponse.json(
       { error: getErrorMessage(error) },

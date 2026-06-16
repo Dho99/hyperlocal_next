@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
 import type { Accommodation } from "@/types/accommodation";
 import type { AccommodationFormValues } from "@/lib/validations/accommodation.schema";
+import {
+    withCursorPagination,
+    CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
 function serializeAccommodation(raw: unknown): Accommodation {
     const a = raw as Accommodation & {
@@ -25,6 +30,65 @@ export async function getAccommodations() {
         orderBy: { createdAt: "desc" },
     });
     return accommodations.map(serializeAccommodation);
+}
+
+export async function getPaginatedAccommodations(
+    params: CursorPaginationParams & {
+        search?: string;
+        scope?: "admin" | "public";
+        validationStatus?: string;
+    },
+) {
+    const isPublic = params.scope !== "admin";
+    const validationStatuses = params.validationStatus
+        ? params.validationStatus.split(",").filter(Boolean)
+        : undefined;
+
+    return withCursorPagination(
+        async (take, cursor, skip) => {
+            const where: Prisma.AccommodationWhereInput = {
+                ...(isPublic && { validationStatus: "APPROVED" }),
+                ...(validationStatuses && {
+                    validationStatus: { in: validationStatuses },
+                }),
+                ...(params.search && {
+                    OR: [
+                        { name: { contains: params.search, mode: "insensitive" } },
+                        { city: { contains: params.search, mode: "insensitive" } },
+                        {
+                            province: {
+                                contains: params.search,
+                                mode: "insensitive",
+                            },
+                        },
+                    ],
+                }),
+            };
+
+            const accommodations = await prisma.accommodation.findMany({
+                take,
+                skip,
+                cursor: cursor ? { id: cursor } : undefined,
+                where,
+                include: {
+                    images: isPublic
+                        ? { where: { isPrimary: true }, take: 1 }
+                        : true,
+                    facilities: { include: { facility: true } },
+                },
+                orderBy: isPublic
+                    ? [
+                          { rating: "desc" },
+                          { reviewCount: "desc" },
+                          { id: "desc" },
+                      ]
+                    : [{ createdAt: "desc" }, { id: "desc" }],
+            });
+            return accommodations.map(serializeAccommodation);
+        },
+        params,
+        "Accommodations fetched successfully",
+    );
 }
 
 export async function getAccommodation(idOrSlug: string) {

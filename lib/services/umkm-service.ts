@@ -85,8 +85,12 @@ export async function getPaginatedUmkms(
         search?: string;
         areaId?: string;
         scope?: "admin" | "public";
+        validationStatus?: string;
     },
 ) {
+    const validationStatuses = params.validationStatus
+        ? params.validationStatus.split(",").filter(Boolean)
+        : undefined;
     const scopeOr = params.scope === "public"
         ? [{ coverageAreaId: null }, { coverageArea: { isActive: true } }]
         : undefined;
@@ -125,6 +129,9 @@ export async function getPaginatedUmkms(
                     ...(params.areaId && { coverageAreaId: params.areaId }),
                     ...(params.destinationId && {
                         destinationId: params.destinationId,
+                    }),
+                    ...(validationStatuses && {
+                        validationStatus: { in: validationStatuses },
                     }),
                     ...(andConditions.length > 1 && { AND: andConditions }),
                     ...(andConditions.length === 1 && andConditions[0] as Prisma.UmkmWhereInput),

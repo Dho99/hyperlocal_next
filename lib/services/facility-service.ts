@@ -3,6 +3,10 @@ import type {
     CreateFacilityInput,
     UpdateFacilityInput,
 } from "@/types/fasilitas";
+import {
+    withCursorPagination,
+    CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
 export async function getFacilities() {
     return await prisma.halalFacility.findMany({
@@ -10,6 +14,31 @@ export async function getFacilities() {
             updatedAt: "desc",
         },
     });
+}
+
+export async function getPaginatedFacilities(
+    params: CursorPaginationParams & { search?: string },
+) {
+    return withCursorPagination(
+        async (take, cursor, skip) => {
+            return await prisma.halalFacility.findMany({
+                take,
+                skip,
+                cursor: cursor ? { id: cursor } : undefined,
+                where: params.search
+                    ? {
+                          name: {
+                              contains: params.search,
+                              mode: "insensitive",
+                          },
+                      }
+                    : undefined,
+                orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+            });
+        },
+        params,
+        "Facilities fetched successfully",
+    );
 }
 
 export async function getFacilityById(id: string) {

@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { getAccommodations, createAccommodation } from "@/lib/services/accommodation-service";
+import { getPaginatedAccommodations, createAccommodation } from "@/lib/services/accommodation-service";
 import { accommodationSchema } from "@/lib/validations/accommodation.schema";
 import { getErrorMessage } from "@/lib/api-error";
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const accommodations = await getAccommodations();
-        return NextResponse.json({ data: accommodations }, { status: 200 });
+        const { searchParams } = new URL(request.url);
+        const result = await getPaginatedAccommodations({
+            limit: searchParams.get("limit")
+                ? Number(searchParams.get("limit"))
+                : undefined,
+            cursor: searchParams.get("cursor") || undefined,
+            search: searchParams.get("search") || undefined,
+            scope: searchParams.get("scope") === "admin" ? "admin" : "public",
+            validationStatus: searchParams.get("validationStatus") || undefined,
+        });
+        return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {
         return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
     }

@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { CreateReportInput, UpdateReportStatusInput } from "@/lib/validations/report.schema";
+import {
+  withCursorPagination,
+  CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
 export async function createReport(userId: string | undefined, data: CreateReportInput) {
   return await prisma.report.create({
@@ -25,6 +29,30 @@ export async function getReports() {
       },
     },
   });
+}
+
+export async function getPaginatedReports(
+  params: CursorPaginationParams,
+) {
+  return withCursorPagination(
+    (take, cursor, skip) =>
+      prisma.report.findMany({
+        take,
+        skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        include: {
+          reporter: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+    params,
+    "Reports fetched successfully",
+  );
 }
 
 export async function updateReportStatus(id: string, data: UpdateReportStatusInput) {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { createItinerary, getUserItineraries } from "@/lib/services/itinerary-service";
+import { createItinerary, getPaginatedUserItineraries } from "@/lib/services/itinerary-service";
 import { createItinerarySchema } from "@/lib/validations/itinerary.schema";
 import { getErrorMessage } from "@/lib/api-error";
 
@@ -15,8 +15,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const itineraries = await getUserItineraries(session.user.id);
-    return NextResponse.json({ data: itineraries }, { status: 200 });
+    const { searchParams } = new URL(request.url);
+    const result = await getPaginatedUserItineraries(session.user.id, {
+      limit: searchParams.get("limit")
+        ? Number(searchParams.get("limit"))
+        : undefined,
+      cursor: searchParams.get("cursor") || undefined,
+    });
+    return NextResponse.json(result, { status: 200 });
   } catch (error: unknown) {
     return NextResponse.json(
       { error: getErrorMessage(error) },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import MyItineraryTab from "./components/itiernary";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 const TABS = [
     { key: "profil", label: "Profil Saya", icon: User },
@@ -456,25 +458,25 @@ function PasswordTab() {
 
 function SavedTab() {
     const router = useRouter();
-    const [items, setItems] = useState<SavedItem[]>([]);
-    const [loading, setLoading] = useState(true);
     const [removingIds, setRemovingIds] = useState<Set<string>>(new Set());
+    const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
 
-    useEffect(() => {
-        fetch("/api/user/profile/saved")
-            .then((res) => res.json())
-            .then((json) => {
-                if (json.data) setItems(json.data);
-            })
-            .catch(() => toast.error("Gagal memuat item tersimpan"))
-            .finally(() => setLoading(false));
-    }, []);
+    const {
+        data,
+        isLoading: loading,
+        hasMore,
+        loadMore,
+    } = useCursorPagination<SavedItem>({ url: "/api/user/profile/saved" });
+
+    const items = useMemo(
+        () => data.filter((i) => !removedIds.has(i.id)),
+        [data, removedIds],
+    );
 
     const handleRemove = useCallback(
         async (item: SavedItem) => {
             setRemovingIds((prev) => new Set(prev).add(item.id));
-            const prev = items;
-            setItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
+            setRemovedIds((prev) => new Set(prev).add(item.id));
 
             try {
                 const res = await fetch("/api/user/saved-items", {
@@ -489,7 +491,11 @@ function SavedTab() {
                 if (!res.ok) throw new Error("Gagal menghapus");
                 toast.success(`${item.name} dihapus dari tersimpan`);
             } catch {
-                setItems(prev);
+                setRemovedIds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(item.id);
+                    return next;
+                });
                 toast.error("Gagal menghapus bookmark");
             } finally {
                 setRemovingIds((prev) => {
@@ -499,10 +505,10 @@ function SavedTab() {
                 });
             }
         },
-        [items],
+        [],
     );
 
-    if (loading) {
+    if (loading && items.length === 0) {
         return (
             <div className="flex items-center justify-center py-20">
                 <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
@@ -510,7 +516,7 @@ function SavedTab() {
         );
     }
 
-    if (items.length === 0) {
+    if (!loading && items.length === 0) {
         return (
             <div className="rounded-xl border border-stone-200 bg-white p-12 shadow-sm">
                 <div className="flex flex-col items-center gap-4 text-center">
@@ -547,6 +553,7 @@ function SavedTab() {
     }
 
     return (
+        <InfiniteScroll hasMore={hasMore} isLoading={loading} next={loadMore}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((item) => {
                 const itemHref =
@@ -625,5 +632,6 @@ function SavedTab() {
                 );
             })}
         </div>
+        </InfiniteScroll>
     );
 }

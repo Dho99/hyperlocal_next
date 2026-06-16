@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { deleteFacility } from "@/lib/api/facility";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import {
     Table,
     TableBody,
@@ -29,25 +31,37 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Edit, Trash2, Plus, Loader2 } from "lucide-react";
+import { Edit, Trash2, Plus, Loader2, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { FacilityDialog } from "./facility-dialog";
 import type { Facility } from "@/types/fasilitas";
 import { FACILITY_LABELS } from "@/lib/config/halal-readiness";
 
-interface FacilitiesTableProps {
-    facilities: Facility[];
-}
-
-export function FacilitiesTable({ facilities }: FacilitiesTableProps) {
-    const router = useRouter();
+export function FacilitiesTable() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [selectedFacility, setSelectedFacility] = useState<Facility | null>(
         null,
     );
     const [deleteTarget, setDeleteTarget] = useState<Facility | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [search, setSearch] = useState("");
+
+    const params = useMemo(
+        () => ({ search: search || undefined }),
+        [search],
+    );
+
+    const {
+        data: facilities,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Facility>({
+        url: "/api/facilities",
+        params,
+    });
 
     function handleAdd() {
         setSelectedFacility(null);
@@ -73,7 +87,7 @@ export function FacilitiesTable({ facilities }: FacilitiesTableProps) {
             await deleteFacility(deleteTarget.id);
             toast.success("Fasilitas berhasil dihapus");
             setDeleteTarget(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -99,10 +113,21 @@ export function FacilitiesTable({ facilities }: FacilitiesTableProps) {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    {facilities.length === 0 ? (
+                    <div className="relative mb-4 max-w-sm">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Cari fasilitas..."
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                    {facilities.length === 0 && !isLoading ? (
                         <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
                             <p className="text-sm text-muted-foreground">
-                                Belum ada data fasilitas.
+                                {search
+                                    ? "Tidak ada fasilitas yang sesuai."
+                                    : "Belum ada data fasilitas."}
                             </p>
                         </div>
                     ) : (
@@ -181,6 +206,11 @@ export function FacilitiesTable({ facilities }: FacilitiesTableProps) {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <InfiniteScroll
+                                hasMore={hasMore}
+                                isLoading={isLoading}
+                                next={loadMore}
+                            />
                         </div>
                     )}
                 </CardContent>
@@ -190,6 +220,7 @@ export function FacilitiesTable({ facilities }: FacilitiesTableProps) {
                 open={isFormOpen}
                 onOpenChange={handleFormOpenChange}
                 facility={selectedFacility}
+                onSaved={refresh}
             />
 
             <AlertDialog

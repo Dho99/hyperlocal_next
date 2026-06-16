@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { deleteUmkm } from "@/lib/api/umkm";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -17,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import {
     Edit,
     Trash2,
-    MoreHorizontal,
     Search,
     Eye,
     Store,
@@ -45,24 +46,34 @@ import type { Umkm } from "@/types/umkm";
 import type { Category } from "@/types/category";
 
 interface UmkmListProps {
-    initialUmkms: Umkm[];
     categories: Category[];
 }
 
-export function UmkmList({ initialUmkms, categories }: UmkmListProps) {
+export function UmkmList({ categories }: UmkmListProps) {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [selectedUmkm, setSelectedUmkm] = useState<Umkm | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    const filteredUmkms = initialUmkms.filter((u) => {
-        const matchesSearch = u.name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-        const matchesCategory =
-            categoryFilter === "all" || u.categoryId === categoryFilter;
-        return matchesSearch && matchesCategory;
+    const params = useMemo(
+        () => ({
+            scope: "admin",
+            search: search || undefined,
+            categoryId: categoryFilter === "all" ? undefined : categoryFilter,
+        }),
+        [search, categoryFilter],
+    );
+
+    const {
+        data: filteredUmkms,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh,
+    } = useCursorPagination<Umkm>({
+        url: "/api/umkms",
+        params,
     });
 
     async function handleDelete() {
@@ -73,7 +84,7 @@ export function UmkmList({ initialUmkms, categories }: UmkmListProps) {
             await deleteUmkm(selectedUmkm.id);
             toast.success(`UMKM ${selectedUmkm.name} berhasil dihapus`);
             setSelectedUmkm(null);
-            router.refresh();
+            refresh();
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));
         } finally {
@@ -184,7 +195,7 @@ export function UmkmList({ initialUmkms, categories }: UmkmListProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredUmkms.length === 0 ? (
+                        {filteredUmkms.length === 0 && !isLoading ? (
                             <TableRow>
                                 <TableCell
                                     colSpan={5}
@@ -292,6 +303,14 @@ export function UmkmList({ initialUmkms, categories }: UmkmListProps) {
                         )}
                     </TableBody>
                 </Table>
+                <InfiniteScroll
+                    hasMore={hasMore}
+                    isLoading={isLoading}
+                    next={loadMore}
+                />
+            </div>
+            <div className="flex items-center justify-between px-2 text-xs text-muted-foreground">
+                <p>Menampilkan {filteredUmkms.length} entri</p>
             </div>
 
             <AlertDialog

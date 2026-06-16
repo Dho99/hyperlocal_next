@@ -1,9 +1,6 @@
-import { getFacilities } from "@/lib/services/facility-service";
 import { FacilitiesTable } from "./components/facility-table";
 
-export default async function FacilitiesPage() {
-    const facilities = await getFacilities();
-
+export default function FacilitiesPage() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -18,7 +15,7 @@ export default async function FacilitiesPage() {
                 </div>
             </div>
 
-            <FacilitiesTable facilities={facilities} />
+            <FacilitiesTable />
         </div>
     );
 }

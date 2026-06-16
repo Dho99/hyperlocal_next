@@ -19,7 +19,9 @@ export async function GET(request: Request) {
             searchParams.has("limit") ||
             searchParams.has("cursor") ||
             searchParams.has("category") ||
-            searchParams.has("search")
+            searchParams.has("search") ||
+            searchParams.has("scope") ||
+            searchParams.has("validationStatus")
         ) {
             const limit = searchParams.get("limit")
                 ? Number(searchParams.get("limit"))
@@ -31,6 +33,10 @@ export async function GET(request: Request) {
                 searchParams.get("destinationId") || undefined;
             const areaId = searchParams.get("areaId") || undefined;
             const search = searchParams.get("search") || undefined;
+            const scope =
+                searchParams.get("scope") === "admin" ? "admin" : "public";
+            const validationStatus =
+                searchParams.get("validationStatus") || undefined;
 
             const result = await getPaginatedUmkms({
                 limit,
@@ -40,7 +46,8 @@ export async function GET(request: Request) {
                 destinationId,
                 areaId,
                 search,
-                scope: "public",
+                scope,
+                validationStatus,
             });
             return NextResponse.json(result, { status: 200 });
         }
