@@ -6,7 +6,7 @@ import { FacilitiesSection } from "@/fitur/umkm/components/facilities-section";
 import { LocationSection } from "@/fitur/umkm/components/location-section";
 import { ReviewSection } from "@/fitur/umkm/components/review-section";
 import { OperatingHoursSidebar } from "@/fitur/umkm/components/operating-hours-sidebar";
-import { ScrollReveal } from "@/fitur/umkm/components/scroll-reveal";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 
 interface UmkmDetailPageProps {
     params: Promise<{
@@ -32,6 +32,12 @@ export default async function UmkmDetailPage({
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
                     <div className="space-y-12">
                         <AboutSection description={umkm.description} />
+                        <PhotoGallery
+                            images={umkm.images ?? []}
+                            name={umkm.name}
+                            heading="Galeri Foto"
+                            minImages={2}
+                        />
                         <FacilitiesSection
                             facilities={umkm.destinationFacilities}
                         />

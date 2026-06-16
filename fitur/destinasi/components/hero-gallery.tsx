@@ -13,6 +13,7 @@ interface HeroGalleryProps {
     onHeroLoad: () => void;
     onBack: () => void;
     destinationId: string;
+    onImageClick?: (index: number) => void;
 }
 
 function getTodayIndoKey(): string {
@@ -62,9 +63,15 @@ export function HeroGallery({
     onHeroLoad,
     onBack,
     destinationId,
+    onImageClick,
 }: HeroGalleryProps) {
     const locationLabel = [destination.city, destination.province].filter(Boolean).join(", ");
     const openingStatus = getDestinationOpeningStatus(destination.openingHours);
+    const allImages = destination.images ?? [];
+    const globalIndexOf = (url: string) => {
+        const i = allImages.findIndex((img) => img.imageUrl === url);
+        return i >= 0 ? i : 0;
+    };
 
     return (
         <section className="grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,220px)] gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">
@@ -94,6 +101,14 @@ export function HeroGallery({
                         <ImageIcon className="h-16 w-16 text-border" />
                     </div>
                 )}
+                {onImageClick && primaryImage && (
+                    <button
+                        type="button"
+                        onClick={() => onImageClick(globalIndexOf(primaryImage))}
+                        aria-label={`Lihat galeri foto ${destination.name}`}
+                        className="absolute inset-0 z-[1] cursor-zoom-in focus:outline-none"
+                    />
+                )}
                 <div className="absolute top-4 right-4 z-20">
                     <BookmarkButton
                         targetSlug={destinationId}
@@ -103,7 +118,7 @@ export function HeroGallery({
                 </div>
 
                 {/* Dark Gradient Overlay with Info Section (Image 2 style) */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pt-32 pb-6 px-6 sm:px-8 z-10 flex flex-col justify-end">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pt-32 pb-6 px-6 sm:px-8 z-10 flex flex-col justify-end pointer-events-none">
                     {/* Badges */}
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                         {destination.status === "APPROVED" && (
@@ -167,9 +182,14 @@ export function HeroGallery({
             </div>
             <div className="hidden md:flex flex-col gap-2 md:gap-3">
                 {secondaryImages.slice(0, 2).map((img, idx) => (
-                    <div
+                    <button
+                        type="button"
                         key={idx}
-                        className="flex-1 bg-accent overflow-hidden rounded-xl relative group"
+                        onClick={() =>
+                            onImageClick?.(globalIndexOf(img.imageUrl))
+                        }
+                        aria-label={`Lihat ${destination.name} foto ${idx + 2}`}
+                        className="flex-1 bg-accent overflow-hidden rounded-xl relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                     >
                         <Image
                             src={img.imageUrl}
@@ -179,14 +199,14 @@ export function HeroGallery({
                             className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         {idx === 1 && (
-                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm cursor-pointer">
+                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
                                 <span className="text-white text-xs font-semibold tracking-wider flex items-center gap-1">
                                     <ImageIcon className="size-3.5" />
                                     Lihat Semua
                                 </span>
                             </div>
                         )}
-                    </div>
+                    </button>
                 ))}
             </div>
         </section>

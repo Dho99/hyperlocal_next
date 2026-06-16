@@ -8,6 +8,11 @@ import dynamic from "next/dynamic";
 import { getApiErrorMessage } from "@/lib/api-error";
 import type { Accommodation } from "@/types/accommodation";
 import { ReportDialog } from "@/components/report/report-dialog";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
+import {
+  ImageLightbox,
+  useImageLightbox,
+} from "@/components/ui/image-lightbox";
 
 const RichTextRenderer = dynamic(
   () => import("@/components/editor/rich-text-renderer").then((m) => m.RichTextRenderer),
@@ -23,6 +28,7 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   const [accommodation, setAccommodation] = useState<Accommodation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const lightbox = useImageLightbox();
 
   useEffect(() => {
     fetch(`/api/accommodations/${identifier}`)
@@ -38,6 +44,12 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   const primaryImage = useMemo(() => {
     if (!accommodation?.images?.length) return null;
     return accommodation.images.find((img) => img.isPrimary)?.imageUrl ?? accommodation.images[0].imageUrl;
+  }, [accommodation]);
+
+  const primaryIndex = useMemo(() => {
+    if (!accommodation?.images?.length) return 0;
+    const i = accommodation.images.findIndex((img) => img.isPrimary);
+    return i >= 0 ? i : 0;
   }, [accommodation]);
 
   if (loading) {
@@ -86,7 +98,15 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
 
         <div className="relative aspect-[21/9] rounded-2xl overflow-hidden bg-stone-200 shadow-md">
           {primaryImage ? (
-            <Image src={primaryImage} alt={accommodation.name} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 900px" />
+            <>
+              <Image src={primaryImage} alt={accommodation.name} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 900px" />
+              <button
+                type="button"
+                onClick={() => lightbox.openAt(primaryIndex)}
+                aria-label={`Lihat galeri foto ${accommodation.name}`}
+                className="absolute inset-0 cursor-zoom-in focus:outline-none"
+              />
+            </>
           ) : (
             <div className="flex h-full items-center justify-center">
               <Building className="h-16 w-16 text-stone-400" />
@@ -155,7 +175,23 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
             </div>
           </div>
         )}
+
+        <PhotoGallery
+          images={accommodation.images ?? []}
+          name={accommodation.name}
+          heading="Galeri Foto"
+          controller={lightbox}
+        />
       </main>
+
+      <ImageLightbox
+        images={accommodation.images ?? []}
+        open={lightbox.open}
+        index={lightbox.index}
+        onOpenChange={lightbox.setOpen}
+        onIndexChange={lightbox.setIndex}
+        alt={accommodation.name}
+      />
     </div>
   );
 }

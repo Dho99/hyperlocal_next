@@ -30,6 +30,7 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { DynamicContextMap } from "@/components/maps";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 
 interface DestinationDetailProps {
     id: string;
@@ -269,21 +270,10 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                         <CardContent>
                             {destination.images &&
                             destination.images.length > 0 ? (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    {destination.images.map((image, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="relative aspect-square rounded-md overflow-hidden bg-muted group cursor-pointer border"
-                                        >
-                                            <Image
-                                                src={image.imageUrl}
-                                                alt={`${destination.name} ${idx + 1}`}
-                                                fill
-                                                className="object-cover transition-transform group-hover:scale-105"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                                <PhotoGallery
+                                    images={destination.images}
+                                    name={destination.name}
+                                />
                             ) : (
                                 <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-lg">
                                     Belum ada foto galeri.

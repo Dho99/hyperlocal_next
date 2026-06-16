@@ -11,6 +11,7 @@ import {
     Star,
 } from "lucide-react";
 import { PenginapanValidationForm } from "./penginapan-validation-form";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -163,17 +164,13 @@ export default async function ValidasiPenginapanDetailPage({ params }: PageProps
                             <h3 className="text-sm font-semibold text-stone-900 mb-3">
                                 Foto Penginapan
                             </h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                {accommodation.images.map((img) => (
-                                    <div key={img.id} className="aspect-[4/3] bg-stone-100 rounded-md overflow-hidden">
-                                        <img
-                                            src={img.imageUrl}
-                                            alt={img.caption ?? accommodation.name}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                            <PhotoGallery
+                                images={accommodation.images.map((img) => ({
+                                    imageUrl: img.imageUrl,
+                                    caption: img.caption,
+                                }))}
+                                name={accommodation.name}
+                            />
                         </div>
                     )}
 
