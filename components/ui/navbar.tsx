@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Lock, LogOut, User } from "lucide-react";
+import { Bookmark, LayoutDashboard, Lock, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -135,6 +135,18 @@ export default function Navbar() {
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
+                                    {
+                                      user.role === "admin" &&
+                                      <DropdownMenuItem
+                                          asChild
+                                          className="cursor-pointer gap-2.5 py-2.5 focus:bg-emerald-50 focus:text-emerald-950"
+                                      >
+                                          <Link href="/dashboard">
+                                              <LayoutDashboard className="h-4 w-4" />
+                                              <span>Dashboard</span>
+                                          </Link>
+                                      </DropdownMenuItem>
+                                    }
                                     <DropdownMenuItem
                                         asChild
                                         className="cursor-pointer gap-2.5 py-2.5 focus:bg-emerald-50 focus:text-emerald-950"
