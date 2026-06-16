@@ -61,9 +61,10 @@ export function DestinationList({
 
     const params = useMemo(
         () => ({
+            scope: "admin",
             search: search || undefined,
             categoryId: categoryFilter === "all" ? undefined : categoryFilter,
-            status: statusFilter === "all" ? undefined : statusFilter,
+            validationStatus: statusFilter === "all" ? undefined : statusFilter,
         }),
         [search, categoryFilter, statusFilter],
     );

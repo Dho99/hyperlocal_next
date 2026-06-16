@@ -20,7 +20,7 @@ export async function GET(request: Request) {
         const categoryId = searchParams.get("categoryId") || undefined;
         const areaId = searchParams.get("areaId") || undefined;
         const search = searchParams.get("search") || undefined;
-        const status = searchParams.get("status") || undefined;
+        const validationStatus = searchParams.get("validationStatus") || undefined;
         const minScore = parseMinScore(searchParams.get("minScore"));
         const sort = parseSort(searchParams.get("sort"));
 
@@ -30,10 +30,10 @@ export async function GET(request: Request) {
             categoryId,
             areaId,
             search,
-            status,
+            status: validationStatus,
             minScore,
             sort,
-            scope: "public",
+            scope: searchParams.get("scope") === "admin" ? "admin" : "public",
         });
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {

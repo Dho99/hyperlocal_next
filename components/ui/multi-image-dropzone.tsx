@@ -94,8 +94,9 @@ export function MultiImageDropzone({
 
                 if (data.success) {
                     const url = data.data.path;
+                    let nextFiles: UploadingFile[] = [];
                     setFiles((prev) => {
-                        const updated = prev.map((f) =>
+                        nextFiles = prev.map((f) =>
                             f.id === fileObj.id
                                 ? {
                                       ...f,
@@ -105,9 +106,9 @@ export function MultiImageDropzone({
                                   }
                                 : f,
                         );
-                        triggerOnChange(updated);
-                        return updated;
+                        return nextFiles;
                     });
+                    triggerOnChange(nextFiles);
                 }
             } catch {
                 setFiles((prev) =>
@@ -161,11 +162,9 @@ export function MultiImageDropzone({
                 }
             }
 
-            setFiles((prev) => {
-                const updated = prev.filter((f) => f.id !== id);
-                triggerOnChange(updated);
-                return updated;
-            });
+            const updated = files.filter((f) => f.id !== id);
+            setFiles(updated);
+            triggerOnChange(updated);
 
             if (
                 fileToRemove?.preview &&

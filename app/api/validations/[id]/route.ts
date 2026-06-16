@@ -44,10 +44,32 @@ export async function GET(
         });
 
         if (!validation) {
-            return NextResponse.json(
-                { success: false, message: "Data validasi tidak ditemukan" },
-                { status: 404 }
-            );
+            // Fallback: treat id as destinationId
+            const byDest = await prisma.halalValidation.findFirst({
+                where: { destinationId: id },
+                include: {
+                    certification: { include: { umkm: true } },
+                    destination: {
+                        include: {
+                            category: true,
+                            images: true,
+                            destinationHalalFacilities: {
+                                include: { facility: true, evidences: true },
+                            },
+                        },
+                    },
+                    validator: { select: { id: true, name: true, email: true } },
+                    evidences: true,
+                },
+                orderBy: { createdAt: "desc" },
+            });
+            if (!byDest) {
+                return NextResponse.json(
+                    { success: false, message: "Data validasi tidak ditemukan" },
+                    { status: 404 }
+                );
+            }
+            return NextResponse.json({ success: true, data: byDest });
         }
 
         return NextResponse.json({ success: true, data: validation });

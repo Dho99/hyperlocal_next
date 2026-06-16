@@ -7,7 +7,6 @@ import {
     LogOut,
     Menu,
     Settings,
-    HelpCircle,
     Grid3X3,
 } from "lucide-react";
 import {
@@ -29,6 +28,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { AdminNav } from "./admin-nav";
+import { AdminGuide } from "./admin-guide";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogoutDialog } from "./logout-dialog";
@@ -100,27 +100,21 @@ export function AdminTopbar({ user }: { user: User }) {
             </div>
 
             <div className="ml-auto flex items-center gap-2">
-                <Button
+                {/* <Button
                     variant="ghost"
                     size="icon"
                     className="relative rounded-full hover:bg-[#eef7f2]"
                 >
                     <Bell className="h-4.5 w-4.5 text-[#1d1b20]" />
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full hover:bg-[#eef7f2]"
-                >
-                    <HelpCircle className="h-4.5 w-4.5 text-[#1d1b20]" />
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full hover:bg-[#eef7f2]"
-                >
-                    <Grid3X3 className="h-4.5 w-4.5 text-[#1d1b20]" />
-                </Button>
+                </Button> */}
+                <AdminGuide />
+                {/* <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full hover:bg-[#eef7f2]"
+                    >
+                        <Grid3X3 className="h-4.5 w-4.5 text-[#1d1b20]" />
+                    </Button> */}
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

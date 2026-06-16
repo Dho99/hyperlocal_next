@@ -118,6 +118,11 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="space-y-2">
               <h1 className="font-heading text-3xl font-bold text-stone-900">{accommodation.name}</h1>
+              {accommodation.validationStatus === "APPROVED" && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
+                  ✓ Tervalidasi Halal
+                </span>
+              )}
             </div>
             <ReportDialog targetId={accommodation.id} targetType="ACCOMMODATION" />
           </div>

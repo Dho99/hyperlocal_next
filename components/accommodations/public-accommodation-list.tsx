@@ -3,7 +3,7 @@
 import { useState, useMemo, useDeferredValue } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star, Search, Loader2, Building, AlertCircle } from "lucide-react";
+import { MapPin, Star, Search, Loader2, Building, AlertCircle, BadgeCheck } from "lucide-react";
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import type { Accommodation } from "@/types/accommodation";
@@ -32,6 +32,14 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                 ) : (
                     <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
                         <Building className="h-10 w-10 text-stone-300" />
+                    </div>
+                )}
+                {item.validationStatus === "APPROVED" && (
+                    <div className="absolute bottom-2 left-2">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-600/90 text-white backdrop-blur-sm shadow-sm">
+                            <BadgeCheck size={11} />
+                            Tervalidasi Halal
+                        </span>
                     </div>
                 )}
                 {item.rating != null && item.rating > 0 && (

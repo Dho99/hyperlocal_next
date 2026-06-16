@@ -246,7 +246,32 @@ async function main() {
                     },
                 ],
             },
-            facilities: [],
+            facilities: [
+                {
+                    facilityName: "Musala Terpisah (Pria/Wanita)",
+                    placeName: "Mushola Tangkuban Parahu",
+                    facilityLat: -6.7603,
+                    facilityLng: 107.6121,
+                },
+                {
+                    facilityName: "Toilet Bersih & Tempat Wudhu",
+                    placeName: "Toilet Tangkuban Parahu",
+                    facilityLat: -6.7605,
+                    facilityLng: 107.6119,
+                },
+                {
+                    facilityName: "Parkir Luas & Aman",
+                    placeName: "Area Parkir Tangkuban Parahu",
+                    facilityLat: -6.7601,
+                    facilityLng: 107.6116,
+                },
+                {
+                    facilityName: "Restoran / Kuliner Halal",
+                    placeName: "Restoran Halal Tangkuban",
+                    facilityLat: -6.7600,
+                    facilityLng: 107.6122,
+                },
+            ],
             images: [
                 {
                     imageUrl:
@@ -376,7 +401,26 @@ async function main() {
                     },
                 ],
             },
-            facilities: [],
+            facilities: [
+                {
+                    facilityName: "Musala Terpisah (Pria/Wanita)",
+                    placeName: "Mushola Cimanggu",
+                    facilityLat: -7.1454,
+                    facilityLng: 107.3913,
+                },
+                {
+                    facilityName: "Toilet Bersih & Tempat Wudhu",
+                    placeName: "Toilet Cimanggu",
+                    facilityLat: -7.1455,
+                    facilityLng: 107.3911,
+                },
+                {
+                    facilityName: "Parkir Luas & Aman",
+                    placeName: "Area Parkir Cimanggu",
+                    facilityLat: -7.1452,
+                    facilityLng: 107.3914,
+                },
+            ],
             images: [
                 {
                     imageUrl:
@@ -563,7 +607,9 @@ async function main() {
             facilities: [
                 {
                     facilityName: "Restoran / Kuliner Halal",
-                    placeName: "Restoran / Kuliner Halal",
+                    placeName: "Warung Makan Papandayan",
+                    facilityLat: -7.3075,
+                    facilityLng: 107.7384,
                 },
             ],
             images: [
@@ -1304,7 +1350,9 @@ async function main() {
             facilities: [
                 {
                     facilityName: "Parkir Luas & Aman",
-                    placeName: "Parkir Luas & Aman",
+                    placeName: "Area Parkir Darajat",
+                    facilityLat: -7.2187,
+                    facilityLng: 107.7416,
                 },
             ],
             images: [
@@ -1401,7 +1449,9 @@ async function main() {
             facilities: [
                 {
                     facilityName: "Mushola 24 Jam",
-                    placeName: "Mushola 24 Jam",
+                    placeName: "Mushola Mekarsari",
+                    facilityLat: -6.4117,
+                    facilityLng: 106.9881,
                 },
             ],
             images: [
@@ -2050,7 +2100,9 @@ async function main() {
             facilities: [
                 {
                     facilityName: "Restoran / Kuliner Halal",
-                    placeName: "Restoran / Kuliner Halal",
+                    placeName: "Food Court Grand Nusa",
+                    facilityLat: -6.4278,
+                    facilityLng: 107.0102,
                 },
             ],
             images: [
@@ -2147,11 +2199,15 @@ async function main() {
             facilities: [
                 {
                     facilityName: "Toilet Bersih & Tempat Wudhu",
-                    placeName: "Toilet Bersih & Tempat Wudhu",
+                    placeName: "Toilet & Tempat Wudhu Kiara Artha",
+                    facilityLat: -6.9160,
+                    facilityLng: 107.6420,
                 },
                 {
                     facilityName: "Parkir Luas & Aman",
-                    placeName: "Parkir Luas & Aman",
+                    placeName: "Area Parkir Kiara Artha",
+                    facilityLat: -6.9158,
+                    facilityLng: 107.6421,
                 },
             ],
             images: [

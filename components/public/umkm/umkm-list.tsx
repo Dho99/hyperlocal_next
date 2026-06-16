@@ -44,10 +44,11 @@ function getHalalBadge(
     umkm: Umkm,
 ): { label: string; variant: "certified" | "friendly" } | null {
     const cert = umkm.certifications?.[0];
-    if (!cert) return null;
-    if (cert.status === "VALID")
-        return { label: "Verified Halal", variant: "certified" };
-    if (cert.status === "PENDING")
+    if (cert?.status === "VALID")
+        return { label: "Bersertifikat Halal", variant: "certified" };
+    if (umkm.validationStatus === "APPROVED")
+        return { label: "Tervalidasi Halal", variant: "certified" };
+    if (cert?.status === "PENDING")
         return { label: "Muslim Friendly", variant: "friendly" };
     return null;
 }
@@ -314,7 +315,7 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${
                                                             badge.variant ===
                                                             "certified"
-                                                                ? "bg-white/90 text-emerald-800"
+                                                                ? "bg-green-600/90 text-white"
                                                                 : "bg-amber-100/90 text-amber-800"
                                                         }`}
                                                     >

@@ -64,9 +64,9 @@ export function HeroSection({ umkm }: HeroSectionProps) {
     const lightbox = useImageLightbox();
     const images = umkm.images ?? [];
     const coverImage = umkm.images?.[0]?.imageUrl;
-    const hasCertification = umkm.certifications?.some(
-        (c) => c.status === "VALID",
-    );
+    const hasCertification =
+        umkm.certifications?.some((c) => c.status === "VALID") ||
+        (umkm as { validationStatus?: string }).validationStatus === "APPROVED";
     const avgRating =
         umkm.reviews.length > 0
             ? (
