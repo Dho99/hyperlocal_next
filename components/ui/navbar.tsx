@@ -70,7 +70,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Main Navigation - Truly Centered */}
-                <div className="hidden items-center gap-1 rounded-full bg-white/55 p-1.5 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
+                <div className="hidden items-center gap-1 rounded-full bg-white/55 p-1 text-sm font-medium text-stone-600 shadow-inner ring-1 ring-stone-200/50 md:flex">
                     {navItems.map((item) => {
                         const active = isActive(item);
                         return (
@@ -78,7 +78,7 @@ export default function Navbar() {
                                 key={item.label}
                                 href={item.href}
                                 className={`rounded-full px-4 py-2 transition-all duration-200 ${active
-                                        ? "bg-emerald-100 text-emerald-900 font-bold shadow-sm"
+                                        ? "bg-emerald-100 text-emerald-900 font-semibold shadow-sm"
                                         : "hover:bg-emerald-50 hover:text-emerald-900"
                                     }`}
                             >
@@ -97,35 +97,35 @@ export default function Navbar() {
                                 <DropdownMenuTrigger asChild>
                                     <button
                                         type="button"
-                                        className="group relative size-9 overflow-hidden rounded-full bg-emerald-100 ring-2 ring-transparent transition-all hover:ring-emerald-300 focus-visible:ring-emerald-500"
+                                        className="size-8 overflow-hidden rounded-full bg-emerald-100 ring-2 ring-transparent transition-all hover:ring-emerald-300 focus-visible:ring-emerald-500"
                                     >
-                                        <Avatar className="h-9 w-9">
+                                        <Avatar className="h-8 w-8">
                                             <AvatarImage
                                                 src={user.image ?? undefined}
                                                 alt={user.name}
                                             />
-                                            <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xs font-bold">
+                                            <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xs font-semibold">
                                                 {user.name.charAt(0).toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                     </button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-64" align="end">
+                                <DropdownMenuContent className="w-56" align="end">
                                     <DropdownMenuLabel className="font-normal">
-                                        <div className="flex items-center gap-3 p-1">
-                                            <Avatar className="h-10 w-10">
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="h-9 w-9">
                                                 <AvatarImage
                                                     src={user.image ?? undefined}
                                                     alt={user.name}
                                                 />
-                                                <AvatarFallback className="bg-emerald-100 text-emerald-800 text-sm font-bold">
+                                                <AvatarFallback className="bg-emerald-100 text-emerald-800 text-xs font-semibold">
                                                     {user.name
                                                         .charAt(0)
                                                         .toUpperCase()}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col">
-                                                <p className="text-sm font-bold text-stone-800">
+                                                <p className="text-sm font-semibold text-stone-800">
                                                     {user.name}
                                                 </p>
                                                 <p className="text-xs text-stone-500">
@@ -137,34 +137,35 @@ export default function Navbar() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         asChild
-                                        className="cursor-pointer gap-2.5 py-2.5 text-stone-700 focus:bg-stone-50"
+                                        className="cursor-pointer gap-2.5 py-2.5 focus:bg-emerald-50 focus:text-emerald-950"
                                     >
                                         <Link href="/profile?tab=edit">
                                             <User className="h-4 w-4" />
-                                            <span className="font-medium">Profil Saya</span>
+                                            <span>Profil Saya</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         asChild
-                                        className="cursor-pointer gap-2.5 py-2.5 text-stone-700 focus:bg-stone-50"
+                                        className="cursor-pointer gap-2.5 py-2.5 focus:bg-emerald-50 focus:text-emerald-950"
                                     >
                                         <Link href="/profile?tab=password">
                                             <Lock className="h-4 w-4" />
-                                            <span className="font-medium">Ubah Password</span>
+                                            <span>Ubah Password</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         asChild
-                                        className="cursor-pointer gap-2.5 py-2.5 text-stone-700 focus:bg-stone-50"
+                                        className="cursor-pointer gap-2.5 py-2.5 focus:bg-emerald-50 focus:text-emerald-950"
                                     >
                                         <Link href="/profile?tab=saved">
                                             <Bookmark className="h-4 w-4" />
-                                            <span className="font-medium">Destinasi Tersimpan</span>
+                                            <span>Destinasi Tersimpan</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
-                                        className="cursor-pointer gap-2.5 py-2.5 text-rose-600 focus:bg-rose-50 focus:text-rose-700"
+                                        variant="destructive"
+                                        className="cursor-pointer gap-2.5 py-2.5"
                                         onClick={() =>
                                             authClient.signOut().then(() => {
                                                 router.replace("/");
@@ -172,7 +173,7 @@ export default function Navbar() {
                                         }
                                     >
                                         <LogOut className="h-4 w-4" />
-                                        <span className="font-medium">Keluar</span>
+                                        <span>Keluar</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

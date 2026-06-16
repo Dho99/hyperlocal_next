@@ -43,7 +43,7 @@ export function BrandLogo({
       />
       <span
         className={cn(
-          "font-heading font-extrabold leading-none tracking-normal whitespace-nowrap",
+          "font-heading font-bold leading-none tracking-widest whitespace-nowrap",
           textSizeClass[size]
         )}
       >
