@@ -3,7 +3,14 @@
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, MapPin, Loader2, AlertCircle, Star, Search } from "lucide-react";
+import {
+    Sparkles,
+    MapPin,
+    Loader2,
+    AlertCircle,
+    Star,
+    Search,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { EmptyState } from "./empty-state";
@@ -36,7 +43,7 @@ interface ExploreResponse {
 function SkeletonCard() {
     return (
         <div className="overflow-hidden rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm animate-pulse">
-            <div className="aspect-[16/10] bg-[#f2ecf4]" />
+            <div className="aspect-[16/10] bg-emerald-900" />
             <div className="p-4 space-y-3">
                 <div className="h-4 w-3/4 rounded bg-[#f2ecf4]" />
                 <div className="h-3 w-1/2 rounded bg-[#f2ecf4]" />
@@ -57,7 +64,12 @@ interface ResultCardProps {
     isAiGenerated: boolean;
 }
 
-function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: ResultCardProps) {
+function ResultCard({
+    destination,
+    matchScore,
+    aiReason,
+    isAiGenerated,
+}: ResultCardProps) {
     return (
         <Link
             href={`/destinasi/${destination.slug}`}
@@ -89,7 +101,9 @@ function ResultCard({ destination, matchScore, aiReason, isAiGenerated }: Result
                             <p className="mt-1 flex items-center gap-1 text-xs text-[#494551]">
                                 <MapPin className="size-3.5 shrink-0" />
                                 {destination.city}
-                                {destination.city && destination.province ? ", " : ""}
+                                {destination.city && destination.province
+                                    ? ", "
+                                    : ""}
                                 {destination.province}
                             </p>
                         )}
@@ -207,14 +221,14 @@ export function ExploreResults({ query, lat, lng }: ExploreResultsProps) {
                 <h1 className="text-2xl font-heading font-bold text-[#1f1635] sm:text-3xl">
                     Hasil rekomendasi AI untuk:
                 </h1>
-                <p className="mt-1 text-lg text-[#6750a4] font-medium italic">
+                <p className="mt-1 text-lg text-emerald-900 font-medium italic">
                     &ldquo;{query}&rdquo;
                 </p>
             </div>
 
             {isLoading && (
                 <div className="space-y-3">
-                    <p className="flex items-center gap-2 text-sm text-[#6750a4] animate-pulse">
+                    <p className="flex items-center gap-2 text-sm text-emerald-900 animate-pulse">
                         <Sparkles className="size-4" />
                         AI sedang menganalisis pencarianmu...
                     </p>

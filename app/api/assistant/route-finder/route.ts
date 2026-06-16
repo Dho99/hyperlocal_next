@@ -41,6 +41,46 @@ interface RouteFinderResponse {
     payload: ItineraryPayload | null;
 }
 
+const ROUTE_FINDER_STOP_WORDS = new Set([
+    "cari", "carikan", "temukan", "tampilkan", "lihat", "tunjukkan",
+    "rekomendasi", "rekomendasikan", "sarankan", "saran",
+    "di", "ke", "dari", "untuk", "yang", "ada", "sekitar",
+    "halal", "wisata", "destinasi", "tempat", "lokasi",
+    "tolong", "bantu", "dong", "deh", "ya", "yuk",
+]);
+
+async function findDestinationByName(query: string): Promise<string | null> {
+    const normalized = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 1 && !ROUTE_FINDER_STOP_WORDS.has(t))
+        .join(" ")
+        .trim();
+
+    if (normalized.length < 3) return null;
+
+    const matches = await prisma.destination.findMany({
+        where: {
+            status: "APPROVED",
+            name: { contains: normalized, mode: "insensitive" },
+        },
+        select: { name: true, slug: true },
+        take: 5,
+        orderBy: { halalScore: "desc" },
+    });
+
+    if (matches.length === 0) return null;
+
+    for (const m of matches) {
+        if (m.name.toLowerCase() === normalized) return m.slug;
+    }
+
+    const best = matches[0];
+    if (normalized.length / best.name.length >= 0.6) return best.slug;
+
+    return null;
+}
+
 function buildSystemPrompt(candidates: string): string {
     return `Anda adalah asisten rekomendasi wisata halal yang cerdas. Analisis query pengguna dan klasifikasikan ke dalam salah satu intent berikut:
 
@@ -50,10 +90,11 @@ function buildSystemPrompt(candidates: string): string {
 
 Petunjuk penting:
 - Jika query mengandung kata seperti "rute", "itinerary", "rencana perjalanan", "trips", "jalan-jalan ke", "tour", atau menyebutkan durasi (1 hari, 2 hari, 3 hari, sehari, full day), gunakan ITINERARY_RECOMMENDATION.
+- Kata "rekomendasi" atau "rekomendasikan" SAJA tidak cukup untuk ITINERARY_RECOMMENDATION. Contoh: "rekomendasikan destinasi halal di Bandung" adalah DESTINATION_SEARCH.
 - Jika query menanyakan ketersediaan atau keberadaan fasilitas tertentu (musala, masjid, tempat wudu, toilet, parkir, sertifikat halal) di suatu tempat, gunakan FACILITY_CHECK.
 - Untuk FACILITY_CHECK, ekstrak slug destinasi dan nama fasilitas dari query.
 - Untuk ITINERARY_RECOMMENDATION, pilah destinasi dari kandidat yang diberikan, atur secara kronologis berdasarkan lokasi dan jam operasional, dan berikan notes yang informatif dalam Bahasa Indonesia.
-- Untuk DESTINATION_SEARCH, ekstrak kata kunci pencarian dari query dan gunakan di redirectTo.
+- Untuk DESTINATION_SEARCH, gunakan query asli pengguna secara penuh di redirectTo, jangan singkat atau ubah kata kunci.
 
 ⚠️ HANYA gunakan destinationId yang tercantum dalam daftar kandidat di bawah. JANGAN membuat ID palsu.
 
@@ -100,6 +141,28 @@ export async function POST(request: Request) {
         }
 
         const { query } = parsed.data;
+
+        // Pre-AI: direct destination name lookup — bypass LLM for exact/strong name matches
+        const directSlug = await findDestinationByName(query);
+        if (directSlug) {
+            console.log("[AI_INTENT_TRACE] Pre-AI name match →", directSlug);
+            try {
+                await prisma.aiIntentLog.create({
+                    data: {
+                        userQuery: query,
+                        intent: "DESTINATION_SEARCH",
+                        redirectTo: `/destinasi/${directSlug}`,
+                    },
+                });
+            } catch {
+                // Silently ignore
+            }
+            return NextResponse.json<RouteFinderResponse>({
+                intent: "DESTINATION_SEARCH",
+                redirectTo: `/destinasi/${directSlug}`,
+                payload: null,
+            });
+        }
 
         const knownLocations = await getLocationNames();
         const matchedLocation = extractCityFromQuery(query, knownLocations);
@@ -319,7 +382,7 @@ export async function POST(request: Request) {
 
             return NextResponse.json<RouteFinderResponse>({
                 intent: "DESTINATION_SEARCH",
-                redirectTo: aiResult.redirectTo || `/explore?q=${encodeURIComponent(query.slice(0, 80))}`,
+                redirectTo: `/explore?q=${encodeURIComponent(query.slice(0, 200))}`,
                 payload: null,
             });
         } catch (error) {

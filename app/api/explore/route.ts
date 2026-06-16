@@ -41,6 +41,14 @@ interface ExploreResponse {
     data: ExploreResponseItem[];
 }
 
+const EXPLORE_STOP_WORDS = new Set([
+    "cari", "carikan", "temukan", "tampilkan", "lihat", "tunjukkan",
+    "rekomendasi", "rekomendasikan",
+    "di", "ke", "dari", "untuk", "yang", "ada",
+    "halal", "wisata", "destinasi", "tempat", "lokasi",
+    "tolong", "bantu",
+]);
+
 function buildPrompt(candidates: string, userQuery: string, isNearby = false): string {
     let prompt = `Anda adalah asisten rekomendasi wisata halal yang STRICT. Analisis query pengguna terhadap kandidat destinasi berikut.
 
@@ -173,6 +181,39 @@ export async function GET(request: Request) {
             take: 20,
             orderBy: { halalScore: "desc" },
         });
+
+        // Name-based augmentation when no location matched — surfaces specific destination names
+        if (!matchedLocation) {
+            const nameTokens = query
+                .toLowerCase()
+                .split(/\s+/)
+                .filter((t) => t.length > 2 && !EXPLORE_STOP_WORDS.has(t));
+
+            if (nameTokens.length > 0) {
+                const nameQuery = nameTokens.join(" ");
+                const nameMatches = await prisma.destination.findMany({
+                    where: {
+                        status: "APPROVED",
+                        name: { contains: nameQuery, mode: "insensitive" },
+                    },
+                    include: {
+                        category: true,
+                        images: { take: 1 },
+                        destinationHalalFacilities: {
+                            include: { facility: true },
+                        },
+                    },
+                    take: 5,
+                    orderBy: { halalScore: "desc" },
+                });
+
+                if (nameMatches.length > 0) {
+                    const existingIds = new Set(candidates.map((c) => c.id));
+                    const fresh = nameMatches.filter((m) => !existingIds.has(m.id));
+                    candidates = [...fresh, ...candidates].slice(0, 25);
+                }
+            }
+        }
 
         if (isNearby) {
             candidates = candidates.filter((d) => {
