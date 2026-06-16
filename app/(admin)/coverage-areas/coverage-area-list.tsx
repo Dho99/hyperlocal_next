@@ -16,6 +16,8 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -166,8 +168,6 @@ function MapPreview({
 
 export function CoverageAreaList() {
     const router = useRouter();
-    const [areas, setAreas] = useState<CoverageArea[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingArea, setEditingArea] = useState<CoverageArea | null>(null);
     const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -177,26 +177,15 @@ export function CoverageAreaList() {
     const [searchValue, setSearchValue] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
-    useEffect(() => {
-        fetchAreas();
-    }, []);
-
-    async function fetchAreas() {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/admin/coverage-areas");
-            const json = await res.json();
-            if (res.ok) {
-                setAreas(json.data);
-            } else {
-                toast.error(json.error || "Gagal memuat data");
-            }
-        } catch {
-            toast.error("Gagal menghubungkan ke server");
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    const {
+        data: areas,
+        isLoading,
+        hasMore,
+        loadMore,
+        refresh: fetchAreas,
+    } = useCursorPagination<CoverageArea>({
+        url: "/api/admin/coverage-areas",
+    });
 
     function openCreateDialog() {
         setEditingArea(null);
@@ -386,7 +375,7 @@ export function CoverageAreaList() {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    {isLoading ? (
+                    {areas.length === 0 && isLoading ? (
                         <div className="flex items-center justify-center py-12">
                             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                         </div>
@@ -400,6 +389,7 @@ export function CoverageAreaList() {
                             </p>
                         </div>
                     ) : (
+                        <>
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -485,6 +475,12 @@ export function CoverageAreaList() {
                                 ))}
                             </TableBody>
                         </Table>
+                        <InfiniteScroll
+                            hasMore={hasMore}
+                            isLoading={isLoading}
+                            next={loadMore}
+                        />
+                        </>
                     )}
                 </CardContent>
             </Card>

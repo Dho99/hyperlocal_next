@@ -46,12 +46,14 @@ interface FacilityDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     facility?: Facility | null;
+    onSaved?: () => void;
 }
 
 export function FacilityDialog({
     open,
     onOpenChange,
     facility,
+    onSaved,
 }: FacilityDialogProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -105,6 +107,7 @@ export function FacilityDialog({
                 toast.success("Fasilitas berhasil ditambahkan");
             }
             router.refresh();
+            onSaved?.();
             onOpenChange(false);
         } catch (err: unknown) {
             toast.error(getApiErrorMessage(err));

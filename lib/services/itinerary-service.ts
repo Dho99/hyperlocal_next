@@ -1,4 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma";
+import {
+  withCursorPagination,
+  CursorPaginationParams,
+} from "@/lib/pagination/cursorPagination";
 
 export async function createItinerary(data: {
   userId?: string;
@@ -46,27 +51,48 @@ export async function createItinerary(data: {
   });
 }
 
+const itineraryInclude = {
+  items: {
+    include: {
+      destination: {
+        include: {
+          category: true,
+          images: {
+            where: { isPrimary: true },
+            take: 1,
+          },
+        },
+      },
+    },
+    orderBy: [{ dayNumber: "asc" as const }, { orderIndex: "asc" as const }],
+  },
+};
+
 export async function getUserItineraries(userId: string) {
   return await prisma.itinerary.findMany({
     where: { userId },
-    include: {
-      items: {
-        include: {
-          destination: {
-            include: {
-              category: true,
-              images: {
-                where: { isPrimary: true },
-                take: 1,
-              },
-            },
-          },
-        },
-        orderBy: [{ dayNumber: "asc" }, { orderIndex: "asc" }],
-      },
-    },
+    include: itineraryInclude,
     orderBy: { createdAt: "desc" },
   });
+}
+
+export async function getPaginatedUserItineraries(
+  userId: string,
+  params: CursorPaginationParams,
+) {
+  return withCursorPagination(
+    (take, cursor, skip) =>
+      prisma.itinerary.findMany({
+        take,
+        skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        where: { userId },
+        include: itineraryInclude,
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      }),
+    params,
+    "Itineraries fetched successfully",
+  );
 }
 
 export async function generateItineraryRecommendation(params: {
@@ -79,7 +105,7 @@ export async function generateItineraryRecommendation(params: {
 }) {
   const { city, province, durationDays, halalOnly, categoryIds, maxDestinations } = params;
 
-  const where: any = {
+  const where: Prisma.DestinationWhereInput = {
     status: "APPROVED",
   };
   if (city) where.city = city;

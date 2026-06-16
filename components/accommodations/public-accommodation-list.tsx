@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useDeferredValue } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star, Search, Loader2, Building } from "lucide-react";
+import { MapPin, Star, Search, Loader2, Building, AlertCircle } from "lucide-react";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import type { Accommodation } from "@/types/accommodation";
 import { HalalBadge } from "@/components/ui/halal-badge";
 
@@ -74,54 +76,23 @@ function AccommodationCard({ item }: { item: Accommodation }) {
 
 export function PublicAccommodationList() {
     const [search, setSearch] = useState("");
-    const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const deferredSearch = useDeferredValue(search);
 
-    useMemo(() => {
-        fetch("/api/accommodations")
-            .then((r) => r.json())
-            .then((res) => {
-                const all = res.data as Accommodation[];
-                const approved = all.filter(
-                    (a) => a.validationStatus === "APPROVED",
-                );
-                setAccommodations(approved);
-            })
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false));
-    }, []);
+    const params = useMemo(() => {
+        const p: Record<string, string> = {};
+        if (deferredSearch.trim()) p.search = deferredSearch.trim();
+        return p;
+    }, [deferredSearch]);
 
-    const filtered = useMemo(() => {
-        if (!search.trim()) return accommodations;
-        const q = search.toLowerCase();
-        return accommodations.filter(
-            (a) =>
-                a.name.toLowerCase().includes(q) ||
-                (a.city?.toLowerCase().includes(q) ?? false) ||
-                (a.province?.toLowerCase().includes(q) ?? false),
-        );
-    }, [accommodations, search]);
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center py-16">
-                <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="flex items-center justify-center gap-2 text-red-600 bg-red-50 rounded-xl p-4">
-                <span className="text-sm">{error}</span>
-            </div>
-        );
-    }
+    const { data, isLoading, error, hasMore, loadMore } =
+        useCursorPagination<Accommodation>({
+            url: "/api/accommodations",
+            limit: 12,
+            params,
+        });
 
     return (
         <div className="space-y-8">
-            {/* {JSON.stringify(accommodations)} */}
             <div className="relative max-w-md mx-auto">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-stone-500" />
                 <input
@@ -133,19 +104,42 @@ export function PublicAccommodationList() {
                 />
             </div>
 
-            {filtered.length === 0 ? (
-                <p className="text-center text-sm text-stone-500 py-8">
-                    {search
-                        ? "Tidak ada penginapan yang sesuai"
-                        : "Belum ada penginapan tersedia"}
-                </p>
-            ) : (
+            {error && (
+                <div className="flex items-center justify-center gap-2 text-red-600 bg-red-50 rounded-xl p-4">
+                    <AlertCircle className="size-5" />
+                    <span className="text-sm">{error.message}</span>
+                </div>
+            )}
+
+            <InfiniteScroll
+                hasMore={hasMore}
+                isLoading={isLoading}
+                next={loadMore}
+                loadingComponent={
+                    <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
+                    </div>
+                }
+                endComponent={
+                    data.length > 0 ? (
+                        <p className="text-center text-sm text-stone-500 py-8">
+                            Semua penginapan telah dimuat
+                        </p>
+                    ) : !isLoading ? (
+                        <p className="text-center text-sm text-stone-500 py-8">
+                            {search
+                                ? "Tidak ada penginapan yang sesuai"
+                                : "Belum ada penginapan tersedia"}
+                        </p>
+                    ) : null
+                }
+            >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filtered.map((item) => (
+                    {data.map((item) => (
                         <AccommodationCard key={item.id} item={item} />
                     ))}
                 </div>
-            )}
+            </InfiniteScroll>
         </div>
     );
 }

@@ -1,13 +1,36 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getFacilities, createFacility } from "@/lib/services/facility-service";
+import {
+    getFacilities,
+    getPaginatedFacilities,
+    createFacility,
+} from "@/lib/services/facility-service";
 import { headers } from "next/headers";
 import { facilitySchema } from "@/lib/validations/facility.schema";
 import { ZodError } from "zod";
 import { getErrorMessage } from "@/lib/api-error";
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+
+        // Paginated mode for the admin list; bare GET still returns all
+        // facilities (used by the destination/accommodation form pickers).
+        if (
+            searchParams.has("limit") ||
+            searchParams.has("cursor") ||
+            searchParams.has("search")
+        ) {
+            const result = await getPaginatedFacilities({
+                limit: searchParams.get("limit")
+                    ? Number(searchParams.get("limit"))
+                    : undefined,
+                cursor: searchParams.get("cursor") || undefined,
+                search: searchParams.get("search") || undefined,
+            });
+            return NextResponse.json(result, { status: 200 });
+        }
+
         const facilities = await getFacilities();
         return NextResponse.json({ data: facilities }, { status: 200 });
     } catch (error: unknown) {

@@ -1,10 +1,7 @@
-import { getAccommodations } from "@/lib/services/accommodation-service";
 import { AccommodationList } from "@/components/admin/accommodations/accommodation-list";
 import { AddButton } from "@/components/admin/add-button";
 
 export default async function AccommodationsPage() {
-    const accommodations = await getAccommodations();
-
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -19,7 +16,7 @@ export default async function AccommodationsPage() {
                 <AddButton href="/accommodations/new" title="Tambah Penginapan" />
             </div>
 
-            <AccommodationList initialAccommodations={accommodations} />
+            <AccommodationList />
         </div>
     );
 }

@@ -3,13 +3,32 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { withCursorPagination } from "@/lib/pagination/cursorPagination";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const areas = await prisma.coverageArea.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-    return NextResponse.json({ data: areas }, { status: 200 });
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get("search") || undefined;
+    const result = await withCursorPagination(
+      (take, cursor, skip) =>
+        prisma.coverageArea.findMany({
+          take,
+          skip,
+          cursor: cursor ? { id: cursor } : undefined,
+          where: search
+            ? { name: { contains: search, mode: "insensitive" } }
+            : undefined,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        }),
+      {
+        limit: searchParams.get("limit")
+          ? Number(searchParams.get("limit"))
+          : undefined,
+        cursor: searchParams.get("cursor") || undefined,
+      },
+      "Coverage areas fetched successfully",
+    );
+    return NextResponse.json(result, { status: 200 });
   } catch (error: unknown) {
     return NextResponse.json(
       { error: getErrorMessage(error) },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Calendar,
@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 
 interface ItineraryDestination {
     id: string;
@@ -38,29 +40,23 @@ interface Itinerary {
 }
 
 export default function MyItineraryTab() {
-    const [itineraries, setItineraries] = useState<Itinerary[]>([]);
-    const [loading, setLoading] = useState(true);
     const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+    const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
     const router = useRouter();
 
-    const fetchItineraries = useCallback(async () => {
-        try {
-            const res = await fetch("/api/itineraries");
-            if (!res.ok) throw new Error("Gagal memuat");
-            const json = await res.json();
-            setItineraries(json.data || []);
-        } catch {
-            toast.error("Gagal memuat rencana perjalanan");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const {
+        data,
+        isLoading: loading,
+        hasMore,
+        loadMore,
+    } = useCursorPagination<Itinerary>({ url: "/api/itineraries" });
 
-    useEffect(() => {
-        fetchItineraries();
-    }, [fetchItineraries]);
+    const itineraries = useMemo(
+        () => data.filter((i) => !removedIds.has(i.id)),
+        [data, removedIds],
+    );
 
     const handleDelete = useCallback(async (id: string) => {
         setDeletingIds((prev) => new Set(prev).add(id));
@@ -69,7 +65,7 @@ export default function MyItineraryTab() {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error("Gagal menghapus");
-            setItineraries((prev) => prev.filter((i) => i.id !== id));
+            setRemovedIds((prev) => new Set(prev).add(id));
             toast.success("Rencana berhasil dihapus");
         } catch {
             toast.error("Gagal menghapus rencana");
@@ -91,7 +87,7 @@ export default function MyItineraryTab() {
         });
     }, []);
 
-    if (loading) {
+    if (loading && itineraries.length === 0) {
         return (
             <div className="flex items-center justify-center py-20">
                 <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
@@ -99,7 +95,7 @@ export default function MyItineraryTab() {
         );
     }
 
-    if (itineraries.length === 0) {
+    if (!loading && itineraries.length === 0) {
         return (
             <div className="rounded-xl border border-stone-200 bg-white p-12 shadow-sm">
                 <div className="flex flex-col items-center gap-4 text-center">
@@ -127,6 +123,7 @@ export default function MyItineraryTab() {
     }
 
     return (
+        <InfiniteScroll hasMore={hasMore} isLoading={loading} next={loadMore}>
         <div className="space-y-4">
             {itineraries.map((itin) => {
                 const isDeleting = deletingIds.has(itin.id);
@@ -186,7 +183,7 @@ export default function MyItineraryTab() {
                         {isExpanded && (
                             <div className="border-t border-stone-100 px-5 pb-5 pt-3">
                                 <div className="space-y-3">
-                                    {itin.items.map((item, idx) => (
+                                    {itin.items.map((item) => (
                                         <div
                                             // href={`/destinasi/${item.destination.slug}`}
                                             key={item.id}
@@ -234,5 +231,6 @@ export default function MyItineraryTab() {
                 );
             })}
         </div>
+        </InfiniteScroll>
     );
 }

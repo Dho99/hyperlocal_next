@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useCursorPagination } from "@/hooks/use-cursor-pagination";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { format } from "date-fns";
 import { id as localeId } from "date-fns/locale";
 import {
@@ -36,30 +38,30 @@ import {
 import Link from "next/link";
 import { Report } from "@/types/report";
 
-interface ReportListClientProps {
-  initialReports: Report[];
-}
-
-export function ReportListClient({ initialReports }: ReportListClientProps) {
-  const [reports, setReports] = useState<Report[]>(initialReports);
+export function ReportListClient() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [adminNotes, setAdminNotes] = useState("");
   const [status, setStatus] = useState<Report["status"]>("PENDING");
 
+  const {
+    data: reports,
+    isLoading,
+    hasMore,
+    loadMore,
+    refresh,
+  } = useCursorPagination<Report>({ url: "/api/reports" });
+
   const handleUpdateStatus = async () => {
     if (!selectedReport) return;
     setIsUpdating(true);
     try {
-      const response = await api.patch(`/admin/reports/${selectedReport.id}`, {
+      await api.patch(`/admin/reports/${selectedReport.id}`, {
         status,
         adminNotes,
       });
-      const updatedReport = response.data.data;
-      setReports((prev) =>
-        prev.map((r) => (r.id === updatedReport.id ? { ...r, ...updatedReport } : r))
-      );
+      refresh();
       toast.success("Status laporan berhasil diperbarui");
       setIsDetailsOpen(false);
     } catch (error) {
@@ -118,7 +120,7 @@ export function ReportListClient({ initialReports }: ReportListClientProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reports.length === 0 ? (
+          {reports.length === 0 && !isLoading ? (
             <TableRow>
               <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                 Tidak ada laporan ditemukan.
@@ -176,6 +178,11 @@ export function ReportListClient({ initialReports }: ReportListClientProps) {
           )}
         </TableBody>
       </Table>
+      <InfiniteScroll
+        hasMore={hasMore}
+        isLoading={isLoading}
+        next={loadMore}
+      />
 
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="sm:max-w-[500px]">
@@ -219,7 +226,7 @@ export function ReportListClient({ initialReports }: ReportListClientProps) {
               <div className="border-t pt-4 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Update Status</Label>
-                  <Select value={status} onValueChange={(v: any) => setStatus(v)}>
+                  <Select value={status} onValueChange={(v) => setStatus(v as Report["status"])}>
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih status baru" />
                     </SelectTrigger>

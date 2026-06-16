@@ -1,9 +1,6 @@
-import { getReports } from "@/lib/services/report-service";
 import { ReportListClient } from "@/components/admin/reports/report-list-client";
 
-export default async function ReportsPage() {
-  const reports = await getReports();
-
+export default function ReportsPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
@@ -15,7 +12,7 @@ export default async function ReportsPage() {
         </p>
       </div>
 
-      <ReportListClient initialReports={JSON.parse(JSON.stringify(reports))} />
+      <ReportListClient />
     </div>
   );
 }
