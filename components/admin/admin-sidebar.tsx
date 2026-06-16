@@ -13,16 +13,18 @@ export function AdminSidebar() {
             <div className="flex h-full flex-col">
                 <div className="flex h-16 items-center border-b border-white/10 px-5">
                     <div className="flex min-w-0 items-center gap-2.5">
-                        <Image
-                            src="/logo/Logo_Mobile.png"
-                            alt=""
-                            width={677}
-                            height={838}
-                            priority
-                            className="h-9 w-7 shrink-0 object-contain"
-                        />
+                        <div className="bg-white w-10 h-10 flex justify-center items-center rounded-md">
+                          <Image
+                              src="/logo/Logo_Mobile.png"
+                              alt=""
+                              width={677}
+                              height={838}
+                              priority
+                              className="h-9 w-7 shrink-0 object-contain"
+                          />
+                        </div>
                         <span className="truncate font-heading text-base font-extrabold leading-none text-white">
-                            Hyperlocal
+                            Safar
                         </span>
                     </div>
                 </div>

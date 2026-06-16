@@ -80,11 +80,11 @@ export default function LoginForm() {
 
     return (
         <Card className="border-none shadow-xl ring-1 ring-border/50">
-            <CardHeader className="space-y-5">
+            <CardHeader className="space-y-1">
                 <div className="flex justify-center">
                     <BrandLogo size="lg" priority />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Masuk User</CardTitle>
                     <CardDescription>
                         Masukkan email dan password Anda untuk mulai menjelajah.
