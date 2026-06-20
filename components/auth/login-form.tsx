@@ -82,7 +82,7 @@ export default function LoginForm() {
         <Card className="border-none shadow-xl ring-1 ring-border/50">
             <CardHeader className="space-y-1">
                 <div className="flex justify-center">
-                    <BrandLogo size="lg" priority />
+                    <BrandLogo size="sm" priority />
                 </div>
                 <div className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">Masuk User</CardTitle>

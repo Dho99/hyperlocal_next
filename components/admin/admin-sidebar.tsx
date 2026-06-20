@@ -1,31 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import { AdminNav } from "./admin-nav";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { LogoutDialog } from "./logout-dialog";
+import { BrandLogo } from "../ui/brand-logo";
 
 export function AdminSidebar() {
     return (
         <aside className="hidden bg-sidebar text-sidebar-foreground lg:block lg:w-64 lg:flex-none">
             <div className="flex h-full flex-col">
-                <div className="flex h-16 items-center border-b border-white/10 px-5">
+                <div className="flex h-16 items-center justify-center border-b border-white/10 px-3">
                     <div className="flex min-w-0 items-center gap-2.5">
-                        <div className="bg-white w-10 h-10 flex justify-center items-center rounded-md">
-                          <Image
-                              src="/logo/Logo_Mobile.png"
-                              alt=""
-                              width={677}
-                              height={838}
-                              priority
-                              className="h-9 w-7 shrink-0 object-contain"
-                          />
+                        <div className="bg-white p-2 flex justify-center items-center rounded-md">
+                            <BrandLogo size="sm" priority />
                         </div>
-                        <span className="truncate font-heading text-base font-extrabold leading-none text-sidebar-foreground">
-                            Safar
-                        </span>
                     </div>
                 </div>
                 <ScrollArea className="flex-1">
