@@ -3,11 +3,11 @@
 import { useEffect, useMemo } from "react";
 import {
     MapContainer,
-    TileLayer,
     Marker,
     Popup,
     useMap,
 } from "react-leaflet";
+import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
@@ -109,9 +109,10 @@ export default function DestinationContextMapClient({
                 scrollWheelZoom={false}
                 className="h-full w-full"
             >
-                <TileLayer
+                <ThemeTileLayer
+                    lightUrl="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    darkUrl="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
                 <FitBoundsControl

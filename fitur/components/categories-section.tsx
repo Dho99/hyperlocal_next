@@ -85,7 +85,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                 >
                     <Link
                         suppressHydrationWarning
-                        className="relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-stone-200/60 p-7 text-white transition hover:opacity-95"
+                        className="relative flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-border/30 p-7 text-white transition hover:opacity-95"
                         href={`/destinasi?category=${hero.id}`}
                     >
                         <div
@@ -95,12 +95,12 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                                 backgroundImage: `url('${categoryBackgroundUrls[hero.name] || '/stone-pattern.jpg'}')`,
                             }}
                         />
-                        <div suppressHydrationWarning className="absolute inset-0 bg-stone-950/20" />
+                        <div suppressHydrationWarning className="absolute inset-0 bg-black/50" />
                         <div className="relative z-10 flex items-center justify-between">
-                            <div className="flex size-14 items-center justify-center rounded-xl bg-white/80 text-emerald-900 backdrop-blur-sm">
+                            <div className="flex size-14 items-center justify-center rounded-xl bg-card/80 text-accent backdrop-blur-sm">
                                 <MapIcon className="size-6" />
                             </div>
-                            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-amber-800 backdrop-blur-sm">
+                            <span className="rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
                                 {formatNumber(hero._count.destinations)} lokasi
                             </span>
                         </div>
@@ -117,7 +117,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                     <motion.div key={category.id} variants={itemVariants}>
                         <Link
                             suppressHydrationWarning
-                            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/60 p-5 text-white transition hover:opacity-95"
+                            className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/30 p-5 text-white transition hover:opacity-95"
                             href={`/destinasi?category=${category.id}`}
                         >
                             <div
@@ -127,12 +127,12 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
                                     backgroundImage: `url('${categoryBackgroundUrls[category.name] || '/stone-pattern.jpg'}')`,
                                 }}
                             />
-                            <div suppressHydrationWarning className="absolute inset-0 bg-stone-950/20" />
+                            <div suppressHydrationWarning className="absolute inset-0 bg-black/50" />
                             <div className="relative z-10 flex items-center justify-between">
-                                <div className="flex size-11 items-center justify-center rounded-lg bg-white/80 text-emerald-900 backdrop-blur-sm">
+                                <div className="flex size-11 items-center justify-center rounded-lg bg-card/80 text-accent backdrop-blur-sm">
                                     <MapIcon className="size-5" />
                                 </div>
-                                <span className="relative z-10 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-amber-700 backdrop-blur-sm">
+                                <span className="relative z-10 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
                                     {formatNumber(category._count.destinations)} lokasi
                                 </span>
                             </div>

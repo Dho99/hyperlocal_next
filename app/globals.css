@@ -12,6 +12,10 @@
     --font-heading: var(--font-heading);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
+    --color-navbar-bg: var(--navbar-bg);
+    --color-navbar-text: var(--navbar-text);
+    --color-navbar-active: var(--navbar-active);
+    --color-outline: var(--outline);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-accent: var(--sidebar-accent);
     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -74,52 +78,63 @@
     --chart-4: #ba1a1a;
     --chart-5: #065f46;
     --radius: 0.5rem;
-    --sidebar: #fafaf9;
-    --sidebar-foreground: #1c1917;
-    --sidebar-primary: #064e3b;
+    --sidebar: #064e3b;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #047857;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #f5f5f4;
-    --sidebar-accent-foreground: #064e3b;
-    --sidebar-border: #d6d3d1;
-    --sidebar-ring: #064e3b;
+    --sidebar-accent: #065f46;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #28785e;
+    --sidebar-ring: #6ee7b7;
 
     --font-sans: "Inter", system-ui, sans-serif;
     --font-heading: "Montserrat", system-ui, sans-serif;
+
+    --navbar-bg: #FFFFFFA6;
+    --navbar-text: #57534E;
+    --navbar-active: #064E3B;
+    --outline: #d6d3d1;
 }
 
 .dark {
-    --background: #1c1917;
-    --foreground: #fafaf9;
-    --card: #1c1917;
-    --card-foreground: #fafaf9;
-    --popover: #1c1917;
-    --popover-foreground: #fafaf9;
-    --primary: #6ee7b7;
-    --primary-foreground: #022c22;
-    --secondary: #a8a29e;
-    --secondary-foreground: #1c1917;
-    --muted: #44403c;
-    --muted-foreground: #a8a29e;
-    --accent: #34d399;
-    --accent-foreground: #1c1917;
-    --destructive: #ffdad6;
-    --destructive-foreground: #93000a;
-    --border: #44403c;
-    --input: #44403c;
-    --ring: #6ee7b7;
-    --chart-1: #6ee7b7;
-    --chart-2: #a8a29e;
-    --chart-3: #fbbf24;
-    --chart-4: #ffdad6;
-    --chart-5: #34d399;
-    --sidebar: #1c1917;
-    --sidebar-foreground: #fafaf9;
-    --sidebar-primary: #6ee7b7;
-    --sidebar-primary-foreground: #022c22;
-    --sidebar-accent: #292524;
-    --sidebar-accent-foreground: #6ee7b7;
-    --sidebar-border: #44403c;
-    --sidebar-ring: #6ee7b7;
+    --background: #1A1E1B;
+    --foreground: #DFE4E0;
+    --card: #1B2622;
+    --card-foreground: #DFE4E0;
+    --popover: #1B2622;
+    --popover-foreground: #DFE4E0;
+    --primary: #306D29;
+    --primary-foreground: #A9ED99;
+    --secondary: #2D3A30;
+    --secondary-foreground: #DFE4E0;
+    --muted: #1B2622;
+    --muted-foreground: #9ca3af;
+    --accent: #94D786;
+    --accent-foreground: #1A2E1A;
+    --destructive: #FFDAD6;
+    --destructive-foreground: #93000A;
+    --border: #374151;
+    --input: #374151;
+    --ring: #94D786;
+    --chart-1: #306D29;
+    --chart-2: #94D786;
+    --chart-3: #A9ED99;
+    --chart-4: #FFDAD6;
+    --chart-5: #2D3A30;
+    --radius: 0.5rem;
+    --sidebar: #181D1A;
+    --sidebar-foreground: #DFE4E0;
+    --sidebar-primary: #306D29;
+    --sidebar-primary-foreground: #A9ED99;
+    --sidebar-accent: #262B27;
+    --sidebar-accent-foreground: #94D786;
+    --sidebar-border: #374151;
+    --sidebar-ring: #94D786;
+
+    --navbar-bg: #0f1b16;
+    --navbar-text: #d4d4d4;
+    --navbar-active: #94D786;
+    --outline: #94D786;
 }
 
 @layer base {
@@ -140,6 +155,46 @@
 
 .leaflet-container {
     z-index: 0 !important;
+}
+
+.dark .leaflet-control-zoom a {
+    background-color: #262B27 !important;
+    color: #DFE4E0 !important;
+    border-color: #2D3A30 !important;
+}
+
+.dark .leaflet-control-zoom a:hover {
+    background-color: #2D3A30 !important;
+}
+
+.dark .leaflet-control-attribution {
+    background-color: #1A1E1B !important;
+    color: #8A9B8E !important;
+}
+
+.dark .leaflet-control-attribution a {
+    color: #94D786 !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+    background-color: #1A1E1B !important;
+    color: #DFE4E0 !important;
+    border: 1px solid #2D3A30 !important;
+}
+
+.dark .leaflet-popup-tip {
+    background-color: #1A1E1B !important;
+    border: 1px solid #2D3A30 !important;
+}
+
+.dark .leaflet-popup-close-button {
+    color: #8A9B8E !important;
+}
+
+.dark .leaflet-control-container .leaflet-routing-container,
+.dark .leaflet-control-container .leaflet-routing-collapsible {
+    background-color: #1A1E1B !important;
+    color: #DFE4E0 !important;
 }
 
 .admin-scale {

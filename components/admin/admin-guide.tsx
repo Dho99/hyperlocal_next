@@ -186,7 +186,7 @@ function FlowSection({ flow }: { flow: Flow }) {
                 className="w-full flex items-center justify-between px-4 py-3 bg-muted/30 hover:bg-muted/60 transition-colors text-left"
             >
                 <div className="flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-700">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
                         {flow.icon}
                     </div>
                     <div>
@@ -203,14 +203,14 @@ function FlowSection({ flow }: { flow: Flow }) {
                 <div className="px-4 py-3 space-y-2">
                     {flow.steps.map((step, idx) => (
                         <div key={idx} className="flex gap-3 items-start">
-                            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+                            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold">
                                 {idx + 1}
                             </div>
                             <div className="flex-1 text-sm text-foreground leading-snug">
                                 {step.link ? (
                                     <Link
                                         href={step.link}
-                                        className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 hover:underline"
+                                        className="inline-flex items-center gap-1 text-primary hover:text-primary/80 hover:underline"
                                     >
                                         {step.text}
                                         <ArrowRight className="h-3 w-3" />
@@ -234,10 +234,10 @@ export function AdminGuide() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full hover:bg-[#eef7f2]"
+                    className="rounded-full hover:bg-muted"
                     title="Panduan Penggunaan"
                 >
-                    <HelpCircle className="h-4.5 w-4.5 text-[#1d1b20]" />
+                    <HelpCircle className="h-4.5 w-4.5 text-foreground" />
                 </Button>
             </SheetTrigger>
             <SheetContent
@@ -246,7 +246,7 @@ export function AdminGuide() {
             >
                 <SheetHeader className="pb-4 border-b">
                     <SheetTitle className="flex items-center gap-2 font-heading text-lg">
-                        <HelpCircle className="h-5 w-5 text-emerald-700" />
+                        <HelpCircle className="h-5 w-5 text-primary" />
                         Panduan Penggunaan Sistem
                     </SheetTitle>
                     <p className="text-sm text-muted-foreground">

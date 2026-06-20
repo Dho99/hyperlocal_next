@@ -26,7 +26,7 @@ export function NearbyPlaces({ items }: NearbyPlacesProps) {
 
     return (
         <section className="relative mx-auto max-w-7xl scroll-mt-20 overflow-hidden px-4 py-16 sm:px-6 lg:px-8" id="nearby">
-            <TopographicPattern className="pointer-events-none absolute inset-0 select-none text-emerald-900" />
+            <TopographicPattern className="pointer-events-none absolute inset-0 select-none text-accent" />
             <div className="relative grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -34,13 +34,13 @@ export function NearbyPlaces({ items }: NearbyPlacesProps) {
                     viewport={{ once: true, margin: "-80px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-amber-700">
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-accent">
                         Rekomendasi Sekitar
                     </p>
-                    <h2 className="mt-3 font-heading text-3xl font-bold tracking-tighter text-stone-900 sm:text-4xl">
+                    <h2 className="mt-3 font-heading text-3xl font-bold tracking-tighter text-foreground sm:text-4xl">
                         UMKM dan fasilitas dekat destinasi
                     </h2>
-                    <p className="mt-4 leading-7 text-stone-600">
+                    <p className="mt-4 leading-7 text-muted-foreground">
                         Daftar ini memakai UMKM yang terhubung ke kategori,
                         destinasi, sertifikasi, dan rating di database.
                     </p>
@@ -57,19 +57,19 @@ export function NearbyPlaces({ items }: NearbyPlacesProps) {
                         <motion.article
                             key={umkm.id}
                             variants={itemVariants}
-                            className="rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-5 transition-all duration-300 hover:-translate-y-1 hover:bg-white/70 hover:shadow-lg hover:shadow-stone-950/5"
+                            className="rounded-2xl border border-border/50 bg-card/70 backdrop-blur-md p-5 transition-all duration-300 hover:-translate-y-1 hover:bg-card/90 hover:shadow-lg hover:shadow-black/10"
                         >
-                            <div className="flex size-11 items-center justify-center rounded-lg bg-emerald-100 text-emerald-900">
+                            <div className="flex size-11 items-center justify-center rounded-lg bg-accent/20 text-accent">
                                 <Utensils className="size-5" />
                             </div>
-                            <h3 className="mt-4 line-clamp-2 font-heading text-base font-bold text-stone-900">
+                            <h3 className="mt-4 line-clamp-2 font-heading text-base font-bold text-foreground">
                                 {umkm.name}
                             </h3>
-                            <p className="mt-2 text-sm text-stone-600">
+                            <p className="mt-2 text-sm text-muted-foreground">
                                 {umkm.categoryName || "UMKM"} - {umkm.location}
                             </p>
                             {umkm.hasCertification && (
-                                <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800">
+                                <span className="mt-3 inline-flex rounded-full bg-accent/20 px-2.5 py-1 text-xs font-bold text-accent">
                                     Sertifikat valid
                                 </span>
                             )}

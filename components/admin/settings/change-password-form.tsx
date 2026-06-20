@@ -61,9 +61,9 @@ export function ChangePasswordForm() {
     }
 
     return (
-        <div className="rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm p-6 space-y-6">
+        <div className="rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm p-6 space-y-6">
             <div>
-                <h2 className="text-lg font-heading font-semibold text-[#1f1635]">
+                <h2 className="text-lg font-heading font-semibold text-foreground">
                     Ubah Password
                 </h2>
                 <p className="text-sm text-[#494551] mt-1">

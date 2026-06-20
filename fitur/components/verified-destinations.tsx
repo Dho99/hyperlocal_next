@@ -51,11 +51,11 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                     <motion.div key={destination.id} variants={itemVariants}>
                         <MotionLink
                             whileHover={{ scale: 1.02, y: -4 }}
-                            className="relative block rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md shadow-lg shadow-stone-950/5 transition-all duration-300 hover:bg-white/70"
+                            className="relative block rounded-2xl border border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 transition-all duration-300 hover:bg-card/90"
                             href={`/destinasi/${destination.slug}`}
                         >
                             <HalalBadge score={destination.halalScore} />
-                            <div className="relative aspect-[16/9] bg-stone-100 rounded-t-2xl overflow-hidden">
+                            <div className="relative aspect-[16/9] bg-muted rounded-t-2xl overflow-hidden">
                                 {destination.imageUrl ? (
                                     <Image
                                         alt={destination.name}
@@ -65,16 +65,16 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                                         src={destination.imageUrl}
                                     />
                                 ) : (
-                                    <div className="flex h-full items-center justify-center text-emerald-900 rounded-t-2xl overflow-hidden">
+                                    <div className="flex h-full items-center justify-center text-accent rounded-t-2xl overflow-hidden">
                                         <ShieldCheck className="size-12" />
                                     </div>
                                 )}
                             </div>
                             <div className="p-5">
-                                <h3 className="line-clamp-2 font-heading text-xl font-bold text-stone-900">
+                                <h3 className="line-clamp-2 font-heading text-xl font-bold text-foreground">
                                     {destination.name}
                                 </h3>
-                                <p className="mt-2 flex items-center gap-2 text-sm text-stone-600">
+                                <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                                     <MapPin className="size-4 shrink-0" />
                                     {destination.location}
                                 </p>

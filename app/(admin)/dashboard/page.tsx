@@ -71,7 +71,7 @@ export default async function DashboardPage() {
             value: dashboard.stats.totalDestinations,
             icon: Map,
             tone: "bg-[#ccfbf1] text-[#0f766e]",
-            valueTone: "text-[#1d1b20]",
+            valueTone: "text-foreground",
         },
         {
             label: "HALAL",
@@ -110,14 +110,14 @@ export default async function DashboardPage() {
         <div className="space-y-4 pb-5">
             <section className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <h1 className="font-heading text-2xl font-bold leading-tight tracking-normal text-[#1d1b20]">
+                    <h1 className="font-heading text-2xl font-bold leading-tight tracking-normal text-foreground">
                         Dashboard Overview
                     </h1>
-                    <p className="mt-1 text-sm text-[#494551]">
+                    <p className="mt-1 text-sm text-muted-foreground">
                         Ringkasan data pariwisata halal terkini.
                     </p>
                 </div>
-                <Button className="h-8 gap-2 rounded-lg bg-[#047857] px-3.5 text-xs font-semibold text-white shadow-sm hover:bg-[#065f46]">
+                <Button className="h-8 gap-2 rounded-lg bg-accent px-3.5 text-xs font-semibold text-white shadow-sm hover:bg-accent/80">
                     <Download className="h-3.5 w-3.5" />
                     Unduh Laporan
                 </Button>
@@ -127,7 +127,7 @@ export default async function DashboardPage() {
                 {stats.map((stat) => (
                     <Card
                         key={stat.label}
-                        className="min-h-0 rounded-lg border-[#d7e5dc] bg-white shadow-none"
+                        className="min-h-0 rounded-lg border-border bg-card shadow-none"
                     >
                         <CardContent className="flex items-center gap-4 p-4">
                             <div
@@ -150,12 +150,12 @@ export default async function DashboardPage() {
                                     </p>
                                     <Badge
                                         variant="outline"
-                                        className="h-6 rounded-md border-transparent bg-[#eef7f2] px-2.5 text-[11px] font-semibold tracking-[0.14em] text-[#1d1b20]"
+                                        className="h-6 rounded-md border-transparent bg-muted px-2.5 text-[11px] font-semibold tracking-[0.14em] text-foreground"
                                     >
                                         {stat.label}
                                     </Badge>
                                 </div>
-                                <p className="truncate text-sm text-[#494551]">
+                                <p className="truncate text-sm text-muted-foreground">
                                     {stat.title}
                                 </p>
                             </div>
@@ -165,8 +165,8 @@ export default async function DashboardPage() {
             </section>
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(300px,0.86fr)]">
-                <Card className="overflow-hidden rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+                <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
                         <CardTitle className="font-heading text-xl font-semibold">
                             Peta Persebaran
                         </CardTitle>
@@ -176,13 +176,13 @@ export default async function DashboardPage() {
                             </Badge>
                             <Badge
                                 variant="outline"
-                                className="h-7 rounded-full border-[#cfe0d6] bg-[#f7fbf8] px-3.5 text-xs font-semibold text-[#1d1b20]"
+                                className="h-7 rounded-full border-border bg-background px-3.5 text-xs font-semibold text-foreground"
                             >
                                 Fasilitas
                             </Badge>
                             <Badge
                                 variant="outline"
-                                className="h-7 rounded-full border-[#cfe0d6] bg-[#f7fbf8] px-3.5 text-xs font-semibold text-[#1d1b20]"
+                                className="h-7 rounded-full border-border bg-background px-3.5 text-xs font-semibold text-foreground"
                             >
                                 UMKM
                             </Badge>
@@ -193,12 +193,12 @@ export default async function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
+                <Card className="rounded-xl border-border bg-card shadow-none">
                     <CardHeader className="px-5 pb-5 pt-6">
                         <CardTitle className="font-heading text-xl font-semibold">
                             Halal Readiness
                         </CardTitle>
-                        <CardDescription className="text-sm text-[#494551]">
+                        <CardDescription className="text-sm text-muted-foreground">
                             Skor kesiapan berdasarkan kategori.
                         </CardDescription>
                     </CardHeader>
@@ -206,7 +206,7 @@ export default async function DashboardPage() {
                         {dashboard.readiness.map((item, index) => (
                             <div key={item.label} className="space-y-3">
                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="font-medium text-[#1d1b20]">
+                                    <span className="font-medium text-foreground">
                                         {item.label}
                                     </span>
                                     <span
@@ -222,7 +222,7 @@ export default async function DashboardPage() {
                                 </div>
                                 <Progress
                                     value={item.value}
-                                    className="h-2.5 bg-[#dbe7df]"
+                                    className="h-2.5 bg-muted"
                                     indicatorClassName={
                                         index === 1
                                             ? "bg-[#765b00]"
@@ -238,13 +238,13 @@ export default async function DashboardPage() {
             </section>
 
             <section>
-                <Card className="overflow-hidden rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+                <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
                         <div>
                             <CardTitle className="font-heading text-xl font-semibold">
                                 Daftar Validasi Terbaru
                             </CardTitle>
-                            <CardDescription className="mt-1 text-sm text-[#494551]">
+                            <CardDescription className="mt-1 text-sm text-muted-foreground">
                                 Menunggu tindakan verifikator.
                             </CardDescription>
                         </div>
@@ -259,7 +259,7 @@ export default async function DashboardPage() {
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[820px] text-xs">
-                                <thead className="border-b border-[#d7e5dc] bg-white text-xs uppercase tracking-[0.16em] text-[#1d1b20]">
+                                <thead className="border-b border-border bg-card text-xs uppercase tracking-[0.16em] text-foreground">
                                     <tr>
                                         <th className="px-5 py-4 text-left font-semibold">
                                             Nama Destinasi
@@ -288,13 +288,13 @@ export default async function DashboardPage() {
                                                 key={row.id}
                                                 className="border-b border-[#dbe7df]"
                                             >
-                                                <td className="px-7 py-6 font-medium text-[#1d1b20]">
+                                                <td className="px-7 py-6 font-medium text-foreground">
                                                     {row.name}
                                                 </td>
-                                                <td className="px-7 py-6 text-[#494551]">
+                                                <td className="px-7 py-6 text-muted-foreground">
                                                     {row.category}
                                                 </td>
-                                                <td className="px-7 py-6 text-[#494551]">
+                                                <td className="px-7 py-6 text-muted-foreground">
                                                     {formatDate(row.date)}
                                                 </td>
                                                 <td className="px-7 py-6">
@@ -337,13 +337,13 @@ export default async function DashboardPage() {
             </section>
 
             <section className="grid gap-5 xl:grid-cols-1">
-                <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+                <Card className="rounded-xl border-border bg-card shadow-none">
+                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
                         <div>
                             <CardTitle className="font-heading text-xl font-semibold">
                                 Trending Saat Ini
                             </CardTitle>
-                            <CardDescription className="mt-1 text-sm text-[#494551]">
+                            <CardDescription className="mt-1 text-sm text-muted-foreground">
                                 Destinasi dengan jumlah kunjungan terbanyak.
                             </CardDescription>
                         </div>
@@ -365,7 +365,7 @@ export default async function DashboardPage() {
                                             <p className="truncate font-semibold text-sm">
                                                 {destination.name}
                                             </p>
-                                            <p className="truncate text-xs text-[#494551]">
+                                            <p className="truncate text-xs text-muted-foreground">
                                                 {destination.category} •{" "}
                                                 {destination.city}
                                             </p>
@@ -386,8 +386,8 @@ export default async function DashboardPage() {
             <section className="grid gap-5 pt-1 xl:grid-cols-3">
                 <TrendChart />
 
-                <Card className="flex min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="flex flex-row items-start justify-between border-b border-[#d7e5dc] px-5 py-4">
+                <Card className="flex min-h-[340px] flex-col rounded-xl border-border bg-card shadow-none">
+                    <CardHeader className="flex flex-row items-start justify-between border-b border-border px-5 py-4">
                         <div>
                             <CardTitle className="font-heading text-lg">
                                 Top Destinasi
@@ -407,7 +407,7 @@ export default async function DashboardPage() {
                                         key={destination.id}
                                         className="flex items-center gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
                                     >
-                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-[#eef7f2]">
+                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
                                             {destination.imageUrl ? (
                                                 <Image
                                                     src={destination.imageUrl}
@@ -426,7 +426,7 @@ export default async function DashboardPage() {
                                             <p className="truncate text-sm font-semibold">
                                                 #{index + 1} {destination.name}
                                             </p>
-                                            <p className="truncate text-xs text-[#494551]">
+                                            <p className="truncate text-xs text-muted-foreground">
                                                 {destination.category} •{" "}
                                                 {destination.city}
                                             </p>
@@ -436,7 +436,7 @@ export default async function DashboardPage() {
                                                 <Star className="h-4 w-4 fill-current" />
                                                 {destination.rating.toFixed(1)}
                                             </span>
-                                            <span className="inline-flex items-center gap-1 text-xs text-[#494551]">
+                                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                                                 <Eye className="h-3 w-3" />
                                                 {destination.engagement}
                                             </span>
@@ -444,12 +444,12 @@ export default async function DashboardPage() {
                                     </div>
                                 ))
                         ) : (
-                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-[#f7fbf8] px-5 text-center">
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-background px-5 text-center">
                                 <BarChart3 className="mb-3 h-7 w-7 text-[#047857]" />
-                                <p className="text-sm font-semibold text-[#1d1b20]">
+                                <p className="text-sm font-semibold text-foreground">
                                     Belum ada top destinasi
                                 </p>
-                                <p className="mt-1 max-w-52 text-xs text-[#494551]">
+                                <p className="mt-1 max-w-52 text-xs text-muted-foreground">
                                     Data akan muncul setelah destinasi punya
                                     rating atau interaksi.
                                 </p>
@@ -458,8 +458,8 @@ export default async function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="flex min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
-                    <CardHeader className="border-b border-[#d7e5dc] px-5 py-4">
+                <Card className="flex min-h-[340px] flex-col rounded-xl border-border bg-card shadow-none">
+                    <CardHeader className="border-b border-border px-5 py-4">
                         <CardTitle className="font-heading text-lg">
                             Aktivitas Terbaru
                         </CardTitle>
@@ -487,10 +487,10 @@ export default async function DashboardPage() {
                                         <p className="text-sm font-medium">
                                             {activity.title}
                                         </p>
-                                        <p className="truncate text-xs text-[#494551]">
+                                        <p className="truncate text-xs text-muted-foreground">
                                             {activity.destination}
                                         </p>
-                                        <p className="mt-1 inline-flex items-center gap-1 text-xs text-[#494551]">
+                                        <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
                                             <CalendarClock className="h-3.5 w-3.5" />
                                             {formatDate(activity.createdAt)}
                                         </p>
@@ -498,12 +498,12 @@ export default async function DashboardPage() {
                                 </div>
                                 ))
                         ) : (
-                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-[#f7fbf8] px-5 text-center">
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-background px-5 text-center">
                                 <Activity className="mb-3 h-7 w-7 text-[#047857]" />
-                                <p className="text-sm font-semibold text-[#1d1b20]">
+                                <p className="text-sm font-semibold text-foreground">
                                     Belum ada aktivitas
                                 </p>
-                                <p className="mt-1 max-w-52 text-xs text-[#494551]">
+                                <p className="mt-1 max-w-52 text-xs text-muted-foreground">
                                     Sinyal terbaru akan tampil setelah pengguna
                                     mulai menyimpan atau membuka rute.
                                 </p>

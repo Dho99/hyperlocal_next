@@ -28,11 +28,11 @@ export function SectionHeading({
                 <h2 className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl">
                     {title}
                 </h2>
-                <p className="mt-2 text-base text-stone-600">{eyebrow}</p>
+                <p className="mt-2 text-base text-muted-foreground">{eyebrow}</p>
             </div>
             {action && (
                 <a
-                    className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-emerald-900 sm:inline-flex"
+                    className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-accent sm:inline-flex"
                     href={actionHref}
                 >
                     {action}

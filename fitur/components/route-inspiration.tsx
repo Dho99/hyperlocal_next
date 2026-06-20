@@ -50,7 +50,7 @@ export function RouteInspiration({ items }: RouteInspirationProps) {
                     <motion.div key={route.location} variants={itemVariants}>
                         <MotionLink
                             whileHover={{ scale: 1.02 }}
-                            className="group relative block aspect-[16/9] overflow-hidden rounded-2xl border border-white/20 bg-white shadow-lg shadow-stone-900/5"
+                            className="group relative block aspect-[16/9] overflow-hidden rounded-2xl border border-border/30 bg-card shadow-lg shadow-black/10"
                             href={`/destinasi?search=${encodeURIComponent(route.location)}`}
                         >
                             {route.imageUrl ? (

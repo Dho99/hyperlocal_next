@@ -3,13 +3,13 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import {
     MapContainer,
-    TileLayer,
     Marker,
     Popup,
     Circle,
     GeoJSON,
     useMap,
 } from "react-leaflet";
+import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { toast } from "sonner";
@@ -229,8 +229,8 @@ export default function PetaMapClient() {
 
     if (loading) {
         return (
-            <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-emerald-50">
-                <p className="text-sm text-stone-500">Memuat peta...</p>
+            <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-muted">
+                <p className="text-sm text-muted-foreground">Memuat peta...</p>
             </div>
         );
     }
@@ -264,13 +264,13 @@ export default function PetaMapClient() {
             <button
                 type="button"
                 onClick={() => setIsSidebarOpen((prev) => !prev)}
-                className="absolute top-1/2 -translate-y-1/2 z-20 -ml-4 rounded-full bg-white border border-stone-200 shadow-md p-1.5 hover:bg-stone-50 transition-all duration-300"
+                className="absolute top-1/2 -translate-y-1/2 z-20 -ml-4 rounded-full bg-card border border-border shadow-md p-1.5 hover:bg-muted transition-all duration-300"
                 style={{ left: isSidebarOpen ? "420px" : "40px" }}
             >
                 {isSidebarOpen ? (
-                    <ChevronLeft className="size-8 text-stone-600" />
+                    <ChevronLeft className="size-8 text-muted-foreground" />
                 ) : (
-                    <ChevronRight className="size-8 text-stone-600" />
+                    <ChevronRight className="size-8 text-muted-foreground" />
                 )}
             </button>
 
@@ -281,10 +281,9 @@ export default function PetaMapClient() {
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
-                    <TileLayer
-                        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    />
+                <ThemeTileLayer
+                    lightUrl="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                />
 
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 
@@ -354,11 +353,11 @@ export default function PetaMapClient() {
                             >
                                 <Popup>
                                     <div className="p-1">
-                                        <p className="m-0 text-sm font-bold text-emerald-900">
+                                        <p className="m-0 text-sm font-bold text-foreground">
                                             {d.name}
                                         </p>
                                         {d.category?.name && (
-                                            <p className="m-0 mt-0.5 text-xs text-stone-500">
+                                            <p className="m-0 mt-0.5 text-xs text-muted-foreground">
                                                 {d.category.name}
                                             </p>
                                         )}
@@ -398,12 +397,12 @@ export default function PetaMapClient() {
                                     >
                                         <Popup>
                                             <div className="p-1">
-                                                <p className="m-0 text-sm font-bold text-emerald-900">
+                                                <p className="m-0 text-sm font-bold text-foreground">
                                                     {dhf.facility?.name ??
                                                         "Fasilitas"}
                                                 </p>
                                                 {dhf.facility?.facilityType && (
-                                                    <p className="m-0 mt-0.5 text-xs text-stone-500 capitalize">
+                                                    <p className="m-0 mt-0.5 text-xs text-muted-foreground capitalize">
                                                         {dhf.facility.facilityType.replace(
                                                             /_/g,
                                                             " ",

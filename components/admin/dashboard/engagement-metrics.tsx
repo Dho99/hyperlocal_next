@@ -51,8 +51,8 @@ export default function EngagementMetrics() {
 
   return (
     <section className="space-y-5">
-      <Card className="rounded-xl border-[#d7e5dc] bg-white shadow-none">
-        <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+      <Card className="rounded-xl border-border bg-card shadow-none">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
           <div>
             <CardTitle className="font-heading text-xl font-semibold">
               Engagement Metrics
@@ -66,7 +66,7 @@ export default function EngagementMetrics() {
         <CardContent className="p-5">
           <div className="grid gap-4 xl:grid-cols-2">
             {/* Top Bookmarked Destinations */}
-            <div className="rounded-lg border border-[#dbe7df] p-4">
+            <div className="rounded-lg border border-border p-4">
               <h3 className="mb-3 flex items-center gap-2 text-xs font-bold text-stone-700">
                 <Bookmark className="h-4 w-4 text-[#047857]" />
                 Destinasi Paling Banyak Disimpan
@@ -103,7 +103,7 @@ export default function EngagementMetrics() {
             </div>
 
             {/* Top WhatsApp Clicked UMKMs */}
-            <div className="rounded-lg border border-[#dbe7df] p-4">
+            <div className="rounded-lg border border-border p-4">
               <h3 className="mb-3 flex items-center gap-2 text-xs font-bold text-stone-700">
                 <MessageCircle className="h-4 w-4 text-[#25D366]" />
                 UMKM Populer (Klik WhatsApp Tertinggi)
@@ -143,7 +143,7 @@ export default function EngagementMetrics() {
           {/* CTA Summary Bar */}
           {summary && (
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+              <div className="flex items-center gap-3 rounded-lg border border-border p-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 text-orange-700">
                   <Navigation className="h-4 w-4" />
                 </div>
@@ -156,7 +156,7 @@ export default function EngagementMetrics() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+              <div className="flex items-center gap-3 rounded-lg border border-border p-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 text-green-700">
                   <MessageCircle className="h-4 w-4" />
                 </div>
@@ -169,7 +169,7 @@ export default function EngagementMetrics() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border border-[#dbe7df] p-3">
+              <div className="flex items-center gap-3 rounded-lg border border-border p-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
                   <Bookmark className="h-4 w-4" />
                 </div>

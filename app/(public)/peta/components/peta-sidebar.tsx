@@ -85,11 +85,11 @@ export default function PetaSidebar({
 
         return (
             <aside
-                className={`flex max-h-[calc(100dvh-4rem)] h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+                className={`flex max-h-[calc(100dvh-4rem)] h-full min-h-0 flex-col border-r border-border bg-card transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
             >
-                <div className="shrink-0 space-y-4 border-b border-stone-200 p-4">
+                <div className="shrink-0 space-y-4 border-b border-border p-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="font-heading text-lg font-semibold text-emerald-900">
+                        <h2 className="font-heading text-lg font-semibold text-foreground">
                             Detail Destinasi
                         </h2>
                         <Button
@@ -123,18 +123,18 @@ export default function PetaSidebar({
                         </div>
 
                         {d.address && (
-                            <p className="flex items-start gap-2 text-sm text-stone-600">
-                                <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-700" />
+                            <p className="flex items-start gap-2 text-sm text-muted-foreground">
+                                <MapPin className="mt-0.5 size-4 shrink-0 text-accent" />
                                 {d.address}
                             </p>
                         )}
 
                         {d.rating != null && (
-                            <div className="flex items-center gap-2 text-sm text-stone-600">
-                                <Star className="size-4 text-yellow-500" />
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Star className="size-4 text-amber-400" />
                                 {d.rating.toFixed(1)}
                                 {d.reviewCount != null && (
-                                    <span className="text-stone-500">
+                                    <span className="text-muted-foreground">
                                         ({d.reviewCount} ulasan)
                                     </span>
                                 )}
@@ -145,21 +145,21 @@ export default function PetaSidebar({
 
                         {facilities.length > 0 && (
                             <div>
-                                <h4 className="mb-2 text-sm font-semibold text-emerald-900">
+                                <h4 className="mb-2 text-sm font-semibold text-foreground">
                                     Fasilitas Halal ({facilities.length})
                                 </h4>
                                 <div className="space-y-2">
                                     {facilities.map((dhf) => (
                                         <div
                                             key={dhf.id}
-                                            className="rounded-lg bg-emerald-50 px-3 py-2 text-sm"
+                                            className="rounded-lg bg-accent/10 px-3 py-2 text-sm"
                                         >
-                                            <p className="font-medium text-emerald-900">
+                                            <p className="font-medium text-foreground">
                                                 {dhf.facility?.name ??
                                                     "Fasilitas"}
                                             </p>
                                             {dhf.facility?.facilityType && (
-                                                <p className="text-xs text-stone-500 capitalize">
+                                                <p className="text-xs text-muted-foreground capitalize">
                                                     {dhf.facility.facilityType.replace(
                                                         /_/g,
                                                         " ",
@@ -168,7 +168,7 @@ export default function PetaSidebar({
                                             )}
                                             {dhf.latitude != null &&
                                                 dhf.longitude != null && (
-                                                    <p className="mt-1 text-[10px] font-mono text-stone-500">
+                                                    <p className="mt-1 text-[10px] font-mono text-muted-foreground">
                                                         {dhf.latitude.toFixed(
                                                             6,
                                                         )}
@@ -186,12 +186,12 @@ export default function PetaSidebar({
 
                         {d.description && (
                             <div>
-                                <h4 className="mb-1 text-sm font-semibold text-emerald-900">
+                                <h4 className="mb-1 text-sm font-semibold text-foreground">
                                     Deskripsi
                                 </h4>
                                 <RichTextRenderer
                                     content={d.description}
-                                    className="text-sm text-stone-600"
+                                    className="text-sm text-muted-foreground"
                                 />
                             </div>
                         )}
@@ -203,13 +203,13 @@ export default function PetaSidebar({
 
     return (
         <aside
-            className={`flex max-h-[calc(100dvh-4rem)] overflow-hidden h-full min-h-0 flex-col border-r border-stone-200 bg-white transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
-        >
-            <div className="shrink-0 space-y-3 border-b border-stone-200 p-4">
-                <div className="flex items-center justify-between ">
-                    <h2 className="font-heading text-lg font-semibold text-emerald-900">
-                        Peta Interaktif
-                    </h2>
+                    className={`flex max-h-[calc(100dvh-4rem)] overflow-hidden h-full min-h-0 flex-col border-r border-border bg-card transition-all duration-300 ${isSidebarOpen ? "w-[420px]" : "w-0 overflow-hidden"}`}
+                >
+                    <div className="shrink-0 space-y-3 border-b border-border p-4">
+                        <div className="flex items-center justify-between ">
+                            <h2 className="font-heading text-lg font-semibold text-foreground">
+                                Peta Interaktif
+                            </h2>
                     <Button
                         variant="outline"
                         size="sm"
@@ -222,7 +222,7 @@ export default function PetaSidebar({
                 </div>
 
                 <div className="relative">
-                    <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-stone-500" />
+                    <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         placeholder="Cari destinasi..."
                         value={searchQuery}
@@ -233,7 +233,7 @@ export default function PetaSidebar({
 
                 {coverageAreas.length > 0 && (
                     <div className="flex items-center gap-2 ">
-                        <Globe className="size-4 shrink-0 text-stone-500" />
+                        <Globe className="size-4 shrink-0 text-muted-foreground" />
                         <Select
                             value={selectedAreaId ?? "all"}
                             onValueChange={(v) =>
@@ -256,13 +256,13 @@ export default function PetaSidebar({
                 )}
 
                 {locationDenied && (
-                    <p className="text-xs text-amber-600">
+                    <p className="text-xs text-amber-400">
                         Lokasi tidak diizinkan. Gunakan pusat kota default.
                     </p>
                 )}
 
                 <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-500">
+                    <label className="mb-1 block text-xs font-medium text-muted-foreground">
                         Radius: {radius} km
                     </label>
                     <div className="flex items-center gap-2">
@@ -273,8 +273,8 @@ export default function PetaSidebar({
                                 onClick={() => onRadiusChange(km)}
                                 className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                                     radius === km
-                                        ? "bg-emerald-100 text-emerald-900 ring-1 ring-emerald-700/30"
-                                        : "bg-stone-100 text-stone-600 hover:bg-emerald-50"
+                                        ? "bg-accent/20 text-accent ring-1 ring-accent/30"
+                                        : "bg-muted text-muted-foreground hover:bg-accent/10"
                                 }`}
                             >
                                 {km} km
@@ -288,7 +288,7 @@ export default function PetaSidebar({
                         step={1}
                         value={radius}
                         onChange={(e) => onRadiusChange(Number(e.target.value))}
-                        className="mt-2 w-full accent-emerald-700"
+                        className="mt-2 w-full accent-accent"
                     />
                 </div>
 
@@ -298,8 +298,8 @@ export default function PetaSidebar({
                         onClick={() => onCategoryChange(null)}
                         className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                             activeCategory === null
-                                ? "bg-emerald-800 text-white"
-                                : "bg-stone-100 text-stone-600 hover:bg-emerald-50"
+                                ? "bg-accent text-white"
+                                : "bg-muted text-muted-foreground hover:bg-accent/10"
                         }`}
                     >
                         Semua
@@ -317,7 +317,7 @@ export default function PetaSidebar({
                                 className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                                     isActive
                                         ? "text-white"
-                                        : "bg-stone-100 text-stone-600 hover:bg-emerald-50"
+                                        : "bg-muted text-muted-foreground hover:bg-accent/10"
                                 }`}
                                 style={
                                     isActive
@@ -342,7 +342,7 @@ export default function PetaSidebar({
                                     backgroundColor: getCategoryColor(cat),
                                 }}
                             />
-                            <span className="text-xs text-stone-600">
+                            <span className="text-xs text-muted-foreground">
                                 {cat}
                             </span>
                         </div>
@@ -350,14 +350,14 @@ export default function PetaSidebar({
                 </div>
             </div>
 
-            <div className="shrink-0 border-b border-stone-200 px-4 py-2 text-xs font-medium text-stone-500">
+            <div className="shrink-0 border-b border-border px-4 py-2 text-xs font-medium text-muted-foreground">
                 {filteredDestinations.length} destinasi ditemukan
             </div>
 
             <ScrollArea className="flex-1 min-h-0">
-                <div className="divide-y divide-stone-200">
+                <div className="divide-y divide-border">
                     {filteredDestinations.length === 0 && (
-                        <div className="flex flex-col items-center justify-center py-12 text-center text-sm text-stone-500">
+                        <div className="flex flex-col items-center justify-center py-12 text-center text-sm text-muted-foreground">
                             <MapPin className="mb-2 size-8 opacity-40" />
                             Tidak ada destinasi ditemukan
                         </div>
@@ -369,9 +369,9 @@ export default function PetaSidebar({
                                 key={d.id}
                                 type="button"
                                 onClick={() => onDestinationSelect(d)}
-                                className="w-full px-4 py-3 text-left transition hover:bg-emerald-50"
+                                className="w-full px-4 py-3 text-left transition hover:bg-accent/10"
                             >
-                                <p className="text-sm font-medium text-emerald-900">
+                                <p className="text-sm font-medium text-foreground">
                                     {d.name}
                                 </p>
                                 <div className="mt-1 flex items-center gap-2">
@@ -388,13 +388,13 @@ export default function PetaSidebar({
                                         </Badge>
                                     )}
                                     {d.rating != null && (
-                                        <span className="text-xs text-stone-500">
+                                        <span className="text-xs text-muted-foreground">
                                             ★ {d.rating.toFixed(1)}
                                         </span>
                                     )}
                                 </div>
                                 {d.address && (
-                                    <p className="mt-1 truncate text-xs text-stone-500">
+                                    <p className="mt-1 truncate text-xs text-muted-foreground">
                                         {d.address}
                                     </p>
                                 )}

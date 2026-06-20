@@ -111,21 +111,21 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
         <div className="mx-auto min-h-screen max-w-7xl px-4 py-8">
             <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-2xl font-bold text-foreground">
                         Hasil Pencarian
                     </h1>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-muted-foreground">
                         Menampilkan {umkms.length} hasil
                         {searchQuery && ` untuk "${searchQuery}"`}
                     </p>
                 </div>
-                <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 p-1">
+                <div className="flex items-center gap-2 rounded-lg border border-border bg-muted p-1">
                     <button
                         onClick={() => setViewMode("list")}
                         className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition ${
                             viewMode === "list"
-                                ? "bg-white text-emerald-800 shadow-sm"
-                                : "text-gray-500 hover:text-emerald-800 hover:bg-gray-200"
+                                ? "bg-card text-accent shadow-sm"
+                                : "text-muted-foreground hover:text-accent hover:bg-muted"
                         }`}
                     >
                         <List size={16} />
@@ -135,8 +135,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                         onClick={() => setViewMode("map")}
                         className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm transition ${
                             viewMode === "map"
-                                ? "bg-white text-emerald-800 shadow-sm"
-                                : "text-gray-500 hover:text-emerald-800 hover:bg-gray-200"
+                                ? "bg-card text-accent shadow-sm"
+                                : "text-muted-foreground hover:text-accent hover:bg-muted"
                         }`}
                     >
                         <Map size={16} />
@@ -147,9 +147,9 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
 
             <div className="flex flex-col gap-8 lg:flex-row">
                 <aside className="w-full shrink-0 lg:w-64">
-                    <div className="sticky top-28 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+                    <div className="sticky top-28 rounded-xl border border-border/50 bg-card p-6 shadow-sm">
                         <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-foreground">
                                 Filter
                             </h3>
                             <button
@@ -158,14 +158,14 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                     setSelectedRating(null);
                                     setSearchQuery("");
                                 }}
-                                className="text-sm text-emerald-800 hover:underline"
+                                className="text-sm text-accent hover:underline"
                             >
                                 Reset
                             </button>
                         </div>
 
-                        <div className="mb-6 border-t border-gray-100 pt-4">
-                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <div className="mb-6 border-t border-border/50 pt-4">
+                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 KATEGORI
                             </h4>
                             <div className="space-y-2">
@@ -180,9 +180,9 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                 cat,
                                             )}
                                             onChange={() => toggleCategory(cat)}
-                                            className="h-4 w-4 rounded border-gray-300 bg-gray-50 text-emerald-800 focus:ring-emerald-500"
+                                            className="h-4 w-4 rounded border-border bg-muted text-accent focus:ring-accent"
                                         />
-                                        <span className="text-sm text-gray-900">
+                                        <span className="text-sm text-foreground">
                                             {cat}
                                         </span>
                                     </label>
@@ -190,8 +190,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                             </div>
                         </div>
 
-                        <div className="mb-6 border-t border-gray-100 pt-4">
-                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <div className="mb-6 border-t border-border/50 pt-4">
+                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 HALAL GRADE
                             </h4>
                             <div className="space-y-2">
@@ -202,9 +202,9 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                     >
                                         <input
                                             type="checkbox"
-                                            className="h-4 w-4 rounded border-gray-300 bg-gray-50 text-emerald-800 focus:ring-emerald-500"
+                                            className="h-4 w-4 rounded border-border bg-muted text-accent focus:ring-accent"
                                         />
-                                        <span className="text-sm text-gray-900">
+                                        <span className="text-sm text-foreground">
                                             {filter.label}
                                         </span>
                                     </label>
@@ -212,8 +212,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                             </div>
                         </div>
 
-                        <div className="mb-6 border-t border-gray-100 pt-4">
-                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <div className="mb-6 border-t border-border/50 pt-4">
+                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 RATING
                             </h4>
                             <div className="space-y-2">
@@ -231,9 +231,9 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                             onChange={() =>
                                                 setSelectedRating(filter.value)
                                             }
-                                            className="h-4 w-4 border-gray-300 bg-gray-50 text-emerald-800 focus:ring-emerald-500"
+                                            className="h-4 w-4 border-border bg-muted text-accent focus:ring-accent"
                                         />
-                                        <div className="flex items-center text-amber-600">
+                                        <div className="flex items-center text-amber-400">
                                             {Array.from({ length: 5 }).map(
                                                 (_, i) => (
                                                     <Star
@@ -241,13 +241,13 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         size={16}
                                                         className={
                                                             i < filter.value
-                                                                ? "fill-current text-amber-500"
-                                                                : "text-gray-300"
+                                                                ? "fill-current text-amber-400"
+                                                                : "text-muted-foreground/60"
                                                         }
                                                     />
                                                 ),
                                             )}
-                                            <span className="ml-1 text-sm text-gray-900">
+                                            <span className="ml-1 text-sm text-foreground">
                                                 {filter.label}
                                             </span>
                                         </div>
@@ -256,7 +256,7 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                             </div>
                         </div>
 
-                        <button className="w-full rounded-lg bg-emerald-800 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90">
+                        <button                             className="w-full rounded-lg bg-accent py-2 text-sm font-medium text-white transition-opacity hover:opacity-90">
                             Terapkan Filter
                         </button>
                     </div>
@@ -265,14 +265,14 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                 <div className="flex-1 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {isLoading && (
                         <div className="col-span-full flex h-64 items-center justify-center">
-                            <Loader2 className="h-8 w-8 animate-spin text-emerald-800" />
+                            <Loader2 className="h-8 w-8 animate-spin text-accent" />
                         </div>
                     )}
 
                     {error && (
                         <div className="col-span-full flex h-64 flex-col items-center justify-center text-center">
-                            <AlertCircle className="mb-4 h-10 w-10 text-red-500" />
-                            <p className="text-sm text-red-600">{error}</p>
+                            <AlertCircle className="mb-4 h-10 w-10 text-destructive" />
+                            <p className="text-sm text-destructive">{error}</p>
                         </div>
                     )}
 
@@ -280,8 +280,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                         <>
                             {umkms.length === 0 ? (
                                 <div className="col-span-full flex h-64 flex-col items-center justify-center text-center">
-                                    <Store className="mb-4 h-12 w-12 text-gray-300" />
-                                    <p className="text-sm text-gray-500">
+                                    <Store className="mb-4 h-12 w-12 text-muted-foreground/60" />
+                                    <p className="text-sm text-muted-foreground">
                                         Tidak ada UMKM ditemukan
                                     </p>
                                 </div>
@@ -295,7 +295,7 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                         <Link
                                             key={umkm.id}
                                             href={`/umkm/${umkm.slug}`}
-                                            className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg"
+                                            className="group flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm transition-shadow duration-300 hover:shadow-lg"
                                         >
                                             <div className="relative h-48 overflow-hidden">
                                                 {cover ? (
@@ -306,8 +306,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                                                     />
                                                 ) : (
-                                                    <div className="flex h-full items-center justify-center bg-gray-100">
-                                                        <Store className="h-10 w-10 text-gray-400" />
+                                                    <div className="flex h-full items-center justify-center bg-muted">
+                                                        <Store className="h-10 w-10 text-muted-foreground" />
                                                     </div>
                                                 )}
                                                 {badge && (
@@ -315,8 +315,8 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${
                                                             badge.variant ===
                                                             "certified"
-                                                                ? "bg-green-600/90 text-white"
-                                                                : "bg-amber-100/90 text-amber-800"
+                                                    ? "bg-accent/90 text-white"
+                                                            : "bg-amber-500/20 text-amber-400"
                                                         }`}
                                                     >
                                                         <BadgeCheck
@@ -330,13 +330,13 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         e.preventDefault();
                                                         toggleFavorite(umkm.id);
                                                     }}
-                                                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/50 text-gray-700 backdrop-blur-sm transition-colors hover:text-red-500"
+                                                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-card/50 text-muted-foreground backdrop-blur-sm transition-colors hover:text-destructive"
                                                 >
                                                     <Heart
                                                         size={16}
                                                         className={
                                                             isFav
-                                                                ? "fill-current text-red-500"
+                                                                ? "fill-current text-destructive"
                                                                 : ""
                                                         }
                                                     />
@@ -344,10 +344,10 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                             </div>
                                             <div className="flex flex-1 flex-col p-4">
                                                 <div className="mb-2 flex items-start justify-between">
-                                                    <h2 className="line-clamp-1 text-base font-semibold text-gray-900">
+                                                    <h2 className="line-clamp-1 text-base font-semibold text-foreground">
                                                         {umkm.name}
                                                     </h2>
-                                                    <div className="flex shrink-0 items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-700">
+                                                    <div className="flex shrink-0 items-center gap-1 rounded bg-amber-500/15 px-2 py-0.5 text-sm text-amber-400">
                                                         <Star
                                                             size={14}
                                                             className="fill-current"
@@ -357,15 +357,15 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         ).toFixed(1)}
                                                     </div>
                                                 </div>
-                                                <p className="mb-3 flex items-center gap-1 text-sm text-gray-500">
+                                                <p className="mb-3 flex items-center gap-1 text-sm text-muted-foreground">
                                                     <MapPin size={16} />
                                                     {umkm.address ||
                                                         umkm.destination
                                                             ?.city ||
                                                         "Lokasi UMKM"}
                                                 </p>
-                                                <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
-                                                    <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                                <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-3">
+                                                    <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                                                         {umkm.category?.name ||
                                                             "UMKM"}
                                                     </span>

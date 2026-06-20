@@ -9,7 +9,7 @@ import { LogoutDialog } from "./logout-dialog";
 
 export function AdminSidebar() {
     return (
-        <aside className="hidden bg-emerald-900 text-white lg:block lg:w-64 lg:flex-none">
+        <aside className="hidden bg-sidebar text-sidebar-foreground lg:block lg:w-64 lg:flex-none">
             <div className="flex h-full flex-col">
                 <div className="flex h-16 items-center border-b border-white/10 px-5">
                     <div className="flex min-w-0 items-center gap-2.5">
@@ -23,7 +23,7 @@ export function AdminSidebar() {
                               className="h-9 w-7 shrink-0 object-contain"
                           />
                         </div>
-                        <span className="truncate font-heading text-base font-extrabold leading-none text-white">
+                        <span className="truncate font-heading text-base font-extrabold leading-none text-sidebar-foreground">
                             Safar
                         </span>
                     </div>
@@ -33,8 +33,8 @@ export function AdminSidebar() {
                         <AdminNav />
                     </div>
                 </ScrollArea>
-                <div className="mt-auto space-y-2 border-t border-white/20 p-3">
-                    <div className="flex items-center gap-3 px-2 py-1.5 text-xs text-white/55">
+                <div className="mt-auto space-y-2 border-t border-sidebar-border p-3">
+                    <div className="flex items-center gap-3 px-2 py-1.5 text-xs text-sidebar-foreground/55">
                         <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                         <span>Admin System Active</span>
                     </div>
@@ -42,7 +42,7 @@ export function AdminSidebar() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full justify-start gap-3 text-white/55 hover:bg-white/10 hover:text-white"
+                            className="w-full justify-start gap-3 text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         >
                             <LogOut className="h-4 w-4" />
                             <span>Keluar</span>

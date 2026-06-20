@@ -107,18 +107,18 @@ export function HeroSearch() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 onSubmit={handleSubmit}
-                className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-white/80 p-2 shadow-lg shadow-black/10 ring-1 ring-white/40 backdrop-blur-md"
+                className="mx-auto mt-7 flex max-w-3xl items-center gap-3 rounded-2xl bg-card/80 p-2 shadow-lg shadow-black/10 ring-1 ring-border/40 backdrop-blur-md"
             >
                 {loading ? (
-                    <Loader2 className="ml-3 size-5 shrink-0 animate-spin text-emerald-700" />
+                    <Loader2 className="ml-3 size-5 shrink-0 animate-spin text-accent" />
                 ) : (
-                    <Search className="ml-3 size-5 shrink-0 text-stone-500" />
+                    <Search className="ml-3 size-5 shrink-0 text-muted-foreground" />
                 )}
                 <input
                     aria-label="Cari destinasi"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-stone-500"
+                    className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#9ca3af] border border-border/40 rounded-xl px-3"
                     placeholder="Cari destinasi, buat rencana perjalanan..."
                     disabled={loading}
                 />

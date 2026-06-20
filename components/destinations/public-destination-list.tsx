@@ -57,10 +57,10 @@ function DestinationCard({ dest }: { dest: Destination }) {
     return (
         <Link
             href={`/destinasi/${dest.slug}`}
-            className="group relative block rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
             <HalalBadge score={displayScore} />
-            <div className="relative h-48 bg-[#f2ecf4] rounded-t-xl overflow-hidden">
+            <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
                 {primaryImage ? (
                     <Image
                         src={primaryImage}
@@ -71,23 +71,23 @@ function DestinationCard({ dest }: { dest: Destination }) {
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
-                        <MapPin className="h-10 w-10 text-[#cbc4d2]" />
+                        <MapPin className="h-10 w-10 text-muted-foreground" />
                     </div>
                 )}
             </div>
             <div className="p-4 space-y-2">
-                <h3 className="font-heading font-semibold text-[#1f1635] group-hover:text-[#0f9d58] transition-colors line-clamp-1">
+                <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                     {dest.name}
                 </h3>
                 {dest.city && (
-                    <p className="flex items-center gap-1.5 text-sm text-[#494551]">
+                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                         <MapPin className="size-3.5 shrink-0" />
                         {dest.city}
                         {dest.province && `, ${dest.province}`}
                     </p>
                 )}
                 {dest.category && (
-                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-[#e6f6ec] text-[#0f9d58] font-medium">
+                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
                         {dest.category.name}
                     </span>
                 )}
@@ -124,22 +124,22 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
 
     return (
         <div className="space-y-8">
-            <div className="rounded-xl border border-white/50 bg-white/75 p-4 shadow-sm backdrop-blur-md">
+            <div className="rounded-xl border border-border/50 bg-card/75 p-4 shadow-sm backdrop-blur-md">
                 <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_180px_160px_190px_auto]">
                     <div className="relative">
-                        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#494551]" />
+                        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="search"
                             placeholder="Cari destinasi..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="h-10 w-full rounded-md border border-stone-200 bg-white pl-10 pr-4 text-sm text-[#1f1635] shadow-xs placeholder:text-[#494551]/60 focus:border-[#0f9d58] focus:outline-none focus:ring-2 focus:ring-[#0f9d58]/20"
+                            className="h-10 w-full rounded-md border border-border bg-card pl-10 pr-4 text-sm text-foreground shadow-xs placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                         />
                     </div>
 
                     <Select value={categoryId} onValueChange={setCategoryId}>
-                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
-                            <SlidersHorizontal className="mr-2 size-4 text-[#494551]" />
+                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                            <SlidersHorizontal className="mr-2 size-4 text-muted-foreground" />
                             <SelectValue placeholder="Kategori" />
                         </SelectTrigger>
                         <SelectContent>
@@ -153,8 +153,8 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                     </Select>
 
                     <Select value={minScore} onValueChange={setMinScore}>
-                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
-                            <Star className="mr-2 size-4 text-[#494551]" />
+                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                            <Star className="mr-2 size-4 text-muted-foreground" />
                             <SelectValue placeholder="Skor" />
                         </SelectTrigger>
                         <SelectContent>
@@ -167,8 +167,8 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                     </Select>
 
                     <Select value={sort} onValueChange={setSort}>
-                        <SelectTrigger className="h-10 border-stone-200 bg-white text-[#1f1635]">
-                            <ArrowDownUp className="mr-2 size-4 text-[#494551]" />
+                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                            <ArrowDownUp className="mr-2 size-4 text-muted-foreground" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
                         <SelectContent>
@@ -183,7 +183,7 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                     <Button
                         type="button"
                         variant="outline"
-                        className="h-10 border-stone-200 bg-white text-[#494551] hover:bg-stone-50 md:w-10 md:px-0"
+                        className="h-10 border-border bg-card text-muted-foreground hover:bg-muted md:w-10 md:px-0"
                         disabled={!hasActiveFilters && !search}
                         onClick={() => {
                             setSearch("");
@@ -200,7 +200,7 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
             </div>
 
             {error && (
-                <div className="flex items-center justify-center gap-2 text-red-600 bg-red-50 rounded-xl p-4">
+                <div className="flex items-center justify-center gap-2 text-destructive bg-destructive/10 rounded-xl p-4">
                     <AlertCircle className="size-5" />
                     <span className="text-sm">{error.message}</span>
                 </div>
@@ -212,16 +212,16 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
                 next={loadMore}
                 loadingComponent={
                     <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-[#6750a4]" />
+                        <Loader2 className="h-6 w-6 animate-spin text-accent" />
                     </div>
                 }
                 endComponent={
                     data.length > 0 ? (
-                        <p className="text-center text-sm text-[#494551]/60 py-8">
+                        <p className="text-center text-sm text-muted-foreground/60 py-8">
                             Semua destinasi telah dimuat
                         </p>
                     ) : !isLoading ? (
-                        <p className="text-center text-sm text-[#494551]/60 py-8">
+                        <p className="text-center text-sm text-muted-foreground/60 py-8">
                             {search || hasActiveFilters
                                 ? "Tidak ada destinasi yang sesuai"
                                 : "Belum ada destinasi tersedia"}

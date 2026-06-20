@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 const PetaMapClient = dynamic(() => import("./peta-map-client"), {
     ssr: false,
     loading: () => (
-        <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-emerald-50">
-            <p className="text-sm text-stone-500">Memuat peta...</p>
+        <div className="flex h-[calc(100dvh-4rem)] items-center justify-center bg-muted">
+            <p className="text-sm text-muted-foreground">Memuat peta...</p>
         </div>
     ),
 });

@@ -101,14 +101,14 @@ export function ReviewForm({ umkm }: ReviewFormProps) {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+            <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-border/50 bg-card p-6 shadow-sm">
                 <div className="space-y-4">
-                    <h2 className="text-lg font-semibold text-gray-900">
+                    <h2 className="text-lg font-semibold text-foreground">
                         Beri Rating & Ulasan
                     </h2>
 
                     <div>
-                        <label className="mb-2 block text-sm text-gray-500">
+                        <label className="mb-2 block text-sm text-muted-foreground">
                             Bagaimana pengalaman Anda secara keseluruhan?
                         </label>
                         <div className="flex gap-1">
@@ -138,9 +138,9 @@ export function ReviewForm({ umkm }: ReviewFormProps) {
                     </div>
 
                     <div>
-                        <label
+                            <label
                             htmlFor="review-text"
-                            className="mb-2 block text-sm text-gray-500"
+                            className="mb-2 block text-sm text-muted-foreground"
                         >
                             Ceritakan pengalaman Anda
                         </label>
@@ -151,43 +151,43 @@ export function ReviewForm({ umkm }: ReviewFormProps) {
                             placeholder="Misal: Makanannya sangat enak dan terjamin kehalalannya..."
                             rows={4}
                             maxLength={1000}
-                            className="w-full resize-none rounded-lg border border-gray-300 bg-white p-3 text-sm text-gray-900 transition-all focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                            className="w-full resize-none rounded-lg border border-border bg-card p-3 text-sm text-foreground transition-all focus:border-accent focus:ring-2 focus:ring-accent/20"
                         />
                     </div>
 
                     <div>
-                        <label className="mb-2 block text-sm text-gray-500">
+                        <label className="mb-2 block text-sm text-muted-foreground">
                             Tambahkan Foto (Opsional)
                         </label>
-                        <div className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-8 text-center transition-colors hover:bg-gray-50">
-                            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 transition-colors group-hover:bg-emerald-100">
-                                <ImagePlus className="h-6 w-6 text-gray-400" />
+                        <div className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-8 text-center transition-colors hover:bg-muted">
+                            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted transition-colors group-hover:bg-accent/20">
+                                <ImagePlus className="h-6 w-6 text-muted-foreground" />
                             </div>
-                            <p className="text-sm text-gray-900">Tarik & lepas foto ke sini</p>
-                            <p className="mt-1 text-xs text-gray-500">atau klik untuk memilih file</p>
+                            <p className="text-sm text-foreground">Tarik & lepas foto ke sini</p>
+                            <p className="mt-1 text-xs text-muted-foreground">atau klik untuk memilih file</p>
                         </div>
                     </div>
                 </div>
 
                 {submitError && (
-                    <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                    <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
                         <AlertTriangle className="h-4 w-4 shrink-0" />
                         {submitError}
                     </div>
                 )}
 
-                <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+                <div className="flex justify-end gap-3 border-t border-border/50 pt-4">
                     <button
                         type="button"
                         onClick={() => router.back()}
-                        className="rounded-lg border border-gray-300 px-6 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50"
+                        className="rounded-lg border border-border px-6 py-2 text-sm text-muted-foreground transition-all hover:bg-muted"
                     >
                         Batal
                     </button>
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 rounded-lg bg-emerald-800 px-8 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-900 disabled:opacity-50"
+                        className="flex items-center gap-2 rounded-lg bg-accent px-8 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-accent/90 disabled:opacity-50"
                     >
                         {isSubmitting ? (
                             <>

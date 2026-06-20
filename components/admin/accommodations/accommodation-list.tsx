@@ -99,7 +99,7 @@ export function AccommodationList() {
                 </div>
             </div>
 
-            <div className="rounded-xl border border-stone-200 bg-white overflow-hidden">
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
                 <Table>
                     <TableHeader>
                         <TableRow>

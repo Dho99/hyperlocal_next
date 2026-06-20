@@ -12,9 +12,9 @@ export default async function ViewTrendAnalytics({
 
     if (trends.length === 0) {
         return (
-            <div className="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-                <Eye className="mx-auto h-10 w-10 text-gray-300" />
-                <p className="mt-3 text-sm text-gray-500">
+            <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
+                <Eye className="mx-auto h-10 w-10 text-muted-foreground" />
+                <p className="mt-3 text-sm text-muted-foreground">
                     Belum ada data kunjungan untuk periode ini.
                 </p>
             </div>
@@ -24,17 +24,17 @@ export default async function ViewTrendAnalytics({
     const maxViews = Math.max(...trends.map((t) => t.periodViews), 1);
 
     return (
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
+        <div className="rounded-xl border border-border bg-card shadow-sm">
+            <div className="flex items-center justify-between border-b border-border/50 px-6 py-5">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#d1fae5] text-[#047857]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20 text-accent">
                         <TrendingUp className="h-5 w-5" />
                     </div>
                     <div>
-                        <h2 className="font-heading text-lg font-bold text-gray-900">
+                        <h2 className="font-heading text-lg font-bold text-foreground">
                             Trending Destinasi
                         </h2>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                             Berdasarkan jumlah kunjungan{" "}
                             {period === "daily"
                                 ? "hari ini"
@@ -44,13 +44,13 @@ export default async function ViewTrendAnalytics({
                         </p>
                     </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef7f2] px-3 py-1 text-xs font-bold text-[#047857]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-bold text-[#047857]">
                     <Eye className="h-3.5 w-3.5" />
                     Top Kunjungan
                 </span>
             </div>
 
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-border/30">
                 {trends.map((item, index) => {
                     const barWidth = Math.max(
                         4,
@@ -59,33 +59,33 @@ export default async function ViewTrendAnalytics({
                     return (
                         <div
                             key={item.id}
-                            className="flex items-center gap-4 px-6 py-4 transition hover:bg-gray-50"
+                            className="flex items-center gap-4 px-6 py-4 transition hover:bg-muted"
                         >
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#047857] text-sm font-bold text-white">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
                                 {index + 1}
                             </span>
                             <div className="min-w-0 flex-1">
-                                <p className="truncate font-semibold text-gray-900">
+                                <p className="truncate font-semibold text-foreground">
                                     {item.name}
                                 </p>
-                                <p className="flex items-center gap-1 text-xs text-gray-500">
+                                <p className="flex items-center gap-1 text-xs text-muted-foreground">
                                     <MapPin className="h-3 w-3" />
                                     {item.city} • {item.category}
                                 </p>
                             </div>
                             <div className="hidden w-44 items-center gap-3 sm:flex">
-                                <div className="h-2.5 flex-1 rounded-full bg-[#eef7f2]">
+                                <div className="h-2.5 flex-1 rounded-full bg-muted">
                                     <div
-                                        className="h-2.5 rounded-full bg-gradient-to-r from-[#047857] to-[#0f766e] transition-all"
+                                        className="h-2.5 rounded-full bg-gradient-to-r from-accent to-accent/60 transition-all"
                                         style={{ width: `${barWidth}%` }}
                                     />
                                 </div>
                             </div>
                             <div className="text-right shrink-0">
-                                <p className="font-bold text-gray-900">
+                                <p className="font-bold text-foreground">
                                     {item.periodViews.toLocaleString("id-ID")}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-muted-foreground">
                                     dari {item.totalViews.toLocaleString("id-ID")}
                                 </p>
                             </div>

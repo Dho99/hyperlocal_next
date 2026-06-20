@@ -18,10 +18,10 @@ import { cn } from "@/lib/utils";
 const HeroMapClient = dynamic(() => import("./hero-map-client"), {
     ssr: false,
     loading: () => (
-        <div className="h-full w-full bg-[#f2ecf4] animate-pulse flex items-center justify-center">
+        <div className="h-full w-full bg-muted animate-pulse flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-[#6750a4]" />
-                <p className="text-sm font-medium text-[#494551]">Memuat Peta...</p>
+                <Loader2 className="h-8 w-8 animate-spin text-accent" />
+                <p className="text-sm font-medium text-muted-foreground">Memuat Peta...</p>
             </div>
         </div>
     ),
@@ -108,29 +108,29 @@ export function HeroMapSection() {
 
             {panelOpen && (
                 <div className="pointer-events-none absolute inset-0 z-30 flex items-center p-4 sm:p-6 lg:p-10">
-                    <div className="pointer-events-auto max-w-sm rounded-xl border border-white/70 bg-white/85 p-6 shadow-xl shadow-black/10 backdrop-blur-md sm:p-8">
+                    <div className="pointer-events-auto max-w-sm rounded-xl border border-border/70 bg-card/85 p-6 shadow-xl shadow-black/10 backdrop-blur-md sm:p-8">
                         <button
                             type="button"
                             onClick={() => setPanelOpen(false)}
-                            className="absolute right-3 top-3 flex size-7 items-center justify-center rounded-full text-[#494551] hover:bg-[#f2ecf4] transition-colors"
+                            className="absolute right-3 top-3 flex size-7 items-center justify-center rounded-full                             text-muted-foreground hover:bg-muted transition-colors"
                             aria-label="Tutup panel"
                         >
                             <X className="size-4" />
                         </button>
 
-                        <div className="flex size-10 items-center justify-center rounded-lg bg-[#e1d4fd] text-[#4f378a]">
+                        <div className="flex size-10 items-center justify-center rounded-lg bg-accent/20 text-accent">
                             <Map className="size-5" />
                         </div>
 
-                        <h2 className="mt-5 font-heading text-2xl font-bold text-[#1d1b20]">
+                        <h2 className="mt-5 font-heading text-2xl font-bold text-foreground">
                             Eksplorasi Peta Interaktif
                         </h2>
-                        <p className="mt-3 text-sm leading-6 text-[#494551]">
+                        <p className="mt-3 text-sm leading-6 text-muted-foreground">
                             Temukan titik-titik lokasi wisata halal, restoran
                             bersertifikat, dan masjid terdekat langsung dari
                             pandangan udara. Klik marker untuk melihat detail.
                         </p>
-                        <p className="mt-3 text-xs font-medium text-[#6750a4]">
+                        <p className="mt-3 text-xs font-medium text-accent">
                             {destinations.length} destinasi tersedia
                         </p>
                     </div>
@@ -141,7 +141,7 @@ export function HeroMapSection() {
                 <button
                     type="button"
                     onClick={() => setPanelOpen(true)}
-                    className="absolute left-4 top-4 z-30 flex items-center gap-2 rounded-xl border border-white/70 bg-white/85 px-4 py-2.5 text-sm font-semibold text-[#4f378a] shadow-lg backdrop-blur-md transition hover:bg-white"
+                    className="absolute left-4 top-4 z-30 flex items-center gap-2 rounded-xl border border-border/70 bg-card/85 px-4 py-2.5 text-sm font-semibold text-accent shadow-lg backdrop-blur-md transition hover:bg-card"
                 >
                     <Map className="size-4" />
                     Buka Panel
@@ -149,7 +149,7 @@ export function HeroMapSection() {
             )}
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="sm:max-w-md w-[95vw] z-[9999] [&>button]:hidden p-5 rounded-2xl bg-[#faf6fc] border border-purple-100 shadow-xl">
+                <DialogContent className="sm:max-w-md w-[95vw] z-[9999] [&>button]:hidden p-5 rounded-2xl bg-background border border-border shadow-xl">
                     <DialogDescription className="sr-only">
                         Detail destinasi {selected?.name}
                     </DialogDescription>
@@ -157,7 +157,7 @@ export function HeroMapSection() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-[1.2fr_1fr] gap-4 items-stretch">
                                 {/* Left Column (Image) */}
-                                <div className="relative w-full min-h-[170px] overflow-hidden rounded-2xl bg-slate-100 border border-purple-100/40 shadow-inner">
+                                <div className="relative w-full min-h-[170px] overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-inner">
                                     {selected.image ? (
                                         <img
                                             src={selected.image}
@@ -176,7 +176,7 @@ export function HeroMapSection() {
                                 <div className="flex flex-col justify-between py-0.5">
                                     <div className="space-y-3">
                                         <div className="flex items-start justify-between gap-2">
-                                            <DialogTitle className="font-heading text-lg sm:text-xl font-bold text-[#1d1b20] leading-tight">
+                                            <DialogTitle className="font-heading text-lg sm:text-xl font-bold text-foreground leading-tight">
                                                 {selected.name}
                                             </DialogTitle>
                                             <DialogClose className="rounded-full p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-600 transition-colors flex-shrink-0">
@@ -187,7 +187,7 @@ export function HeroMapSection() {
 
                                         <div className="flex flex-col gap-1.5">
                                             {selected.category && (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-[#e1d4fd] px-2.5 py-1 text-xs font-semibold text-[#4f378a] w-fit">
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-semibold text-accent w-fit">
                                                     <MapPin className="size-3" />
                                                     {selected.category}
                                                 </span>
@@ -206,16 +206,16 @@ export function HeroMapSection() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-4 space-y-1.5 pt-3 border-t border-purple-100/50">
+                                    <div className="mt-4 space-y-1.5 pt-3 border-t border-border/50">
                                         <div className="flex justify-between items-center text-xs sm:text-sm">
-                                            <span className="text-[#494551] font-medium">Latitude</span>
-                                            <span className="font-mono font-semibold text-[#1d1b20]">
+                                            <span className="text-muted-foreground font-medium">Latitude</span>
+                                            <span className="font-mono font-semibold text-foreground">
                                                 {selected.latitude.toFixed(6)}
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs sm:text-sm">
-                                            <span className="text-[#494551] font-medium">Longitude</span>
-                                            <span className="font-mono font-semibold text-[#1d1b20]">
+                                            <span className="text-muted-foreground font-medium">Longitude</span>
+                                            <span className="font-mono font-semibold text-foreground">
                                                 {selected.longitude.toFixed(6)}
                                             </span>
                                         </div>
@@ -227,7 +227,7 @@ export function HeroMapSection() {
                             <button
                                 type="button"
                                 onClick={handleDetail}
-                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#4f378a] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#4f378a]/20 transition hover:bg-[#3f2a78]"
+                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition hover:bg-primary/80"
                             >
                                 Lihat Detail
                                 <ChevronRight className="size-4" />

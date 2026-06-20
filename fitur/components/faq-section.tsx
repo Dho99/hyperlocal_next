@@ -38,7 +38,7 @@ export function FaqSection({ items }: FaqSectionProps) {
                 <h2 className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl lg:text-5xl">
                     FAQ Perjalanan Halal
                 </h2>
-                <p className="mt-3 text-base text-stone-600">
+                <p className="mt-3 text-base text-muted-foreground">
                     Jawaban singkat untuk hal yang paling sering ditanyakan.
                 </p>
             </motion.div>
@@ -52,12 +52,12 @@ export function FaqSection({ items }: FaqSectionProps) {
             >
                 {items.map((faq) => (
                     <motion.div key={faq.question} variants={itemVariants}>
-                        <details className="group rounded-2xl border border-white/80 bg-white/40 backdrop-blur-md p-5 transition-all duration-300 hover:bg-white/60">
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-heading text-base font-semibold text-stone-900">
+                        <details className="group rounded-2xl border border-border/50 bg-card/70 backdrop-blur-md p-5 transition-all duration-300 hover:bg-card/90">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-heading text-base font-semibold text-foreground">
                                 {faq.question}
-                                <ChevronRight className="size-5 shrink-0 text-amber-700 transition group-open:rotate-90" />
+                                <ChevronRight className="size-5 shrink-0 text-accent transition group-open:rotate-90" />
                             </summary>
-                            <p className="mt-3 leading-7 text-stone-600">
+                            <p className="mt-3 leading-7 text-muted-foreground">
                                 {faq.answer}
                             </p>
                         </details>

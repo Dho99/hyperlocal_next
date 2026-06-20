@@ -19,13 +19,13 @@ export function EmptyState({ query }: EmptyStateProps) {
             </div>
 
             <div className="max-w-2xl">
-                <h1 className="font-heading text-[28px] md:text-5xl text-emerald-900 mb-3 tracking-tight font-bold">
+                <h1 className="font-heading text-[28px] md:text-5xl text-primary mb-3 tracking-tight font-bold">
                     Maaf, Destinasi Belum Tersedia
                 </h1>
 
-                <p className="text-base md:text-lg text-[#494551] mb-10 leading-relaxed px-4">
+                <p className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed px-4">
                     Kami belum menemukan hasil untuk pencarian{" "}
-                    <span className="font-semibold text-emerald-900">
+                    <span className="font-semibold text-primary">
                         &ldquo;{query}&rdquo;
                     </span>
                     . Coba kata kunci lain atau bantu kami memperkaya data
@@ -36,25 +36,25 @@ export function EmptyState({ query }: EmptyStateProps) {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <Link
                         href="/"
-                        className="w-full md:w-auto bg-emerald-900 text-white px-10 py-4 rounded-xl font-heading text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-center"
+                        className="w-full md:w-auto bg-primary text-primary-foreground px-10 py-4 rounded-xl font-heading text-base font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-center"
                     >
                         Coba Pencarian Lain
                     </Link>
 
                     <Link
                         href="/"
-                        className="w-full md:w-auto text-emerald-900 border-2 border-transparent hover:border-emerald-900 px-10 py-4 rounded-xl font-heading text-base font-bold transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full md:w-auto text-primary border-2 border-transparent hover:border-primary px-10 py-4 rounded-xl font-heading text-base font-bold transition-all duration-300 flex items-center justify-center gap-2"
                     >
                         <MapPinPlus className="size-5" />
                         Saran Tempat Baru
                     </Link>
                 </div>
 
-                <div className="mt-10 pt-10 border-t border-[#cbc4d2]/30">
-                    <p className="text-xs font-semibold text-[#7a7380] uppercase tracking-widest mb-2">
+                <div className="mt-10 pt-10 border-t border-border/30">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
                         Tips Pencarian
                     </p>
-                    <div className="flex flex-wrap justify-center gap-6 text-sm text-[#494551]">
+                    <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                             <CheckCircle className="size-4 text-green-500" />
                             Periksa ejaan

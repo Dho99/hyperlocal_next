@@ -102,12 +102,12 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
     const displayImage = avatarPreview ?? user.image;
 
     return (
-        <div className="rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm p-6 space-y-6">
+        <div className="rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm p-6 space-y-6">
             <div>
-                <h2 className="text-lg font-heading font-semibold text-[#1f1635]">
+                <h2 className="text-lg font-heading font-semibold text-foreground">
                     Informasi Dasar
                 </h2>
-                <p className="text-sm text-[#494551] mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                     Perbarui nama dan foto profil Anda.
                 </p>
             </div>
@@ -117,7 +117,7 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="relative group size-20 shrink-0 rounded-full overflow-hidden bg-[#d1fae5] border-2 border-dashed border-[#cfe0d6] hover:border-[#047857] transition-colors"
+                        className="relative group size-20 shrink-0 rounded-full overflow-hidden bg-accent/20 border-2 border-dashed border-border hover:border-accent transition-colors"
                     >
                         {displayImage ? (
                             <Image
@@ -129,7 +129,7 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center">
-                                <User className="size-8 text-[#047857]" />
+                                <User className="size-8 text-accent" />
                             </div>
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
@@ -144,10 +144,10 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                         onChange={handleAvatarSelect}
                     />
                     <div className="space-y-1">
-                        <p className="text-sm font-medium text-[#1f1635]">
+                        <p className="text-sm font-medium text-foreground">
                             Foto Profil
                         </p>
-                        <p className="text-xs text-[#494551]">
+                        <p className="text-xs text-muted-foreground">
                             Klik untuk mengganti. Format: JPG, PNG, WebP. Maks:
                             5MB.
                         </p>
@@ -172,7 +172,7 @@ export function BasicInfoForm({ user }: BasicInfoFormProps) {
                         disabled
                         className="bg-muted/50 cursor-not-allowed text-muted-foreground"
                     />
-                    <p className="text-xs text-[#494551]">
+                    <p className="text-xs text-muted-foreground">
                         Email tidak dapat diubah.
                     </p>
                 </div>

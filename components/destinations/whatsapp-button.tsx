@@ -58,7 +58,7 @@ export function WhatsappButton({
           onClick={() => setShowDialog(false)}
         >
           <div
-            className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl border-2 border-stone-200"
+            className="w-full max-w-sm rounded-xl bg-card p-6 shadow-xl border-2 border-border"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col items-center text-center gap-4">

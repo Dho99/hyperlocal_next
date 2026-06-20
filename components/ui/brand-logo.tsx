@@ -47,7 +47,7 @@ export function BrandLogo({
           textSizeClass[size]
         )}
       >
-        <span className={isLight ? "text-white" : "text-emerald-900"}>
+        <span className={isLight ? "text-white" : "text-[var(--navbar-active)]"}>
           SAFAR
         </span>
         {/* <span className={isLight ? "text-emerald-200" : "text-[#44a840]"}> */}

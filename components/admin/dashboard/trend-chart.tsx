@@ -85,19 +85,19 @@ export default function TrendChart() {
         });
 
     return (
-        <Card className="flex h-full min-h-[340px] flex-col rounded-xl border-[#d7e5dc] bg-white shadow-none">
-            <CardHeader className="flex flex-row items-center justify-between border-b border-[#d7e5dc] px-5 py-4">
+        <Card className="flex h-full min-h-[340px] flex-col rounded-xl border-border bg-card shadow-none">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
                 <div className="min-w-0">
                     <CardTitle className="font-heading text-lg font-semibold">
                         Tren Interaksi
                     </CardTitle>
-                    <CardDescription className="mt-1 text-sm text-[#494551]">
+                    <CardDescription className="mt-1 text-sm text-muted-foreground">
                         Aktivitas pengguna 6 bulan terakhir.
                     </CardDescription>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                     {lastRefreshed && (
-                        <span className="text-xs text-[#494551]">
+                        <span className="text-xs text-muted-foreground">
                             {formatTime(lastRefreshed)}
                         </span>
                     )}
@@ -106,7 +106,7 @@ export default function TrendChart() {
                         size="icon"
                         onClick={fetchTrends}
                         disabled={loading}
-                        className="h-8 w-8 text-[#047857]"
+                        className="h-8 w-8 text-accent"
                     >
                         <RefreshCw
                             className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
@@ -123,7 +123,7 @@ export default function TrendChart() {
                                 className="h-2.5 w-2.5 rounded-full"
                                 style={{ backgroundColor: m.color }}
                             />
-                            <span className="truncate text-xs text-[#494551]">
+                            <span className="truncate text-xs text-muted-foreground">
                                 {m.label}
                             </span>
                         </div>
@@ -131,37 +131,37 @@ export default function TrendChart() {
                 </div>
 
                 {loading ? (
-                    <div className="flex flex-1 items-end gap-2 rounded-lg bg-[#f7fbf8] px-3 pb-3 pt-4">
+                    <div className="flex flex-1 items-end gap-2 rounded-lg bg-background px-3 pb-3 pt-4">
                         {Array.from({ length: 6 }).map((_, i) => (
                             <div
                                 key={i}
                                 className="flex flex-1 flex-col items-center gap-2"
                             >
-                                <div className="flex h-28 w-full max-w-10 items-end rounded-lg bg-white/80 p-1">
+                                <div className="flex h-28 w-full max-w-10 items-end rounded-lg bg-card/80 p-1">
                                     <div
-                                        className="w-full animate-pulse rounded-md bg-[#dbe7df]"
+                                        className="w-full animate-pulse rounded-md bg-muted"
                                         style={{ height: `${60}%` }}
                                     />
                                 </div>
-                                <span className="h-3 w-8 animate-pulse rounded bg-[#dbe7df]" />
+                                <span className="h-3 w-8 animate-pulse rounded bg-muted" />
                             </div>
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-lg bg-[#f7fbf8] text-[#93000a]">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-lg bg-background text-destructive">
                         <AlertCircle className="h-6 w-6" />
                         <p className="text-sm font-medium">{error}</p>
                         <Button
                             variant="outline"
                             size="sm"
                             onClick={fetchTrends}
-                            className="border-[#d7e5dc] text-[#047857]"
+                            className="border-border text-accent"
                         >
                             Coba Lagi
                         </Button>
                     </div>
                 ) : data.length === 0 ? (
-                    <div className="flex flex-1 items-center justify-center rounded-lg bg-[#f7fbf8] text-[#494551]">
+                    <div className="flex flex-1 items-center justify-center rounded-lg bg-background text-muted-foreground">
                         <p className="text-sm">Belum ada data interaksi.</p>
                     </div>
                 ) : (
@@ -170,12 +170,12 @@ export default function TrendChart() {
                         <div className="relative flex-1">
                             {/* Y-axis reference lines */}
                             <div className="pointer-events-none absolute inset-0 flex flex-col justify-between px-3 pb-3 pt-4">
-                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
-                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
-                                <span className="border-t border-dashed border-[#d7e5dc]/70 text-[10px] text-[#494551]" />
+                                <span className="border-t border-dashed border-border/70 text-[10px] text-muted-foreground" />
+                                <span className="border-t border-dashed border-border/70 text-[10px] text-muted-foreground" />
+                                <span className="border-t border-dashed border-border/70 text-[10px] text-muted-foreground" />
                             </div>
 
-                            <div className="flex h-full min-h-40 items-end gap-2 rounded-lg bg-[#f7fbf8] px-3 pb-3 pt-4">
+                            <div className="flex h-full min-h-40 items-end gap-2 rounded-lg bg-background px-3 pb-3 pt-4">
                                 {data.map((item) => {
                                     const pct = (val: number) =>
                                         Math.max(2, (val / maxValue) * 100);
@@ -218,7 +218,7 @@ export default function TrendChart() {
                                                 setTooltip(null)
                                             }
                                         >
-                                            <div className="flex h-28 w-full max-w-10 flex-col justify-end gap-px rounded-lg bg-white/80 p-1">
+                                            <div className="flex h-28 w-full max-w-10 flex-col justify-end gap-px rounded-lg bg-card/80 p-1">
                                                 {sorted.map((m) => (
                                                     <div
                                                         key={m.key}
@@ -232,7 +232,7 @@ export default function TrendChart() {
                                                     />
                                                 ))}
                                             </div>
-                                            <span className="text-center text-[11px] font-medium text-[#494551]">
+                                            <span className="text-center text-[11px] font-medium text-muted-foreground">
                                                 {item.label}
                                             </span>
                                         </div>
@@ -243,8 +243,8 @@ export default function TrendChart() {
 
                         {/* Tooltip */}
                         {tooltip && (
-                            <div className="mt-3 rounded-lg border border-[#dbe7df] bg-white p-3 shadow-sm">
-                                <p className="mb-2 text-xs font-bold text-[#1d1b20]">
+                            <div className="mt-3 rounded-lg border border-border bg-card p-3 shadow-sm">
+                                <p className="mb-2 text-xs font-bold text-foreground">
                                     {tooltip.period}
                                 </p>
                                 <div className="grid grid-cols-4 gap-3">
@@ -252,7 +252,7 @@ export default function TrendChart() {
                                         const val = tooltip[m.key];
                                         return (
                                             <div key={m.key}>
-                                                <p className="text-xs text-[#494551]">
+                                                <p className="text-xs text-muted-foreground">
                                                     {m.label}
                                                 </p>
                                                 <p

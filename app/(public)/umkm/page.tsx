@@ -143,30 +143,30 @@ function UmkmTabsContent() {
     return (
         <div className="mx-auto min-h-screen max-w-7xl px-4 py-8 bg-background">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                     Pelaku UMKM
                 </h1>
-                <p className="text-gray-500">
+                <p className="text-muted-foreground">
                     Temukan berbagai UMKM yang terverifikasi di ekosistem kami.
                 </p>
             </div>
 
             <div className="mb-8 relative max-w-2xl">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                    <Search className="h-5 w-5 text-gray-400" />
+                    <Search className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <input
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     placeholder="Cari nama UMKM atau destinasi terdekat (misal: Pantai Karang Tawulan)..."
-                    className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent/20"
                 />
             </div>
 
             {isLoadingCategories ? (
                 <div className="flex justify-center py-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-emerald-800" />
+                    <Loader2 className="h-6 w-6 animate-spin text-accent" />
                 </div>
             ) : (
                 <Tabs
@@ -174,10 +174,10 @@ function UmkmTabsContent() {
                     onValueChange={handleTabChange}
                     className="w-full mb-8"
                 >
-                    <TabsList className="flex flex-wrap h-auto w-full justify-start bg-stone-100 p-1 rounded-xl">
+                    <TabsList className="flex flex-wrap h-auto w-full justify-start bg-muted p-1 rounded-xl">
                         <TabsTrigger
                             value="Semua"
-                            className="rounded-lg px-4 py-2 text-stone-700 data-[state=active]:bg-emerald-800 data-[state=active]:text-white transition-all"
+                            className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-accent data-[state=active]:text-white transition-all"
                         >
                             Semua
                         </TabsTrigger>
@@ -185,7 +185,7 @@ function UmkmTabsContent() {
                             <TabsTrigger
                                 key={cat.id}
                                 value={cat.slug}
-                                className="rounded-lg px-4 py-2 text-stone-700 data-[state=active]:bg-emerald-800 data-[state=active]:text-white transition-all"
+                                className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-accent data-[state=active]:text-white transition-all"
                             >
                                 {cat.name}
                             </TabsTrigger>
@@ -197,14 +197,14 @@ function UmkmTabsContent() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {isLoadingUmkms && (
                     <div className="col-span-full flex h-64 items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-emerald-800" />
+                        <Loader2 className="h-8 w-8 animate-spin text-accent" />
                     </div>
                 )}
 
                 {error && (
                     <div className="col-span-full flex h-64 flex-col items-center justify-center text-center">
-                        <AlertCircle className="mb-4 h-10 w-10 text-red-500" />
-                        <p className="text-sm text-red-600">{error}</p>
+                        <AlertCircle className="mb-4 h-10 w-10 text-destructive" />
+                        <p className="text-sm text-destructive">{error}</p>
                     </div>
                 )}
 
@@ -212,8 +212,8 @@ function UmkmTabsContent() {
                     <>
                         {umkms.length === 0 ? (
                             <div className="col-span-full flex h-64 flex-col items-center justify-center text-center">
-                                <Store className="mb-4 h-12 w-12 text-gray-300" />
-                                <p className="text-sm text-gray-500">
+                                <Store className="mb-4 h-12 w-12 text-muted-foreground/60" />
+                                <p className="text-sm text-muted-foreground">
                                     Belum ada pelaku UMKM yang terdaftar di
                                     kategori ini.
                                 </p>
@@ -227,7 +227,7 @@ function UmkmTabsContent() {
                                     <Link
                                         key={umkm.id}
                                         href={`/umkm/${umkm.slug}`}
-                                        className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg"
+                                        className="group flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm transition-shadow duration-300 hover:shadow-lg"
                                     >
                                         <div className="relative h-48 overflow-hidden">
                                             {cover ? (
@@ -238,8 +238,8 @@ function UmkmTabsContent() {
                                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                                 />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center bg-gray-100">
-                                                    <Store className="h-10 w-10 text-gray-400" />
+                                                <div className="flex h-full items-center justify-center bg-muted">
+                                                    <Store className="h-10 w-10 text-muted-foreground" />
                                                 </div>
                                             )}
                                             {badge && (
@@ -247,8 +247,8 @@ function UmkmTabsContent() {
                                                     className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${
                                                         badge.variant ===
                                                         "certified"
-                                                            ? "bg-green-600/90 text-white"
-                                                            : "bg-amber-100/90 text-amber-800"
+                                                            ? "bg-accent/90 text-white"
+                                                            : "bg-amber-500/20 text-amber-400"
                                                     }`}
                                                 >
                                                     <BadgeCheck size={14} />
@@ -258,10 +258,10 @@ function UmkmTabsContent() {
                                         </div>
                                         <div className="flex flex-1 flex-col p-4">
                                             <div className="mb-2 flex items-start justify-between">
-                                                <h2 className="line-clamp-1 text-base font-semibold text-gray-900">
+                                                <h2 className="line-clamp-1 text-base font-semibold text-foreground">
                                                     {umkm.name}
                                                 </h2>
-                                                <div className="flex shrink-0 items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-sm text-amber-700">
+                                                <div className="flex shrink-0 items-center gap-1 rounded bg-amber-500/15 px-2 py-0.5 text-sm text-amber-400">
                                                     <Star
                                                         size={14}
                                                         className="fill-current"
@@ -271,14 +271,14 @@ function UmkmTabsContent() {
                                                     ).toFixed(1)}
                                                 </div>
                                             </div>
-                                            <p className="mb-3 flex items-center gap-1 text-sm text-gray-500">
+                                            <p className="mb-3 flex items-center gap-1 text-sm text-muted-foreground">
                                                 <MapPin size={16} />
                                                 {umkm.address ||
                                                     umkm.destination?.city ||
                                                     "Lokasi UMKM"}
                                             </p>
-                                            <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
-                                                <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                            <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-3">
+                                                <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                                                     {umkm.category?.name ||
                                                         "UMKM"}
                                                 </span>
@@ -300,7 +300,7 @@ export default function UmkmPage() {
         <Suspense
             fallback={
                 <div className="min-h-screen flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-emerald-800" />
+                    <Loader2 className="h-8 w-8 animate-spin text-accent" />
                 </div>
             }
         >

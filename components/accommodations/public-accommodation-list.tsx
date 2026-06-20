@@ -17,10 +17,10 @@ function AccommodationCard({ item }: { item: Accommodation }) {
     return (
         <Link
             href={`/penginapan/${item.id}`}
-            className="group relative block rounded-xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
             <HalalBadge score={item.validatedScore} />
-            <div className="relative h-48 bg-stone-100 rounded-t-xl overflow-hidden">
+            <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
                 {primaryImage ? (
                     <Image
                         src={primaryImage}
@@ -31,30 +31,30 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
-                        <Building className="h-10 w-10 text-stone-300" />
+                        <Building className="h-10 w-10 text-muted-foreground" />
                     </div>
                 )}
                 {item.validationStatus === "APPROVED" && (
                     <div className="absolute bottom-2 left-2">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-600/90 text-white backdrop-blur-sm shadow-sm">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-accent/80 text-accent-foreground backdrop-blur-sm shadow-sm">
                             <BadgeCheck size={11} />
                             Tervalidasi Halal
                         </span>
                     </div>
                 )}
                 {item.rating != null && item.rating > 0 && (
-                    <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-xs font-semibold text-stone-900 shadow-sm backdrop-blur-md">
+                    <div                             className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur-md">
                         <Star className="size-3.5 fill-amber-400 text-amber-400" />
                         {item.rating.toFixed(1)}
                     </div>
                 )}
             </div>
             <div className="p-4 space-y-2">
-                <h3 className="font-heading font-semibold text-stone-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                    <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                     {item.name}
                 </h3>
                 {item.city && (
-                    <p className="flex items-center gap-1.5 text-sm text-stone-600">
+                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                         <MapPin className="size-3.5 shrink-0" />
                         {item.city}
                         {item.province ? `, ${item.province}` : ""}
@@ -65,13 +65,13 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                         {facilityNames.slice(0, 4).map((name) => (
                             <span
                                 key={name}
-                                className="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200"
+                                className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full border border-accent/20"
                             >
                                 {name}
                             </span>
                         ))}
                         {facilityNames.length > 4 && (
-                            <span className="text-xs text-stone-500">
+                            <span className="text-xs text-muted-foreground">
                                 +{facilityNames.length - 4}
                             </span>
                         )}
@@ -102,13 +102,13 @@ export function PublicAccommodationList() {
     return (
         <div className="space-y-8">
             <div className="relative max-w-md mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-stone-500" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <input
                     type="text"
                     placeholder="Cari penginapan..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-stone-200 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-shadow"
+                    className="w-full pl-11 pr-4 py-2.5 rounded-full bg-background/80 backdrop-blur-md border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-shadow"
                 />
             </div>
 
@@ -125,16 +125,16 @@ export function PublicAccommodationList() {
                 next={loadMore}
                 loadingComponent={
                     <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
+                        <Loader2 className="h-8 w-8 animate-spin text-accent" />
                     </div>
                 }
                 endComponent={
                     data.length > 0 ? (
-                        <p className="text-center text-sm text-stone-500 py-8">
+                        <p className="text-center text-sm text-muted-foreground py-8">
                             Semua penginapan telah dimuat
                         </p>
                     ) : !isLoading ? (
-                        <p className="text-center text-sm text-stone-500 py-8">
+                        <p className="text-center text-sm text-muted-foreground py-8">
                             {search
                                 ? "Tidak ada penginapan yang sesuai"
                                 : "Belum ada penginapan tersedia"}

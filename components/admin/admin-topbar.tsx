@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    Search,
-    Bell,
-    User,
-    LogOut,
-    Menu,
-    Settings,
-    Grid3X3,
-} from "lucide-react";
+import { Search, User, LogOut, Menu, Settings } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -33,6 +25,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogoutDialog } from "./logout-dialog";
 import { BrandLogo } from "@/components/ui/brand-logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface User {
     id: string;
@@ -47,7 +40,7 @@ export function AdminTopbar({ user }: { user: User }) {
     void router;
 
     return (
-        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-[#d7e5dc] bg-[#f7fbf8] px-4">
+        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-background px-4">
             {/* Mobile Sidebar */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
                 <SheetTrigger asChild>
@@ -62,7 +55,7 @@ export function AdminTopbar({ user }: { user: User }) {
                 </SheetTrigger>
                 <SheetContent
                     side="left"
-                    className="w-[280px] gap-0 border-emerald-800 bg-emerald-900 p-0 text-white"
+                    className="w-[280px] gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
                 >
                     <SheetHeader className="flex h-16 items-center border-b border-white/10 px-4">
                         <SheetTitle className="sr-only">Menu Admin</SheetTitle>
@@ -91,11 +84,11 @@ export function AdminTopbar({ user }: { user: User }) {
 
             {/* Desktop Search */}
             <div className="relative hidden max-w-[460px] flex-1 items-center md:flex">
-                <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[#494551]" />
+                <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                     type="search"
                     placeholder="Cari destinasi, UMKM..."
-                    className="h-9 w-full rounded-full border-[#cfe0d6] bg-[#eef7f2] pl-10 text-sm text-[#3f4f47] shadow-none focus-visible:ring-primary/20"
+                    className="h-9 w-full rounded-full border-border bg-muted pl-10 text-sm text-foreground shadow-none focus-visible:ring-primary/20"
                 />
             </div>
 
@@ -107,6 +100,7 @@ export function AdminTopbar({ user }: { user: User }) {
                 >
                     <Bell className="h-4.5 w-4.5 text-[#1d1b20]" />
                 </Button> */}
+                <ThemeToggle />
                 <AdminGuide />
                 {/* <Button
                         variant="ghost"
@@ -122,7 +116,7 @@ export function AdminTopbar({ user }: { user: User }) {
                             variant="ghost"
                             className="relative h-9 w-9 rounded-full p-0"
                         >
-                            <Avatar className="h-8 w-8 border border-[#cfe0d6] shadow-sm transition-transform hover:scale-105">
+                            <Avatar className="h-8 w-8 border border-border shadow-sm transition-transform hover:scale-105">
                                 <AvatarImage
                                     src={user?.image ?? undefined}
                                     alt={user?.name}
@@ -145,11 +139,11 @@ export function AdminTopbar({ user }: { user: User }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-emerald-50 focus:text-emerald-950">
+                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent focus:text-accent-foreground">
                             <User className="h-4 w-4" />
                             <span>Profil Admin</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-emerald-50 focus:text-emerald-950">
+                        <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent focus:text-accent-foreground">
                             <Settings className="h-4 w-4" />
                             <span>Pengaturan Akun</span>
                         </DropdownMenuItem>

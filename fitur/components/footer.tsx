@@ -24,13 +24,13 @@ function FooterLinks({
 }) {
     return (
         <div>
-            <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-emerald-900">
+            <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-foreground">
                 {title}
             </h3>
-            <div className="mt-4 grid gap-3 text-sm text-stone-600">
+            <div className="mt-4 grid gap-3 text-sm text-muted-foreground">
                 {links.map(([label, href]) => (
                     <Link
-                        className="transition hover:text-emerald-900"
+                        className="transition hover:text-accent"
                         href={href}
                         key={label}
                     >
@@ -49,7 +49,7 @@ export function Footer({ stats }: FooterProps) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="border-t border-stone-200/60 bg-white/70"
+            className="border-t border-border bg-[#0f1b16]"
         >
             <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.3fr_0.7fr_0.7fr_1fr] lg:px-8">
                 <div>
@@ -60,7 +60,7 @@ export function Footer({ stats }: FooterProps) {
                     >
                         <BrandLogo size="lg" />
                     </Link>
-                    <p className="mt-4 max-w-sm text-sm leading-7 text-stone-600">
+                    <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
                         Platform penemuan destinasi halal, fasilitas
                         muslim-friendly, dan rekomendasi wisata berbasis
                         insight lokal.
@@ -87,10 +87,10 @@ export function Footer({ stats }: FooterProps) {
                     title="Dukungan"
                 />
                 <div>
-                    <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-emerald-900">
+                    <h3 className="font-heading text-sm font-bold uppercase tracking-[0.12em] text-foreground">
                         Ringkasan Data
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-stone-600">
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
                         {formatNumber(stats.approvedDestinations)} destinasi
                         approved, {formatNumber(stats.validCertifications)}{" "}
                         sertifikasi valid, dan{" "}
@@ -98,7 +98,7 @@ export function Footer({ stats }: FooterProps) {
                     </p>
                 </div>
             </div>
-            <div className="border-t border-stone-200 px-4 py-5 text-center text-xs text-stone-600 sm:px-6 lg:px-8">
+            <div className="border-t border-border px-4 py-5 text-center text-xs text-muted-foreground sm:px-6 lg:px-8">
                 © 2026. Semua hak dilindungi.
             </div>
         </motion.footer>

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -68,9 +69,11 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <body className="min-h-full flex flex-col">
-                <ServiceWorkerRegistration />
-                <NextTopLoader />
-                {children} <Toaster richColors position="top-right" />
+                <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+                    <ServiceWorkerRegistration />
+                    <NextTopLoader />
+                    {children} <Toaster richColors position="top-right" />
+                </ThemeProvider>
             </body>
         </html>
     );

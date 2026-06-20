@@ -46,8 +46,8 @@ function DesktopCategoryChip({
             className={cn(
                 "rounded-full px-4 py-2 text-sm font-medium border transition-all",
                 selected
-                    ? "bg-[#4f378a] text-white border-[#4f378a] shadow-sm"
-                    : "bg-white/70 text-[#494551] border-[#cbc4d2]/50 hover:border-[#4f378a] hover:text-[#4f378a]",
+                    ? "bg-primary text-white border-primary shadow-sm"
+                    : "bg-card/70 text-muted-foreground border-border/50 hover:border-primary hover:text-primary",
             )}
         >
             {label}
@@ -57,12 +57,12 @@ function DesktopCategoryChip({
 
 function SkeletonCard() {
     return (
-        <div className="overflow-hidden rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm animate-pulse">
-            <div className="aspect-[16/10] bg-[#f2ecf4]" />
+        <div className="overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm animate-pulse">
+            <div className="aspect-[16/10] bg-muted" />
             <div className="p-4 space-y-3">
-                <div className="h-4 w-3/4 rounded bg-[#f2ecf4]" />
-                <div className="h-3 w-1/2 rounded bg-[#f2ecf4]" />
-                <div className="h-14 w-full rounded bg-[#f2ecf4]" />
+                <div className="h-4 w-3/4 rounded bg-muted" />
+                <div className="h-3 w-1/2 rounded bg-muted" />
+                <div className="h-14 w-full rounded bg-muted" />
             </div>
         </div>
     );
@@ -82,10 +82,10 @@ function ResultCard({
     return (
         <Link
             href={`/destinasi/${destination.slug}`}
-            className="group relative rounded-xl border border-[#cbc4d2]/50 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
+            className="group relative rounded-xl border border-border/50 bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
         >
             <HalalBadge score={destination.halalScore} />
-            <div className="relative aspect-[16/10] rounded-t-xl overflow-hidden bg-[#f2ecf4]">
+            <div className="relative aspect-[16/10] rounded-t-xl overflow-hidden bg-muted">
                 {destination.imageUrl ? (
                     <Image
                         src={destination.imageUrl}
@@ -96,35 +96,35 @@ function ResultCard({
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
-                        <MapPin className="h-10 w-10 text-[#cbc4d2]" />
+                        <MapPin className="h-10 w-10 text-muted-foreground" />
                     </div>
                 )}
-                <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold text-[#4f378a] shadow-sm backdrop-blur-md">
-                    <Star className="size-3.5 fill-[#e7c365] text-[#e7c365]" />
+                <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-card/85 px-2.5 py-1 text-[11px] font-bold text-primary shadow-sm backdrop-blur-md">
+                    <Star className="size-3.5 fill-amber-400 text-amber-400" />
                     {matchScore}
                 </div>
             </div>
             <div className="p-4 space-y-3">
                 <div>
-                    <h3 className="font-heading text-base font-bold leading-tight text-[#1f1635] group-hover:text-[#4f378a] transition-colors">
+                    <h3 className="font-heading text-base font-bold leading-tight text-foreground group-hover:text-primary transition-colors">
                         {destination.name}
                     </h3>
                     {destination.city && (
-                        <p className="mt-1 flex items-center gap-1 text-xs text-[#494551]">
+                        <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                             <MapPin className="size-3.5" />
                             {destination.city}
                         </p>
                     )}
                 </div>
                 {isAiGenerated ? (
-                    <div className="rounded-lg bg-[#eaddff] p-3 text-xs leading-relaxed text-[#22005d]">
+                    <div className="rounded-lg bg-accent/20 p-3 text-xs leading-relaxed text-accent-foreground">
                         <div className="flex items-start gap-2">
-                            <Sparkles className="size-3.5 mt-0.5 shrink-0 text-[#6750a4]" />
+                            <Sparkles className="size-3.5 mt-0.5 shrink-0 text-accent" />
                             <span>{reason}</span>
                         </div>
                     </div>
                 ) : (
-                    <div className="rounded-lg bg-[#f2ecf4] p-3 text-xs leading-relaxed text-[#494551]">
+                    <div className="rounded-lg bg-muted p-3 text-xs leading-relaxed text-muted-foreground">
                         {reason}
                     </div>
                 )}
@@ -257,7 +257,7 @@ export function AiRecommendations() {
         <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-2">
                 {categories.length === 0 ? (
-                    <p className="text-sm text-[#494551]">
+                    <p className="text-sm text-muted-foreground">
                         Memuat kategori...
                     </p>
                 ) : (
@@ -276,7 +276,7 @@ export function AiRecommendations() {
                 <div className="flex items-center gap-2">
                     <label
                         htmlFor="result-limit"
-                        className="text-sm text-[#494551]"
+                        className="text-sm text-muted-foreground"
                     >
                         Jumlah:
                     </label>
@@ -284,7 +284,7 @@ export function AiRecommendations() {
                         id="result-limit"
                         value={limit}
                         onChange={(e) => setLimit(Number(e.target.value))}
-                        className="rounded-lg border border-[#cbc4d2]/50 bg-white/70 px-3 py-1.5 text-sm text-[#1f1635] focus:outline-none focus:ring-2 focus:ring-[#4f378a]/30"
+                        className="rounded-lg border border-border/50 bg-card/70 px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                     >
                         <option value={3}>3</option>
                         <option value={5}>5</option>
@@ -298,7 +298,7 @@ export function AiRecommendations() {
                     type="button"
                     onClick={fetchResults}
                     disabled={isLoading}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#4f378a] px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3d2870] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isLoading && (
                         <Loader2 className="size-4 animate-spin" />
@@ -309,7 +309,7 @@ export function AiRecommendations() {
 
             {isLoading && (
                 <div className="space-y-3">
-                    <p className="flex items-center gap-2 text-sm text-[#6750a4] animate-pulse">
+                    <p className="flex items-center gap-2 text-sm text-accent animate-pulse">
                         <Sparkles className="size-4" />
                         AI sedang menyusun rekomendasi terbaik untukmu...
                     </p>
@@ -322,14 +322,14 @@ export function AiRecommendations() {
             )}
 
             {error && (
-                <div className="flex items-center gap-2 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+                <div className="flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm text-destructive">
                     <AlertCircle className="size-5 shrink-0" />
                     {error}
                 </div>
             )}
 
             {!isLoading && hasSearched && displayedResults.length === 0 && !error && (
-                <p className="text-center text-sm text-[#494551] py-8">
+                <p className="text-center text-sm text-muted-foreground py-8">
                     Belum ada rekomendasi yang tersedia.
                 </p>
             )}

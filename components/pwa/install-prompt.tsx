@@ -84,7 +84,7 @@ export function InstallPrompt() {
     };
 
     return (
-        <aside className="fixed inset-x-4 bottom-20 z-[60] mx-auto max-w-md rounded-lg border border-emerald-100 bg-white p-4 shadow-xl shadow-emerald-950/10 md:inset-x-auto md:right-6 md:bottom-6 md:w-[360px]">
+        <aside className="fixed inset-x-4 bottom-20 z-[60] mx-auto max-w-md rounded-lg border border-accent/30 bg-card p-4 shadow-xl shadow-accent/10 md:inset-x-auto md:right-6 md:bottom-6 md:w-[360px]">
             <button
                 type="button"
                 onClick={handleDismiss}

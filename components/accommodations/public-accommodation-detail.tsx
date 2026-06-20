@@ -55,7 +55,7 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-700" />
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
       </div>
     );
   }
@@ -63,8 +63,8 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   if (error) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <p className="text-red-600 mb-4">{error}</p>
-        <button onClick={() => router.push("/penginapan")} className="text-emerald-700 hover:underline text-sm">
+        <p className="text-destructive mb-4">{error}</p>
+        <button onClick={() => router.push("/penginapan")} className="text-accent hover:underline text-sm">
           Kembali ke daftar penginapan
         </button>
       </div>
@@ -74,9 +74,9 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   if (!accommodation) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <Building className="size-12 mx-auto text-stone-300 mb-4" />
-        <h2 className="font-heading text-xl font-semibold text-stone-900 mb-2">Penginapan tidak ditemukan</h2>
-        <button onClick={() => router.push("/penginapan")} className="text-emerald-700 hover:underline text-sm">
+        <Building className="size-12 mx-auto text-muted-foreground mb-4" />
+        <h2 className="font-heading text-xl font-semibold text-foreground mb-2">Penginapan tidak ditemukan</h2>
+        <button onClick={() => router.push("/penginapan")} className="text-accent hover:underline text-sm">
           Kembali ke daftar penginapan
         </button>
       </div>
@@ -86,17 +86,17 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
   const facilityNames = accommodation.facilities?.map((f) => f.facility.name) ?? [];
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-background">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 space-y-8">
         <button
           onClick={() => router.push("/penginapan")}
-          className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-emerald-700 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
         >
           <ArrowLeft className="size-4" />
           Kembali
         </button>
 
-        <div className="relative aspect-[21/9] rounded-2xl overflow-hidden bg-stone-200 shadow-md">
+        <div className="relative aspect-[21/9] rounded-2xl overflow-hidden bg-muted shadow-md">
           {primaryImage ? (
             <>
               <Image src={primaryImage} alt={accommodation.name} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 900px" />
@@ -109,7 +109,7 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
             </>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <Building className="h-16 w-16 text-stone-400" />
+              <Building className="h-16 w-16 text-muted-foreground" />
             </div>
           )}
         </div>
@@ -117,9 +117,9 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="font-heading text-3xl font-bold text-stone-900">{accommodation.name}</h1>
+              <h1 className="font-heading text-3xl font-bold text-foreground">{accommodation.name}</h1>
               {accommodation.validationStatus === "APPROVED" && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full bg-accent/20 text-accent border border-accent/20">
                   ✓ Tervalidasi Halal
                 </span>
               )}
@@ -127,18 +127,18 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
             <ReportDialog targetId={accommodation.id} targetType="ACCOMMODATION" />
           </div>
           {accommodation.rating != null && accommodation.rating > 0 && (
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <div className="inline-flex items-center gap-1.5 bg-muted border border-border rounded-lg px-3 py-2">
               <Star className="size-5 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-stone-900">{accommodation.rating.toFixed(1)}</span>
+              <span className="font-bold text-foreground">{accommodation.rating.toFixed(1)}</span>
               {accommodation.reviewCount != null && (
-                <span className="text-sm text-stone-500">({accommodation.reviewCount})</span>
+                <span className="text-sm text-muted-foreground">({accommodation.reviewCount})</span>
               )}
             </div>
           )}
         </div>
 
         {(accommodation.city || accommodation.province) && (
-          <p className="flex items-center gap-2 text-stone-600">
+          <p className="flex items-center gap-2 text-muted-foreground">
             <MapPin className="size-4 shrink-0" />
             {[accommodation.address, accommodation.city, accommodation.province].filter(Boolean).join(", ")}
           </p>
@@ -146,13 +146,13 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
 
         <div className="flex flex-wrap gap-3">
           {accommodation.phone && (
-            <a href={`tel:${accommodation.phone}`} className="inline-flex items-center gap-2 text-sm bg-white border border-stone-200 rounded-lg px-3 py-2 text-stone-700 hover:border-emerald-200 hover:text-emerald-700 transition-colors">
+            <a href={`tel:${accommodation.phone}`} className="inline-flex items-center gap-2 text-sm bg-card border border-border rounded-lg px-3 py-2 text-muted-foreground hover:border-accent/30 hover:text-accent transition-colors">
               <Phone className="size-4" />
               {accommodation.phone}
             </a>
           )}
           {accommodation.website && (
-            <a href={accommodation.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm bg-white border border-stone-200 rounded-lg px-3 py-2 text-stone-700 hover:border-emerald-200 hover:text-emerald-700 transition-colors">
+            <a href={accommodation.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm bg-card border border-border rounded-lg px-3 py-2 text-muted-foreground hover:border-accent/30 hover:text-accent transition-colors">
               <Globe className="size-4" />
               Website
             </a>
@@ -161,10 +161,10 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
 
         {facilityNames.length > 0 && (
           <div className="space-y-3">
-            <h2 className="font-heading font-semibold text-lg text-stone-900">Fasilitas Halal</h2>
+            <h2 className="font-heading font-semibold text-lg text-foreground">Fasilitas Halal</h2>
             <div className="flex flex-wrap gap-2">
               {facilityNames.map((name) => (
-                <span key={name} className="text-sm bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200 font-medium">
+                <span key={name} className="text-sm bg-accent/10 text-accent px-3 py-1.5 rounded-full border border-accent/20 font-medium">
                   {name}
                 </span>
               ))}
@@ -174,8 +174,8 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
 
         {accommodation.description && (
           <div className="space-y-3">
-            <h2 className="font-heading font-semibold text-lg text-stone-900">Deskripsi</h2>
-            <div className="text-stone-700 leading-relaxed">
+            <h2 className="font-heading font-semibold text-lg text-foreground">Deskripsi</h2>
+            <div className="text-muted-foreground leading-relaxed">
               <RichTextRenderer content={accommodation.description} />
             </div>
           </div>

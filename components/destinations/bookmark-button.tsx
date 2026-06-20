@@ -98,7 +98,7 @@ export function BookmarkButton({
                 showLabel ? "px-4 py-2 text-sm" : "p-2",
                 isBookmarked
                     ? "bg-rose-50 text-rose-600 hover:bg-rose-100"
-                    : "bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 hover:text-stone-900",
+                    : "bg-card border border-border text-muted-foreground hover:bg-muted hover:text-foreground",
                 isLoading && "opacity-50 cursor-not-allowed",
                 className,
             )}

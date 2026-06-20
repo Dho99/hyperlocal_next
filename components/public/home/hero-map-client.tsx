@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useEffect, useRef, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, Marker, useMap } from "react-leaflet";
+import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -139,9 +140,8 @@ export default function HeroMapClient({
                 scrollWheelZoom={true}
                 className="h-full w-full"
             >
-                <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                <ThemeTileLayer
+                    lightUrl="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 />
 
                 <MarkerClusterGroup
