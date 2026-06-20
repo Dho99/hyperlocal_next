@@ -1,6 +1,14 @@
 "use client";
 
-import { Bookmark, LayoutDashboard, Lock, LogOut, Moon, Sun, User } from "lucide-react";
+import {
+    Bookmark,
+    LayoutDashboard,
+    Lock,
+    LogOut,
+    Moon,
+    Sun,
+    User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -57,7 +65,7 @@ export default function Navbar() {
     const user = session?.user;
 
     return (
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-[var(--navbar-bg)] shadow-sm">
+        <header className="sticky top-0 z-50 border-b border-white/10 bg-[var(--navbar-bg)] backdrop-blur-sm shadow-sm">
             <nav className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
                 {/* Brand Logo - Left Aligned */}
                 <div className="flex flex-1 items-center justify-start">
@@ -78,10 +86,11 @@ export default function Navbar() {
                             <Link
                                 key={item.label}
                                 href={item.href}
-                                className={`rounded-full px-4 py-2 transition-all duration-200 ${active
+                                className={`rounded-full px-4 py-2 transition-all duration-200 ${
+                                    active
                                         ? "bg-[var(--navbar-active)]/20 text-[var(--navbar-active)] font-semibold shadow-sm ring-1 ring-[var(--navbar-active)]/40"
                                         : "hover:bg-[var(--navbar-active)]/15 hover:text-[var(--navbar-active)]"
-                                    }`}
+                                }`}
                             >
                                 {item.label}
                             </Link>
@@ -107,17 +116,24 @@ export default function Navbar() {
                                                 alt={user.name}
                                             />
                                             <AvatarFallback className="bg-[var(--navbar-active)]/10 text-[var(--navbar-active)] text-xs font-semibold">
-                                                {user.name.charAt(0).toUpperCase()}
+                                                {user.name
+                                                    .charAt(0)
+                                                    .toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                     </button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end">
+                                <DropdownMenuContent
+                                    className="w-56"
+                                    align="end"
+                                >
                                     <DropdownMenuLabel className="font-normal">
                                         <div className="flex items-center gap-3">
                                             <Avatar className="h-9 w-9">
                                                 <AvatarImage
-                                                    src={user.image ?? undefined}
+                                                    src={
+                                                        user.image ?? undefined
+                                                    }
                                                     alt={user.name}
                                                 />
                                                 <AvatarFallback className="bg-[var(--navbar-active)]/10 text-[var(--navbar-active)] text-xs font-semibold">
@@ -137,18 +153,17 @@ export default function Navbar() {
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    {
-                                      user.role === "admin" &&
-                                      <DropdownMenuItem
-                                          asChild
-                                          className="cursor-pointer gap-2.5 py-2.5 focus:bg-accent focus:text-accent-foreground"
-                                      >
-                                          <Link href="/dashboard">
-                                              <LayoutDashboard className="h-4 w-4" />
-                                              <span>Dashboard</span>
-                                          </Link>
-                                      </DropdownMenuItem>
-                                    }
+                                    {user.role === "admin" && (
+                                        <DropdownMenuItem
+                                            asChild
+                                            className="cursor-pointer gap-2.5 py-2.5 focus:bg-accent focus:text-accent-foreground"
+                                        >
+                                            <Link href="/dashboard">
+                                                <LayoutDashboard className="h-4 w-4" />
+                                                <span>Dashboard</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
                                     <DropdownMenuItem
                                         asChild
                                         className="cursor-pointer gap-2.5 py-2.5 focus:bg-accent focus:text-accent-foreground"

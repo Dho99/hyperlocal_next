@@ -49,7 +49,7 @@ export function Footer({ stats }: FooterProps) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="border-t border-border bg-[#0f1b16]"
+            className="border-t border-border dark:bg-[#0f1b16]"
         >
             <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.3fr_0.7fr_0.7fr_1fr] lg:px-8">
                 <div>
@@ -62,8 +62,8 @@ export function Footer({ stats }: FooterProps) {
                     </Link>
                     <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
                         Platform penemuan destinasi halal, fasilitas
-                        muslim-friendly, dan rekomendasi wisata berbasis
-                        insight lokal.
+                        muslim-friendly, dan rekomendasi wisata berbasis insight
+                        lokal.
                     </p>
                 </div>
                 <FooterLinks
