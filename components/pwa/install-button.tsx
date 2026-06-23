@@ -63,7 +63,8 @@ export function InstallButton() {
         <button
             type="button"
             onClick={handleInstall}
-            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full bg-emerald-100 px-3 text-xs font-semibold text-emerald-900 transition hover:bg-emerald-200"
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold transition hover:opacity-90"
+            style={{ backgroundColor: "#94D786", color: "#003A02" }}
         >
             <Download className="size-3.5" aria-hidden="true" />
             Install

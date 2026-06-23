@@ -177,10 +177,11 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
                         <button
                             onClick={() => setActiveCategory(null)}
+                            style={activeCategory === null ? { backgroundColor: "#94D786", color: "#003A02" } : {}}
                             className={cn(
                                 "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
                                 activeCategory === null
-                                    ? "bg-accent text-white"
+                                    ? ""
                                     : "bg-card/70 text-foreground hover:bg-card/90",
                             )}
                         >
@@ -194,10 +195,11 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                         cat === activeCategory ? null : cat,
                                     )
                                 }
+                                style={activeCategory === cat ? { backgroundColor: "#94D786", color: "#003A02" } : {}}
                                 className={cn(
                                     "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
                                     activeCategory === cat
-                                        ? "bg-accent text-white"
+                                        ? ""
                                         : "bg-card/70 text-foreground hover:bg-card/90",
                                 )}
                             >
@@ -221,7 +223,7 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                 variants={statsItemVariants}
                                 className="flex items-center gap-4 rounded-xl border border-border/30 bg-card/70 p-5 shadow-lg shadow-black/5 backdrop-blur-xl"
                             >
-                                <div className="flex size-11 items-center justify-center rounded-xl bg-accent text-white">
+                                <div className="flex size-11 items-center justify-center rounded-xl bg-accent" style={{ color: "#003A02" }}>
                                     <StatIcon className="size-5" />
                                 </div>
                                 <div>
