@@ -56,7 +56,7 @@ export default function RootLayout({
 }>) {
     return (
         <html
-            lang="en"
+            lang="id"
             className={cn(
                 "h-full",
                 "antialiased",
@@ -68,6 +68,16 @@ export default function RootLayout({
             )}
             suppressHydrationWarning
         >
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: [
+                            "window.__pwaInstallEvent=null",
+                            "window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__pwaInstallEvent=e})",
+                        ].join(";"),
+                    }}
+                />
+            </head>
             <body className="min-h-full flex flex-col">
                 <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
                     <ServiceWorkerRegistration />

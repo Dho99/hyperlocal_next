@@ -10,8 +10,8 @@ interface BrandLogoProps {
 
 const iconSizeClass = {
     sm: "h-6 w-auto",
-    md: "h-8 w-auto",
-    lg: "h-10 w-auto",
+    md: "h-10 w-auto",
+    lg: "h-14 w-auto",
 };
 
 const textSizeClass = {
@@ -36,7 +36,7 @@ export function BrandLogo({
                 width={1000}
                 height={1000}
                 priority={priority}
-                className={cn("shrink-0 object-contain", iconSizeClass[size])}
+                className={cn("shrink-0 object-fit", iconSizeClass[size])}
             />
             <span
                 className={cn(

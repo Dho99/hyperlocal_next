@@ -64,12 +64,24 @@ const statsItemVariants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export function HeroSection({ stats = defaultStats }: { stats?: { label: string; value: string; icon: "map" | "utensils" | "shield" }[] }) {
+export function HeroSection({
+    stats = defaultStats,
+}: {
+    stats?: {
+        label: string;
+        value: string;
+        icon: "map" | "utensils" | "shield";
+    }[];
+}) {
     const router = useRouter();
-    const [destinations, setDestinations] = useState<DashboardMapDestination[]>([]);
+    const [destinations, setDestinations] = useState<DashboardMapDestination[]>(
+        [],
+    );
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selected, setSelected] = useState<DashboardMapDestination | null>(null);
+    const [selected, setSelected] = useState<DashboardMapDestination | null>(
+        null,
+    );
     const [dialogOpen, setDialogOpen] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
@@ -105,7 +117,9 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
     }, [fetchMapData]);
 
     const availableCategories = useMemo(() => {
-        const cats = new Set(destinations.map((d) => d.category).filter(Boolean));
+        const cats = new Set(
+            destinations.map((d) => d.category).filter(Boolean),
+        );
         return Array.from(cats) as string[];
     }, [destinations]);
 
@@ -126,8 +140,13 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
     }, [selected, router]);
 
     const statusBadge = (status?: string) => {
-        if (status === "APPROVED") return { label: "Terverifikasi", cls: "bg-emerald-100 text-emerald-800" };
-        if (status === "REJECTED") return { label: "Ditolak", cls: "bg-red-100 text-red-800" };
+        if (status === "APPROVED")
+            return {
+                label: "Terverifikasi",
+                cls: "bg-emerald-100 text-emerald-800",
+            };
+        if (status === "REJECTED")
+            return { label: "Ditolak", cls: "bg-red-100 text-red-800" };
         return { label: "Pending", cls: "bg-amber-100 text-amber-800" };
     };
 
@@ -143,7 +162,10 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
     }
 
     return (
-        <section className="relative w-full h-[100dvh] overflow-hidden" id="home">
+        <section
+            className="relative w-full h-[100dvh] overflow-hidden"
+            id="home"
+        >
             <div className="absolute inset-0 z-0">
                 {loading ? (
                     <div className="h-full w-full bg-muted animate-pulse flex items-center justify-center">
@@ -177,7 +199,14 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                     <div className="pointer-events-auto mt-5 flex flex-wrap justify-center gap-3">
                         <button
                             onClick={() => setActiveCategory(null)}
-                            style={activeCategory === null ? { backgroundColor: "#94D786", color: "#003A02" } : {}}
+                            style={
+                                activeCategory === null
+                                    ? {
+                                          backgroundColor: "#94D786",
+                                          color: "#003A02",
+                                      }
+                                    : {}
+                            }
                             className={cn(
                                 "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
                                 activeCategory === null
@@ -195,7 +224,14 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                         cat === activeCategory ? null : cat,
                                     )
                                 }
-                                style={activeCategory === cat ? { backgroundColor: "#94D786", color: "#003A02" } : {}}
+                                style={
+                                    activeCategory === cat
+                                        ? {
+                                              backgroundColor: "#94D786",
+                                              color: "#003A02",
+                                          }
+                                        : {}
+                                }
                                 className={cn(
                                     "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-md ring-1 ring-white/40 backdrop-blur-lg transition hover:-translate-y-0.5",
                                     activeCategory === cat
@@ -223,8 +259,11 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                 variants={statsItemVariants}
                                 className="flex items-center gap-4 rounded-xl border border-border/30 bg-card/70 p-5 shadow-lg shadow-black/5 backdrop-blur-xl"
                             >
-                                <div className="flex size-11 items-center justify-center rounded-xl bg-accent" style={{ color: "#003A02" }}>
-                                    <StatIcon className="size-5" />
+                                <div
+                                    className="flex size-11 items-center justify-center rounded-xl bg-accent"
+                                    style={{ color: "#003A02" }}
+                                >
+                                    <StatIcon className="size-5 text-white dark:text-[#003A02] " />
                                 </div>
                                 <div>
                                     <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -251,8 +290,15 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                 {/* Left Column (Image) */}
                                 <div className="relative w-full min-h-[170px] overflow-hidden rounded-2xl bg-muted border border-border/50 shadow-inner">
                                     <img
-                                        src={selected.image ?? DEFAULT_DESTINATION_IMAGE}
-                                        alt={selected.image ? `Foto ${selected.name}` : "Placeholder destinasi"}
+                                        src={
+                                            selected.image ??
+                                            DEFAULT_DESTINATION_IMAGE
+                                        }
+                                        alt={
+                                            selected.image
+                                                ? `Foto ${selected.name}`
+                                                : "Placeholder destinasi"
+                                        }
                                         className="h-full w-full object-cover absolute inset-0"
                                         loading="lazy"
                                     />
@@ -267,7 +313,9 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                             </DialogTitle>
                                             <DialogClose className="rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors flex-shrink-0">
                                                 <X className="h-4 w-4" />
-                                                <span className="sr-only">Tutup</span>
+                                                <span className="sr-only">
+                                                    Tutup
+                                                </span>
                                             </DialogClose>
                                         </div>
 
@@ -282,11 +330,17 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
                                                 <span
                                                     className={cn(
                                                         "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold w-fit",
-                                                        statusBadge(selected.status).cls,
+                                                        statusBadge(
+                                                            selected.status,
+                                                        ).cls,
                                                     )}
                                                 >
                                                     <Star className="size-3" />
-                                                    {statusBadge(selected.status).label}
+                                                    {
+                                                        statusBadge(
+                                                            selected.status,
+                                                        ).label
+                                                    }
                                                 </span>
                                             )}
                                         </div>
@@ -294,13 +348,17 @@ export function HeroSection({ stats = defaultStats }: { stats?: { label: string;
 
                                     <div className="mt-4 space-y-1.5 pt-3 border-t border-border/50">
                                         <div className="flex justify-between items-center text-xs sm:text-sm">
-                                            <span className="text-muted-foreground font-medium">Latitude</span>
+                                            <span className="text-muted-foreground font-medium">
+                                                Latitude
+                                            </span>
                                             <span className="font-mono font-semibold text-foreground">
                                                 {selected.latitude.toFixed(6)}
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs sm:text-sm">
-                                            <span className="text-muted-foreground font-medium">Longitude</span>
+                                            <span className="text-muted-foreground font-medium">
+                                                Longitude
+                                            </span>
                                             <span className="font-mono font-semibold text-foreground">
                                                 {selected.longitude.toFixed(6)}
                                             </span>

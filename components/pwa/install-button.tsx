@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Download } from "lucide-react";
-
-type BeforeInstallPromptEvent = Event & {
-    prompt: () => Promise<void>;
-    userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
-};
+import {
+    type BeforeInstallPromptEvent,
+    getCapturedInstallEvent,
+} from "@/lib/pwa-install";
 
 function isStandaloneDisplay() {
     const navigatorWithStandalone = window.navigator as Navigator & {
@@ -15,6 +14,7 @@ function isStandaloneDisplay() {
 
     return (
         window.matchMedia("(display-mode: standalone)").matches ||
+        window.matchMedia("(display-mode: minimal-ui)").matches ||
         navigatorWithStandalone.standalone === true
     );
 }
@@ -22,14 +22,26 @@ function isStandaloneDisplay() {
 export function InstallButton() {
     const [installEvent, setInstallEvent] =
         useState<BeforeInstallPromptEvent | null>(null);
+    const listenerRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
         if (isStandaloneDisplay()) {
             return;
         }
 
+        if (window.localStorage.getItem("priangan-halal-install-dismissed") === "true") {
+            return;
+        }
+
+        const captured = getCapturedInstallEvent();
+        if (captured) {
+            setInstallEvent(captured);
+            return;
+        }
+
         const handleBeforeInstallPrompt = (event: Event) => {
             event.preventDefault();
+            if (window.localStorage.getItem("priangan-halal-install-dismissed") === "true") return;
             setInstallEvent(event as BeforeInstallPromptEvent);
         };
 
@@ -40,12 +52,16 @@ export function InstallButton() {
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
         window.addEventListener("appinstalled", handleAppInstalled);
 
-        return () => {
+        listenerRef.current = () => {
             window.removeEventListener(
                 "beforeinstallprompt",
                 handleBeforeInstallPrompt,
             );
             window.removeEventListener("appinstalled", handleAppInstalled);
+        };
+
+        return () => {
+            listenerRef.current?.();
         };
     }, []);
 
@@ -54,8 +70,12 @@ export function InstallButton() {
     }
 
     const handleInstall = async () => {
-        await installEvent.prompt();
-        await installEvent.userChoice;
+        try {
+            await installEvent.prompt();
+            await installEvent.userChoice;
+        } catch {
+            // Prompt call may fail if previously used
+        }
         setInstallEvent(null);
     };
 

@@ -5,7 +5,6 @@ const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 const PRECACHE_ASSETS = [
     "/",
     "/offline",
-    "/manifest.webmanifest",
     "/favicon.ico",
     "/icon-192x192.png",
     "/icon-512x512.png",
@@ -70,7 +69,7 @@ function isStaticAsset(request, url) {
     return (
         url.pathname.startsWith("/icon-") ||
         url.pathname === "/favicon.ico" ||
-        url.pathname === "/manifest.webmanifest" ||
+
         request.destination === "font" ||
         request.destination === "image" ||
         request.destination === "style"

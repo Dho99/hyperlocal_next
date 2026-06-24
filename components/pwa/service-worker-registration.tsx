@@ -18,7 +18,7 @@ export function ServiceWorkerRegistration() {
         }
 
         const registerServiceWorker = () => {
-            navigator.serviceWorker.register("/sw.js").catch(() => {
+            navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(() => {
                 // Service worker registration should not block the app.
             });
         };
