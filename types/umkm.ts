@@ -62,6 +62,7 @@ export interface Umkm {
     description: string | null;
     address: string | null;
     phone: string | null;
+    estimatedCost: number | null;
     latitude: number | null;
     longitude: number | null;
     rating?: number | null;

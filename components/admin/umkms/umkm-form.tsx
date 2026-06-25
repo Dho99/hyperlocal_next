@@ -61,6 +61,7 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
             description: initialData?.description || "",
             address: initialData?.address || "",
             phone: initialData?.phone || "",
+            estimatedCost: initialData?.estimatedCost ? Number(initialData.estimatedCost) : null,
             latitude: initialData?.latitude
                 ? Number(initialData.latitude)
                 : null,
@@ -275,6 +276,28 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                                         </p>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="estimatedCost">Estimasi Harga (Rp)</Label>
+                                <Input
+                                    id="estimatedCost"
+                                    type="number"
+                                    min={0}
+                                    placeholder="Contoh: 50000"
+                                    value={form.watch("estimatedCost") ?? ""}
+                                    onChange={(e) =>
+                                        form.setValue(
+                                            "estimatedCost",
+                                            e.target.value === "" ? null : Number(e.target.value),
+                                        )
+                                    }
+                                />
+                                {form.formState.errors.estimatedCost && (
+                                    <p className="text-xs text-destructive">
+                                        {form.formState.errors.estimatedCost.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">

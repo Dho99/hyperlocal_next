@@ -16,6 +16,7 @@ export const accommodationSchema = z.object({
     longitude: z.number().optional().nullable(),
     phone: z.string().optional().nullable(),
     website: z.string().optional().nullable(),
+    estimatedCost: z.number().positive("Harga harus positif").optional().nullable(),
     description: z.any().optional().nullable(),
     images: z
         .preprocess(

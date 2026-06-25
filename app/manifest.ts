@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "Priangan Halal Tourism",
-        short_name: "Priangan Halal",
+        name: "SAFAR - Priangan Halal",
+        short_name: "SAFAR",
         description:
             "Platform penemuan destinasi, kuliner, penginapan, dan fasilitas halal berbasis insight lokal.",
         start_url: "/",
