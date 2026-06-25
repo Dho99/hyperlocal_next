@@ -190,6 +190,7 @@ model Accommodation {
   longitude       Decimal?         @db.Decimal(10, 7)
   phone           String?
   website         String?
+  estimatedCost   Decimal?         @db.Decimal(15, 2) @map("estimated_cost")
   rating          Float?           @default(0)
   reviewCount     Int?             @default(0) @map("review_count")
   validationStatus  String          @default("PENDING") @map("validation_status")
@@ -484,6 +485,7 @@ model Umkm {
   description    String?
   address        String?
   phone          String?
+  estimatedCost  Decimal? @db.Decimal(15, 2) @map("estimated_cost")
   latitude       Decimal? @db.Decimal(10, 7)
   longitude      Decimal? @db.Decimal(10, 7)
   rating         Float?   @default(0)

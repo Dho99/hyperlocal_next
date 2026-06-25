@@ -172,8 +172,10 @@ export function LaporanGenerator() {
         y = (doc as any).lastAutoTable.finalY + 8;
       }
 
-      doc.save(`laporan-halal-tourism-${format(new Date(), "yyyy-MM-dd")}.pdf`);
-      toast.success("PDF berhasil didownload");
+      const blob = doc.output("blob");
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      toast.success("PDF dibuka di tab baru");
     } catch {
       toast.error("Gagal generate PDF");
     } finally {

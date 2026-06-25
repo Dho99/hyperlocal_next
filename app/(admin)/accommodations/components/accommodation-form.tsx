@@ -63,6 +63,7 @@ export function AccommodationForm({ initialData }: AccommodationFormProps) {
             longitude: initialData?.longitude ? Number(initialData.longitude) : null,
             phone: initialData?.phone || "",
             website: initialData?.website || "",
+            estimatedCost: initialData?.estimatedCost ? Number(initialData.estimatedCost) : null,
             images: initialData?.images?.map((img) => ({ imageUrl: img.imageUrl, isPrimary: img.isPrimary, caption: img.caption ?? "" })) || [],
             facilityIds: initialData?.facilities?.map((f) => f.facilityId) || [],
         },
@@ -182,6 +183,25 @@ const handleUploadComplete = useCallback((urls: string[]) => {
                                         <FormLabel>Website</FormLabel>
                                         <FormControl>
                                             <Input {...field} value={field.value ?? ""} placeholder="https://" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="estimatedCost"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Estimasi Harga (Rp)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                min={0}
+                                                placeholder="Contoh: 150000"
+                                                value={field.value ?? ""}
+                                                onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

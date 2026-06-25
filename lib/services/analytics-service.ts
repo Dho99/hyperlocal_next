@@ -321,6 +321,7 @@ export interface DetailedStatistics {
     topUmkms: { id: string; name: string; rating: number; category: string; city: string }[];
   };
   weeklyTrend: { label: string; submissions: number; approvals: number }[];
+  halalCategoryDistribution: { label: string; count: number; percent: number; color: string }[];
   mapData: {
     id: string;
     name: string;
@@ -458,7 +459,27 @@ export async function getDetailedStatistics(): Promise<DetailedStatistics> {
     };
   });
 
-  // 6. Map & Heatmap Data
+  // 6. Halal category distribution
+  const allDestScores = await prisma.destination.findMany({ select: { halalScore: true } });
+  const scoreTotal = allDestScores.length;
+  const buckets = { sangat: 0, siap: 0, perlu: 0, belum: 0, unscored: 0 };
+  allDestScores.forEach(({ halalScore }) => {
+    if (halalScore === null) buckets.unscored++;
+    else if (halalScore >= 80) buckets.sangat++;
+    else if (halalScore >= 60) buckets.siap++;
+    else if (halalScore >= 40) buckets.perlu++;
+    else buckets.belum++;
+  });
+  const pct = (n: number) => scoreTotal > 0 ? Math.round((n / scoreTotal) * 100) : 0;
+  const halalCategoryDistribution = [
+    { label: "Sangat Siap",         count: buckets.sangat,   percent: pct(buckets.sangat),   color: "bg-emerald-500" },
+    { label: "Siap dengan Catatan", count: buckets.siap,     percent: pct(buckets.siap),     color: "bg-blue-500"    },
+    { label: "Perlu Pengembangan",  count: buckets.perlu,    percent: pct(buckets.perlu),    color: "bg-amber-500"   },
+    { label: "Belum Siap",          count: buckets.belum,    percent: pct(buckets.belum),    color: "bg-red-500"     },
+    { label: "Belum Dinilai",       count: buckets.unscored, percent: pct(buckets.unscored), color: "bg-gray-400"    },
+  ];
+
+  // 7. Map & Heatmap Data
   const mapDestinations = await prisma.destination.findMany({
     select: {
       id: true,
@@ -502,6 +523,7 @@ export async function getDetailedStatistics(): Promise<DetailedStatistics> {
       }))
     },
     weeklyTrend,
+    halalCategoryDistribution,
     mapData: mapDestinations.map(d => ({
       ...d,
       latitude: d.latitude ? Number(d.latitude) : 0,
