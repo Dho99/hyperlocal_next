@@ -36,6 +36,7 @@ export const umkmSchema = z.object({
         .min(10, "Nomor telepon minimal 10 karakter")
         .optional()
         .nullable(),
+    estimatedCost: z.number().positive("Harga harus positif").optional().nullable(),
     latitude: z.number().optional().nullable(),
     longitude: z.number().optional().nullable(),
     images: z.array(z.object({ imageUrl: z.string() })).optional(),

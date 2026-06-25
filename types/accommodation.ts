@@ -29,6 +29,7 @@ export interface Accommodation {
     longitude: number | null;
     phone: string | null;
     website: string | null;
+    estimatedCost: number | null;
     rating: number | null;
     reviewCount: number | null;
     validationStatus: string;
@@ -55,6 +56,7 @@ export interface AccommodationFormValues {
     longitude?: number | null;
     phone?: string | null;
     website?: string | null;
+    estimatedCost?: number | null;
     images?: { imageUrl: string; isPrimary?: boolean; caption?: string }[];
     facilityIds?: string[];
 }
