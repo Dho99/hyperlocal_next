@@ -5,6 +5,9 @@ interface BrandLogoProps {
     className?: string;
     priority?: boolean;
     size?: "sm" | "md" | "lg";
+    src?: string;
+    width?: number;
+    height?: number;
 }
 
 const iconSizeClass = {
@@ -23,14 +26,17 @@ export function BrandLogo({
     className,
     priority = false,
     size = "sm",
+    src = "/logo/safar.png",
+    width = 1463,
+    height = 448,
 }: BrandLogoProps) {
     return (
         <div className={cn("flex items-center gap-2.5", className)}>
             <Image
-                src="/logo/safar.png"
+                src={src}
                 alt=""
-                width={1463}
-                height={448}
+                width={width}
+                height={height}
                 priority={priority}
                 className={cn("shrink-0 object-contain", iconSizeClass[size])}
             />

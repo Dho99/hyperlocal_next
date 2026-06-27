@@ -11,12 +11,15 @@ export function AdminSidebar() {
     return (
         <aside className="hidden bg-sidebar text-sidebar-foreground lg:block lg:w-64 lg:flex-none">
             <div className="flex h-full flex-col">
-                <div className="flex h-16 items-center border-b border-white/10 px-4">
-                    <div className="flex h-10 w-full min-w-0 items-center rounded-md bg-white px-2.5 shadow-sm">
+                <div className="flex h-20 items-center border-b border-white/10 px-4">
+                    <div className="flex h-14 w-full min-w-0 items-center">
                         <BrandLogo
-                            className="min-w-0 [&_img]:max-w-full"
-                            size="md"
+                            className="min-w-0 [&_img]:max-w-full [&_img]:h-12"
+                            size="lg"
                             priority
+                            src="/logo/safar_admin_dark.png"
+                            width={2000}
+                            height={448}
                         />
                     </div>
                 </div>
