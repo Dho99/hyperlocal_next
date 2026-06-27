@@ -5,11 +5,10 @@ interface BrandLogoProps {
     className?: string;
     priority?: boolean;
     size?: "sm" | "md" | "lg";
-    variant?: "default" | "light";
 }
 
 const iconSizeClass = {
-    sm: "h-6 w-auto",
+    sm: "h-8 w-auto",
     md: "h-10 w-auto",
     lg: "h-14 w-auto",
 };
@@ -24,19 +23,16 @@ export function BrandLogo({
     className,
     priority = false,
     size = "sm",
-    variant = "default",
 }: BrandLogoProps) {
-    const isLight = variant === "light";
-
     return (
         <div className={cn("flex items-center gap-2.5", className)}>
             <Image
                 src="/logo/safar.png"
                 alt=""
-                width={1000}
-                height={1000}
+                width={1463}
+                height={448}
                 priority={priority}
-                className={cn("shrink-0 object-fit", iconSizeClass[size])}
+                className={cn("shrink-0 object-contain", iconSizeClass[size])}
             />
             <span
                 className={cn(

@@ -11,11 +11,13 @@ export function AdminSidebar() {
     return (
         <aside className="hidden bg-sidebar text-sidebar-foreground lg:block lg:w-64 lg:flex-none">
             <div className="flex h-full flex-col">
-                <div className="flex h-16 items-center justify-center border-b border-white/10 px-3">
-                    <div className="flex min-w-0 items-center gap-2.5">
-                        <div className="bg-white p-2 flex justify-center items-center rounded-md">
-                            <BrandLogo size="sm" priority />
-                        </div>
+                <div className="flex h-16 items-center border-b border-white/10 px-4">
+                    <div className="flex h-10 w-full min-w-0 items-center rounded-md bg-white px-2.5 shadow-sm">
+                        <BrandLogo
+                            className="min-w-0 [&_img]:max-w-full"
+                            size="md"
+                            priority
+                        />
                     </div>
                 </div>
                 <ScrollArea className="flex-1">

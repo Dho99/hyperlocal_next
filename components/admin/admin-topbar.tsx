@@ -59,11 +59,10 @@ export function AdminTopbar({ user }: { user: User }) {
                 >
                     <SheetHeader className="flex h-16 items-center border-b border-white/10 px-4">
                         <SheetTitle className="sr-only">Menu Admin</SheetTitle>
-                        <div className="overflow-hidden py-1.5">
+                        <div className="flex h-10 w-full items-center rounded-md bg-white px-2.5 shadow-sm">
                             <BrandLogo
-                                className="[&>span]:text-sm"
-                                size="sm"
-                                variant="light"
+                                className="min-w-0 [&_img]:max-w-full"
+                                size="md"
                             />
                         </div>
                     </SheetHeader>
