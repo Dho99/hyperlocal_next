@@ -57,13 +57,14 @@ export function AdminTopbar({ user }: { user: User }) {
                     side="left"
                     className="w-[280px] gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
                 >
-                    <SheetHeader className="flex h-16 items-center border-b border-white/10 px-4">
+                    <SheetHeader className="flex h-20 items-center border-b border-white/10 px-4">
                         <SheetTitle className="sr-only">Menu Admin</SheetTitle>
-                        <div className="overflow-hidden py-1.5">
+                        <div className="flex h-14 w-full items-center">
                             <BrandLogo
-                                className="[&>span]:text-sm"
-                                size="sm"
-                                variant="light"
+                                className="min-w-0 [&_img]:max-w-full [&_img]:h-12"
+                                size="lg"
+                                width={2000}
+                                height={448}
                             />
                         </div>
                     </SheetHeader>
@@ -75,7 +76,12 @@ export function AdminTopbar({ user }: { user: User }) {
 
             {/* Logo for mobile only */}
             <div className="mr-4 flex min-w-0 items-center gap-2 lg:hidden">
-                <BrandLogo size="sm" />
+                <BrandLogo
+                    className="min-w-0 [&_img]:max-w-36"
+                    size="sm"
+                    width={2000}
+                    height={448}
+                />
             </div>
 
             {/* <h2 className="hidden min-w-[280px] font-heading text-3xl font-semibold tracking-tight text-[#1d1b20] lg:block">

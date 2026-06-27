@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -5,55 +7,56 @@ interface BrandLogoProps {
     className?: string;
     priority?: boolean;
     size?: "sm" | "md" | "lg";
-    variant?: "default" | "light";
+    width?: number;
+    height?: number;
+    fixedDark?: boolean;
 }
 
 const iconSizeClass = {
-    sm: "h-6 w-auto",
-    md: "h-10 w-auto",
+    sm: "h-8 w-auto",
+    md: "h-12 w-auto",
     lg: "h-14 w-auto",
-};
-
-const textSizeClass = {
-    sm: "text-sm sm:text-base",
-    md: "text-base sm:text-lg",
-    lg: "text-lg sm:text-xl",
 };
 
 export function BrandLogo({
     className,
     priority = false,
     size = "sm",
-    variant = "default",
+    width = 1463,
+    height = 448,
+    fixedDark = false,
 }: BrandLogoProps) {
-    const isLight = variant === "light";
-
     return (
-        <div className={cn("flex items-center gap-2.5", className)}>
-            <Image
-                src="/logo/safar.png"
-                alt=""
-                width={1000}
-                height={1000}
-                priority={priority}
-                className={cn("shrink-0 object-fit", iconSizeClass[size])}
-            />
-            <span
-                className={cn(
-                    "font-heading font-bold leading-none tracking-widest whitespace-nowrap",
-                    textSizeClass[size],
-                )}
-            >
-                {/* <span className={isLight ? "text-white" : "text-emerald-900"}> */}
-                {/*   SAFAR */}
-                {/* </span> */}
-                {/* <span className={isLight ? "text-emerald-200" : "text-[#44a840]"}> */}
-                {/*     Halal */}
-                {/* </span>{" "} */}
-                {/* <span className={isLight ? "text-cyan-100" : "text-[#168f99]"}> */}
-                {/*     Tourism */}
-                {/* </span> */}
-            </span>
+        <div className={cn("flex items-center", className)}>
+            {fixedDark ? (
+                <Image
+                    src="/logo/safar_admin_dark.png"
+                    alt="Safar"
+                    width={width}
+                    height={height}
+                    priority={priority}
+                    className={cn("shrink-0 object-contain block", iconSizeClass[size])}
+                />
+            ) : (
+                <>
+                    <Image
+                        src="/logo/safar.png"
+                        alt="Safar"
+                        width={width}
+                        height={height}
+                        priority={priority}
+                        className={cn("shrink-0 object-contain block dark:hidden", iconSizeClass[size])}
+                    />
+                    <Image
+                        src="/logo/safar_admin_dark.png"
+                        alt="Safar"
+                        width={width}
+                        height={height}
+                        priority={priority}
+                        className={cn("shrink-0 object-contain hidden dark:block", iconSizeClass[size])}
+                    />
+                </>
+            )}
         </div>
     );
 }

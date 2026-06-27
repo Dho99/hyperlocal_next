@@ -31,26 +31,25 @@ export function InstallPrompt() {
 
         if (window.localStorage.getItem(DISMISSED_KEY) === "true") return;
 
-        const captured = getCapturedInstallEvent();
-        if (captured) {
-            setInstallEvent(captured);
+        const showInstallPrompt = (event: BeforeInstallPromptEvent) => {
+            setInstallEvent(event);
             if (window.sessionStorage.getItem(NANTI_KEY) === "true") {
                 setFabVisible(true);
             } else {
                 setBannerOpen(true);
             }
+        };
+
+        const captured = getCapturedInstallEvent();
+        if (captured) {
+            window.setTimeout(() => showInstallPrompt(captured), 0);
             return;
         }
 
         const handleBeforeInstallPrompt = (event: Event) => {
             event.preventDefault();
             if (window.localStorage.getItem(DISMISSED_KEY) === "true") return;
-            setInstallEvent(event as BeforeInstallPromptEvent);
-            if (window.sessionStorage.getItem(NANTI_KEY) === "true") {
-                setFabVisible(true);
-            } else {
-                setBannerOpen(true);
-            }
+            showInstallPrompt(event as BeforeInstallPromptEvent);
         };
 
         const handleAppInstalled = () => {
@@ -108,34 +107,33 @@ export function InstallPrompt() {
     return (
         <>
             {bannerOpen && installEvent && (
-                <aside className="fixed inset-x-4 bottom-20 z-[60] mx-auto max-w-md rounded-lg border border-accent/30 bg-card p-4 shadow-xl shadow-accent/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 md:inset-x-auto md:right-6 md:bottom-6 md:w-[360px]">
+                <aside className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-xs rounded-lg border border-border bg-card p-3 text-card-foreground shadow-xl shadow-accent/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 md:inset-x-auto md:right-5 md:w-[320px]">
                     <button
                         type="button"
                         onClick={handleNanti}
-                        className="absolute right-3 top-3 rounded-md p-1 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-800"
+                        className="absolute right-2 top-2 rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
                         aria-label="Tutup"
                     >
                         <X className="size-4" />
                     </button>
 
-                    <div className="flex gap-3 pr-6">
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-emerald-100 text-emerald-800">
-                            <Download className="size-5" />
+                    <div className="flex gap-2.5 pr-5">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary dark:bg-accent/15 dark:text-accent">
+                            <Download className="size-4" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-sm font-semibold text-neutral-950">
+                            <h2 className="text-sm font-semibold text-card-foreground">
                                 Install Aplikasi
                             </h2>
-                            <p className="mt-1 text-sm leading-5 text-neutral-600">
-                                Buka lebih cepat dari beranda HP dan akses halaman
-                                tersimpan saat koneksi terbatas.
+                            <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                                Buka lebih cepat dari beranda HP.
                             </p>
 
-                            <div className="mt-3 flex items-center gap-2">
+                            <div className="mt-2 flex items-center gap-2">
                                 <button
                                     type="button"
                                     onClick={handleInstall}
-                                    className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-emerald-800 px-4 text-sm font-semibold text-white transition hover:bg-emerald-900"
+                                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/85 dark:bg-accent dark:text-accent-foreground dark:hover:bg-accent/85"
                                 >
                                     <Download className="size-4" />
                                     Install
@@ -143,7 +141,7 @@ export function InstallPrompt() {
                                 <button
                                     type="button"
                                     onClick={handleNanti}
-                                    className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100"
+                                    className="inline-flex h-8 items-center justify-center rounded-md px-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
                                 >
                                     Nanti
                                 </button>
@@ -152,7 +150,7 @@ export function InstallPrompt() {
                             <button
                                 type="button"
                                 onClick={handlePermanentDismiss}
-                                className="mt-1.5 text-xs text-neutral-400 underline underline-offset-2 transition hover:text-neutral-600"
+                                className="mt-1 text-xs text-muted-foreground/75 underline underline-offset-2 transition hover:text-foreground"
                             >
                                 Jangan tampilkan lagi
                             </button>
