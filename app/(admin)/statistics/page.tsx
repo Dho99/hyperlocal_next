@@ -17,9 +17,11 @@ export default async function StatisticsDashboard() {
             <AnalyticsCharts
                 categories={data.distributions.destinationsByCategory}
                 facilities={data.distributions.facilitiesByType}
+            />
+            <HalalCategoryChart
+                data={data.halalCategoryDistribution}
                 umkmStatus={data.umkmHalalStatus}
             />
-            <HalalCategoryChart data={data.halalCategoryDistribution} />
             <TablesAndMap rankings={data.rankings} mapData={data.mapData} />
             <TrendVisualization trend={data.weeklyTrend} />
             <ViewTrendAnalytics period="daily" />

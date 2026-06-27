@@ -25,7 +25,18 @@ import {
     Image as ImageIcon,
     Loader2,
     AlertCircle,
+    CheckCircle2,
+    XCircle,
 } from "lucide-react";
+import {
+    ACES_PILLAR_ORDER,
+    ACES_PILLAR_LABELS,
+    ACES_PILLAR_WEIGHTS,
+    ACES_FACILITY_MAP,
+    FACILITY_TYPES,
+    type AcesPillar,
+    type FacilityType,
+} from "@/lib/config/halal-readiness";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { DynamicContextMap } from "@/components/maps";
@@ -291,31 +302,126 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
                                 Fasilitas Halal
                             </CardTitle>
                             <CardDescription>
-                                Fasilitas yang tersedia di lokasi ini.
+                                GMTI ACES Framework — kelompok fasilitas per pilar.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="flex flex-wrap gap-2">
-                                {destination?.destinationHalalFacilities &&
-                                destination.destinationHalalFacilities.length > 0 ? (
-                                    destination.destinationHalalFacilities.map(
-                                        (dhf, idx) => (
-                                            <Badge
-                                                key={idx}
-                                                variant="secondary"
-                                                className="px-3 py-1 bg-primary/5 text-primary hover:bg-primary/10 border-none"
-                                            >
-                                                {dhf.facility?.name ?? "-"}
-                                            </Badge>
-                                        ),
-                                    )
-                                ) : (
-                                    <p className="text-sm text-muted-foreground italic">
-                                        Belum ada fasilitas halal yang
-                                        terdaftar.
-                                    </p>
-                                )}
-                            </div>
+                        <CardContent className="space-y-4">
+                            {(() => {
+                                const facilities =
+                                    destination?.destinationHalalFacilities ?? [];
+
+                                const coveredTypes = new Set(
+                                    facilities
+                                        .map((f) => f.facility?.facilityType)
+                                        .filter(Boolean) as string[],
+                                );
+
+                                const facilityNamesByType = new Map<string, string[]>();
+                                for (const dhf of facilities) {
+                                    const t = dhf.facility?.facilityType;
+                                    if (!t) continue;
+                                    if (!facilityNamesByType.has(t))
+                                        facilityNamesByType.set(t, []);
+                                    facilityNamesByType
+                                        .get(t)!
+                                        .push(dhf.facility?.name ?? dhf.name ?? "-");
+                                }
+
+                                return ACES_PILLAR_ORDER.map((pillar: AcesPillar) => {
+                                    const isC = pillar === "C";
+                                    const pillarTypes = FACILITY_TYPES.filter(
+                                        (t: FacilityType) =>
+                                            ACES_FACILITY_MAP[t].pillar === pillar,
+                                    );
+
+                                    return (
+                                        <div
+                                            key={pillar}
+                                            className={`rounded-lg border p-3 space-y-2 ${isC ? "opacity-50" : ""}`}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                                    [{pillar}]{" "}
+                                                    {ACES_PILLAR_LABELS[pillar]}
+                                                </span>
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-[10px] px-1.5 py-0"
+                                                >
+                                                    {Math.round(
+                                                        ACES_PILLAR_WEIGHTS[pillar] *
+                                                            100,
+                                                    )}
+                                                    %
+                                                </Badge>
+                                            </div>
+
+                                            {isC ? (
+                                                <p className="text-xs text-muted-foreground italic">
+                                                    Tidak dinilai dari fasilitas
+                                                    fisik
+                                                </p>
+                                            ) : pillarTypes.length === 0 ? null : (
+                                                <div className="space-y-1.5">
+                                                    {pillarTypes.map(
+                                                        (type: FacilityType) => {
+                                                            const cfg =
+                                                                ACES_FACILITY_MAP[type];
+                                                            const covered =
+                                                                coveredTypes.has(type);
+                                                            const names =
+                                                                facilityNamesByType.get(
+                                                                    type,
+                                                                ) ?? [];
+
+                                                            return (
+                                                                <div
+                                                                    key={type}
+                                                                    className="flex items-start gap-2"
+                                                                >
+                                                                    {covered ? (
+                                                                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                                                                    ) : (
+                                                                        <XCircle className="h-4 w-4 text-muted-foreground/40 mt-0.5 shrink-0" />
+                                                                    )}
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <span
+                                                                                className={`text-xs font-medium ${covered ? "text-foreground" : "text-muted-foreground"}`}
+                                                                            >
+                                                                                {
+                                                                                    cfg.subcategory
+                                                                                }
+                                                                            </span>
+                                                                            <span className="text-[10px] text-muted-foreground">
+                                                                                (
+                                                                                {Math.round(
+                                                                                    cfg.weight *
+                                                                                        100,
+                                                                                )}
+                                                                                %)
+                                                                            </span>
+                                                                        </div>
+                                                                        {covered &&
+                                                                            names.length >
+                                                                                0 && (
+                                                                                <p className="text-[10px] text-muted-foreground truncate">
+                                                                                    {names.join(
+                                                                                        ", ",
+                                                                                    )}
+                                                                                </p>
+                                                                            )}
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        },
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                });
+                            })()}
                         </CardContent>
                     </Card>
 

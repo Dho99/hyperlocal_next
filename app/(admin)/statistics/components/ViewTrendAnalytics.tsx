@@ -68,8 +68,8 @@ export default async function ViewTrendAnalytics({
                                 <p className="truncate font-semibold text-foreground">
                                     {item.name}
                                 </p>
-                                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <MapPin className="h-3 w-3" />
+                                <p className="flex items-center gap-1 text-xs text-muted-foreground truncate">
+                                    <MapPin className="h-3 w-3 shrink-0" />
                                     {item.city} • {item.category}
                                 </p>
                             </div>
