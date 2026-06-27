@@ -63,7 +63,6 @@ export function AdminTopbar({ user }: { user: User }) {
                             <BrandLogo
                                 className="min-w-0 [&_img]:max-w-full [&_img]:h-12"
                                 size="lg"
-                                src="/logo/safar_admin_dark.png"
                                 width={2000}
                                 height={448}
                             />
@@ -80,7 +79,6 @@ export function AdminTopbar({ user }: { user: User }) {
                 <BrandLogo
                     className="min-w-0 [&_img]:max-w-36"
                     size="sm"
-                    src="/logo/safar_admin_dark.png"
                     width={2000}
                     height={448}
                 />

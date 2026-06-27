@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { LogoutDialog } from "./logout-dialog";
 import { BrandLogo } from "../ui/brand-logo";
-
 export function AdminSidebar() {
     return (
         <aside className="hidden bg-sidebar text-sidebar-foreground lg:block lg:w-64 lg:flex-none">
@@ -17,7 +16,7 @@ export function AdminSidebar() {
                             className="min-w-0 [&_img]:max-w-full [&_img]:h-12"
                             size="lg"
                             priority
-                            src="/logo/safar_admin_dark.png"
+                            fixedDark
                             width={2000}
                             height={448}
                         />
@@ -29,10 +28,6 @@ export function AdminSidebar() {
                     </div>
                 </ScrollArea>
                 <div className="mt-auto space-y-2 border-t border-sidebar-border p-3">
-                    <div className="flex items-center gap-3 px-2 py-1.5 text-xs text-sidebar-foreground/55">
-                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                        <span>Admin System Active</span>
-                    </div>
                     <LogoutDialog>
                         <Button
                             variant="ghost"

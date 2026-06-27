@@ -52,8 +52,8 @@ export default function StatisticsHeader({
     };
 
     return (
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div>
+        <header className="flex xl:flex-row flex-col justify-between gap-4 mb-8">
+            <div className="w-full lg:w-auto">
                 <h1 className="text-3xl font-bold tracking-tight font-heading">
                     Statistik & Analitik Overview
                 </h1>
@@ -62,20 +62,20 @@ export default function StatisticsHeader({
                     performance.
                 </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors dark:bg-card dark:text-card-foreground">
+            <div className="flex flex-wrap items-center gap-2">
+                <button className="flex items-center gap-2 px-3 py-2 sm:px-4 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors dark:bg-card dark:text-card-foreground">
                     <Calendar className="w-4 h-4 text-emerald-600 dark:text-card-foreground" />
                     Last 30 Days
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors dark:bg-card dark:text-card-foreground">
+                <button className="flex items-center gap-2 px-3 py-2 sm:px-4 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors dark:bg-card dark:text-card-foreground">
                     <MapPin className="w-4 h-4 text-emerald-600 dark:text-card-foreground" />
                     All Regions
                 </button>
                 <button
                     onClick={handleExport}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 sm:px-4 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-sm font-semibold shadow-md transition-colors"
                 >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-4 h-4 shrink-0" />
                     Export CSV
                 </button>
             </div>

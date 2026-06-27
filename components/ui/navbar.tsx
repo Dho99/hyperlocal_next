@@ -100,6 +100,10 @@ export default function Navbar() {
 
                 {/* Right Side Items - Right Aligned */}
                 <div className="flex flex-1 items-center justify-end gap-3 text-[var(--navbar-text)]">
+                    <div className="flex md:hidden">
+                        {" "}
+                        <ThemeToggle />
+                    </div>
                     <div className="hidden items-center gap-3 md:flex">
                         <ThemeToggle />
                         <InstallButton />

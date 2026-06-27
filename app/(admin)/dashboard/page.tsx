@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                 </Button>
             </section>
 
-            <section className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-3.5 lg:grid-cols-2 xl:grid-cols-4">
                 {stats.map((stat) => (
                     <Card
                         key={stat.label}
@@ -319,7 +319,7 @@ export default async function DashboardPage() {
                                                             href={
                                                                 "city" in row
                                                                     ? `/destinations/${row.id}`
-                                                                     : "/validasi/destinasi"
+                                                                    : "/validasi/destinasi"
                                                             }
                                                         >
                                                             <Eye className="h-5 w-5" />
@@ -372,7 +372,9 @@ export default async function DashboardPage() {
                                         </div>
                                         <span className="inline-flex items-center gap-1 text-xs font-bold text-[#047857] shrink-0">
                                             <Eye className="h-3.5 w-3.5" />
-                                            {destination.viewCount?.toLocaleString("id-ID") ?? 0}
+                                            {destination.viewCount?.toLocaleString(
+                                                "id-ID",
+                                            ) ?? 0}
                                         </span>
                                     </div>
                                 ))}
@@ -472,30 +474,30 @@ export default async function DashboardPage() {
                             dashboard.recentActivities
                                 .slice(0, 3)
                                 .map((activity) => (
-                                <div
-                                    key={activity.id}
-                                    className="flex gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
-                                >
-                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#d1fae5] text-[#047857]">
-                                        {activity.type === "SAVE" ? (
-                                            <CheckCircle2 className="h-4 w-4" />
-                                        ) : (
-                                            <Activity className="h-4 w-4" />
-                                        )}
+                                    <div
+                                        key={activity.id}
+                                        className="flex gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
+                                    >
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#d1fae5] text-[#047857]">
+                                            {activity.type === "SAVE" ? (
+                                                <CheckCircle2 className="h-4 w-4" />
+                                            ) : (
+                                                <Activity className="h-4 w-4" />
+                                            )}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-medium">
+                                                {activity.title}
+                                            </p>
+                                            <p className="truncate text-xs text-muted-foreground">
+                                                {activity.destination}
+                                            </p>
+                                            <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                                                <CalendarClock className="h-3.5 w-3.5" />
+                                                {formatDate(activity.createdAt)}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium">
-                                            {activity.title}
-                                        </p>
-                                        <p className="truncate text-xs text-muted-foreground">
-                                            {activity.destination}
-                                        </p>
-                                        <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
-                                            <CalendarClock className="h-3.5 w-3.5" />
-                                            {formatDate(activity.createdAt)}
-                                        </p>
-                                    </div>
-                                </div>
                                 ))
                         ) : (
                             <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-background px-5 text-center">
