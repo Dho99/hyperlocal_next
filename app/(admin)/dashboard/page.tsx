@@ -127,9 +127,9 @@ export default async function DashboardPage() {
                 {stats.map((stat) => (
                     <Card
                         key={stat.label}
-                        className="min-h-0 rounded-lg border-border bg-card shadow-none"
+                        className="h-28 min-h-0 rounded-lg border-border bg-card py-0 shadow-none"
                     >
-                        <CardContent className="flex items-center gap-4 p-4">
+                        <CardContent className="flex h-full items-center gap-4 p-4">
                             <div
                                 className={cn(
                                     "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
