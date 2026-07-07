@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    Bookmark,
-    LayoutDashboard,
-    Lock,
-    LogOut,
-    Moon,
-    Sun,
-    User,
-} from "lucide-react";
+import { Bookmark, LayoutDashboard, Lock, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -74,7 +66,13 @@ export default function Navbar() {
                         href="/"
                         aria-label="Beranda"
                     >
-                        <BrandLogo priority size="md" />
+                        <BrandLogo
+                            size="md"
+                            priority
+                            // fixedDark
+                            width={2000}
+                            height={448}
+                        />
                     </Link>
                 </div>
 
