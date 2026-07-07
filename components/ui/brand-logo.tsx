@@ -14,7 +14,7 @@ interface BrandLogoProps {
 
 const iconSizeClass = {
     sm: "h-8 w-auto",
-    md: "h-12 w-auto",
+    md: "h-12 dark:h-10 w-auto",
     lg: "h-14 w-auto",
 };
 
@@ -35,7 +35,10 @@ export function BrandLogo({
                     width={width}
                     height={height}
                     priority={priority}
-                    className={cn("shrink-0 object-contain block", iconSizeClass[size])}
+                    className={cn(
+                        "shrink-0 object-contain block",
+                        iconSizeClass[size],
+                    )}
                 />
             ) : (
                 <>
@@ -45,7 +48,10 @@ export function BrandLogo({
                         width={width}
                         height={height}
                         priority={priority}
-                        className={cn("shrink-0 object-contain block dark:hidden", iconSizeClass[size])}
+                        className={cn(
+                            "shrink-0 object-contain block dark:hidden",
+                            iconSizeClass[size],
+                        )}
                     />
                     <Image
                         src="/logo/safar_admin_dark.png"
@@ -53,7 +59,10 @@ export function BrandLogo({
                         width={width}
                         height={height}
                         priority={priority}
-                        className={cn("shrink-0 object-contain hidden dark:block", iconSizeClass[size])}
+                        className={cn(
+                            "shrink-0 object-contain hidden dark:block",
+                            iconSizeClass[size],
+                        )}
                     />
                 </>
             )}
