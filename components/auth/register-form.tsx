@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
@@ -13,7 +12,7 @@ import {
   Lock,
   User,
   AlertCircle,
-  CheckCircle2,
+  Send,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -31,12 +30,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
 import { BrandLogo } from "../ui/brand-logo";
+import { MailCheck } from "lucide-react";
 
 export default function RegisterForm() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [isResending, setIsResending] = useState(false);
+  const [resendMsg, setResendMsg] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const cooldownRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup cooldown interval on unmount
+  useEffect(() => {
+    return () => {
+      if (cooldownRef.current) clearInterval(cooldownRef.current);
+    };
+  }, []);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -52,6 +63,7 @@ export default function RegisterForm() {
   async function onSubmit(values: RegisterFormValues) {
     setIsLoading(true);
     setError(null);
+    setRegisteredEmail(values.email);
 
     await authClient.signUp.email({
       email: values.email,
@@ -61,9 +73,6 @@ export default function RegisterForm() {
       fetchOptions: {
         onSuccess: () => {
           setIsSuccess(true);
-          setTimeout(() => {
-            router.push("/halal");
-          }, 2000);
         },
         onError: (ctx) => {
           console.log(ctx.error);
@@ -78,20 +87,76 @@ export default function RegisterForm() {
     setIsLoading(false);
   }
 
+  async function handleResendVerification() {
+    if (!registeredEmail || resendCooldown > 0) return;
+    setIsResending(true);
+    setResendMsg(null);
+    try {
+      const res = await fetch("/api/auth/send-verification-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: registeredEmail,
+          callbackURL: "/",
+        }),
+      });
+      if (!res.ok) throw new Error("Gagal mengirim ulang.");
+      setResendMsg("Link verifikasi telah dikirim ulang!");
+      // Start 60-second cooldown
+      setResendCooldown(60);
+      cooldownRef.current = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            if (cooldownRef.current) clearInterval(cooldownRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch {
+      setResendMsg("Gagal mengirim ulang. Silakan coba lagi.");
+    }
+    setIsResending(false);
+  }
+
   if (isSuccess) {
     return (
       <Card className="border-none shadow-xl ring-1 ring-border/50 text-center p-6">
         <CardContent className="pt-6 space-y-4">
-          <div className="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-            <CheckCircle2 className="h-8 w-8 text-green-600" />
+          <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <MailCheck className="h-8 w-8 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">
-            Pendaftaran Berhasil!
+            Verifikasi Email Anda
           </CardTitle>
           <CardDescription className="text-base">
-            Akun Anda telah berhasil dibuat. Anda akan diarahkan ke
-            halaman masuk dalam beberapa detik...
+            Akun Anda telah berhasil dibuat. Link verifikasi telah dikirim
+            ke{" "}
+            <span className="font-semibold text-foreground">
+              {registeredEmail}
+            </span>
+            . Cek inbox (dan folder spam) untuk mengaktifkan akun Anda.
           </CardDescription>
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={handleResendVerification}
+            disabled={isResending || resendCooldown > 0}
+          >
+            {isResending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="mr-2 h-4 w-4" />
+            )}
+            {resendCooldown > 0
+              ? `Kirim Ulang (${resendCooldown}s)`
+              : "Kirim Ulang Link Verifikasi"}
+          </Button>
+          {resendMsg && (
+            <p className="text-sm font-medium text-green-600">
+              {resendMsg}
+            </p>
+          )}
         </CardContent>
       </Card>
     );

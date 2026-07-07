@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/lib/validations/auth.schema";
 import type { LoginFormValues } from "@/types/auth";
-import { Loader2, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Loader2, Mail, Lock, AlertCircle, Eye, EyeOff, Send } from "lucide-react";
 //
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,18 @@ export default function LoginForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [needsVerification, setNeedsVerification] = useState(false);
+    const [loginEmail, setLoginEmail] = useState("");
+    const [isResending, setIsResending] = useState(false);
+    const [resendMsg, setResendMsg] = useState<string | null>(null);
+    const [resendCooldown, setResendCooldown] = useState(0);
+    const cooldownRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (cooldownRef.current) clearInterval(cooldownRef.current);
+        };
+    }, []);
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -41,8 +53,8 @@ export default function LoginForm() {
     async function onSubmit(values: LoginFormValues) {
         setIsLoading(true);
         setError(null);
-
-        // console.log(values);
+        setNeedsVerification(false);
+        setLoginEmail(values.email);
 
         await authClient.signIn.email({
             email: values.email,
@@ -67,15 +79,109 @@ export default function LoginForm() {
                     router.refresh();
                 },
                 onError: (ctx) => {
-                    setError(
-                        ctx.error.message ||
-                            "Gagal masuk. Silakan cek email dan password Anda.",
-                    );
+                    const msg = ctx.error.message || "";
+                    // better-auth returns "Email not verified" when requireEmailVerification is true
+                    if (
+                        msg.toLowerCase().includes("email not verified") ||
+                        msg.toLowerCase().includes("email belum")
+                    ) {
+                        setNeedsVerification(true);
+                    } else {
+                        setError(
+                            msg ||
+                                "Gagal masuk. Silakan cek email dan password Anda.",
+                        );
+                    }
                 },
             },
         });
 
         setIsLoading(false);
+    }
+
+    async function handleResendVerification() {
+        if (!loginEmail || resendCooldown > 0) return;
+        setIsResending(true);
+        setResendMsg(null);
+        try {
+            const res = await fetch("/api/auth/send-verification-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: loginEmail,
+                    callbackURL: "/",
+                }),
+            });
+            if (!res.ok) throw new Error("Gagal mengirim ulang.");
+            setResendMsg("Link verifikasi telah dikirim ulang!");
+            setResendCooldown(60);
+            cooldownRef.current = setInterval(() => {
+                setResendCooldown((prev) => {
+                    if (prev <= 1) {
+                        if (cooldownRef.current) clearInterval(cooldownRef.current);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        } catch {
+            setResendMsg("Gagal mengirim ulang. Silakan coba lagi.");
+        }
+        setIsResending(false);
+    }
+
+    if (needsVerification) {
+        return (
+            <Card className="border-none shadow-xl ring-1 ring-border/50 text-center p-6">
+                <CardContent className="pt-6 space-y-4">
+                    <div className="mx-auto h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+                        <Mail className="h-8 w-8 text-amber-600" />
+                    </div>
+                    <CardTitle className="text-2xl font-bold">
+                        Verifikasi Email Diperlukan
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                        Email{" "}
+                        <span className="font-semibold text-foreground">
+                            {loginEmail}
+                        </span>{" "}
+                        belum diverifikasi. Link verifikasi telah dikirim ulang
+                        ke email Anda. Silakan cek inbox (dan folder spam)
+                        untuk mengaktifkan akun.
+                    </CardDescription>
+                    <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={handleResendVerification}
+                        disabled={isResending || resendCooldown > 0}
+                    >
+                        {isResending ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Send className="mr-2 h-4 w-4" />
+                        )}
+                        {resendCooldown > 0
+                            ? `Kirim Ulang (${resendCooldown}s)`
+                            : "Kirim Ulang Link Verifikasi"}
+                    </Button>
+                    {resendMsg && (
+                        <p className="text-sm font-medium text-green-600">
+                            {resendMsg}
+                        </p>
+                    )}
+                    <Button
+                        variant="ghost"
+                        className="w-full text-sm"
+                        onClick={() => {
+                            setNeedsVerification(false);
+                            setError(null);
+                        }}
+                    >
+                        ← Kembali ke halaman masuk
+                    </Button>
+                </CardContent>
+            </Card>
+        );
     }
 
     return (
