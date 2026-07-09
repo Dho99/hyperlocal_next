@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma";
 
-export type ImportType = "destination" | "umkm" | "accommodation";
+export type ImportType = "destination" | "umkm" | "accommodation" | "facility";
 
 export interface ImportError {
   row: number;
@@ -54,10 +54,19 @@ const ACCOMMODATION_COLUMNS = [
   { key: "description", label: "Deskripsi" },
 ] as const;
 
+const FACILITY_COLUMNS = [
+  { key: "name", label: "Nama Fasilitas*" },
+  { key: "description", label: "Deskripsi" },
+  { key: "facilityType", label: "Tipe Fasilitas" },
+  { key: "weight", label: "Bobot" },
+  { key: "maxDistance", label: "Jarak Maksimal (km)" },
+] as const;
+
 const SAMPLE_ROW: Record<ImportType, string> = {
   destination: "Pantai Indah Permai",
   umkm: "Warung Makan Barokah",
   accommodation: "Hotel Syariah Lombok",
+  facility: "Mushola",
 };
 
 function toSlug(name: string): string {
@@ -166,6 +175,14 @@ export async function generateTemplate(
       coverageAreas[0]?.name ?? "",
       "",
     ]);
+  } else if (type === "facility") {
+    dataSheet.addRow([
+      SAMPLE_ROW.facility,
+      "Tempat sholat bagi wisatawan",
+      "mushola",
+      "10",
+      "5.0",
+    ]);
   } else {
     dataSheet.addRow([
       SAMPLE_ROW.accommodation,
@@ -195,7 +212,7 @@ export async function generateTemplate(
   dataSheet.views = [{ state: "frozen", ySplit: 1 }];
 
   // Dropdown validation for category (destination/umkm only)
-  const hasCategoryCol = type !== "accommodation";
+  const hasCategoryCol = type !== "accommodation" && type !== "facility";
 
   if (hasCategoryCol && categories.length > 0) {
     const catSheet = workbook.addWorksheet("_Kategori");
@@ -272,7 +289,9 @@ export async function parseAndImport(
       ? DESTINATION_COLUMNS
       : type === "umkm"
         ? UMKM_COLUMNS
-        : ACCOMMODATION_COLUMNS;
+        : type === "facility"
+          ? FACILITY_COLUMNS
+          : ACCOMMODATION_COLUMNS;
 
   // Determine start row — skip sample row if present
   let startRow = 2;
@@ -301,6 +320,7 @@ export async function parseAndImport(
 
   if (type === "destination") return importDestinations(parsed);
   if (type === "umkm") return importUmkms(parsed);
+  if (type === "facility") return importFacilities(parsed);
   return importAccommodations(parsed);
 }
 
@@ -533,6 +553,48 @@ async function importAccommodations(
   let inserted = 0;
   if (toInsert.length > 0) {
     const result = await prisma.accommodation.createMany({ data: toInsert, skipDuplicates: true });
+    inserted = result.count;
+  }
+
+  return { inserted, total: rows.length, errors };
+}
+
+async function importFacilities(
+  rows: { rowNum: number; data: Record<string, string> }[]
+): Promise<ImportResult> {
+  const errors: ImportError[] = [];
+  const toInsert: Prisma.HalalFacilityCreateManyInput[] = [];
+
+  for (const { rowNum, data } of rows) {
+    if (!data.name) {
+      errors.push({ row: rowNum, field: "Nama Fasilitas", message: "Wajib diisi" });
+      continue;
+    }
+
+    const weight = data.weight ? parseInt(data.weight, 10) : 0;
+    const maxDistance = data.maxDistance ? parseFloat(data.maxDistance) : 5.0;
+
+    if (data.weight && isNaN(weight)) {
+      errors.push({ row: rowNum, field: "Bobot", message: "Harus berupa angka bulat" });
+      continue;
+    }
+    if (data.maxDistance && isNaN(maxDistance)) {
+      errors.push({ row: rowNum, field: "Jarak Maksimal", message: "Harus berupa angka desimal (contoh: 5.0)" });
+      continue;
+    }
+
+    toInsert.push({
+      name: data.name,
+      description: data.description ?? null,
+      facilityType: data.facilityType ?? null,
+      weight,
+      maxDistance,
+    });
+  }
+
+  let inserted = 0;
+  if (toInsert.length > 0) {
+    const result = await prisma.halalFacility.createMany({ data: toInsert });
     inserted = result.count;
   }
 
