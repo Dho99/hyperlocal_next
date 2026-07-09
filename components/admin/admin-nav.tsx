@@ -19,6 +19,7 @@ import {
     Lightbulb,
     Globe,
     FileDown,
+    FileUp,
 } from "lucide-react";
 
 export const navItems = [
@@ -105,6 +106,11 @@ export const navItems = [
         title: "Generate Laporan",
         href: "/laporan",
         icon: FileDown,
+    },
+    {
+        title: "Import Data",
+        href: "/import",
+        icon: FileUp,
     },
     {
         title: "Rekomendasi & Laporan",
