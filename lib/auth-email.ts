@@ -1,19 +1,30 @@
-import { Resend } from "resend";
+import { createTransport, type Transporter } from "nodemailer";
 
 let _diagnosed = false;
+let _transporter: Transporter | null = null;
+let _transporterPromise: Promise<Transporter | null> | null = null;
 
-function getResend(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+async function getTransporter(): Promise<Transporter | null> {
+  // Return cached transporter if already verified
+  if (_transporter) return _transporter;
+
+  // If verification is in progress, wait for it
+  if (_transporterPromise) return _transporterPromise;
+
+  const user = process.env.GMAIL_USER;
+  const appPassword = process.env.GMAIL_APP_PASSWORD;
+
+  if (!user || !appPassword) {
     if (!_diagnosed) {
       _diagnosed = true;
       process.stderr.write(
         [
           "",
           "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-          "📧 RESEND — DIAGNOSTIC",
-          "   ❌ RESEND_API_KEY is not set in .env",
-          "   👉 Get a key at https://resend.com/api-keys",
+          "📧 GMAIL — DIAGNOSTIC",
+          "   ❌ GMAIL_USER or GMAIL_APP_PASSWORD is not set in .env",
+          "   👉 Enable 2FA then generate an App Password at",
+          "      https://myaccount.google.com/apppasswords",
           "   Fallback: links logged to stderr (dev) / discarded (prod)",
           "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
           "",
@@ -22,7 +33,29 @@ function getResend(): Resend | null {
     }
     return null;
   }
-  return new Resend(apiKey);
+
+  // Create and verify eagerly so the first sendMail doesn't pay the
+  // SMTP handshake cost (DNS + TLS + AUTH — can take 3-5 seconds).
+  _transporterPromise = (async () => {
+    const transporter = createTransport({
+      service: "gmail",
+      auth: { user, pass: appPassword },
+    });
+
+    try {
+      await transporter.verify();
+      console.log("📧 Gmail transporter verified — ready to send");
+      _transporter = transporter;
+      return transporter;
+    } catch (error) {
+      console.error("📧 Gmail transporter verification failed:", error);
+      return null;
+    } finally {
+      _transporterPromise = null;
+    }
+  })();
+
+  return _transporterPromise;
 }
 
 function fallbackLog(data: {
@@ -46,70 +79,113 @@ function fallbackLog(data: {
   );
 }
 
+async function sendWithRetry(
+  transporter: Transporter,
+  mailOptions: { from: string; to: string; subject: string; html: string; text: string },
+  label: string,
+): Promise<void> {
+  const maxRetries = 2;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      await transporter.sendMail(mailOptions);
+      return;
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+
+      // Rate-limit → back off and retry
+      if (errMsg.includes("Too many") || errMsg.includes("450") || errMsg.includes("rate")) {
+        const delay = (attempt + 1) * 3000;
+        console.warn(`📧 Gmail rate-limited (${label}), retrying in ${delay / 1000}s...`);
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+
+      // Auth error → don't retry
+      if (errMsg.includes("auth") || errMsg.includes("535") || errMsg.includes("534")) {
+        console.error(`📧 Gmail auth error (${label}):`, errMsg);
+        break;
+      }
+
+      // Network error → retry
+      if (errMsg.includes("ECONN") || errMsg.includes("ETIMEDOUT") || errMsg.includes("socket")) {
+        const delay = (attempt + 1) * 1000;
+        console.warn(`📧 Gmail connection error (${label}), retrying in ${delay / 1000}s...`);
+        _transporter = null;
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+
+      // Unknown error → don't retry
+      console.error(`📧 Gmail error (${label}):`, errMsg);
+      break;
+    }
+  }
+}
+
 export async function sendPasswordResetEmail(
   data: { user: { email: string; name: string }; url: string; token: string },
   _request?: Request,
 ) {
-  const resend = getResend();
-
-  if (!resend) {
+  const transporter = await getTransporter();
+  if (!transporter) {
     fallbackLog(data);
     return;
   }
 
-  const isDev = process.env.NODE_ENV === "development";
-  const from = isDev
-    ? "Hyperlocal <onboarding@resend.dev>"
-    : process.env.RESEND_FROM_ADDRESS || "Hyperlocal <noreply@resend.dev>";
-
-  const sent = await resend.emails.send({
-    from,
-    to: data.user.email,
-    subject: "Reset Password — Hyperlocal",
-    html: passwordResetEmailTemplate(data),
-  });
-
-  if (sent.error) {
-    console.error("Resend: failed to send password reset email:", sent.error);
-  }
+  await sendWithRetry(
+    transporter,
+    {
+      from: `Hyperlocal <${process.env.GMAIL_USER!}>`,
+      to: data.user.email,
+      subject: "Reset Password — Hyperlocal",
+      ...passwordResetEmailContent(data),
+    },
+    "password reset",
+  );
 }
 
 export async function sendVerificationEmail(
   data: { user: { email: string; name: string }; url: string; token: string },
   _request?: Request,
 ) {
-  const resend = getResend();
-
-  if (!resend) {
+  const transporter = await getTransporter();
+  if (!transporter) {
     fallbackLog(data);
     return;
   }
 
-  const isDev = process.env.NODE_ENV === "development";
-
-  // Resend's shared test sender for dev (no domain verification needed).
-  // For production, set RESEND_FROM_ADDRESS to your verified domain.
-  const from = isDev
-    ? "Hyperlocal <onboarding@resend.dev>"
-    : process.env.RESEND_FROM_ADDRESS || "Hyperlocal <noreply@resend.dev>";
-
-  const sent = await resend.emails.send({
-    from,
-    to: data.user.email,
-    subject: "Verifikasi Email — Hyperlocal",
-    html: verificationEmailTemplate(data),
-  });
-
-  if (sent.error) {
-    console.error("Resend: failed to send verification email:", sent.error);
-  }
+  await sendWithRetry(
+    transporter,
+    {
+      from: `Hyperlocal <${process.env.GMAIL_USER!}>`,
+      to: data.user.email,
+      subject: "Verifikasi Email — Hyperlocal",
+      ...verificationEmailContent(data),
+    },
+    "verification",
+  );
 }
 
-function verificationEmailTemplate(data: {
+// ─── Templates ────────────────────────────────────────────────────────────
+
+function verificationEmailContent(data: {
   user: { name: string };
   url: string;
-}): string {
-  return `
+}): { html: string; text: string } {
+  const text = [
+    `Halo ${data.user.name},`,
+    "",
+    "Terima kasih telah mendaftar di Hyperlocal.",
+    "Gunakan link berikut untuk memverifikasi alamat email Anda:",
+    "",
+    data.url,
+    "",
+    "Link ini berlaku selama 1 jam.",
+    "Jika Anda tidak mendaftar di Hyperlocal, abaikan email ini.",
+  ].join("\n");
+
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -164,13 +240,27 @@ function verificationEmailTemplate(data: {
   </table>
 </body>
 </html>`.trim();
+
+  return { html, text };
 }
 
-function passwordResetEmailTemplate(data: {
+function passwordResetEmailContent(data: {
   user: { name: string };
   url: string;
-}): string {
-  return `
+}): { html: string; text: string } {
+  const text = [
+    `Halo ${data.user.name},`,
+    "",
+    "Kami menerima permintaan reset password untuk akun Hyperlocal Anda.",
+    "Gunakan link berikut untuk membuat password baru:",
+    "",
+    data.url,
+    "",
+    "Link ini berlaku selama 1 jam.",
+    "Jika Anda tidak meminta reset password, abaikan email ini — akun Anda tetap aman.",
+  ].join("\n");
+
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -225,4 +315,6 @@ function passwordResetEmailTemplate(data: {
   </table>
 </body>
 </html>`.trim();
+
+  return { html, text };
 }

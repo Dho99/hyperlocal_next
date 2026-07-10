@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { parseAndImport, type ImportType } from "@/lib/services/import-service";
 
-const VALID_TYPES: ImportType[] = ["destination", "umkm", "accommodation"];
+const VALID_TYPES: ImportType[] = ["destination", "umkm", "accommodation", "facility"];
 
 export async function POST(request: Request) {
   try {
