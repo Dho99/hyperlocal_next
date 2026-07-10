@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { generateTemplate, type ImportType } from "@/lib/services/import-service";
 
-const VALID_TYPES: ImportType[] = ["destination", "umkm", "accommodation"];
+const VALID_TYPES: ImportType[] = ["destination", "umkm", "accommodation", "facility"];
 
 export async function GET(request: Request) {
   try {
@@ -18,29 +18,29 @@ export async function GET(request: Request) {
 
     if (!type || !VALID_TYPES.includes(type)) {
       return NextResponse.json(
-        { error: "Parameter 'type' harus salah satu dari: destination, umkm, accommodation" },
+        { error: "Parameter 'type' harus salah satu dari: destination, umkm, accommodation, facility" },
         { status: 400 }
       );
     }
 
+    const needsCategories = type === "destination" || type === "umkm";
+    const needsAreas = type === "destination" || type === "umkm";
+
     const [categories, coverageAreas] = await Promise.all([
-      type !== "accommodation"
+      needsCategories
         ? prisma.category.findMany({
-            where: {
-              type:
-                type === "destination"
-                  ? "DESTINATION"
-                  : "UMKM",
-            },
+            where: { type: type === "destination" ? "DESTINATION" : "UMKM" },
             select: { name: true },
             orderBy: { name: "asc" },
           })
         : [],
-      prisma.coverageArea.findMany({
-        where: { isActive: true },
-        select: { name: true },
-        orderBy: { name: "asc" },
-      }),
+      needsAreas
+        ? prisma.coverageArea.findMany({
+            where: { isActive: true },
+            select: { name: true },
+            orderBy: { name: "asc" },
+          })
+        : [],
     ]);
 
     const buffer = await generateTemplate(type, categories, coverageAreas);
@@ -49,6 +49,7 @@ export async function GET(request: Request) {
       destination: "destinasi",
       umkm: "umkm",
       accommodation: "penginapan",
+      facility: "fasilitas",
     };
 
     return new NextResponse(new Uint8Array(buffer), {

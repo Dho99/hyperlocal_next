@@ -27,12 +27,13 @@ import {
 } from "@/components/ui/table";
 import type { ImportResult } from "@/lib/services/import-service";
 
-type ImportType = "destination" | "umkm" | "accommodation";
+type ImportType = "destination" | "umkm" | "accommodation" | "facility";
 
 const TYPE_LABELS: Record<ImportType, string> = {
   destination: "Destinasi",
   umkm: "UMKM",
   accommodation: "Penginapan",
+  facility: "Fasilitas",
 };
 
 interface TabState {
@@ -53,6 +54,7 @@ export function ImportForm() {
     destination: initialTabState(),
     umkm: initialTabState(),
     accommodation: initialTabState(),
+    facility: initialTabState(),
   });
 
   const updateState = (type: ImportType, patch: Partial<TabState>) => {
@@ -78,6 +80,8 @@ export function ImportForm() {
     useDropzone({ onDrop: handleDrop("umkm"), accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"] }, multiple: false });
   const { getRootProps: getAccRootProps, getInputProps: getAccInputProps, isDragActive: isAccDrag } =
     useDropzone({ onDrop: handleDrop("accommodation"), accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"] }, multiple: false });
+  const { getRootProps: getFacRootProps, getInputProps: getFacInputProps, isDragActive: isFacDrag } =
+    useDropzone({ onDrop: handleDrop("facility"), accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"] }, multiple: false });
 
   const dropzoneProps: Record<
     ImportType,
@@ -86,6 +90,7 @@ export function ImportForm() {
     destination: { getRootProps: getDestRootProps, getInputProps: getDestInputProps, isDragActive: isDestDrag },
     umkm: { getRootProps: getUmkmRootProps, getInputProps: getUmkmInputProps, isDragActive: isUmkmDrag },
     accommodation: { getRootProps: getAccRootProps, getInputProps: getAccInputProps, isDragActive: isAccDrag },
+    facility: { getRootProps: getFacRootProps, getInputProps: getFacInputProps, isDragActive: isFacDrag },
   };
 
   const downloadTemplate = async (type: ImportType) => {
@@ -148,13 +153,14 @@ export function ImportForm() {
 
   return (
     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ImportType)}>
-      <TabsList className="grid w-full grid-cols-3 max-w-md">
+      <TabsList className="grid w-full grid-cols-4 max-w-xl">
         <TabsTrigger value="destination">Destinasi</TabsTrigger>
         <TabsTrigger value="umkm">UMKM</TabsTrigger>
         <TabsTrigger value="accommodation">Penginapan</TabsTrigger>
+        <TabsTrigger value="facility">Fasilitas</TabsTrigger>
       </TabsList>
 
-      {(["destination", "umkm", "accommodation"] as ImportType[]).map((type) => {
+      {(["destination", "umkm", "accommodation", "facility"] as ImportType[]).map((type) => {
         const state = states[type];
         const dz = dropzoneProps[type];
 
