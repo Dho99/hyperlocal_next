@@ -5,6 +5,9 @@ import { z } from "zod";
 import {
     getLocationNames,
     extractCityFromQuery,
+    isWithinLocation,
+    isNameWithinLocation,
+    isAddressWithinLocation,
 } from "@/lib/utils/ai-location";
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
@@ -39,26 +42,69 @@ interface ExploreResponseItem {
 interface ExploreResponse {
     query: string;
     data: ExploreResponseItem[];
+    fallbackSuggestion?: string;
 }
 
 const EXPLORE_STOP_WORDS = new Set([
-    "cari", "carikan", "temukan", "tampilkan", "lihat", "tunjukkan",
-    "rekomendasi", "rekomendasikan",
-    "di", "ke", "dari", "untuk", "yang", "ada",
-    "halal", "wisata", "destinasi", "tempat", "lokasi",
-    "tolong", "bantu",
+    "cari",
+    "carikan",
+    "temukan",
+    "tampilkan",
+    "lihat",
+    "tunjukkan",
+    "rekomendasi",
+    "rekomendasikan",
+    "di",
+    "ke",
+    "dari",
+    "untuk",
+    "yang",
+    "ada",
+    "halal",
+    "wisata",
+    "destinasi",
+    "tempat",
+    "lokasi",
+    "tolong",
+    "bantu",
 ]);
 
-function buildPrompt(candidates: string, userQuery: string, isNearby = false): string {
+function buildPrompt(
+    candidates: string,
+    userQuery: string,
+    isNearby = false,
+    matchedLocation?: string | null,
+): string {
+    const geoInstruction = matchedLocation
+        ? `\n⚠️ GEOGRAPHIC STRICTNESS — GUNAKAN PENGETAHUAN ANDA:
+Pengguna mencari di "${matchedLocation}".
+
+Untuk SETIAP kandidat, periksa apakah lokasinya termasuk dalam "${matchedLocation}":
+  ✅ Jika field "city" atau "province" tersedia — gunakan data tersebut untuk memverifikasi
+  ✅ Jika city DAN province KOSONG (null) — gunakan pengetahuan Anda berdasarkan nama, deskripsi, dan alamat destinasi
+  ❌ JANGAN merekomendasikan jika Anda yakin destinasi BERADA DI LUAR ${matchedLocation}
+
+Contoh untuk "${matchedLocation}":
+  { name: "Alun-alun ${matchedLocation}", city: null } → Pengetahuan: ini di ${matchedLocation} ✅
+  { name: "Pantai Timur Pangandaran", city: null } → Pengetahuan: Pangandaran BUKAN ${matchedLocation} ❌
+  { name: "Fun Park Grand Nusa Indah", city: "Cileungsi" } → Data: Cileungsi BUKAN ${matchedLocation} ❌
+  { name: "Tangkuban Parahu", city: null } → Pengetahuan: ini di Lembang, BUKAN ${matchedLocation} ❌
+
+❌ KESALAHAN NYATA YANG PERNAH TERJADI:
+Query: "destinasi halal di tasikmalaya"
+SALAH: "Pantai Timur Pangandaran" direkomendasikan → Pangandaran BUKAN Tasikmalaya
+SALAH: "Fun Park Grand Nusa Indah (Cileungsi)" direkomendasikan → Cileungsi BUKAN Tasikmalaya
+Jika Anda TIDAK YAKIN lokasi suatu destinasi, JANGAN rekomendasikan.`
+        : `\n⚠️ GEOGRAPHIC STRICTNESS: Perhatikan lokasi yang disebutkan dalam query.
+Jika TIDAK ADA kandidat yang berlokasi di area geografis yang dimaksud, kamu HARUS mengembalikan array kosong [].`;
+
     let prompt = `Anda adalah asisten rekomendasi wisata halal yang STRICT. Analisis query pengguna terhadap kandidat destinasi berikut.
 
 Pertimbangan:
 - Lokasi (kota/provinsi dalam query pengguna)
 - Skor Halal (semakin tinggi semakin baik)
 - Fasilitas yang relevan (misal: "ramah anak" → fasilitas bermain/aman; "halal" → masjid, kuliner halal)
-
-⚠️ GEOGRAPHIC STRICTNESS: Perhatikan lokasi yang disebutkan dalam query. Jika TIDAK ADA kandidat yang berlokasi di area geografis yang dimaksud, kamu HARUS mengembalikan array kosong [].
-
+${geoInstruction}
 ⚠️ HANYA gunakan ID dari kandidat di bawah. JANGAN membuat ID palsu.`;
 
     if (isNearby) {
@@ -132,7 +178,11 @@ export async function GET(request: Request) {
         const q = searchParams.get("q") ?? "";
         const latRaw = searchParams.get("lat");
         const lngRaw = searchParams.get("lng");
-        const parsed = exploreQuerySchema.safeParse({ q, lat: latRaw, lng: lngRaw });
+        const parsed = exploreQuerySchema.safeParse({
+            q,
+            lat: latRaw,
+            lng: lngRaw,
+        });
 
         if (!parsed.success) {
             return NextResponse.json(
@@ -161,6 +211,13 @@ export async function GET(request: Request) {
                               contains: matchedLocation,
                               mode: "insensitive" as const,
                           },
+                      },
+                      {
+                          AND: [
+                              { city: null },
+                              { province: null },
+                              { name: { contains: matchedLocation, mode: "insensitive" as const } },
+                          ],
                       },
                   ],
               }
@@ -209,7 +266,9 @@ export async function GET(request: Request) {
 
                 if (nameMatches.length > 0) {
                     const existingIds = new Set(candidates.map((c) => c.id));
-                    const fresh = nameMatches.filter((m) => !existingIds.has(m.id));
+                    const fresh = nameMatches.filter(
+                        (m) => !existingIds.has(m.id),
+                    );
                     candidates = [...fresh, ...candidates].slice(0, 25);
                 }
             }
@@ -229,8 +288,11 @@ export async function GET(request: Request) {
         }
 
         if (candidates.length === 0) {
+            const fallbackSuggestion = matchedLocation
+                ? "Destinasi belum bisa sistem rekomendasikan karena belum tervalidasi atau destinasi belum terdata"
+                : undefined;
             return NextResponse.json<ExploreResponse>(
-                { query, data: [] },
+                { query, data: [], fallbackSuggestion },
                 { status: 200 },
             );
         }
@@ -247,7 +309,12 @@ export async function GET(request: Request) {
 
         try {
             const candidateData = candidates.map(mapToCandidateData);
-            const prompt = buildPrompt(JSON.stringify(candidateData), query, isNearby);
+            const prompt = buildPrompt(
+                JSON.stringify(candidateData),
+                query,
+                isNearby,
+                matchedLocation,
+            );
 
             const model = createGeminiModel();
             if (!model) {
@@ -278,7 +345,43 @@ export async function GET(request: Request) {
             const destinationMap = new Map(candidates.map((d) => [d.id, d]));
 
             const recommendations: ExploreResponseItem[] = aiResult
-                .filter((r) => destinationMap.has(r.destinationId))
+                .filter((r) => {
+                    const d = destinationMap.get(r.destinationId);
+                    if (!d) return false;
+                    // Guardrail: exclude destinations outside the requested location
+                    if (
+                        matchedLocation &&
+                        !isWithinLocation(d.city, d.province, matchedLocation)
+                    ) {
+                        return false;
+                    }
+                    // Guardrail: name + description + address location conflict detection
+                    if (matchedLocation && knownLocations.length > 0) {
+                        const desc =
+                            typeof d.description === "object" && d.description !== null
+                                ? JSON.stringify(d.description)
+                                : (d.description as string | null);
+                        if (
+                            !isNameWithinLocation(
+                                d.name,
+                                desc,
+                                matchedLocation,
+                                knownLocations,
+                            )
+                        ) {
+                            return false;
+                        }
+                        if (
+                            !isAddressWithinLocation(
+                                d.address,
+                                matchedLocation,
+                            )
+                        ) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
                 .slice(0, 5)
                 .map((r) => {
                     const d = destinationMap.get(r.destinationId)!;

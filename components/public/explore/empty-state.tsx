@@ -5,9 +5,10 @@ import { Search, MapPinPlus, CheckCircle } from "lucide-react";
 
 interface EmptyStateProps {
     query: string;
+    fallbackSuggestion?: string;
 }
 
-export function EmptyState({ query }: EmptyStateProps) {
+export function EmptyState({ query, fallbackSuggestion }: EmptyStateProps) {
     return (
         <div className="flex flex-col items-center text-center">
             <div className="mb-6 relative">
@@ -19,19 +20,31 @@ export function EmptyState({ query }: EmptyStateProps) {
             </div>
 
             <div className="max-w-2xl">
-                <h1 className="font-heading text-[28px] md:text-5xl text-primary mb-3 tracking-tight font-bold">
-                    Maaf, Destinasi Belum Tersedia
-                </h1>
-
-                <p className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed px-4">
-                    Kami belum menemukan hasil untuk pencarian{" "}
-                    <span className="font-semibold text-primary">
-                        &ldquo;{query}&rdquo;
-                    </span>
-                    . Coba kata kunci lain atau bantu kami memperkaya data
-                    dengan menyarankan tempat baru agar platform ini dapat
-                    memberikan manfaat bagi lebih banyak pelancong.
-                </p>
+                {fallbackSuggestion ? (
+                    <>
+                        <h1 className="font-heading text-[28px] md:text-5xl text-primary mb-3 tracking-tight font-bold">
+                            Belum Ada Direkomendasikan
+                        </h1>
+                        <p className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed px-4">
+                            {fallbackSuggestion}
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <h1 className="font-heading text-[28px] md:text-5xl text-primary mb-3 tracking-tight font-bold">
+                            Maaf, Destinasi Belum Tersedia
+                        </h1>
+                        <p className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed px-4">
+                            Kami belum menemukan hasil untuk pencarian{" "}
+                            <span className="font-semibold text-primary">
+                                &ldquo;{query}&rdquo;
+                            </span>
+                            . Coba kata kunci lain atau bantu kami memperkaya data
+                            dengan menyarankan tempat baru agar platform ini dapat
+                            memberikan manfaat bagi lebih banyak pelancong.
+                        </p>
+                    </>
+                )}
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <Link

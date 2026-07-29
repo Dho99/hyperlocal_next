@@ -38,6 +38,7 @@ interface ExploreResponseItem {
 interface ExploreResponse {
     query: string;
     data: ExploreResponseItem[];
+    fallbackSuggestion?: string;
 }
 
 function SkeletonCard() {
@@ -248,7 +249,7 @@ export function ExploreResults({ query, lat, lng }: ExploreResultsProps) {
             )}
 
             {!isLoading && results && results.data.length === 0 && !error && (
-                <EmptyState query={query} />
+                <EmptyState query={query} fallbackSuggestion={results.fallbackSuggestion} />
             )}
 
             {!isLoading && results && results.data.length > 0 && (
