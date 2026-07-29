@@ -4,6 +4,7 @@ import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
 import { mapToCandidateDestination } from "@/lib/utils/ai-candidates";
+import { isWithinLocation } from "@/lib/utils/ai-location";
 import type { CandidateDestination } from "@/lib/utils/ai-candidates";
 import type { AIRecommendation } from "@/types/ai";
 

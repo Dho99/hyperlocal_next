@@ -222,7 +222,7 @@ async function main() {
             name: "Taman Wisata Alam Gunung Tangkuban Parahu",
             slug: "taman-wisata-alam-gunung-tangkuban-parahu",
             categorySlug: "taman-rekreasi",
-            city: "Cikole",
+            city: "Bandung Barat",
             province: "Jawa Barat",
             lat: -6.7602966,
             lng: 107.6118978,
@@ -231,7 +231,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -339,7 +339,7 @@ async function main() {
             name: "Wisata Alam Sawah Agung",
             slug: "wisata-alam-sawah-agung",
             categorySlug: "wisata-alam",
-            city: "Gunung Putri",
+            city: "Bogor",
             province: "Jawa Barat",
             lat: -6.3811078,
             lng: 106.9503006,
@@ -348,7 +348,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -377,7 +377,7 @@ async function main() {
             name: "Taman Wisata Alam Cimanggu",
             slug: "taman-wisata-alam-cimanggu",
             categorySlug: "taman-rekreasi",
-            city: "Rancabali",
+            city: "Kabupaten Bandung",
             province: "Jawa Barat",
             lat: -7.1453684,
             lng: 107.3912258,
@@ -386,7 +386,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -497,7 +497,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -589,7 +589,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 27,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -679,7 +679,7 @@ async function main() {
             name: "Taman Wisata Alam Gunung Tampomas",
             slug: "taman-wisata-alam-gunung-tampomas",
             categorySlug: "taman-rekreasi",
-            city: "Cibitung",
+            city: "Sumedang",
             province: "Jawa Barat",
             lat: -6.7517676,
             lng: 107.9568019,
@@ -688,7 +688,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -771,7 +771,7 @@ async function main() {
             name: "Taman Wisata Alam Sukawayana",
             slug: "taman-wisata-alam-sukawayana",
             categorySlug: "taman-rekreasi",
-            city: "Cikakak",
+            city: "Sukabumi",
             province: "Jawa Barat",
             lat: -6.9655784,
             lng: 106.5129071,
@@ -780,7 +780,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -863,7 +863,7 @@ async function main() {
             name: "Taman Wisata Alam Kawah Kamojang",
             slug: "taman-wisata-alam-kawah-kamojang",
             categorySlug: "taman-rekreasi",
-            city: "Ibun",
+            city: "Kabupaten Bandung",
             province: "Jawa Barat",
             lat: -7.1563158,
             lng: 107.7509287,
@@ -872,7 +872,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 0,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -955,7 +955,7 @@ async function main() {
             name: "Taman Wisata Alam Telaga Warna",
             slug: "taman-wisata-alam-telaga-warna",
             categorySlug: "taman-rekreasi",
-            city: "Tugu Utara",
+            city: "Cianjur",
             province: "Jawa Barat",
             lat: -6.6927181,
             lng: 107.0073044,
@@ -964,7 +964,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1047,7 +1047,7 @@ async function main() {
             name: "Taman Wisata Alam Gunung Pancar",
             slug: "taman-wisata-alam-gunung-pancar",
             categorySlug: "taman-rekreasi",
-            city: "Babakan Madang",
+            city: "Bogor",
             province: "Jawa Barat",
             lat: -6.5880029,
             lng: 106.910858,
@@ -1056,7 +1056,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1148,7 +1148,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 0,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1231,7 +1231,7 @@ async function main() {
             name: "Taman Wisata Alam Linggarjati",
             slug: "taman-wisata-alam-linggarjati",
             categorySlug: "taman-rekreasi",
-            city: "Linggajati",
+            city: "Kuningan",
             province: "Jawa Barat",
             lat: -6.8831092,
             lng: 108.4778438,
@@ -1240,7 +1240,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1332,7 +1332,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 5,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1422,7 +1422,7 @@ async function main() {
             name: "Mekarsari Amazing Tourism Park",
             slug: "mekarsari-amazing-tourism-park",
             categorySlug: "wisata-alam",
-            city: "Cileungsi",
+            city: "Bogor",
             province: "Jawa Barat",
             lat: -6.4116044,
             lng: 106.9879952,
@@ -1431,7 +1431,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 40,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1521,7 +1521,7 @@ async function main() {
             name: "Pantai Pangandaran",
             slug: "pantai-pangandaran",
             categorySlug: "pantai",
-            city: "Desa Pagandaran",
+            city: "Pangandaran",
             province: "Jawa Barat",
             lat: -7.7001927,
             lng: 108.6557911,
@@ -1530,7 +1530,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1613,7 +1613,7 @@ async function main() {
             name: "Pantai Timur Pangandaran",
             slug: "pantai-timur-pangandaran",
             categorySlug: "pantai",
-            city: "Desa Pagandaran",
+            city: "Pangandaran",
             province: "Jawa Barat",
             lat: -7.7031448,
             lng: 108.6586093,
@@ -1622,7 +1622,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1705,7 +1705,7 @@ async function main() {
             name: "Pantai Keusik Urug",
             slug: "pantai-keusik-urug",
             categorySlug: "pantai",
-            city: "Buniasih",
+            city: "Sukabumi",
             province: "Jawa Barat",
             lat: -7.4285373,
             lng: 106.719932,
@@ -1714,7 +1714,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 0,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1797,7 +1797,7 @@ async function main() {
             name: "Pantai Karangwahu",
             slug: "pantai-karangwahu",
             categorySlug: "pantai",
-            city: "Karangpapak",
+            city: "Sukabumi",
             province: "Jawa Barat",
             lat: -6.9565931,
             lng: 106.4639718,
@@ -1806,7 +1806,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1889,7 +1889,7 @@ async function main() {
             name: "Pantai Cemara Cipanglay",
             slug: "pantai-cemara-cipanglay",
             categorySlug: "pantai",
-            city: "Cidamar",
+            city: "Cianjur",
             province: "Jawa Barat",
             lat: -7.4992418,
             lng: 107.3529598,
@@ -1898,7 +1898,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -1990,7 +1990,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 10,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -2073,7 +2073,7 @@ async function main() {
             name: "Taman Rekreasi Air - Fun Park Grand Nusa Indah",
             slug: "taman-rekreasi-air-fun-park-grand-nusa-indah",
             categorySlug: "taman-rekreasi",
-            city: "Cileungsi",
+            city: "Bogor",
             province: "Jawa Barat",
             lat: -6.4277504,
             lng: 107.0100255,
@@ -2082,7 +2082,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 35,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [
@@ -2181,7 +2181,7 @@ async function main() {
             rating: 0,
             reviewCount: 0,
             halalScore: 40,
-            status: "PENDING",
+            status: "APPROVED",
             description: {
                 type: "doc",
                 content: [

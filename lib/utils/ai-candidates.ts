@@ -5,6 +5,7 @@ export interface CandidateData {
     province: string | null;
     categoryName: string;
     description: string | null;
+    address: string | null;
     halalScore: number | null;
     rating: number | null;
     facilityNames: string[];
@@ -29,6 +30,7 @@ interface DestinationWithHalal {
     province: string | null;
     category?: { name: string } | null;
     description: unknown;
+    address: string | null;
     halalScore: number | null;
     rating: number | null;
     images?: Array<{ imageUrl: string }>;
@@ -52,6 +54,7 @@ export function mapToCandidateData(d: DestinationWithHalal): CandidateData {
         province: d.province,
         categoryName: d.category?.name ?? "",
         description: serializeDescription(d.description),
+        address: d.address,
         halalScore: d.halalScore,
         rating: d.rating,
         facilityNames:
