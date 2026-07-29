@@ -61,10 +61,7 @@ export function locationLabel(city?: string | null, province?: string | null) {
 
 function safeImage(src?: string | null) {
     if (!src) return null;
-    if (src.startsWith("/")) return src;
-    if (src.startsWith("https://images.unsplash.com/")) return src;
-    if (src.startsWith("https://plus.unsplash.com/")) return src;
-    return null;
+    return src;
 }
 
 export function scoreLabel(score: number | null) {
