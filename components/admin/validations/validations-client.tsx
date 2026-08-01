@@ -302,9 +302,9 @@ export function ValidationsClient() {
                                                     <Building2 className="h-4 w-4 text-primary" />
                                                 )}
                                             </div>
-                                            <span className="font-semibold text-sm leading-tight">
-                                                {getEntityName(v)}
-                                            </span>
+                                        <span className="font-semibold text-sm leading-tight truncate max-w-[150px]">
+                                            {getEntityName(v)}
+                                        </span>
                                             {hasTriage && (
                                                 <Badge
                                                     variant="outline"
@@ -332,7 +332,7 @@ export function ValidationsClient() {
                                         {getScoreOrNumber(v)}
                                     </TableCell>
                                     <TableCell>{getStatusBadge(v.status)}</TableCell>
-                                    <TableCell className="text-sm">
+                                    <TableCell className="text-sm max-w-[130px] truncate">
                                         {v.validator?.name ?? (
                                             <span className="text-muted-foreground italic">
                                                 Belum diproses

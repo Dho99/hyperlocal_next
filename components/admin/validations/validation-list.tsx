@@ -257,13 +257,13 @@ export function CertificationList() {
                                     key={cert.id}
                                     className="group hover:bg-muted/50 transition-colors"
                                 >
-                                    <TableCell className="font-medium">
+                                    <TableCell className="font-medium max-w-[150px] truncate">
                                         {cert.umkm.name}
                                     </TableCell>
                                     <TableCell className="font-mono text-xs">
                                         {cert.certificateNo || "-"}
                                     </TableCell>
-                                    <TableCell>{cert.issuer || "-"}</TableCell>
+                                    <TableCell className="max-w-[120px] truncate">{cert.issuer || "-"}</TableCell>
                                     <TableCell>
                                         {getStatusBadge(cert.status)}
                                     </TableCell>

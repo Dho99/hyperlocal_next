@@ -106,71 +106,83 @@ export function ValidationPendingAccommodationList() {
                                     Tidak ada penginapan yang ditemukan.
                                 </td>
                             </tr>
-                        ) : (
-                            accommodations.map((acc) => {
-                                const style = STATUS_STYLES[acc.validationStatus] ?? STATUS_STYLES.PENDING;
-                                const isHalalVerified = acc.validationStatus === "APPROVED";
-                                const hasTriage = isTriageNote(acc.surveyorNote);
-                                return (
-                                    <tr key={acc.id} className={`transition-colors ${
-                                        hasTriage
-                                            ? "border-l-4 border-amber-400 bg-amber-50/50 hover:bg-amber-50/80"
-                                            : "hover:bg-stone-50/50"
-                                    }`}>
-                                        <td className="py-3 px-4 font-medium text-stone-900">
-                                            <div className="flex items-center gap-2 flex-wrap">
-                                                <span>{acc.name}</span>
-                                                {isHalalVerified && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
-                                                        ✓ Halal
-                                                    </span>
+                        </thead>
+                        <tbody className="divide-y divide-stone-200">
+                            {accommodations.length === 0 && !isLoading ? (
+                                <tr>
+                                    <td
+                                        colSpan={5}
+                                        className="py-16 text-center text-sm text-stone-400"
+                                    >
+                                        Tidak ada penginapan yang ditemukan.
+                                    </td>
+                                </tr>
+                            ) : (
+                                accommodations.map((acc) => {
+                                    const style = STATUS_STYLES[acc.validationStatus] ?? STATUS_STYLES.PENDING;
+                                    const isHalalVerified = acc.validationStatus === "APPROVED";
+                                    const hasTriage = isTriageNote(acc.surveyorNote);
+                                    return (
+                                        <tr key={acc.id} className={`transition-colors ${
+                                            hasTriage
+                                                ? "border-l-4 border-amber-400 bg-amber-50/50 hover:bg-amber-50/80"
+                                                : "hover:bg-stone-50/50"
+                                        }`}>
+                                            <td className="py-3 px-4 font-medium text-stone-900">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span>{acc.name}</span>
+                                                    {isHalalVerified && (
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
+                                                            ✓ Halal
+                                                        </span>
+                                                    )}
+                                                    {hasTriage && (
+                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full bg-amber-100 text-amber-700 border border-amber-300">
+                                                            <AlertTriangle className="h-3 w-3" />
+                                                            Perlu Atensi Khusus
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 text-stone-600">
+                                                {acc.city || (
+                                                    <span className="text-stone-400 italic">-</span>
                                                 )}
-                                                {hasTriage && (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full bg-amber-100 text-amber-700 border border-amber-300">
-                                                        <AlertTriangle className="h-3 w-3" />
-                                                        Perlu Atensi Khusus
+                                            </td>
+                                            <td className="py-3 px-4 text-stone-600">
+                                                {acc.rating ? (
+                                                    <span className="inline-flex items-center gap-1">
+                                                        <svg className="w-3.5 h-3.5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                        </svg>
+                                                        {acc.rating.toFixed(1)}
                                                     </span>
+                                                ) : (
+                                                    <span className="text-stone-400 italic">-</span>
                                                 )}
-                                            </div>
-                                        </td>
-                                        <td className="py-3 px-4 text-stone-600">
-                                            {acc.city || (
-                                                <span className="text-stone-400 italic">-</span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 px-4 text-stone-600">
-                                            {acc.rating ? (
-                                                <span className="inline-flex items-center gap-1">
-                                                    <svg className="w-3.5 h-3.5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                    </svg>
-                                                    {acc.rating.toFixed(1)}
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <span
+                                                    className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${style.bg} ${style.text}`}
+                                                >
+                                                    {style.label}
                                                 </span>
-                                            ) : (
-                                                <span className="text-stone-400 italic">-</span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 px-4">
-                                            <span
-                                                className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${style.bg} ${style.text}`}
-                                            >
-                                                {style.label}
-                                            </span>
-                                        </td>
-                                        <td className="py-3 px-4 text-right">
-                                            <Link
-                                                href={`/validasi/penginapan/${acc.id}`}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-md transition-colors"
-                                            >
-                                                Proses
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                );
-                            })
-                        )}
-                    </tbody>
-                </table>
+                                            </td>
+                                            <td className="py-3 px-4 text-right">
+                                                <Link
+                                                    href={`/validasi/penginapan/${acc.id}`}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-md transition-colors"
+                                                >
+                                                    Proses
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
                 <InfiniteScroll
                     hasMore={hasMore}
                     isLoading={isLoading}

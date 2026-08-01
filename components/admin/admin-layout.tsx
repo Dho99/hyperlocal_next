@@ -15,7 +15,7 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children, user }: AdminLayoutProps) {
     return (
-        <div className="admin-scale flex h-dvh bg-background">
+        <div className="admin-scale flex min-h-dvh bg-background">
             <AdminSidebar />
             <div className="flex flex-1 flex-col relative">
                 <AdminTopbar user={user} />

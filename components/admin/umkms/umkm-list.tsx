@@ -227,11 +227,11 @@ export function UmkmList({ categories }: UmkmListProps) {
                                                     <Store className="h-5 w-5 text-muted-foreground/50" />
                                                 )}
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-sm leading-tight">
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="font-bold text-sm leading-tight truncate max-w-[180px]">
                                                     {umkm.name}
                                                 </span>
-                                                <span className="text-[10px] text-muted-foreground">
+                                                <span className="text-[10px] text-muted-foreground truncate max-w-[180px]">
                                                     {umkm.address ||
                                                         "Alamat tidak tersedia"}
                                                 </span>
@@ -248,9 +248,9 @@ export function UmkmList({ categories }: UmkmListProps) {
                                     </TableCell>
                                     <TableCell>
                                         {umkm.destination ? (
-                                            <div className="flex items-center gap-1 text-sm">
-                                                <MapPin className="h-3 w-3 text-muted-foreground" />
-                                                {umkm.destination.name}
+                                            <div className="flex items-center gap-1 text-sm min-w-0">
+                                                <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
+                                                <span className="truncate max-w-[130px]">{umkm.destination.name}</span>
                                             </div>
                                         ) : (
                                             <span className="text-muted-foreground text-sm">
