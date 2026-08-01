@@ -190,7 +190,7 @@ export function ReportListClient() {
                                             <span className="text-sm font-medium">
                                                 {report.reporter.name}
                                             </span>
-                                            <span className="text-xs text-muted-foreground">
+                                            <span className="text-xs text-muted-foreground truncate max-w-[150px] block">
                                                 {report.reporter.email}
                                             </span>
                                         </div>

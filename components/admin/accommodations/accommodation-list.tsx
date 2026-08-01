@@ -116,14 +116,14 @@ export function AccommodationList() {
                             return (
                                 <TableRow key={accommodation.id}>
                                     <TableCell>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-3 min-w-0">
                                             <div className="size-10 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
                                                 <Building className="size-5 text-stone-400" />
                                             </div>
-                                            <span className="font-medium text-stone-900">{accommodation.name}</span>
+                                            <span className="font-medium text-stone-900 truncate max-w-[180px]">{accommodation.name}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-stone-600">{accommodation.city ?? "-"}</TableCell>
+                                    <TableCell className="text-stone-600 max-w-[120px] truncate">{accommodation.city ?? "-"}</TableCell>
                                     <TableCell>
                                         <Badge variant={badge.variant}>{badge.label}</Badge>
                                     </TableCell>
