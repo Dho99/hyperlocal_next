@@ -13,7 +13,7 @@ export default async function CategoriesPage() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">Manajemen Kategori Destinasi</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">Manajemen Kategori Destinasi</h1>
                 <p className="text-muted-foreground">
                     Kelola kategori khusus untuk destinasi pariwisata halal.
                 </p>

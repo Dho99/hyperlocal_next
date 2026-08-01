@@ -40,6 +40,9 @@ export function FacilitiesSection({ facilities }: FacilitiesSectionProps) {
                             </h3>
                             <p className="text-xs text-muted-foreground">
                                 {formatDistance(fac.distance)}
+                                {fac.travelMinutes != null
+                                    ? ` • ±${fac.travelMinutes} menit`
+                                    : ""}
                                 {fac.type ? ` • ${fac.type}` : ""}
                             </p>
                         </div>

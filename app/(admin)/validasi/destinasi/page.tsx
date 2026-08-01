@@ -3,9 +3,9 @@ import { ValidationsClient } from "@/components/admin/validations/validations-cl
 
 export default function ValidationsPage() {
     return (
-        <div className="flex flex-col gap-6 p-8">
+        <div className="flex flex-col gap-6 px-4 py-6 sm:p-8">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
                     Validasi Destinasi
                 </h1>
                 <p className="text-muted-foreground">

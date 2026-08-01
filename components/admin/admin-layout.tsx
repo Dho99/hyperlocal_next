@@ -19,8 +19,8 @@ export function AdminLayout({ children, user }: AdminLayoutProps) {
             <AdminSidebar />
             <div className="flex flex-1 flex-col relative">
                 <AdminTopbar user={user} />
-                <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 md:px-5 lg:px-6">
-                    <div className="mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <main className="flex-1 overflow-y-auto">
+                    <div className="mx-auto max-w-dvw overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 px-4 py-5 md:px-5 lg:px-6">
                         {children}
                     </div>
                 </main>

@@ -164,6 +164,109 @@ export default async function DashboardPage() {
                 ))}
             </section>
 
+            <section className="rounded-xl border border-border bg-card shadow-none overflow-hidden">
+                <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
+                    <div>
+                        <CardTitle className="font-heading text-xl font-semibold">
+                            Kesiapan ACES-H
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                            Ringkasan penilaian ACES + Hyperlocal berbasis
+                            indikator dan verifikasi bukti.
+                        </CardDescription>
+                    </div>
+                    <Link
+                        href="/validasi/destinasi"
+                        className="text-sm font-medium text-primary hover:underline"
+                    >
+                        Kelola Penilaian →
+                    </Link>
+                </CardHeader>
+                <CardContent className="p-5">
+                    {dashboard.acesh.totalAssessed === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                            Belum ada destinasi yang dinilai dengan ACES-H. Buka
+                            halaman Validasi Destinasi dan isi skor indikator
+                            untuk memulai.
+                        </p>
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-5">
+                            <div className="space-y-1">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    Dinilai
+                                </p>
+                                <p className="font-heading text-2xl font-bold">
+                                    {dashboard.acesh.totalAssessed}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    {dashboard.acesh.verifiedCount} terverifikasi ·{" "}
+                                    {dashboard.acesh.pendingCount} sementara
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    Rerata Skor Terverifikasi
+                                </p>
+                                <p className="font-heading text-2xl font-bold">
+                                    {dashboard.acesh.averageVerifiedScore != null
+                                        ? dashboard.acesh.averageVerifiedScore.toFixed(1)
+                                        : "—"}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    dari destinasi VERIFIED
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    Rerata Skor Dasar
+                                </p>
+                                <p className="font-heading text-2xl font-bold">
+                                    {dashboard.acesh.averageBaseScore != null
+                                        ? dashboard.acesh.averageBaseScore.toFixed(1)
+                                        : "—"}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    sebelum faktor bukti
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    Rerata Confidence
+                                </p>
+                                <p className="font-heading text-2xl font-bold">
+                                    {dashboard.acesh.averageConfidence != null
+                                        ? dashboard.acesh.averageConfidence.toFixed(1)
+                                        : "—"}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    tingkat keyakinan bukti (0–100)
+                                </p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    Distribusi Klasifikasi
+                                </p>
+                                {dashboard.acesh.classificationDistribution.map(
+                                    (bucket) => (
+                                        <div
+                                            key={bucket.key}
+                                            className="flex items-center justify-between text-sm"
+                                        >
+                                            <span className="text-muted-foreground">
+                                                {bucket.label}
+                                            </span>
+                                            <span className="font-semibold">
+                                                {bucket.count}
+                                            </span>
+                                        </div>
+                                    ),
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </section>
+
             <section className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(300px,0.86fr)]">
                 <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
                     <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">

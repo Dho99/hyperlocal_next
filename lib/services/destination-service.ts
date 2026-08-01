@@ -8,8 +8,53 @@ import {
 } from "@/lib/pagination/cursorPagination";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+import { estimateTravelTime } from "@/lib/services/acesh/travel-time-service";
+import { calculateAndSaveAssessment } from "@/lib/services/acesh/assessment-recalculation-service";
+import { parseCoordinate } from "@/lib/maps/geo-utils";
+import { defaultTravelModeForType } from "@/lib/services/acesh/constants";
 
 export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
+
+interface FacilityMetrics {
+    distanceMeters: number | null;
+    travelMinutes: number | null;
+    travelMode: string | null;
+}
+
+async function computeFacilityMetrics(
+    destLat: number | null,
+    destLng: number | null,
+    facilityLat: number | null,
+    facilityLng: number | null,
+    facilityType: string | null,
+): Promise<FacilityMetrics> {
+    const fromLat = parseCoordinate(destLat);
+    const fromLng = parseCoordinate(destLng);
+    const toLat = parseCoordinate(facilityLat);
+    const toLng = parseCoordinate(facilityLng);
+
+    if (fromLat === null || fromLng === null || toLat === null || toLng === null) {
+        return { distanceMeters: null, travelMinutes: null, travelMode: null };
+    }
+
+    const travelMode = defaultTravelModeForType(facilityType);
+    try {
+        const result = await estimateTravelTime(
+            fromLat,
+            fromLng,
+            toLat,
+            toLng,
+            travelMode,
+        );
+        return {
+            distanceMeters: result.distanceMeters,
+            travelMinutes: result.travelMinutes,
+            travelMode: result.travelMode,
+        };
+    } catch {
+        return { distanceMeters: null, travelMinutes: null, travelMode: null };
+    }
+}
 
 async function validateDestinationCategory(categoryId: string): Promise<void> {
     const category = await prisma.category.findUnique({
@@ -241,6 +286,21 @@ export async function createDestination(values: DestinationFormValues) {
         }));
         const halalScore = calculateHalalScoreFromWeights(facilityWeights);
 
+        const facilityMetrics = new Map<string, FacilityMetrics>();
+        for (const f of facilities ?? []) {
+            const mf = masterFacilities.find((m) => m.id === f.facilityId);
+            facilityMetrics.set(
+                f.facilityId,
+                await computeFacilityMetrics(
+                    data.latitude ?? null,
+                    data.longitude ?? null,
+                    f.latitude ?? null,
+                    f.longitude ?? null,
+                    mf?.facilityType ?? null,
+                ),
+            );
+        }
+
         const destination = await tx.destination.create({
             data: {
                 ...data,
@@ -255,18 +315,24 @@ export async function createDestination(values: DestinationFormValues) {
                 },
                 destinationHalalFacilities: {
                     create:
-                        facilities?.map((f) => ({
-                            facilityId: f.facilityId,
-                            name: f.name,
-                            latitude: f.latitude,
-                            longitude: f.longitude,
-                            evidences: {
-                                create:
-                                    f.evidenceUrls?.map((url) => ({
-                                        imageUrl: url,
-                                    })) || [],
-                            },
-                        })) || [],
+                        facilities?.map((f) => {
+                            const metrics = facilityMetrics.get(f.facilityId);
+                            return {
+                                facilityId: f.facilityId,
+                                name: f.name,
+                                latitude: f.latitude,
+                                longitude: f.longitude,
+                                distanceMeters: metrics?.distanceMeters ?? null,
+                                travelMinutes: metrics?.travelMinutes ?? null,
+                                travelMode: metrics?.travelMode ?? null,
+                                evidences: {
+                                    create:
+                                        f.evidenceUrls?.map((url) => ({
+                                            imageUrl: url,
+                                        })) || [],
+                                },
+                            };
+                        }) || [],
                 },
             },
             include: destinationIncludes,
@@ -282,6 +348,8 @@ export async function createDestination(values: DestinationFormValues) {
 
         return destination;
     });
+
+    await calculateAndSaveAssessment(destination.id);
 
     return serializeDestination(destination);
 }
@@ -325,6 +393,21 @@ export async function updateDestination(
         }));
         const halalScore = calculateHalalScoreFromWeights(facilityWeights);
 
+        const facilityMetrics = new Map<string, FacilityMetrics>();
+        for (const f of facilities ?? []) {
+            const mf = masterFacilities.find((m) => m.id === f.facilityId);
+            facilityMetrics.set(
+                f.facilityId,
+                await computeFacilityMetrics(
+                    data.latitude ?? null,
+                    data.longitude ?? null,
+                    f.latitude ?? null,
+                    f.longitude ?? null,
+                    mf?.facilityType ?? null,
+                ),
+            );
+        }
+
         await tx.destinationHalalFacility.deleteMany({
             where: { destinationId: id },
         });
@@ -338,18 +421,24 @@ export async function updateDestination(
                 halalScore,
                 destinationHalalFacilities: {
                     create:
-                        facilities?.map((f) => ({
-                            facilityId: f.facilityId,
-                            name: f.name,
-                            latitude: f.latitude,
-                            longitude: f.longitude,
-                            evidences: {
-                                create:
-                                    f.evidenceUrls?.map((url) => ({
-                                        imageUrl: url,
-                                    })) || [],
-                            },
-                        })) || [],
+                        facilities?.map((f) => {
+                            const metrics = facilityMetrics.get(f.facilityId);
+                            return {
+                                facilityId: f.facilityId,
+                                name: f.name,
+                                latitude: f.latitude,
+                                longitude: f.longitude,
+                                distanceMeters: metrics?.distanceMeters ?? null,
+                                travelMinutes: metrics?.travelMinutes ?? null,
+                                travelMode: metrics?.travelMode ?? null,
+                                evidences: {
+                                    create:
+                                        f.evidenceUrls?.map((url) => ({
+                                            imageUrl: url,
+                                        })) || [],
+                                },
+                            };
+                        }) || [],
                 },
                 images: {
                     deleteMany: {},
@@ -377,6 +466,8 @@ export async function updateDestination(
 
         return destination;
     });
+
+    await calculateAndSaveAssessment(id);
 
     return serializeDestination(destination);
 }

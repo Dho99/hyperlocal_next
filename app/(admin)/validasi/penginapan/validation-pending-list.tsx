@@ -75,23 +75,23 @@ export function ValidationPendingAccommodationList() {
                 </select>
             </div>
 
-            <div className="border border-stone-200 bg-white overflow-hidden">
+            <div className="overflow-x-auto border border-stone-200 bg-white">
                 <table className="w-full text-sm">
                     <thead>
                         <tr className="border-b border-stone-200 bg-stone-50">
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Nama Penginapan
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Kota
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Rating
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th className="text-right py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-right py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Aksi
                             </th>
                         </tr>

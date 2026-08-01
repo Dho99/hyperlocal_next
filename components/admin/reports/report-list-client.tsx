@@ -254,7 +254,7 @@ export function ReportListClient() {
 
                     {selectedReport && (
                         <div className="grid gap-6 py-4">
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
                                 <div className="space-y-1">
                                     <Label className="text-muted-foreground">
                                         Tipe Target

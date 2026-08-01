@@ -18,7 +18,7 @@ export default async function EditAccommodationPage({ params }: EditAccommodatio
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">
                     Edit Penginapan
                 </h1>
                 <p className="text-muted-foreground">

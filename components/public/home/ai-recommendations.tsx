@@ -240,7 +240,7 @@ export function AiRecommendations() {
             }
 
             const hasAiReason = data.some(
-                (r) => r.reason !== "Destinasi dengan skor halal tertinggi",
+                (r) => r.reason !== "Destinasi dengan skor ACES-H tertinggi",
             );
             setIsAiGenerated(hasAiReason);
         } catch (err: unknown) {

@@ -2,6 +2,7 @@ import { importCsv } from "./importCsv";
 import { logger } from "./utils/logger";
 import { prisma } from "../../lib/prisma";
 import { seedAccommodations } from "./data/accommodations";
+import { seedAcesh } from "./aceshSeeder";
 import fs from "fs";
 import path from "path";
 
@@ -32,6 +33,12 @@ async function main() {
         }
     } else {
         logger.info(`Raw data directory not found: ${rawDir}, skipping CSV import`);
+    }
+
+    try {
+        await seedAcesh();
+    } catch (error) {
+        logger.error("ACES-H seeding failed!", error);
     }
 
     try {

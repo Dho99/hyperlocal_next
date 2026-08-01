@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "lib/generated/**",
     "next-env.d.ts",
+    // Temporary scratch/verification scripts.
+    "scratch/**",
   ]),
 ]);
 

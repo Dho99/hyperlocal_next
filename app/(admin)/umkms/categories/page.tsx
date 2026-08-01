@@ -13,7 +13,7 @@ export default async function UmkmCategoriesPage() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">Manajemen Kategori UMKM</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">Manajemen Kategori UMKM</h1>
                 <p className="text-muted-foreground">
                     Kelola kategori khusus untuk UMKM pariwisata halal.
                 </p>
