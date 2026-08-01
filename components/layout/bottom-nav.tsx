@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const bottomNavItems = [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Beranda", href: "/", icon: Home },
     { label: "Destinasi", href: "/destinasi", icon: Map },
     { label: "UMKM", href: "/umkm", icon: Store },
     { label: "Peta", href: "/peta", icon: Compass },
