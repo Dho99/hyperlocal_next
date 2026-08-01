@@ -47,7 +47,7 @@ export function DashboardMapSection() {
 
     if (loading) {
         return (
-            <div className="h-[480px] w-full bg-muted animate-pulse flex items-center justify-center">
+            <div className="h-[320px] sm:h-[480px] w-full bg-muted animate-pulse flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2">
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                     <p className="text-sm text-muted-foreground">Memuat Peta...</p>
@@ -58,7 +58,7 @@ export function DashboardMapSection() {
 
     if (error) {
         return (
-            <div className="h-[480px] w-full bg-red-50 flex items-center justify-center">
+            <div className="h-[320px] sm:h-[480px] w-full bg-red-50 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2 text-red-600">
                     <AlertCircle className="h-6 w-6" />
                     <p className="text-sm font-medium">{error}</p>
@@ -68,7 +68,7 @@ export function DashboardMapSection() {
     }
 
     return (
-        <div className="h-[480px] w-full">
+        <div className="h-[320px] sm:h-[480px] w-full">
             <DynamicDashboardMap destinations={destinations} />
         </div>
     );

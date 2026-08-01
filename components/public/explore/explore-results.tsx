@@ -23,6 +23,9 @@ interface ExploreDestination {
     city: string | null;
     province: string | null;
     halalScore: number | null;
+    aceshScore: number | null;
+    aceshClassification: string | null;
+    aceshVerificationStatus: "PENDING" | "VERIFIED" | null;
     rating: number | null;
     imageUrl: string | null;
     categoryName: string | null;
@@ -76,7 +79,9 @@ function ResultCard({
             href={`/destinasi/${destination.slug}`}
             className="group relative rounded-xl border border-border/50 bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-lg block"
         >
-            <HalalBadge score={destination.halalScore} />
+            <HalalBadge
+                score={destination.aceshScore ?? destination.halalScore}
+            />
             <div className="relative aspect-[16/10] rounded-t-xl overflow-hidden bg-muted">
                 {destination.imageUrl ? (
                     <Image
@@ -112,10 +117,19 @@ function ResultCard({
                     <div className="flex items-center gap-1 rounded-md bg-accent/20 px-2.5 py-1 shrink-0">
                         <Star className="size-3 fill-accent text-accent" />
                         <span className="text-xs font-bold text-accent-foreground">
-                            {destination.halalScore ?? "—"}
+                            {destination.aceshScore ??
+                                destination.halalScore ??
+                                "—"}
                         </span>
                     </div>
                 </div>
+
+                {destination.aceshScore != null &&
+                    destination.aceshVerificationStatus === "PENDING" && (
+                        <p className="text-[11px] text-muted-foreground">
+                            Skor sementara — data belum sepenuhnya tervalidasi.
+                        </p>
+                    )}
 
                 {destination.facilityNames.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
@@ -198,7 +212,7 @@ export function ExploreResults({ query, lat, lng }: ExploreResultsProps) {
 
     const hasAiReason =
         results?.data?.some(
-            (r) => r.aiReason !== "Destinasi dengan skor halal tertinggi",
+            (r) => r.aiReason !== "Destinasi dengan skor ACES-H tertinggi",
         ) ?? false;
 
     if (!query.trim()) {

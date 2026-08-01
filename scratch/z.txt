@@ -1,0 +1,1 @@
+{"neOK":true,"neBad":false,"eOK":true}

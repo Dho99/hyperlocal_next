@@ -495,7 +495,7 @@ export function CoverageAreaList() {
                         </DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-5 pt-4">
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div className="space-y-2">
                                 <Label
                                     htmlFor="name"
@@ -581,11 +581,11 @@ export function CoverageAreaList() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 rounded-lg border border-stone-200 bg-stone-50 p-4">
-                            <Label className="text-base font-semibold shrink-0">
+                        <div className="flex flex-col gap-4 rounded-lg border border-stone-200 bg-stone-50 p-4 sm:flex-row sm:items-center">
+                            <Label className="text-base font-semibold sm:shrink-0">
                                 Status Area
                             </Label>
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -594,7 +594,7 @@ export function CoverageAreaList() {
                                             isActive: true,
                                         }))
                                     }
-                                    className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition ${
+                                    className={`flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold transition sm:flex-none ${
                                         form.isActive
                                             ? "bg-green-600 text-white shadow-sm"
                                             : "bg-white text-stone-500 border border-stone-300 hover:bg-stone-100"
@@ -610,7 +610,7 @@ export function CoverageAreaList() {
                                             isActive: false,
                                         }))
                                     }
-                                    className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition ${
+                                    className={`flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold transition sm:flex-none ${
                                         !form.isActive
                                             ? "bg-red-600 text-white shadow-sm"
                                             : "bg-white text-stone-500 border border-stone-300 hover:bg-stone-100"
@@ -619,7 +619,7 @@ export function CoverageAreaList() {
                                     Tidak Aktif
                                 </button>
                             </div>
-                            <p className="text-xs text-stone-500 ml-2">
+                            <p className="text-xs text-stone-500 sm:ml-2">
                                 {form.isActive
                                     ? "Area ini akan terlihat oleh pengguna"
                                     : "Area ini disembunyikan dari pengguna"}
@@ -636,7 +636,7 @@ export function CoverageAreaList() {
                                 Otomatis&quot;. Sistem akan mengambil data peta
                                 secara otomatis.
                             </p>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                                 <Input
                                     placeholder="Contoh: Kota Tasikmalaya, Jawa Barat, Priangan Timur"
                                     value={searchValue}

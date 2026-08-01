@@ -166,6 +166,19 @@ export default function PetaSidebar({
                                                     )}
                                                 </p>
                                             )}
+                                            {dhf.distanceMeters != null && (
+                                                <p className="mt-1 text-[11px] text-muted-foreground">
+                                                    {dhf.distanceMeters >= 1000
+                                                        ? `${(dhf.distanceMeters / 1000).toFixed(2)} km`
+                                                        : `${dhf.distanceMeters} m`}
+                                                    {dhf.travelMinutes != null
+                                                        ? ` · ±${dhf.travelMinutes} menit`
+                                                        : ""}
+                                                    {dhf.travelMode
+                                                        ? ` (${dhf.travelMode === "WALKING" ? "jalan kaki" : dhf.travelMode === "CYCLING" ? "bersepeda" : "berkendara"})`
+                                                        : ""}
+                                                </p>
+                                            )}
                                             {dhf.latitude != null &&
                                                 dhf.longitude != null && (
                                                     <p className="mt-1 text-[10px] font-mono text-muted-foreground">

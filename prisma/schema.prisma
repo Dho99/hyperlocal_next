@@ -25,6 +25,39 @@ enum ValidationStatus {
   REJECTED
 }
 
+enum AceshIndicatorGroup {
+  ACCESS
+  COMMUNICATION
+  ENVIRONMENT
+  SERVICES
+  SPATIAL_ACCESSIBILITY
+  FUNCTIONAL_AVAILABILITY
+  HALAL_ASSURANCE
+  ECOSYSTEM_CONNECTIVITY
+  EMBEDDEDNESS_CONTINUITY
+}
+
+enum AceshEvidenceType {
+  SOURCE
+  DOCUMENT
+  PHOTO
+  GEOLOCATION
+  MANAGEMENT_CONFIRMATION
+  FIELD_VALIDATION
+  OTHER
+}
+
+enum AceshTravelMode {
+  WALKING
+  DRIVING
+  CYCLING
+}
+
+enum AceshVerificationStatus {
+  PENDING
+  VERIFIED
+}
+
 model CoverageArea {
   id          String   @id @default(cuid())
   name        String
@@ -42,25 +75,26 @@ model CoverageArea {
 }
 
 model User {
-  id                      String                   @id
-  name                    String
-  email                   String
-  emailVerified           Boolean                  @default(false)
-  image                   String?
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  role                    String                   @default("user")
-  banned                  Boolean?                 @default(false)
-  banReason               String?
-  banExpires              DateTime?
-  sessions                Session[]
-  accounts                Account[]
-  reviews                 Review[]
-  halalValidations        HalalValidation[]
-  destinationInteractions DestinationInteraction[]
-  userInteractions        UserInteraction[]
-  itineraries             Itinerary[]
-  reports                 Report[]
+  id                       String                   @id
+  name                     String
+  email                    String
+  emailVerified            Boolean                  @default(false)
+  image                    String?
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  role                     String                   @default("user")
+  banned                   Boolean?                 @default(false)
+  banReason                String?
+  banExpires               DateTime?
+  sessions                 Session[]
+  accounts                 Account[]
+  reviews                  Review[]
+  halalValidations         HalalValidation[]
+  aceshEvidenceValidations AceshEvidenceRecord[]
+  destinationInteractions  DestinationInteraction[]
+  userInteractions         UserInteraction[]
+  itineraries              Itinerary[]
+  reports                  Report[]
 
   @@unique([email])
   @@map("user")
@@ -138,28 +172,28 @@ model Category {
 }
 
 model Destination {
-  id              String           @id @default(uuid())
-  categoryId      String           @map("category_id")
-  coverageAreaId  String?          @map("coverage_area_id")
-  name            String
-  slug            String           @unique
-  description     Json?
-  address         String?
-  city            String?
-  province        String?
-  latitude        Decimal?         @db.Decimal(10, 7)
-  longitude       Decimal?         @db.Decimal(10, 7)
-  status          ValidationStatus @default(PENDING)
-  rating          Float?           @default(0)
-  reviewCount     Int?             @default(0) @map("review_count")
-  openingHours    Json?            @map("opening_hours")
-  halalScore      Int?             @map("halal_score")
-  validatedScore  Int?             @map("validated_score")
-  categoryScores  Json?            @map("category_scores")
-  externalId      String?          @map("external_id")
-  externalSource  String?          @map("external_source")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  id             String           @id @default(uuid())
+  categoryId     String           @map("category_id")
+  coverageAreaId String?          @map("coverage_area_id")
+  name           String
+  slug           String           @unique
+  description    Json?
+  address        String?
+  city           String?
+  province       String?
+  latitude       Decimal?         @db.Decimal(10, 7)
+  longitude      Decimal?         @db.Decimal(10, 7)
+  status         ValidationStatus @default(PENDING)
+  rating         Float?           @default(0)
+  reviewCount    Int?             @default(0) @map("review_count")
+  openingHours   Json?            @map("opening_hours")
+  halalScore     Int?             @map("halal_score")
+  validatedScore Int?             @map("validated_score")
+  categoryScores Json?            @map("category_scores")
+  externalId     String?          @map("external_id")
+  externalSource String?          @map("external_source")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
 
   category                   Category                   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   coverageArea               CoverageArea?              @relation(fields: [coverageAreaId], references: [id], onDelete: SetNull)
@@ -171,6 +205,10 @@ model Destination {
   interactions               DestinationInteraction[]
   trends                     DestinationTrend[]
   itineraryItems             ItineraryItem[]
+  aceshIndicatorScores       AceshIndicatorScore[]
+  aceshEvidenceRecords       AceshEvidenceRecord[]
+  aceshAssessment            AceshAssessment?
+  aceshAssessmentHistory     AceshAssessmentHistory[]
 
   @@index([categoryId])
   @@index([coverageAreaId])
@@ -179,27 +217,27 @@ model Destination {
 }
 
 model Accommodation {
-  id    String   @id @default(uuid())
-  name  String
-  slug            String           @unique
-  description     Json?
-  address         String?
-  city            String?
-  province        String?
-  latitude        Decimal?         @db.Decimal(10, 7)
-  longitude       Decimal?         @db.Decimal(10, 7)
-  phone           String?
-  website         String?
-  estimatedCost   Decimal?         @db.Decimal(15, 2) @map("estimated_cost")
-  rating          Float?           @default(0)
-  reviewCount     Int?             @default(0) @map("review_count")
-  validationStatus  String          @default("PENDING") @map("validation_status")
-  surveyorNote      String?         @map("surveyor_note")
-  validatedScore    Int?            @map("validated_score")
-  externalId        String?         @map("external_id")
-  externalSource  String?          @map("external_source")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  description      Json?
+  address          String?
+  city             String?
+  province         String?
+  latitude         Decimal? @db.Decimal(10, 7)
+  longitude        Decimal? @db.Decimal(10, 7)
+  phone            String?
+  website          String?
+  estimatedCost    Decimal? @map("estimated_cost") @db.Decimal(15, 2)
+  rating           Float?   @default(0)
+  reviewCount      Int?     @default(0) @map("review_count")
+  validationStatus String   @default("PENDING") @map("validation_status")
+  surveyorNote     String?  @map("surveyor_note")
+  validatedScore   Int?     @map("validated_score")
+  externalId       String?  @map("external_id")
+  externalSource   String?  @map("external_source")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   images     AccommodationImage[]
   reviews    Review[]
@@ -224,12 +262,12 @@ model AccommodationImage {
 }
 
 model AccommodationHalalFacility {
-  id              String        @id @default(uuid())
-  accommodationId String        @map("accommodation_id")
-  facilityId      String        @map("facility_id")
+  id              String  @id @default(uuid())
+  accommodationId String  @map("accommodation_id")
+  facilityId      String  @map("facility_id")
   name            String?
 
-  accommodation Accommodation  @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  accommodation Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
   facility      HalalFacility @relation(fields: [facilityId], references: [id], onDelete: Restrict)
 
   @@index([accommodationId])
@@ -252,29 +290,33 @@ model DestinationImage {
 }
 
 model DestinationHalalFacility {
-  id            String                       @id @default(uuid())
-  destinationId String                       @map("destination_id")
-  facilityId    String                       @map("facility_id")
-  latitude      Float?
-  longitude     Float?
-  name          String?
+  id             String  @id @default(uuid())
+  destinationId  String  @map("destination_id")
+  facilityId     String  @map("facility_id")
+  latitude       Float?
+  longitude      Float?
+  name           String?
+  distanceMeters Int?    @map("distance_meters")
+  travelMinutes  Int?    @map("travel_minutes")
+  travelMode     String? @map("travel_mode")
 
   destination Destination                   @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   facility    HalalFacility                 @relation(fields: [facilityId], references: [id], onDelete: Restrict)
   evidences   DestinationFacilityEvidence[]
 
+  @@unique([destinationId, facilityId])
   @@index([destinationId])
   @@index([facilityId])
   @@map("destination_halal_facilities")
 }
 
 model DestinationFacilityEvidence {
-  id             String                   @id @default(uuid())
-  destFacilityId String                   @map("dest_facility_id")
-  imageUrl       String                   @map("image_url")
-  createdAt      DateTime                 @default(now()) @map("created_at")
+  id             String   @id @default(uuid())
+  destFacilityId String   @map("dest_facility_id")
+  imageUrl       String   @map("image_url")
+  createdAt      DateTime @default(now()) @map("created_at")
 
-  destFacility   DestinationHalalFacility @relation(fields: [destFacilityId], references: [id], onDelete: Cascade)
+  destFacility DestinationHalalFacility @relation(fields: [destFacilityId], references: [id], onDelete: Cascade)
 
   @@index([destFacilityId])
   @@map("destination_facility_evidences")
@@ -285,6 +327,8 @@ model HalalFacility {
   name           String
   description    String?
   facilityType   String?  @map("facility_type")
+  latitude       Decimal? @db.Decimal(10, 7)
+  longitude      Decimal? @db.Decimal(10, 7)
   externalId     String?  @map("external_id")
   externalSource String?  @map("external_source")
   createdAt      DateTime @default(now()) @map("created_at")
@@ -292,8 +336,8 @@ model HalalFacility {
   weight         Int?     @default(0)
   maxDistance    Float    @default(5.0) @map("max_distance")
 
-  destinationHalalFacilities DestinationHalalFacility[]
-  umkmHalalFacilities        UmkmHalalFacility[]
+  destinationHalalFacilities   DestinationHalalFacility[]
+  umkmHalalFacilities          UmkmHalalFacility[]
   accommodationHalalFacilities AccommodationHalalFacility[]
 
   @@index([externalId])
@@ -301,20 +345,20 @@ model HalalFacility {
 }
 
 model Review {
-  id              String          @id @default(uuid())
-  userId          String          @map("user_id")
-  destinationId   String?         @map("destination_id")
-  umkmId          String?         @map("umkm_id")
-  accommodationId String?         @map("accommodation_id")
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  destinationId   String?  @map("destination_id")
+  umkmId          String?  @map("umkm_id")
+  accommodationId String?  @map("accommodation_id")
   rating          Int
   comment         String?
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  destination   Destination?      @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-  umkm          Umkm?             @relation(fields: [umkmId], references: [id], onDelete: Cascade)
-  accommodation Accommodation?    @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  destination   Destination?     @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  umkm          Umkm?            @relation(fields: [umkmId], references: [id], onDelete: Cascade)
+  accommodation Accommodation?   @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
   sentiment     ReviewSentiment?
 
   @@index([userId])
@@ -476,35 +520,35 @@ model HalalReadinessScore {
 }
 
 model Umkm {
-  id             String   @id @default(uuid())
-  destinationId  String?  @map("destination_id")
-  categoryId     String?  @map("category_id")
-  coverageAreaId String?  @map("coverage_area_id")
-  name           String
-  slug           String   @unique
-  description    String?
-  address        String?
-  phone          String?
-  estimatedCost  Decimal? @db.Decimal(15, 2) @map("estimated_cost")
-  latitude       Decimal? @db.Decimal(10, 7)
-  longitude      Decimal? @db.Decimal(10, 7)
-  rating         Float?   @default(0)
-  reviewCount    Int?     @default(0) @map("review_count")
-  openingHours   Json?    @map("opening_hours")
-  externalId     String?  @map("external_id")
-  externalSource String?  @map("external_source")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  id               String   @id @default(uuid())
+  destinationId    String?  @map("destination_id")
+  categoryId       String?  @map("category_id")
+  coverageAreaId   String?  @map("coverage_area_id")
+  name             String
+  slug             String   @unique
+  description      String?
+  address          String?
+  phone            String?
+  estimatedCost    Decimal? @map("estimated_cost") @db.Decimal(15, 2)
+  latitude         Decimal? @db.Decimal(10, 7)
+  longitude        Decimal? @db.Decimal(10, 7)
+  rating           Float?   @default(0)
+  reviewCount      Int?     @default(0) @map("review_count")
+  openingHours     Json?    @map("opening_hours")
+  externalId       String?  @map("external_id")
+  externalSource   String?  @map("external_source")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
   owner            String
   validationStatus String   @default("PENDING") @map("validation_status")
   surveyorNote     String?  @map("surveyor_note")
 
-  destination    Destination?         @relation(fields: [destinationId], references: [id], onDelete: SetNull)
-  category       Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  coverageArea   CoverageArea?        @relation(fields: [coverageAreaId], references: [id], onDelete: SetNull)
-  images         UmkmImage[]
-  reviews        Review[]
-  certifications HalalCertification[]
+  destination         Destination?         @relation(fields: [destinationId], references: [id], onDelete: SetNull)
+  category            Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  coverageArea        CoverageArea?        @relation(fields: [coverageAreaId], references: [id], onDelete: SetNull)
+  images              UmkmImage[]
+  reviews             Review[]
+  certifications      HalalCertification[]
   umkmHalalFacilities UmkmHalalFacility[]
 
   @@index([destinationId])
@@ -529,9 +573,9 @@ model UmkmImage {
 }
 
 model UmkmHalalFacility {
-  id         String        @id @default(uuid())
-  umkmId     String        @map("umkm_id")
-  facilityId String        @map("facility_id")
+  id         String  @id @default(uuid())
+  umkmId     String  @map("umkm_id")
+  facilityId String  @map("facility_id")
   name       String?
 
   umkm     Umkm          @relation(fields: [umkmId], references: [id], onDelete: Cascade)
@@ -637,7 +681,7 @@ model Report {
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @updatedAt @map("updated_at")
 
-  reporter    User?            @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  reporter User? @relation(fields: [reporterId], references: [id], onDelete: SetNull)
 
   @@index([targetId, targetType])
   @@index([reporterId])
@@ -657,4 +701,124 @@ model AiIntentLog {
   @@index([intent])
   @@index([createdAt])
   @@map("ai_intent_logs")
+}
+
+model AceshIndicator {
+  id          String              @id @default(uuid())
+  code        String              @unique
+  name        String
+  group       AceshIndicatorGroup
+  description String?
+  weight      Float               @default(1.0)
+  isActive    Boolean             @default(true) @map("is_active")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+
+  indicatorScores AceshIndicatorScore[]
+
+  @@index([group])
+  @@map("acesh_indicators")
+}
+
+model AceshIndicatorScore {
+  id             String   @id @default(uuid())
+  destinationId  String   @map("destination_id")
+  indicatorId    String   @map("indicator_id")
+  value          Int      @default(0)
+  convertedScore Float    @default(0) @map("converted_score")
+  notes          String?
+  assessedBy     String?  @map("assessed_by")
+  assessedAt     DateTime @default(now()) @map("assessed_at")
+
+  destination Destination    @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  indicator   AceshIndicator @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
+
+  @@unique([destinationId, indicatorId])
+  @@index([indicatorId])
+  @@map("acesh_indicator_scores")
+}
+
+model AceshEvidenceRecord {
+  id                     String            @id @default(uuid())
+  destinationId          String            @map("destination_id")
+  evidenceType           AceshEvidenceType @default(OTHER) @map("evidence_type")
+  source                 String?
+  sourceReliabilityScore Int?              @map("source_reliability_score")
+  documentUrl            String?           @map("document_url")
+  photoUrl               String?           @map("photo_url")
+  latitude               Decimal?          @db.Decimal(10, 7)
+  longitude              Decimal?          @db.Decimal(10, 7)
+  managementConfirmed    Boolean           @default(false) @map("management_confirmed")
+  fieldValidated         Boolean           @default(false) @map("field_validated")
+  dataDate               DateTime?         @map("data_date")
+  validatedAt            DateTime?         @map("validated_at")
+  validatorId            String?           @map("validator_id")
+  notes                  String?
+  createdAt              DateTime          @default(now()) @map("created_at")
+  updatedAt              DateTime          @updatedAt @map("updated_at")
+
+  destination Destination? @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  validator   User?        @relation(fields: [validatorId], references: [id], onDelete: SetNull)
+
+  @@index([destinationId])
+  @@index([validatorId])
+  @@map("acesh_evidence_records")
+}
+
+model AceshAssessment {
+  id                      String                  @id @default(uuid())
+  destinationId           String                  @map("destination_id")
+  acesScore               Float                   @map("aces_score")
+  hyperlocalScore         Float                   @map("hyperlocal_score")
+  baseScore               Float                   @map("base_score")
+  evidenceConfidenceScore Float                   @map("evidence_confidence_score")
+  evidenceFactor          Float                   @map("evidence_factor")
+  verifiedScore           Float?                  @map("verified_score")
+  classification          String?
+  verificationStatus      AceshVerificationStatus @default(PENDING) @map("verification_status")
+  calculationVersion      String                  @map("calculation_version")
+  calculatedAt            DateTime                @default(now()) @map("calculated_at")
+  createdAt               DateTime                @default(now()) @map("created_at")
+  updatedAt               DateTime                @updatedAt @map("updated_at")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@unique([destinationId])
+  @@map("acesh_assessments")
+}
+
+model AceshAssessmentHistory {
+  id                      String                  @id @default(uuid())
+  destinationId           String                  @map("destination_id")
+  acesScore               Float                   @map("aces_score")
+  hyperlocalScore         Float                   @map("hyperlocal_score")
+  baseScore               Float                   @map("base_score")
+  evidenceConfidenceScore Float                   @map("evidence_confidence_score")
+  evidenceFactor          Float                   @map("evidence_factor")
+  verifiedScore           Float?                  @map("verified_score")
+  classification          String?
+  verificationStatus      AceshVerificationStatus @map("verification_status")
+  calculationVersion      String                  @map("calculation_version")
+  calculatedBy            String?                 @map("calculated_by")
+  notes                   String?
+  calculatedAt            DateTime                @map("calculated_at")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId, calculatedAt])
+  @@map("acesh_assessment_history")
+}
+
+model ReachabilityConfig {
+  id                String          @id @default(uuid())
+  facilityType      String          @unique @map("facility_type")
+  label             String?
+  maxDistanceMeters Int?            @map("max_distance_meters")
+  maxTravelMinutes  Int?            @map("max_travel_minutes")
+  travelMode        AceshTravelMode @default(WALKING) @map("travel_mode")
+  isActive          Boolean         @default(true) @map("is_active")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+
+  @@map("reachability_configs")
 }

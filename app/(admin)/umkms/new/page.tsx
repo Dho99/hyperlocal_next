@@ -8,7 +8,7 @@ export default async function NewUmkmPage() {
     return (
         <div className="space-y-6">
             <div className="space-y-1">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">
                     Tambah UMKM Baru
                 </h1>
                 <p className="text-muted-foreground">

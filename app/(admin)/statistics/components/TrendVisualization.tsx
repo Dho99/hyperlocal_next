@@ -65,10 +65,10 @@ export default function TrendVisualization({ trend }: TrendVisualizationProps) {
                 </div>
             </div>
 
-            <div className="relative w-full h-[320px] pt-4 overflow-hidden">
+            <div className="relative w-full h-[320px] pt-4 overflow-x-auto overflow-y-hidden">
                 <svg
                     viewBox="0 0 1000 280"
-                    className="w-full h-full"
+                    className="h-full min-w-[600px] w-full"
                     preserveAspectRatio="none"
                 >
                     <defs>

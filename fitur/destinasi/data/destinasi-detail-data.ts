@@ -9,6 +9,7 @@ export interface FacilityInfo {
     type: string | null;
     distance: number | null;
     maxDistance: number | null;
+    travelMinutes?: number | null;
 }
 
 export interface NearbyUmkm {
