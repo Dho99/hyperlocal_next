@@ -53,6 +53,7 @@ import { id as localeId } from "date-fns/locale";
 import { toast } from "sonner";
 import Link from "next/link";
 import { DestinationValidationForm } from "./components/destination-validation-form";
+import { AceshAssessmentTabs } from "./components/acesh-assessment-tabs";
 import { Validation, ValidationEvidence } from "@/types/validation";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 
@@ -187,7 +188,7 @@ export default function ProcessValidationPage() {
     // Destination validation path
     if (validation.destinationId && validation.destination) {
         return (
-            <div className="flex-1 space-y-8 p-8 pt-6 pb-20">
+            <div className="flex-1 space-y-8 px-4 pt-6 pb-20 sm:p-8 sm:pt-6">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Link
@@ -201,18 +202,18 @@ export default function ProcessValidationPage() {
                                 Validasi Destinasi
                             </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex min-w-0 items-start gap-4">
                             <Button
                                 variant="outline"
                                 size="icon"
                                 onClick={() => router.back()}
-                                className="rounded-full h-10 w-10"
+                                className="h-10 w-10 shrink-0 rounded-full"
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
-                            <div>
-                                <h1 className="text-3xl font-bold tracking-tight">
+                            <div className="min-w-0">
+                                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
                                     Validasi Destinasi
                                 </h1>
                                 <p className="text-muted-foreground">
@@ -232,13 +233,42 @@ export default function ProcessValidationPage() {
                     currentAdminScore={validation.adminScore as number}
                     currentCategoryScores={validation.categoryScores}
                 />
+
+                <div className="space-y-4">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight">
+                            Penilaian ACES-H
+                        </h2>
+                        <p className="text-muted-foreground">
+                            Skor berbasis indikator ACES + Hyperlocal dengan
+                            verifikasi bukti.
+                        </p>
+                    </div>
+                    <AceshAssessmentTabs
+                        destinationId={validation.destination.id}
+                        facilities={(
+                            validation.destination.destinationHalalFacilities ??
+                            []
+                        ).map((dhf) => ({
+                            id: dhf.id,
+                            facility: {
+                                id: dhf.facility?.id ?? "",
+                                name: dhf.facility?.name ?? "Fasilitas",
+                                type: dhf.facility?.facilityType ?? null,
+                            },
+                            distanceMeters: dhf.distanceMeters ?? null,
+                            travelMinutes: dhf.travelMinutes ?? null,
+                            travelMode: dhf.travelMode ?? null,
+                        }))}
+                    />
+                </div>
             </div>
         );
     }
 
     // Certification validation path (existing logic)
     return (
-        <div className="flex-1 space-y-8 p-8 pt-6 pb-20">
+        <div className="flex-1 space-y-8 px-4 pt-6 pb-20 sm:p-8 sm:pt-6">
             <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Link
@@ -250,18 +280,18 @@ export default function ProcessValidationPage() {
                     <span className="text-muted-foreground/50">/</span>
                     <span className="text-foreground font-medium">Proses</span>
                 </div>
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 items-start gap-4">
                         <Button
                             variant="outline"
                             size="icon"
                             onClick={() => router.back()}
-                            className="rounded-full h-10 w-10"
+                            className="h-10 w-10 shrink-0 rounded-full"
                         >
                             <ChevronLeft className="h-5 w-5" />
                         </Button>
-                        <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
+                        <div className="min-w-0">
+                            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
                                 Proses Validasi Halal
                             </h1>
                             <p className="text-muted-foreground">
@@ -558,7 +588,7 @@ export default function ProcessValidationPage() {
                                                 )}
                                             />
 
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
                                                 <FormField
                                                     control={form.control}
                                                     name="issuedAt"

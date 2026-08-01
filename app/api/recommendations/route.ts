@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getPublicAceshScores, publicDisplayScore } from "@/lib/services/acesh/public-score-service";
 import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
@@ -56,15 +57,19 @@ Urutkan dari matchScore tertinggi ke terendah.`;
 
 function buildFallback(
     candidates: Array<{ id: string; halalScore: number | null }>,
+    scores: Map<string, import("@/lib/services/acesh/public-score-service").PublicAceshScore>,
     limit: number,
 ) {
     return candidates
-        .sort((a, b) => (b.halalScore ?? 0) - (a.halalScore ?? 0))
+        .sort((a, b) =>
+            publicDisplayScore(scores.get(b.id), b.halalScore) -
+            publicDisplayScore(scores.get(a.id), a.halalScore),
+        )
         .slice(0, limit)
         .map((d) => ({
             destinationId: d.id,
-            reason: "Destinasi dengan skor halal tertinggi",
-            matchScore: d.halalScore ?? 0,
+            reason: "Destinasi dengan skor ACES-H tertinggi",
+            matchScore: publicDisplayScore(scores.get(d.id), d.halalScore),
         }));
 }
 
@@ -102,19 +107,26 @@ export async function POST(request: Request) {
                     include: { facility: true },
                 },
             },
-            take: 20,
-            orderBy: { halalScore: "desc" },
+            take: 50,
         });
 
         if (candidates.length === 0) {
             return NextResponse.json({ data: [] }, { status: 200 });
         }
 
+        const scores = await getPublicAceshScores(candidates.map((d) => d.id));
+        const ranked = [...candidates].sort(
+            (a, b) =>
+                publicDisplayScore(scores.get(b.id), b.halalScore) -
+                publicDisplayScore(scores.get(a.id), a.halalScore),
+        );
+        candidates.splice(0, candidates.length, ...ranked.slice(0, 20));
+
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
             return NextResponse.json(
-                { data: buildFallback(candidates, limit) },
+                { data: buildFallback(candidates, scores, limit) },
                 { status: 200 },
             );
         }
@@ -127,7 +139,7 @@ export async function POST(request: Request) {
             const model = createGeminiModel();
             if (!model) {
                 return NextResponse.json(
-                    { data: buildFallback(candidates, limit) },
+                    { data: buildFallback(candidates, scores, limit) },
                     { status: 200 },
                 );
             }
@@ -143,7 +155,7 @@ export async function POST(request: Request) {
                 }
             } catch {
                 return NextResponse.json(
-                    { data: buildFallback(candidates, limit) },
+                    { data: buildFallback(candidates, scores, limit) },
                     { status: 200 },
                 );
             }
@@ -171,8 +183,11 @@ export async function POST(request: Request) {
                 if (remaining.length === 0) break;
                 recommendations.push({
                     destinationId: remaining[0].id,
-                    reason: "Destinasi dengan skor halal tertinggi",
-                    matchScore: remaining[0].halalScore ?? 0,
+                    reason: "Destinasi dengan skor ACES-H tertinggi",
+                    matchScore: publicDisplayScore(
+                        scores.get(remaining[0].id),
+                        remaining[0].halalScore,
+                    ),
                 });
             }
 
@@ -182,7 +197,7 @@ export async function POST(request: Request) {
             );
         } catch {
             return NextResponse.json(
-                { data: buildFallback(candidates, limit) },
+                { data: buildFallback(candidates, scores, limit) },
                 { status: 200 },
             );
         }

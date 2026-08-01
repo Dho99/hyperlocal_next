@@ -151,9 +151,9 @@ export default function RekomendasiPage() {
                 }
             `}</style>
 
-            <div className="print-full space-y-8 p-8">
+            <div className="print-full space-y-8 px-4 py-6 sm:p-8">
                 {/* Header */}
-                <div className="flex items-start justify-between no-print">
+                <div className="flex flex-col gap-4 no-print sm:flex-row sm:items-start sm:justify-between">
                     <div className="space-y-1">
                         <h1 className="text-2xl font-bold text-stone-900">
                             Rekomendasi & Laporan
@@ -165,7 +165,7 @@ export default function RekomendasiPage() {
                     </div>
                     <Button
                         onClick={() => window.print()}
-                        className="bg-emerald-700 hover:bg-emerald-800 text-white gap-2"
+                        className="bg-emerald-700 hover:bg-emerald-800 text-white gap-2 w-full sm:w-auto"
                     >
                         <Printer className="h-4 w-4" />
                         Cetak Laporan PDF

@@ -174,6 +174,16 @@ export async function getDashboardOverview() {
         },
     });
 
+    const pAceshAssessments = prisma.aceshAssessment.findMany({
+        select: {
+            verifiedScore: true,
+            baseScore: true,
+            classification: true,
+            verificationStatus: true,
+            evidenceConfidenceScore: true,
+        },
+    });
+
     const [
         totalDestinations,
         approvedDestinations,
@@ -191,6 +201,7 @@ export async function getDashboardOverview() {
         recentInteractions,
         interactionWindow,
         recentValidations,
+        aceshAssessments,
     ] = await Promise.all([
         pTotalDestinations,
         pApprovedDestinations,
@@ -208,6 +219,7 @@ export async function getDashboardOverview() {
         pRecentInteractions,
         pInteractionWindow,
         pRecentValidations,
+        pAceshAssessments,
     ]);
 
     const chartDays = Array.from({ length: 7 }, (_, index) => {
@@ -277,6 +289,42 @@ export async function getDashboardOverview() {
                   readiness.length,
           );
 
+    const aceshVerified = aceshAssessments.filter(
+        (a) => a.verificationStatus === "VERIFIED",
+    );
+    const aceshVerifiedScores = aceshVerified
+        .map((a) => a.verifiedScore)
+        .filter((s): s is number => s != null);
+    const aceshBaseScores = aceshAssessments
+        .map((a) => a.baseScore)
+        .filter((s): s is number => s != null);
+    const aceshConfidences = aceshAssessments
+        .map((a) => a.evidenceConfidenceScore)
+        .filter((s): s is number => s != null);
+
+    const averageOf = (values: number[]) =>
+        values.length
+            ? Math.round((values.reduce((sum, v) => sum + v, 0) / values.length) * 10) / 10
+            : null;
+
+    const aceshClassificationDistribution: Array<{
+        key: string;
+        label: string;
+        count: number;
+    }> = [
+        { key: "SANGAT_SIAP", label: "Sangat siap", count: 0 },
+        { key: "SIAP", label: "Siap", count: 0 },
+        { key: "BERKEMBANG", label: "Berkembang", count: 0 },
+        { key: "PERLU_PENGEMBANGAN", label: "Perlu pengembangan", count: 0 },
+        { key: "BELUM_SIAP", label: "Belum siap", count: 0 },
+    ];
+    for (const assessment of aceshAssessments) {
+        const bucket = aceshClassificationDistribution.find(
+            (b) => b.key === assessment.classification,
+        );
+        if (bucket) bucket.count += 1;
+    }
+
     return {
         stats: {
             totalDestinations,
@@ -291,6 +339,15 @@ export async function getDashboardOverview() {
         },
         readiness,
         overallReadiness,
+        acesh: {
+            totalAssessed: aceshAssessments.length,
+            verifiedCount: aceshVerified.length,
+            pendingCount: aceshAssessments.length - aceshVerified.length,
+            averageVerifiedScore: averageOf(aceshVerifiedScores),
+            averageBaseScore: averageOf(aceshBaseScores),
+            averageConfidence: averageOf(aceshConfidences),
+            classificationDistribution: aceshClassificationDistribution,
+        },
         chart: {
             days: chartDays.map((day) => ({
                 ...day,

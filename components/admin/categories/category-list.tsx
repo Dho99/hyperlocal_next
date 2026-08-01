@@ -117,11 +117,11 @@ export function CategoryList({ type }: CategoryListProps) {
                     {categories.map((category) => (
                         <TableRow key={category.id}>
                             <TableCell className="font-medium">
-                                <div className="flex items-center gap-2">
-                                    {category.name}
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <span className="truncate max-w-[160px]">{category.name}</span>
                                     <Badge
                                         variant="secondary"
-                                        className="text-[10px] py-0 px-1"
+                                        className="text-[10px] py-0 px-1 shrink-0"
                                     >
                                         ID: {category.id.substring(0, 4)}
                                     </Badge>

@@ -151,7 +151,7 @@ export function FacilitiesTable() {
                                 <TableBody>
                                     {facilities.map((facility) => (
                                         <TableRow key={facility.id}>
-                                            <TableCell className="font-medium">
+                                            <TableCell className="font-medium max-w-[180px] truncate">
                                                 {facility.name}
                                             </TableCell>
                                             <TableCell>

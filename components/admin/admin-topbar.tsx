@@ -40,7 +40,7 @@ export function AdminTopbar({ user }: { user: User }) {
     void router;
 
     return (
-        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-background px-4">
+        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-background px-4 max-w-7xl">
             {/* Mobile Sidebar */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
                 <SheetTrigger asChild>
@@ -99,22 +99,8 @@ export function AdminTopbar({ user }: { user: User }) {
             </div>
 
             <div className="ml-auto flex items-center gap-2">
-                {/* <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative rounded-full hover:bg-[#eef7f2]"
-                >
-                    <Bell className="h-4.5 w-4.5 text-[#1d1b20]" />
-                </Button> */}
                 <ThemeToggle />
                 <AdminGuide />
-                {/* <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full hover:bg-[#eef7f2]"
-                    >
-                        <Grid3X3 className="h-4.5 w-4.5 text-[#1d1b20]" />
-                    </Button> */}
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

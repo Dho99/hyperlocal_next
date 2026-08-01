@@ -35,7 +35,7 @@ export default async function ValidasiPenginapanDetailPage({ params }: PageProps
     const primaryImage = accommodation.images.find((img) => img.isPrimary)?.imageUrl ?? accommodation.images[0]?.imageUrl;
 
     return (
-        <div className="flex flex-col gap-6 p-8 w-full">
+        <div className="flex w-full flex-col gap-6 px-4 py-6 sm:p-8">
             <nav className="flex items-center gap-2 text-sm text-stone-500">
                 <Link
                     href="/validasi/penginapan"

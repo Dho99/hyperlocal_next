@@ -22,7 +22,7 @@ export default async function ProfilePage() {
     return (
         <div className="space-y-8">
             <div className="space-y-1">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">
                     Pengaturan Profil
                 </h1>
                 <p className="text-muted-foreground">
