@@ -13,12 +13,17 @@ import { createGeminiModel } from "@/lib/utils/ai-gemini";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
 import type { AIRecommendation } from "@/types/ai";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+import { getReachabilityConfig } from "@/lib/services/acesh/reachability-config-service";
+import { getPublicAceshScores, publicDisplayScore } from "@/lib/services/acesh/public-score-service";
 
 const exploreQuerySchema = z.object({
     q: z.string().min(1, "Query wajib diisi"),
     lat: z.coerce.number().optional(),
     lng: z.coerce.number().optional(),
 });
+
+/** Default radius (km) used when no reachability configuration exists. */
+const DEFAULT_NEARBY_RADIUS_KM = 10;
 
 interface ExploreDestination {
     id: string;
@@ -27,6 +32,9 @@ interface ExploreDestination {
     city: string | null;
     province: string | null;
     halalScore: number | null;
+    aceshScore: number | null;
+    aceshClassification: string | null;
+    aceshVerificationStatus: "PENDING" | "VERIFIED" | null;
     rating: number | null;
     imageUrl: string | null;
     categoryName: string | null;
@@ -110,7 +118,7 @@ ${geoInstruction}
     if (isNearby) {
         prompt += `
 
-📍 The user is searching for nearby locations. I have pre-filtered the candidates to only include those within a 10km radius of the user's current coordinates. Emphasize proximity in your aiReason.`;
+📍 The user is searching for nearby locations. I have pre-filtered the candidates to only include those within the configured nearby radius of the user's current coordinates. Emphasize proximity in your aiReason.`;
     }
 
     prompt += `
@@ -128,20 +136,23 @@ Urutkan dari matchScore tertinggi ke terendah. Maksimal 5 hasil.`;
     return prompt;
 }
 
-function toExploreDestination(d: {
-    id: string;
-    name: string;
-    slug: string;
-    city: string | null;
-    province: string | null;
-    halalScore: number | null;
-    rating: number | null;
-    images?: Array<{ imageUrl: string }>;
-    category?: { name: string } | null;
-    destinationHalalFacilities?: Array<{
-        facility: { name: string };
-    }>;
-}): ExploreDestination {
+function toExploreDestination(
+    d: {
+        id: string;
+        name: string;
+        slug: string;
+        city: string | null;
+        province: string | null;
+        halalScore: number | null;
+        rating: number | null;
+        images?: Array<{ imageUrl: string }>;
+        category?: { name: string } | null;
+        destinationHalalFacilities?: Array<{
+            facility: { name: string };
+        }>;
+    },
+    score: import("@/lib/services/acesh/public-score-service").PublicAceshScore | undefined,
+): ExploreDestination {
     return {
         id: d.id,
         name: d.name,
@@ -149,6 +160,9 @@ function toExploreDestination(d: {
         city: d.city,
         province: d.province,
         halalScore: d.halalScore,
+        aceshScore: score ? publicDisplayScore(score, d.halalScore) : null,
+        aceshClassification: score?.classification ?? null,
+        aceshVerificationStatus: score?.verificationStatus ?? null,
         rating: d.rating,
         imageUrl: d.images?.[0]?.imageUrl ?? null,
         categoryName: d.category?.name ?? null,
@@ -161,14 +175,19 @@ function toExploreDestination(d: {
 
 function buildFallback(
     candidates: Array<Parameters<typeof toExploreDestination>[0]>,
+    scores: Map<string, import("@/lib/services/acesh/public-score-service").PublicAceshScore>,
 ): ExploreResponseItem[] {
     return candidates
-        .sort((a, b) => (b.halalScore ?? 0) - (a.halalScore ?? 0))
+        .sort(
+            (a, b) =>
+                publicDisplayScore(scores.get(b.id), b.halalScore) -
+                publicDisplayScore(scores.get(a.id), a.halalScore),
+        )
         .slice(0, 5)
         .map((d) => ({
-            destination: toExploreDestination(d),
-            matchScore: d.halalScore ?? 0,
-            aiReason: "Destinasi dengan skor halal tertinggi",
+            destination: toExploreDestination(d, scores.get(d.id)),
+            matchScore: publicDisplayScore(scores.get(d.id), d.halalScore),
+            aiReason: "Destinasi dengan skor ACES-H tertinggi",
         }));
 }
 
@@ -193,6 +212,15 @@ export async function GET(request: Request) {
 
         const { q: query, lat, lng } = parsed.data;
         const isNearby = lat != null && lng != null;
+
+        // Resolve the configurable nearby radius (meters → km) from the reachability
+        // settings; falls back to the default when unconfigured.
+        const nearbyConfig = await getReachabilityConfig("DESTINATION_NEARBY");
+        const nearbyRadiusKm = isNearby
+            ? (nearbyConfig.maxDistanceMeters && nearbyConfig.maxDistanceMeters > 0
+                  ? nearbyConfig.maxDistanceMeters / 1000
+                  : DEFAULT_NEARBY_RADIUS_KM)
+            : DEFAULT_NEARBY_RADIUS_KM;
 
         const knownLocations = await getLocationNames();
         const matchedLocation = extractCityFromQuery(query, knownLocations);
@@ -236,7 +264,6 @@ export async function GET(request: Request) {
                 },
             },
             take: 20,
-            orderBy: { halalScore: "desc" },
         });
 
         // Name-based augmentation when no location matched — surfaces specific destination names
@@ -261,7 +288,6 @@ export async function GET(request: Request) {
                         },
                     },
                     take: 5,
-                    orderBy: { halalScore: "desc" },
                 });
 
                 if (nameMatches.length > 0) {
@@ -283,9 +309,18 @@ export async function GET(request: Request) {
                     Number(d.latitude),
                     Number(d.longitude),
                 );
-                return dist <= 10;
+                // Configurable nearby radius from the reachability settings
+                // (falls back to 10 km when no configuration exists).
+                return dist <= nearbyRadiusKm;
             });
         }
+
+        const scores = await getPublicAceshScores(candidates.map((c) => c.id));
+        candidates.sort(
+            (a, b) =>
+                publicDisplayScore(scores.get(b.id), b.halalScore) -
+                publicDisplayScore(scores.get(a.id), a.halalScore),
+        );
 
         if (candidates.length === 0) {
             const fallbackSuggestion = matchedLocation
@@ -300,7 +335,7 @@ export async function GET(request: Request) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            const data = buildFallback(candidates);
+            const data = buildFallback(candidates, scores);
             return NextResponse.json<ExploreResponse>(
                 { query, data },
                 { status: 200 },
@@ -318,7 +353,7 @@ export async function GET(request: Request) {
 
             const model = createGeminiModel();
             if (!model) {
-                const data = buildFallback(candidates);
+                const data = buildFallback(candidates, scores);
                 return NextResponse.json<ExploreResponse>(
                     { query, data },
                     { status: 200 },
@@ -335,7 +370,7 @@ export async function GET(request: Request) {
                     throw new Error("Response is not an array");
                 }
             } catch {
-                const data = buildFallback(candidates);
+                const data = buildFallback(candidates, scores);
                 return NextResponse.json<ExploreResponse>(
                     { query, data },
                     { status: 200 },
@@ -386,7 +421,7 @@ export async function GET(request: Request) {
                 .map((r) => {
                     const d = destinationMap.get(r.destinationId)!;
                     return {
-                        destination: toExploreDestination(d),
+                        destination: toExploreDestination(d, scores.get(d.id)),
                         matchScore: r.matchScore,
                         aiReason: r.aiReason,
                     };
@@ -398,7 +433,7 @@ export async function GET(request: Request) {
             );
         } catch (error) {
             console.error("AI recommendation error:", getErrorMessage(error));
-            const data = buildFallback(candidates);
+            const data = buildFallback(candidates, scores);
             return NextResponse.json<ExploreResponse>(
                 { query, data },
                 { status: 200 },

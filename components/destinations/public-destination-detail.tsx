@@ -34,10 +34,36 @@ interface PublicDestinationDetailProps {
     id: string;
 }
 
+interface PublicAceshAssessment {
+    verifiedScore: number | null;
+    baseScore: number | null;
+    classification: string | null;
+    verificationStatus: "PENDING" | "VERIFIED" | null;
+    calculatedAt: string | null;
+    calculationVersion: string | null;
+}
+
+const CLASSIFICATION_LABELS: Record<string, string> = {
+    BELUM_SIAP: "Belum siap",
+    PERLU_PENGEMBANGAN: "Perlu pengembangan",
+    BERKEMBANG: "Berkembang",
+    SIAP: "Siap",
+    SANGAT_SIAP: "Sangat siap",
+};
+
+const CLASSIFICATION_STYLES: Record<string, string> = {
+    BELUM_SIAP: "bg-red-50 text-red-700 ring-red-200",
+    PERLU_PENGEMBANGAN: "bg-orange-50 text-orange-700 ring-orange-200",
+    BERKEMBANG: "bg-yellow-50 text-yellow-700 ring-yellow-200",
+    SIAP: "bg-green-50 text-green-700 ring-green-200",
+    SANGAT_SIAP: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+};
+
 export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const router = useRouter();
     const [destination, setDestination] = useState<Destination | null>(null);
     const [reviews, setReviews] = useState<PublicReview[]>([]);
+    const [acesh, setAcesh] = useState<PublicAceshAssessment | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
@@ -64,6 +90,17 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             }
         }
         fetchData();
+
+        fetch(`/api/destinations/${id}/acesh`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((json) => {
+                if (json?.data) {
+                    setAcesh(json.data as PublicAceshAssessment);
+                }
+            })
+            .catch(() => {
+                // score badge is optional — detail still works without it
+            });
     }, [id]);
 
     useEffect(() => {
@@ -92,8 +129,11 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         if (!destination?.destinationHalalFacilities?.length) return [];
         return destination.destinationHalalFacilities
             .map((dhf) => {
+                const dbDistKm =
+                    dhf.distanceMeters != null ? dhf.distanceMeters / 1000 : null;
                 const dist =
-                    destination.latitude != null &&
+                    dbDistKm ??
+                    (destination.latitude != null &&
                     destination.longitude != null &&
                     dhf.latitude != null &&
                     dhf.longitude != null
@@ -103,7 +143,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                               dhf.latitude,
                               dhf.longitude,
                           )
-                        : null;
+                        : null);
                 return {
                     id: dhf.id,
                     name: dhf.facility?.name ?? "Fasilitas",
@@ -111,6 +151,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     type: dhf.facility?.facilityType ?? null,
                     distance: dist,
                     maxDistance: dhf.facility?.maxDistance ?? null,
+                    travelMinutes: dhf.travelMinutes ?? null,
                 };
             })
             .sort(
@@ -258,6 +299,51 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     destinationId={id}
                     onImageClick={lightbox.openAt}
                 />
+
+                {acesh && acesh.baseScore != null && (
+                    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                        <div>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                Skor ACES-H
+                            </p>
+                            <p className="text-3xl font-bold text-foreground">
+                                {acesh.verificationStatus === "VERIFIED" &&
+                                acesh.verifiedScore != null
+                                    ? acesh.verifiedScore.toFixed(1)
+                                    : acesh.baseScore.toFixed(1)}
+                            </p>
+                        </div>
+                        {acesh.classification && (
+                            <span
+                                className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${
+                                    CLASSIFICATION_STYLES[
+                                        acesh.classification
+                                    ] ?? "bg-muted text-muted-foreground ring-border"
+                                }`}
+                            >
+                                {CLASSIFICATION_LABELS[acesh.classification] ??
+                                    acesh.classification}
+                            </span>
+                        )}
+                        <div className="text-xs text-muted-foreground">
+                            {acesh.verificationStatus === "VERIFIED" ? (
+                                <p>
+                                    Skor terverifikasi · diperbarui{" "}
+                                    {acesh.calculatedAt
+                                        ? new Date(
+                                              acesh.calculatedAt,
+                                          ).toLocaleDateString("id-ID")
+                                        : "-"}
+                                </p>
+                            ) : (
+                                <p>
+                                    Skor sementara — data belum sepenuhnya
+                                    tervalidasi.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                     <div className="lg:col-span-2 space-y-8">

@@ -54,7 +54,7 @@ export default function StatisticsHeader({
     return (
         <header className="flex xl:flex-row flex-col justify-between gap-4 mb-8">
             <div className="w-full lg:w-auto">
-                <h1 className="text-3xl font-bold tracking-tight font-heading">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">
                     Statistik & Analitik Overview
                 </h1>
                 <p className="text-gray-500 mt-1 font-medium">

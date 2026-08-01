@@ -5,6 +5,7 @@ import { processDestinationValidationSchema } from "@/lib/validations/halal-vali
 import { ZodError } from "zod";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { calculateAndSaveAssessment } from "@/lib/services/acesh/assessment-recalculation-service";
 
 export async function GET(
     request: Request,
@@ -138,6 +139,17 @@ export async function PATCH(
 
                 return { validation, destination };
             });
+
+            // Trigger ACES-H recalculation so the verified score reflects the new validation state
+            try {
+                await calculateAndSaveAssessment(
+                    currentValidation.destinationId,
+                    validatorId ?? undefined,
+                    "Validasi destinasi diperbarui",
+                );
+            } catch (recalcError) {
+                console.error("ACES-H recalculation after validation failed:", recalcError);
+            }
 
             return NextResponse.json(
                 {

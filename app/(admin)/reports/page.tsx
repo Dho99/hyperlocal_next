@@ -4,7 +4,7 @@ export default function ReportsPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight font-heading">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">
           Laporan Pengguna
         </h1>
         <p className="text-muted-foreground">

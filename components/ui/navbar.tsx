@@ -18,7 +18,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navItems = [
-    { label: "Home", href: "/" },
+    { label: "Beranda", href: "/" },
     { label: "Destinasi", href: "/destinasi" },
     { label: "UMKM", href: "/umkm" },
     { label: "Penginapan", href: "/penginapan" },

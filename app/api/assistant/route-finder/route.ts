@@ -80,7 +80,6 @@ async function findDestinationByName(
         where,
         select: { name: true, slug: true, city: true, province: true },
         take: 5,
-        orderBy: { halalScore: "desc" },
     });
 
     if (matches.length === 0) return null;
@@ -264,7 +263,6 @@ export async function POST(request: Request) {
                 },
             },
             take: 30,
-            orderBy: { halalScore: "desc" },
         });
 
         if (candidates.length === 0) {

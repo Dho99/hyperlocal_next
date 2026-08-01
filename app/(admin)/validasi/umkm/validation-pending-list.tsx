@@ -75,23 +75,23 @@ export function ValidationPendingUmkmList() {
                 </select>
             </div>
 
-            <div className="border border-stone-200 bg-white overflow-hidden">
+            <div className="overflow-x-auto border border-stone-200 bg-white">
                 <table className="w-full text-sm">
                     <thead>
                         <tr className="border-b border-stone-200 bg-stone-50">
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Nama UMKM
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Kategori
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Sertifikasi Halal
                             </th>
-                            <th className="text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-left py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th className="text-right py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                            <th className="whitespace-nowrap text-right py-3 px-4 text-xs font-semibold text-stone-500 uppercase tracking-wider">
                                 Aksi
                             </th>
                         </tr>
@@ -106,85 +106,97 @@ export function ValidationPendingUmkmList() {
                                     Tidak ada UMKM yang ditemukan.
                                 </td>
                             </tr>
-                        ) : (
-                            umkms.map((umkm) => {
-                                const style = STATUS_STYLES[umkm.validationStatus] ?? STATUS_STYLES.PENDING;
-                                const certStatus = umkm.certifications[0]?.status;
-                                const isHalalVerified = certStatus === "VALID";
-                                const hasTriage = isTriageNote(umkm.surveyorNote);
-                                return (
-                                    <tr key={umkm.id} className={`transition-colors ${
-                                        hasTriage
-                                            ? "border-l-4 border-amber-400 bg-amber-50/50 hover:bg-amber-50/80"
-                                            : "hover:bg-stone-50/50"
-                                    }`}>
-                                        <td className="py-3 px-4 font-medium text-stone-900">
-                                            <div className="flex items-center gap-2 flex-wrap">
-                                                <span>{umkm.name}</span>
-                                                {isHalalVerified && (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
-                                                        ✓ Halal
+                        </thead>
+                        <tbody className="divide-y divide-stone-200">
+                            {umkms.length === 0 && !isLoading ? (
+                                <tr>
+                                    <td
+                                        colSpan={5}
+                                        className="py-16 text-center text-sm text-stone-400"
+                                    >
+                                        Tidak ada UMKM yang ditemukan.
+                                    </td>
+                                </tr>
+                            ) : (
+                                umkms.map((umkm) => {
+                                    const style = STATUS_STYLES[umkm.validationStatus] ?? STATUS_STYLES.PENDING;
+                                    const certStatus = umkm.certifications[0]?.status;
+                                    const isHalalVerified = certStatus === "VALID";
+                                    const hasTriage = isTriageNote(umkm.surveyorNote);
+                                    return (
+                                        <tr key={umkm.id} className={`transition-colors ${
+                                            hasTriage
+                                                ? "border-l-4 border-amber-400 bg-amber-50/50 hover:bg-amber-50/80"
+                                                : "hover:bg-stone-50/50"
+                                        }`}>
+                                            <td className="py-3 px-4 font-medium text-stone-900">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span>{umkm.name}</span>
+                                                    {isHalalVerified && (
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-green-100 text-green-700 border border-green-200">
+                                                            ✓ Halal
+                                                        </span>
+                                                    )}
+                                                    {hasTriage && (
+                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full bg-amber-100 text-amber-700 border border-amber-300">
+                                                            <AlertTriangle className="h-3 w-3" />
+                                                            Perlu Atensi Khusus
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 text-stone-600">
+                                                {umkm.category?.name || (
+                                                    <span className="text-stone-400 italic">-</span>
+                                                )}
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                {certStatus ? (
+                                                    <span
+                                                        className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
+                                                            certStatus === "VALID"
+                                                                ? "bg-emerald-50 text-emerald-700"
+                                                                : certStatus === "EXPIRED" || certStatus === "REVOKED"
+                                                                  ? "bg-red-50 text-red-700"
+                                                                  : "bg-stone-100 text-stone-600"
+                                                        }`}
+                                                    >
+                                                        {certStatus === "VALID"
+                                                            ? "Tersertifikasi"
+                                                            : certStatus === "EXPIRED"
+                                                              ? "Kedaluwarsa"
+                                                              : certStatus === "REVOKED"
+                                                                ? "Dicabut"
+                                                                : certStatus}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-stone-400 italic text-xs">
+                                                        Belum ada
                                                     </span>
                                                 )}
-                                                {hasTriage && (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full bg-amber-100 text-amber-700 border border-amber-300">
-                                                        <AlertTriangle className="h-3 w-3" />
-                                                        Perlu Atensi Khusus
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="py-3 px-4 text-stone-600">
-                                            {umkm.category?.name || (
-                                                <span className="text-stone-400 italic">-</span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 px-4">
-                                            {certStatus ? (
+                                            </td>
+                                            <td className="py-3 px-4">
                                                 <span
-                                                    className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
-                                                        certStatus === "VALID"
-                                                            ? "bg-emerald-50 text-emerald-700"
-                                                            : certStatus === "EXPIRED" || certStatus === "REVOKED"
-                                                              ? "bg-red-50 text-red-700"
-                                                              : "bg-stone-100 text-stone-600"
-                                                    }`}
+                                                    className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${style.bg} ${style.text}`}
                                                 >
-                                                    {certStatus === "VALID"
-                                                        ? "Tersertifikasi"
-                                                        : certStatus === "EXPIRED"
-                                                          ? "Kedaluwarsa"
-                                                          : certStatus === "REVOKED"
-                                                            ? "Dicabut"
-                                                            : certStatus}
+                                                    {style.label}
                                                 </span>
-                                            ) : (
-                                                <span className="text-stone-400 italic text-xs">
-                                                    Belum ada
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 px-4">
-                                            <span
-                                                className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${style.bg} ${style.text}`}
-                                            >
-                                                {style.label}
-                                            </span>
-                                        </td>
-                                        <td className="py-3 px-4 text-right">
-                                            <Link
-                                                href={`/validasi/umkm/${umkm.id}`}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-md transition-colors"
-                                            >
-                                                Proses
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                );
-                            })
-                        )}
-                    </tbody>
-                </table>
+                                            </td>
+                                            <td className="py-3 px-4 text-right">
+                                                <Link
+                                                    href={`/validasi/umkm/${umkm.id}`}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-md transition-colors"
+                                                >
+                                                    Proses
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
                 <InfiniteScroll
                     hasMore={hasMore}
                     isLoading={isLoading}

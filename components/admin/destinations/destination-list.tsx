@@ -188,8 +188,8 @@ export function DestinationList({
                                                     <MapPin className="h-5 w-5 text-muted-foreground/50" />
                                                 )}
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-sm leading-tight">
+                                            <div className="flex flex-col min-w-0">
+                                                <span className="font-bold text-sm leading-tight truncate max-w-[180px]">
                                                     {destination.name}
                                                 </span>
                                                 <span className="text-[10px] text-muted-foreground">
@@ -211,7 +211,7 @@ export function DestinationList({
                                             {destination.category?.name}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-sm">
+                                    <TableCell className="text-sm max-w-[130px] truncate">
                                         {destination.city},{" "}
                                         {destination.province}
                                     </TableCell>
