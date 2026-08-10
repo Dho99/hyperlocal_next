@@ -41,6 +41,15 @@ interface RouteFinderResponse {
     payload: ItineraryPayload | null;
 }
 
+function getLocationSearchTerms(location: string): string[] {
+    const normalized = location.trim();
+    const withoutPrefix = normalized
+        .replace(/^(?:kota|kabupaten|kab\.?)[\s]+/i, "")
+        .trim();
+
+    return [...new Set([normalized, withoutPrefix].filter((term) => term.length >= 3))];
+}
+
 const ROUTE_FINDER_STOP_WORDS = new Set([
     "cari", "carikan", "temukan", "tampilkan", "lihat", "tunjukkan",
     "rekomendasi", "rekomendasikan", "sarankan", "saran",
@@ -234,19 +243,29 @@ export async function POST(request: Request) {
             });
         }
 
+        const locationTerms = matchedLocation
+            ? getLocationSearchTerms(matchedLocation)
+            : [];
         const whereLocation = matchedLocation
             ? {
-                  OR: [
-                      { city: { contains: matchedLocation, mode: "insensitive" as const } },
-                      { province: { contains: matchedLocation, mode: "insensitive" as const } },
+                  OR: locationTerms.flatMap((term) => [
+                      { city: { contains: term, mode: "insensitive" as const } },
+                      { province: { contains: term, mode: "insensitive" as const } },
+                      { address: { contains: term, mode: "insensitive" as const } },
                       {
                           AND: [
                               { city: null },
                               { province: null },
-                              { name: { contains: matchedLocation, mode: "insensitive" as const } },
+                              { name: { contains: term, mode: "insensitive" as const } },
                           ],
                       },
-                  ],
+                      {
+                          coverageArea: {
+                              name: { contains: term, mode: "insensitive" as const },
+                              isActive: true,
+                          },
+                      },
+                  ]),
               }
             : {};
 
@@ -267,6 +286,15 @@ export async function POST(request: Request) {
 
         if (candidates.length === 0) {
             console.log("[AI_INTENT_TRACE] No candidates found, skip AI");
+            if (matchedLocation) {
+                return NextResponse.json(
+                    {
+                        error: `Belum ada destinasi yang disetujui di ${matchedLocation}. Coba wilayah lain.`,
+                        code: "LOCATION_NOT_FOUND",
+                    },
+                    { status: 404 },
+                );
+            }
             return NextResponse.json<RouteFinderResponse>(
                 buildFallbackSearch(query),
                 { status: 200 },
@@ -476,7 +504,9 @@ export async function POST(request: Request) {
 
         if (aiResult.intent === "ITINERARY_RECOMMENDATION") {
             const validIds = new Set(candidates.map((d) => d.id));
-            let validItems = (aiResult.payload?.items ?? []).filter(
+            const requestedItems = aiResult.payload?.items ?? [];
+            const requestedDays = Math.max(aiResult.payload?.days ?? 1, 1);
+            let validItems = requestedItems.filter(
                 (item) => validIds.has(item.destinationId),
             );
 
@@ -522,6 +552,24 @@ export async function POST(request: Request) {
                 });
             }
 
+            const selectedIds = new Set(validItems.map((item) => item.destinationId));
+            const targetItemCount = Math.min(
+                candidates.length,
+                Math.max(requestedItems.length, requestedDays),
+            );
+
+            for (const candidate of candidates) {
+                if (validItems.length >= targetItemCount) break;
+                if (selectedIds.has(candidate.id)) continue;
+
+                selectedIds.add(candidate.id);
+                validItems.push({
+                    orderIndex: validItems.length + 1,
+                    destinationId: candidate.id,
+                    notes: `${candidate.name} dipilih sebagai alternatif unik yang sesuai dengan wilayah perjalanan.`,
+                });
+            }
+
             if (validItems.length === 0) {
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
@@ -549,8 +597,10 @@ export async function POST(request: Request) {
                 intent: "ITINERARY_RECOMMENDATION",
                 redirectTo: "/itinerary-recommendation",
                 payload: {
-                    title: aiResult.payload?.title ?? "Rencana Perjalanan",
-                    days: aiResult.payload?.days ?? 1,
+                    title: matchedLocation
+                        ? `Rencana Perjalanan ${requestedDays} Hari di ${matchedLocation}`
+                        : aiResult.payload?.title ?? "Rencana Perjalanan",
+                    days: requestedDays,
                     items: validItems,
                     destinations: destMap,
                 },
