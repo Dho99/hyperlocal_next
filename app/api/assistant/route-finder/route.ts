@@ -250,20 +250,23 @@ export async function POST(request: Request) {
             ? {
                   OR: locationTerms.flatMap((term) => [
                       { city: { contains: term, mode: "insensitive" as const } },
-                      { province: { contains: term, mode: "insensitive" as const } },
-                      { address: { contains: term, mode: "insensitive" as const } },
                       {
                           AND: [
                               { city: null },
-                              { province: null },
-                              { name: { contains: term, mode: "insensitive" as const } },
+                              {
+                                  OR: [
+                                      { province: { contains: term, mode: "insensitive" as const } },
+                                      { address: { contains: term, mode: "insensitive" as const } },
+                                      { name: { contains: term, mode: "insensitive" as const } },
+                                      {
+                                          coverageArea: {
+                                              name: { contains: term, mode: "insensitive" as const },
+                                              isActive: true,
+                                          },
+                                      },
+                                  ],
+                              },
                           ],
-                      },
-                      {
-                          coverageArea: {
-                              name: { contains: term, mode: "insensitive" as const },
-                              isActive: true,
-                          },
                       },
                   ]),
               }
@@ -365,12 +368,17 @@ export async function POST(request: Request) {
         ): boolean {
             const city = destination.city;
             const province = destination.province;
-            // If both are null, trust AI knowledge
-            if (!city && !province) return true;
             const loc = location.toLowerCase().trim();
             const c = city?.toLowerCase().trim() ?? "";
             const p = province?.toLowerCase().trim() ?? "";
-            return c.includes(loc) || p.includes(loc);
+
+            // Kota yang terisi adalah sumber utama. Jangan izinkan alamat atau
+            // coverage area memasukkan destinasi dari kota yang berbeda.
+            if (city) return c.includes(loc) || p.includes(loc);
+
+            // Untuk data lama tanpa kota, kandidat sudah lolos pencocokan
+            // provinsi, alamat, nama, atau coverage area di query database.
+            return true;
         }
 
         async function tryParseWithRetry(): Promise<{
@@ -561,6 +569,12 @@ export async function POST(request: Request) {
             for (const candidate of candidates) {
                 if (validItems.length >= targetItemCount) break;
                 if (selectedIds.has(candidate.id)) continue;
+                if (
+                    matchedLocation &&
+                    !isWithinLocation(candidate, matchedLocation)
+                ) {
+                    continue;
+                }
 
                 selectedIds.add(candidate.id);
                 validItems.push({
@@ -571,6 +585,15 @@ export async function POST(request: Request) {
             }
 
             if (validItems.length === 0) {
+                if (matchedLocation) {
+                    return NextResponse.json(
+                        {
+                            error: `Belum ada destinasi yang disetujui di ${matchedLocation}. Coba wilayah lain.`,
+                            code: "LOCATION_NOT_FOUND",
+                        },
+                        { status: 404 },
+                    );
+                }
                 return NextResponse.json<RouteFinderResponse>(
                     buildFallbackSearch(query),
                     { status: 200 },
