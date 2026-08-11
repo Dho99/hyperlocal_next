@@ -1,5 +1,55 @@
 import { prisma } from "@/lib/prisma";
 
+const LOCATION_PREFIXES = new Set(["kota", "kabupaten", "kab"]);
+const LOCATION_BOUNDARY_WORDS = new Set([
+    "buat",
+    "buatkan",
+    "dengan",
+    "dan",
+    "selama",
+    "untuk",
+    "yang",
+    "hari",
+    "malam",
+    "destinasi",
+    "wisata",
+    "itinerary",
+    "rencana",
+    "perjalanan",
+]);
+
+function normalize(value: string): string {
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function significantLocationTokens(value: string): string[] {
+    return normalize(value)
+        .split(" ")
+        .filter((token) => token && !LOCATION_PREFIXES.has(token));
+}
+
+function extractExplicitLocation(query: string): string | null {
+    const normalized = normalize(query);
+    const match = normalized.match(/\b(?:di|ke|sekitar)\s+(.+)$/);
+    if (!match) return null;
+
+    const tokens = match[1].split(" ");
+    const locationTokens: string[] = [];
+
+    for (const token of tokens) {
+        if (/^\d+$/.test(token) || LOCATION_BOUNDARY_WORDS.has(token)) break;
+        locationTokens.push(token);
+        if (locationTokens.length === 3) break;
+    }
+
+    const location = locationTokens.join(" ").trim();
+    return location.length >= 3 ? location : null;
+}
+
 export async function getLocationNames(): Promise<string[]> {
     const locations = await prisma.destination.findMany({
         where: { status: "APPROVED" },
@@ -17,16 +67,15 @@ export function extractCityFromQuery(
     query: string,
     knownLocations: string[],
 ): string | null {
-    const lower = query.toLowerCase();
-    const words = lower.split(/\s+/).filter((w) => w.length > 2);
-    return (
-        knownLocations.find((loc) => {
-            const locLower = loc.toLowerCase().trim();
-            if (lower.includes(locLower)) return true;
-            if (words.some((word) => locLower.includes(word))) return true;
-            return false;
-        }) ?? null
-    );
+    const queryTokens = new Set(normalize(query).split(" "));
+    const knownMatch = [...knownLocations]
+        .sort((a, b) => b.length - a.length)
+        .find((location) => {
+            const tokens = significantLocationTokens(location);
+            return tokens.length > 0 && tokens.every((token) => queryTokens.has(token));
+        });
+
+    return knownMatch ?? extractExplicitLocation(query);
 }
 
 export function isWithinLocation(

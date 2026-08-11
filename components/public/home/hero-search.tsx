@@ -75,7 +75,12 @@ export function HeroSearch() {
                 body: JSON.stringify({ query: trimmed }),
             });
 
-            if (!res.ok) throw new Error("Gagal memproses permintaan");
+            if (!res.ok) {
+                const errorBody = (await res.json().catch(() => null)) as
+                    | { error?: string }
+                    | null;
+                throw new Error(errorBody?.error || "Gagal memproses permintaan");
+            }
 
             const data = await res.json();
             toast.dismiss(toastId);
@@ -92,9 +97,13 @@ export function HeroSearch() {
                 toast.success("Rencana perjalanan siap!");
                 router.push("/itinerary-recommendation");
             }
-        } catch {
+        } catch (error) {
             toast.dismiss(toastId);
-            toast.error("Terjadi kesalahan. Coba lagi nanti.");
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Terjadi kesalahan. Coba lagi nanti.",
+            );
         } finally {
             setLoading(false);
         }
