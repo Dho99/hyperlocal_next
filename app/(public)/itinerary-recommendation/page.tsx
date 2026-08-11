@@ -13,7 +13,6 @@ import {
     Navigation,
 } from "lucide-react";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import SaveButton from "./components/save-button";
 
@@ -138,7 +137,7 @@ function ItineraryContent() {
     }
 
     return (
-        <main className="min-h-screen bg-stone-50">
+        <main className="min-h-screen bg-background">
             <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
                 <button
                     type="button"
@@ -146,17 +145,17 @@ function ItineraryContent() {
                         sessionStorage.removeItem("itinerary_payload");
                         router.push("/");
                     }}
-                    className="mb-6 inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-800 transition-colors"
+                    className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Kembali ke Beranda
                 </button>
 
                 <div className="mb-8">
-                    <h1 className="font-heading text-3xl font-bold text-stone-800">
+                    <h1 className="font-heading text-3xl font-bold text-foreground">
                         {payload.title}
                     </h1>
-                    <p className="mt-2 text-stone-500">
+                    <p className="mt-2 text-muted-foreground">
                         Rencana perjalanan yang dibuat khusus untuk Anda
                     </p>
                 </div>
@@ -165,18 +164,18 @@ function ItineraryContent() {
                     {Object.entries(itemsByDay).map(([dayNum, items]) => (
                         <div key={dayNum}>
                             <div className="mb-4 flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                                     <Calendar className="h-5 w-5" />
                                 </div>
-                                <h2 className="text-xl font-bold text-stone-800">
+                                <h2 className="text-xl font-bold text-foreground">
                                     Hari {dayNum}
                                 </h2>
-                                <span className="text-sm text-stone-400">
+                                <span className="text-sm text-muted-foreground">
                                     {items.length} destinasi
                                 </span>
                             </div>
 
-                            <div className="relative ml-5 border-l-2 border-emerald-200 pl-6 space-y-6">
+                            <div className="relative ml-5 space-y-6 border-l-2 border-emerald-200 pl-6 dark:border-emerald-800">
                                 {items.map((item, idx) => {
                                     const dest =
                                         payload.destinations[
@@ -187,14 +186,14 @@ function ItineraryContent() {
                                     return (
                                         <div
                                             key={item.destinationId}
-                                            className="relative rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                                            className="relative rounded-xl border border-border bg-card p-5 shadow-sm"
                                         >
                                             <div className="absolute -left-[30px] top-6 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white">
                                                 {idx + 1}
                                             </div>
 
                                             <div className="flex gap-4">
-                                                <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-stone-100">
+                                                <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-muted">
                                                     {dest.imageUrl ? (
                                                         <Image
                                                             src={dest.imageUrl}
@@ -205,7 +204,7 @@ function ItineraryContent() {
                                                         />
                                                     ) : (
                                                         <div className="flex h-full items-center justify-center">
-                                                            <MapPin className="h-6 w-6 text-stone-300" />
+                                                            <MapPin className="h-6 w-6 text-muted-foreground" />
                                                         </div>
                                                     )}
                                                 </div>
@@ -213,11 +212,11 @@ function ItineraryContent() {
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-start justify-between gap-2">
                                                         <div>
-                                                            <h3 className="text-lg font-bold text-stone-800">
+                                                            <h3 className="text-lg font-bold text-foreground">
                                                                 {dest.name}
                                                             </h3>
                                                             {dest.categoryName && (
-                                                                <span className="mt-0.5 inline-block rounded-full bg-stone-100 px-3 py-0.5 text-xs font-medium text-stone-600">
+                                                                <span className="mt-0.5 inline-block rounded-full bg-muted px-3 py-0.5 text-xs font-medium text-muted-foreground">
                                                                     {
                                                                         dest.categoryName
                                                                     }
@@ -227,15 +226,15 @@ function ItineraryContent() {
                                                     </div>
 
                                                     {dest.city && (
-                                                        <p className="mt-2 flex items-center gap-1.5 text-sm text-stone-500">
+                                                        <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                                                             <MapPin className="h-3.5 w-3.5" />
                                                             {dest.city}
                                                         </p>
                                                     )}
 
                                                     {item.notes && (
-                                                        <div className="mt-3 rounded-lg bg-emerald-50 p-3">
-                                                            <p className="flex items-start gap-2 text-sm text-emerald-800">
+                                                        <div className="mt-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-950/60">
+                                                            <p className="flex items-start gap-2 text-sm text-emerald-800 dark:text-emerald-200">
                                                                 <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                                                                 {item.notes}
                                                             </p>
@@ -247,7 +246,7 @@ function ItineraryContent() {
                                                             variant="outline"
                                                             size="sm"
                                                             asChild
-                                                            className="border-stone-200 text-stone-600 hover:text-emerald-700"
+                                                            className="border-border bg-background text-foreground hover:bg-muted hover:text-emerald-700 dark:hover:text-emerald-300"
                                                         >
                                                             <a
                                                                 href={`/destinasi/${dest.id}`}
@@ -263,7 +262,7 @@ function ItineraryContent() {
                                                                     variant="outline"
                                                                     size="sm"
                                                                     asChild
-                                                                    className="border-stone-200 text-stone-600"
+                                                                    className="border-border bg-background text-foreground hover:bg-muted"
                                                                 >
                                                                     <a
                                                                         href={`https://www.google.com/maps?q=${dest.latitude},${dest.longitude}`}
@@ -286,7 +285,7 @@ function ItineraryContent() {
                     ))}
                 </div>
 
-                <div className="mt-10 flex justify-center border-t border-stone-200 pt-8">
+                <div className="mt-10 flex justify-center border-t border-border pt-8">
                     <SaveButton onClick={handleSave} saving={saving} />
                 </div>
             </div>
