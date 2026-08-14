@@ -48,13 +48,6 @@ export const fixUnverifiedReRegistration = {
                                 { name },
                             );
                         }
-
-                        // Clean up old verification tokens so a fresh one is sent
-                        try {
-                            await ctx.context.internalAdapter.deleteVerificationByIdentifier(email);
-                        } catch {
-                            // best-effort
-                        }
                     }
                 },
             },

@@ -5,6 +5,7 @@ import { prisma } from "./prisma";
 import { nextCookies } from "better-auth/next-js";
 import { sendVerificationEmail, sendPasswordResetEmail } from "./auth-email";
 import { fixUnverifiedReRegistration } from "./auth-plugin-fix-unverified";
+import { verificationEmailCooldown } from "./auth-plugin-verification-cooldown";
 
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -17,7 +18,7 @@ export const auth = betterAuth({
     emailVerification: {
         sendVerificationEmail,
         sendOnSignUp: true,
-        sendOnSignIn: true,
+        sendOnSignIn: false,
         autoSignInAfterVerification: true,
         expiresIn: 3600, // 1 hour
     },
@@ -36,6 +37,7 @@ export const auth = betterAuth({
     plugins: [
         // admin(),
         fixUnverifiedReRegistration,
+        verificationEmailCooldown,
         nextCookies(),
     ],
     advanced: {
