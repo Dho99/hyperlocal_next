@@ -6,12 +6,13 @@ import Link from "next/link";
 import {
     Sparkles,
     MapPin,
-    Loader2,
     AlertCircle,
     Star,
     Search,
+    Building2,
+    Store,
+    Route,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { EmptyState } from "./empty-state";
 import { HalalBadge } from "@/components/ui/halal-badge";
@@ -29,7 +30,18 @@ interface ExploreDestination {
     rating: number | null;
     imageUrl: string | null;
     categoryName: string | null;
-    facilityNames: string[];
+    facilities: Array<{
+        id: string;
+        name: string;
+        distanceKm: number | null;
+    }>;
+    nearbyUmkms: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        categoryName: string | null;
+        distanceKm: number | null;
+    }>;
 }
 
 interface ExploreResponseItem {
@@ -74,6 +86,13 @@ function ResultCard({
     aiReason,
     isAiGenerated,
 }: ResultCardProps) {
+    const formatDistance = (distanceKm: number | null) => {
+        if (distanceKm == null) return "jarak belum tersedia";
+        return distanceKm < 1
+            ? `${Math.round(distanceKm * 1000)} m`
+            : `${distanceKm.toFixed(1)} km`;
+    };
+
     return (
         <Link
             href={`/destinasi/${destination.slug}`}
@@ -124,6 +143,10 @@ function ResultCard({
                     </div>
                 </div>
 
+                <p className="text-[11px] font-medium text-primary">
+                    Kecocokan rekomendasi {Math.round(matchScore)}%
+                </p>
+
                 {destination.aceshScore != null &&
                     destination.aceshVerificationStatus === "PENDING" && (
                         <p className="text-[11px] text-muted-foreground">
@@ -131,23 +154,54 @@ function ResultCard({
                         </p>
                     )}
 
-                {destination.facilityNames.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                        {destination.facilityNames.slice(0, 3).map((name) => (
-                            <span
-                                key={name}
-                                className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground"
-                            >
-                                {name}
-                            </span>
-                        ))}
-                        {destination.facilityNames.length > 3 && (
-                            <span className="inline-block rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-                                +{destination.facilityNames.length - 3}
-                            </span>
+                <div className="space-y-3 border-t border-border/60 pt-3">
+                    <div>
+                        <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                            <Building2 className="size-3.5 text-primary" />
+                            Fasilitas sekitar
+                        </p>
+                        {destination.facilities.length > 0 ? (
+                            <ul className="space-y-1">
+                                {destination.facilities.slice(0, 3).map((facility) => (
+                                    <li key={facility.id} className="flex items-start justify-between gap-2 text-[11px] text-muted-foreground">
+                                        <span className="line-clamp-1">{facility.name}</span>
+                                        <span className="flex shrink-0 items-center gap-1 font-medium text-foreground/80">
+                                            <Route className="size-3" />
+                                            {formatDistance(facility.distanceKm)}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-[11px] text-muted-foreground">Belum ada fasilitas terdata.</p>
                         )}
                     </div>
-                )}
+
+                    <div>
+                        <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                            <Store className="size-3.5 text-primary" />
+                            UMKM sekitar
+                        </p>
+                        {destination.nearbyUmkms.length > 0 ? (
+                            <ul className="space-y-1">
+                                {destination.nearbyUmkms.slice(0, 3).map((umkm) => (
+                                    <li key={umkm.id} className="flex items-start justify-between gap-2 text-[11px] text-muted-foreground">
+                                        <span className="line-clamp-1">
+                                            {umkm.name}
+                                            {umkm.categoryName ? ` · ${umkm.categoryName}` : ""}
+                                        </span>
+                                        <span className="flex shrink-0 items-center gap-1 font-medium text-foreground/80">
+                                            <Route className="size-3" />
+                                            {formatDistance(umkm.distanceKm)}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-[11px] text-muted-foreground">Belum ada UMKM terdata.</p>
+                        )}
+                    </div>
+                </div>
 
                 {isAiGenerated ? (
                     <div className="rounded-lg bg-accent/20 p-3 text-xs leading-relaxed text-accent-foreground ring-1 ring-accent/20">
@@ -204,9 +258,11 @@ export function ExploreResults({ query, lat, lng }: ExploreResultsProps) {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [lat, lng]);
 
     useEffect(() => {
+        // Data eksternal perlu dimuat ulang ketika parameter URL berubah.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchResults(query);
     }, [query, fetchResults]);
 
