@@ -39,6 +39,13 @@ const PENDING_ASSESSMENT = {
 describe("public ACES-H API endpoint", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        prismaMock.destination.findFirst.mockImplementation(async (args) => {
+            const requestedId = args?.where?.OR?.[0]?.id ?? "unknown";
+            return {
+                id: requestedId,
+                halalScore: 0,
+            } as never;
+        });
     });
 
     it("returns the verified score for VERIFIED assessments", async () => {

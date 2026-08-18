@@ -38,7 +38,18 @@ interface ExploreDestination {
     rating: number | null;
     imageUrl: string | null;
     categoryName: string | null;
-    facilityNames: string[];
+    facilities: Array<{
+        id: string;
+        name: string;
+        distanceKm: number | null;
+    }>;
+    nearbyUmkms: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        categoryName: string | null;
+        distanceKm: number | null;
+    }>;
 }
 
 interface ExploreResponseItem {
@@ -145,10 +156,29 @@ function toExploreDestination(
         province: string | null;
         halalScore: number | null;
         rating: number | null;
+        latitude: unknown;
+        longitude: unknown;
         images?: Array<{ imageUrl: string }>;
         category?: { name: string } | null;
         destinationHalalFacilities?: Array<{
-            facility: { name: string };
+            id: string;
+            name: string | null;
+            latitude: number | null;
+            longitude: number | null;
+            distanceMeters: number | null;
+            facility: {
+                name: string;
+                latitude: unknown;
+                longitude: unknown;
+            };
+        }>;
+        umkms?: Array<{
+            id: string;
+            name: string;
+            slug: string;
+            latitude: unknown;
+            longitude: unknown;
+            category?: { name: string } | null;
         }>;
     },
     score: import("@/lib/services/acesh/public-score-service").PublicAceshScore | undefined,
@@ -166,12 +196,84 @@ function toExploreDestination(
         rating: d.rating,
         imageUrl: d.images?.[0]?.imageUrl ?? null,
         categoryName: d.category?.name ?? null,
-        facilityNames:
-            d.destinationHalalFacilities
-                ?.map((dhf) => dhf.facility.name)
-                .filter(Boolean) ?? [],
+        facilities: (d.destinationHalalFacilities ?? [])
+            .map((dhf) => {
+                const distanceKm = getDistanceFromDestination(
+                    d.latitude,
+                    d.longitude,
+                    dhf.latitude ?? dhf.facility.latitude,
+                    dhf.longitude ?? dhf.facility.longitude,
+                    dhf.distanceMeters,
+                );
+                return {
+                    id: dhf.id,
+                    name: dhf.name?.trim() || dhf.facility.name,
+                    distanceKm,
+                };
+            })
+            .sort(sortByDistance),
+        nearbyUmkms: (d.umkms ?? [])
+            .map((umkm) => ({
+                id: umkm.id,
+                name: umkm.name,
+                slug: umkm.slug,
+                categoryName: umkm.category?.name ?? null,
+                distanceKm: getDistanceFromDestination(
+                    d.latitude,
+                    d.longitude,
+                    umkm.latitude,
+                    umkm.longitude,
+                ),
+            }))
+            .sort(sortByDistance),
     };
 }
+
+function getDistanceFromDestination(
+    destinationLat: unknown,
+    destinationLng: unknown,
+    targetLat: unknown,
+    targetLng: unknown,
+    storedDistanceMeters?: number | null,
+): number | null {
+    if (storedDistanceMeters != null) return storedDistanceMeters / 1000;
+
+    const coordinates = [
+        destinationLat,
+        destinationLng,
+        targetLat,
+        targetLng,
+    ].map((value) => (value == null ? Number.NaN : Number(value)));
+    if (!coordinates.every(Number.isFinite)) return null;
+
+    return haversineDistance(
+        coordinates[0],
+        coordinates[1],
+        coordinates[2],
+        coordinates[3],
+    );
+}
+
+function sortByDistance(
+    a: { distanceKm: number | null },
+    b: { distanceKm: number | null },
+): number {
+    return (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity);
+}
+
+const exploreDestinationInclude = {
+    category: true,
+    images: { take: 1 },
+    destinationHalalFacilities: {
+        include: { facility: true },
+    },
+    umkms: {
+        where: { validationStatus: "APPROVED" },
+        include: { category: true },
+        orderBy: [{ rating: "desc" as const }, { createdAt: "desc" as const }],
+        take: 6,
+    },
+};
 
 function buildFallback(
     candidates: Array<Parameters<typeof toExploreDestination>[0]>,
@@ -199,8 +301,8 @@ export async function GET(request: Request) {
         const lngRaw = searchParams.get("lng");
         const parsed = exploreQuerySchema.safeParse({
             q,
-            lat: latRaw,
-            lng: lngRaw,
+            lat: latRaw ?? undefined,
+            lng: lngRaw ?? undefined,
         });
 
         if (!parsed.success) {
@@ -256,13 +358,7 @@ export async function GET(request: Request) {
                 status: "APPROVED",
                 ...whereLocation,
             },
-            include: {
-                category: true,
-                images: { take: 1 },
-                destinationHalalFacilities: {
-                    include: { facility: true },
-                },
-            },
+            include: exploreDestinationInclude,
             take: 20,
         });
 
@@ -280,13 +376,7 @@ export async function GET(request: Request) {
                         status: "APPROVED",
                         name: { contains: nameQuery, mode: "insensitive" },
                     },
-                    include: {
-                        category: true,
-                        images: { take: 1 },
-                        destinationHalalFacilities: {
-                            include: { facility: true },
-                        },
-                    },
+                    include: exploreDestinationInclude,
                     take: 5,
                 });
 
@@ -427,8 +517,13 @@ export async function GET(request: Request) {
                     };
                 });
 
+            const data =
+                recommendations.length > 0
+                    ? recommendations
+                    : buildFallback(candidates, scores);
+
             return NextResponse.json<ExploreResponse>(
-                { query, data: recommendations },
+                { query, data },
                 { status: 200 },
             );
         } catch (error) {

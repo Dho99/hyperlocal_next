@@ -37,6 +37,7 @@ interface PetaSidebarProps {
     searchQuery: string;
     activeCategory: string | null;
     selectedDestination: Destination | null;
+    selectedFacilityId: string | null;
     locationDenied: boolean;
     coverageAreas: CoverageArea[];
     selectedAreaId: string | null;
@@ -44,6 +45,7 @@ interface PetaSidebarProps {
     onSearchChange: (q: string) => void;
     onCategoryChange: (cat: string | null) => void;
     onDestinationSelect: (d: Destination | null) => void;
+    onFacilitySelect: (facilityId: string) => void;
     onLocateMe: () => void;
     onAreaChange: (areaId: string | null) => void;
     isSidebarOpen: boolean;
@@ -56,6 +58,7 @@ export default function PetaSidebar({
     searchQuery,
     activeCategory,
     selectedDestination,
+    selectedFacilityId,
     locationDenied,
     coverageAreas,
     selectedAreaId,
@@ -63,6 +66,7 @@ export default function PetaSidebar({
     onSearchChange,
     onCategoryChange,
     onDestinationSelect,
+    onFacilitySelect,
     onLocateMe,
     onAreaChange,
     isSidebarOpen,
@@ -150,14 +154,30 @@ export default function PetaSidebar({
                                 </h4>
                                 <div className="space-y-2">
                                     {facilities.map((dhf) => (
-                                        <div
+                                        <button
                                             key={dhf.id}
-                                            className="rounded-lg bg-accent/10 px-3 py-2 text-sm"
+                                            type="button"
+                                            disabled={
+                                                dhf.latitude == null ||
+                                                dhf.longitude == null
+                                            }
+                                            onClick={() =>
+                                                onFacilitySelect(dhf.id)
+                                            }
+                                            className={`w-full rounded-xl border px-3 py-3 text-left text-sm transition ${
+                                                selectedFacilityId === dhf.id
+                                                    ? "border-emerald-500 bg-emerald-50 shadow-sm ring-2 ring-emerald-500/15 dark:bg-emerald-950/50"
+                                                    : "border-border bg-background hover:border-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30"
+                                            } disabled:cursor-not-allowed disabled:opacity-50`}
                                         >
-                                            <p className="font-medium text-foreground">
-                                                {dhf.facility?.name ??
-                                                    "Fasilitas"}
-                                            </p>
+                                            <div className="flex items-start justify-between gap-3">
+                                                <p className="font-medium text-foreground">
+                                                    {dhf.name ??
+                                                        dhf.facility?.name ??
+                                                        "Fasilitas"}
+                                                </p>
+                                                <Navigation className={`mt-0.5 size-4 shrink-0 ${selectedFacilityId === dhf.id ? "text-emerald-600" : "text-muted-foreground"}`} />
+                                            </div>
                                             {dhf.facility?.facilityType && (
                                                 <p className="text-xs text-muted-foreground capitalize">
                                                     {dhf.facility.facilityType.replace(
@@ -179,19 +199,12 @@ export default function PetaSidebar({
                                                         : ""}
                                                 </p>
                                             )}
-                                            {dhf.latitude != null &&
-                                                dhf.longitude != null && (
-                                                    <p className="mt-1 text-[10px] font-mono text-muted-foreground">
-                                                        {dhf.latitude.toFixed(
-                                                            6,
-                                                        )}
-                                                        ,{" "}
-                                                        {dhf.longitude.toFixed(
-                                                            6,
-                                                        )}
-                                                    </p>
-                                                )}
-                                        </div>
+                                            <p className="mt-2 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                                                {selectedFacilityId === dhf.id
+                                                    ? "Rute sedang ditampilkan"
+                                                    : "Tampilkan rute"}
+                                            </p>
+                                        </button>
                                     ))}
                                 </div>
                             </div>

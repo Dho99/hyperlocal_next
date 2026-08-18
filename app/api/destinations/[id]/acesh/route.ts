@@ -14,9 +14,40 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const assessment = await prisma.aceshAssessment.findUnique({
-            where: { destinationId: id },
+        const destination = await prisma.destination.findFirst({
+            where: { OR: [{ id }, { slug: id }] },
+            select: { id: true, halalScore: true },
         });
+        if (!destination) {
+            return NextResponse.json(
+                { error: "Destinasi tidak ditemukan" },
+                { status: 404 },
+            );
+        }
+
+        let assessment = null;
+        try {
+            assessment = await prisma.aceshAssessment.findUnique({
+                where: { destinationId: destination.id },
+            });
+        } catch {
+            // Database lama belum memiliki tabel ACES-H. Skor halal lama
+            // tetap aman ditampilkan sebagai skor dasar yang belum diverifikasi.
+            return NextResponse.json({
+                data: {
+                    verifiedScore: null,
+                    baseScore: destination.halalScore,
+                    acesScore: null,
+                    hyperlocalScore: null,
+                    evidenceConfidenceScore: null,
+                    evidenceFactor: null,
+                    classification: null,
+                    verificationStatus: null,
+                    calculatedAt: null,
+                    calculationVersion: null,
+                },
+            });
+        }
 
         if (!assessment) {
             return NextResponse.json(

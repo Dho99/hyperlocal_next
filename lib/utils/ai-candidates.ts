@@ -10,6 +10,11 @@ export interface CandidateData {
     rating: number | null;
     facilityNames: string[];
     facilityTypes: string[];
+    facilities: Array<{
+        name: string;
+        type: string | null;
+        distanceMeters: number | null;
+    }>;
 }
 
 export interface CandidateDestination {
@@ -35,6 +40,7 @@ interface DestinationWithHalal {
     rating: number | null;
     images?: Array<{ imageUrl: string }>;
     destinationHalalFacilities?: Array<{
+        distanceMeters?: number | null;
         facility: { name: string; facilityType: string | null };
     }>;
 }
@@ -65,6 +71,12 @@ export function mapToCandidateData(d: DestinationWithHalal): CandidateData {
             d.destinationHalalFacilities
                 ?.map((dhf) => dhf.facility.facilityType)
                 .filter((t): t is string => t !== null) ?? [],
+        facilities:
+            d.destinationHalalFacilities?.map((dhf) => ({
+                name: dhf.facility.name,
+                type: dhf.facility.facilityType,
+                distanceMeters: dhf.distanceMeters ?? null,
+            })) ?? [],
     };
 }
 

@@ -17,16 +17,28 @@ export async function getPublicAceshScores(
 ): Promise<Map<string, PublicAceshScore>> {
     if (destinationIds.length === 0) return new Map();
 
-    const assessments = await prisma.aceshAssessment.findMany({
-        where: { destinationId: { in: destinationIds } },
-        select: {
-            destinationId: true,
-            verifiedScore: true,
-            baseScore: true,
-            classification: true,
-            verificationStatus: true,
-        },
-    });
+    let assessments: Array<{
+        destinationId: string;
+        verifiedScore: number | null;
+        baseScore: number;
+        classification: string | null;
+        verificationStatus: "PENDING" | "VERIFIED";
+    }> = [];
+    try {
+        assessments = await prisma.aceshAssessment.findMany({
+            where: { destinationId: { in: destinationIds } },
+            select: {
+                destinationId: true,
+                verifiedScore: true,
+                baseScore: true,
+                classification: true,
+                verificationStatus: true,
+            },
+        });
+    } catch {
+        // Tetap tampilkan skor halal lama saat tabel ACES-H belum dimigrasikan.
+        return new Map();
+    }
 
     return new Map(
         assessments.map((a) => [
