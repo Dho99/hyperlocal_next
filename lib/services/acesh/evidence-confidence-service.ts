@@ -42,8 +42,8 @@ function assertScore(component: string, value: number): void {
  */
 export function calculateEvidenceConfidenceScore(
     input: EvidenceConfidenceInput,
+    weights: typeof EVIDENCE_CONFIDENCE_WEIGHTS = EVIDENCE_CONFIDENCE_WEIGHTS,
 ): number {
-    const weights = EVIDENCE_CONFIDENCE_WEIGHTS;
     const weightSum = sumWeights(weights as Record<string, number>);
 
     for (const [component, value] of Object.entries(input)) {

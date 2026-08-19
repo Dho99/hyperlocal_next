@@ -18,8 +18,8 @@ export type HyperlocalGroupKey = keyof typeof HYPERLOCAL_DIMENSION_WEIGHTS;
  */
 export function calculateHyperlocalScore(
     scoresByGroup: Record<AceshIndicatorGroup, GroupScoreInput[]>,
+    weights: typeof HYPERLOCAL_DIMENSION_WEIGHTS = HYPERLOCAL_DIMENSION_WEIGHTS,
 ): number {
-    const weights = HYPERLOCAL_DIMENSION_WEIGHTS;
     const weightSum = sumWeights(weights as Record<string, number>);
 
     let total = 0;

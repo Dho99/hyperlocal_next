@@ -809,6 +809,37 @@ model AceshAssessmentHistory {
   @@map("acesh_assessment_history")
 }
 
+/// Singleton configuration for the active ACES-H scoring formula.
+/// Percentages are stored as 0-100 values to match the admin settings UI.
+model AceshScoringConfig {
+  id                               String   @id @default("default")
+  version                          String   @default("ACES-H-1.0")
+  accessWeight                     Float    @default(20) @map("access_weight")
+  communicationWeight              Float    @default(15) @map("communication_weight")
+  environmentWeight                Float    @default(20) @map("environment_weight")
+  servicesWeight                   Float    @default(45) @map("services_weight")
+  spatialAccessibilityWeight       Float    @default(30) @map("spatial_accessibility_weight")
+  functionalAvailabilityWeight     Float    @default(25) @map("functional_availability_weight")
+  halalAssuranceWeight             Float    @default(20) @map("halal_assurance_weight")
+  ecosystemConnectivityWeight      Float    @default(15) @map("ecosystem_connectivity_weight")
+  embeddednessContinuityWeight     Float    @default(10) @map("embeddedness_continuity_weight")
+  sourceReliabilityWeight          Float    @default(15) @map("source_reliability_weight")
+  documentEvidenceWeight           Float    @default(20) @map("document_evidence_weight")
+  photoGeolocationWeight           Float    @default(15) @map("photo_geolocation_weight")
+  managementConfirmationWeight     Float    @default(10) @map("management_confirmation_weight")
+  fieldValidationWeight            Float    @default(25) @map("field_validation_weight")
+  dataFreshnessWeight              Float    @default(15) @map("data_freshness_weight")
+  baseAcesWeight                   Float    @default(65) @map("base_aces_weight")
+  baseHyperlocalWeight             Float    @default(35) @map("base_hyperlocal_weight")
+  evidenceFactorBase               Float    @default(70) @map("evidence_factor_base")
+  evidenceFactorRange              Float    @default(30) @map("evidence_factor_range")
+  updatedBy                        String?  @map("updated_by")
+  createdAt                        DateTime @default(now()) @map("created_at")
+  updatedAt                        DateTime @updatedAt @map("updated_at")
+
+  @@map("acesh_scoring_configs")
+}
+
 model ReachabilityConfig {
   id                String          @id @default(uuid())
   facilityType      String          @unique @map("facility_type")

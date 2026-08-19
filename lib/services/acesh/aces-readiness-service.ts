@@ -17,8 +17,8 @@ export type AcesGroupKey = keyof typeof ACES_DIMENSION_WEIGHTS;
  */
 export function calculateAcesScore(
     scoresByGroup: Record<AceshIndicatorGroup, GroupScoreInput[]>,
+    weights: typeof ACES_DIMENSION_WEIGHTS = ACES_DIMENSION_WEIGHTS,
 ): number {
-    const weights = ACES_DIMENSION_WEIGHTS;
     const weightSum = sumWeights(weights as Record<string, number>);
 
     let total = 0;

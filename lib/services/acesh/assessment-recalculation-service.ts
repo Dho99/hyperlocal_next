@@ -18,6 +18,7 @@ import { deriveEvidenceConfidence, shouldMarkVerified } from "./evidence-derivat
 import { calculateAceshScores, type AceshScoringResult } from "./acesh-scoring-service";
 import { classifyScore } from "./acesh-classification-service";
 import type { GroupScoreInput } from "./indicator";
+import { getActiveScoringWeights } from "./scoring-config-service";
 
 export interface AceshAssessmentSnapshot extends Omit<AceshScoringResult, "verifiedScore"> {
     destinationId: string;
@@ -102,10 +103,11 @@ export async function calculateAssessmentSnapshot(
     destinationId: string,
     now: Date = new Date(),
 ): Promise<Omit<AceshAssessmentSnapshot, "calculatedAt"> & { calculatedAt: Date }> {
-    const [indicators, scores, evidenceRecords] = await Promise.all([
+    const [indicators, scores, evidenceRecords, scoringWeights] = await Promise.all([
         prisma.aceshIndicator.findMany({ where: { isActive: true }, orderBy: { code: "asc" } }),
         prisma.aceshIndicatorScore.findMany({ where: { destinationId } }),
         prisma.aceshEvidenceRecord.findMany({ where: { destinationId } }),
+        getActiveScoringWeights(),
     ]);
 
     const scoreByIndicator = new Map(scores.map((s) => [s.indicatorId, s]));
@@ -115,20 +117,26 @@ export async function calculateAssessmentSnapshot(
         score: scoreByIndicator.get(indicator.id) ?? null,
     }));
 
-    const acesScore = calculateAcesScore(buildGroupInputs(indicatorsWithScores, ACES_GROUPS));
+    const acesScore = calculateAcesScore(
+        buildGroupInputs(indicatorsWithScores, ACES_GROUPS),
+        scoringWeights.aces,
+    );
     const hyperlocalScore = calculateHyperlocalScore(
         buildGroupInputs(indicatorsWithScores, HYPERLOCAL_GROUPS),
+        scoringWeights.hyperlocal,
     );
 
     const derived = deriveEvidenceConfidence(evidenceRecords, now);
-    const evidenceConfidenceScore = calculateEvidenceConfidenceScore(derived);
+    const evidenceConfidenceScore = calculateEvidenceConfidenceScore(
+        derived,
+        scoringWeights.evidence,
+    );
     const recordCount = evidenceRecords.length;
 
-    const result = calculateAceshScores({
-        acesScore,
-        hyperlocalScore,
-        evidenceConfidenceScore,
-    });
+    const result = calculateAceshScores(
+        { acesScore, hyperlocalScore, evidenceConfidenceScore },
+        scoringWeights,
+    );
 
     const verificationStatus: AceshVerificationStatus = shouldMarkVerified(
         evidenceConfidenceScore,
@@ -158,7 +166,7 @@ export async function calculateAssessmentSnapshot(
                 ? result.classificationLabel
                 : classifyScore(result.baseScore).label,
         verificationStatus,
-        calculationVersion: ACESH_CALCULATION_VERSION,
+        calculationVersion: scoringWeights.version || ACESH_CALCULATION_VERSION,
         calculatedAt: now,
     };
 }

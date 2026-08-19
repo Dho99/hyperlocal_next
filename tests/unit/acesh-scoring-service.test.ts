@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateAceshScores } from "@/lib/services/acesh/acesh-scoring-service";
+import { DEFAULT_SCORING_WEIGHTS } from "@/lib/services/acesh/scoring-config-service";
 
 describe("ACES-H central scoring pipeline", () => {
     it("reproduces the official simulation end-to-end (58.2 → BERKEMBANG)", () => {
@@ -47,5 +48,22 @@ describe("ACES-H central scoring pipeline", () => {
         expect(result.acesScore).toBe(100);
         expect(result.hyperlocalScore).toBe(0);
         expect(result.evidenceConfidenceScore).toBe(100);
+    });
+
+    it("uses dynamic base and evidence-factor weights", () => {
+        const result = calculateAceshScores(
+            { acesScore: 80, hyperlocalScore: 40, evidenceConfidenceScore: 50 },
+            {
+                ...DEFAULT_SCORING_WEIGHTS,
+                baseAces: 0.5,
+                baseHyperlocal: 0.5,
+                evidenceFactorBase: 0.8,
+                evidenceFactorRange: 0.2,
+            },
+        );
+
+        expect(result.baseScore).toBe(60);
+        expect(result.evidenceFactor).toBe(0.9);
+        expect(result.verifiedScore).toBe(54);
     });
 });

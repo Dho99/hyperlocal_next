@@ -71,4 +71,15 @@ describe("ACES Readiness scoring", () => {
         };
         expect(calculateAcesScore(empty)).toBe(0);
     });
+
+    it("uses dynamic ACES dimension weights", () => {
+        const groups = officialGroups();
+        const score = calculateAcesScore(groups, {
+            ACCESS: 1,
+            COMMUNICATION: 0,
+            ENVIRONMENT: 0,
+            SERVICES: 0,
+        });
+        expect(score).toBe(75);
+    });
 });

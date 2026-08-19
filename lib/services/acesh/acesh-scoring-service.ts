@@ -1,13 +1,10 @@
 import {
-    BASE_ACES_WEIGHT,
-    BASE_HYPERLOCAL_WEIGHT,
-} from "./constants";
-import {
     clampScore,
     round1,
     round3,
 } from "./indicator";
 import { classifyScore, type AceshClassificationKey } from "./acesh-classification-service";
+import { DEFAULT_SCORING_WEIGHTS, type AceshScoringWeights } from "./scoring-config-service";
 
 export interface AceshScoringInput {
     acesScore: number;
@@ -34,19 +31,24 @@ export interface AceshScoringResult {
  * and the verified score from the rounded base score. The evidence factor is
  * rounded to 3 decimals.
  */
-export function calculateAceshScores(input: AceshScoringInput): AceshScoringResult {
+export function calculateAceshScores(
+    input: AceshScoringInput,
+    weights: AceshScoringWeights = DEFAULT_SCORING_WEIGHTS,
+): AceshScoringResult {
     const acesScore = round1(clampScore(input.acesScore));
     const hyperlocalScore = round1(clampScore(input.hyperlocalScore));
 
     // Base ACES-H Score: baseScore = (acesScore × 0.65) + (hyperlocalScore × 0.35)
     const baseScore = round1(
-        clampScore(acesScore * BASE_ACES_WEIGHT + hyperlocalScore * BASE_HYPERLOCAL_WEIGHT),
+        clampScore(acesScore * weights.baseAces + hyperlocalScore * weights.baseHyperlocal),
     );
 
     const confidenceScore = round1(clampScore(input.evidenceConfidenceScore));
 
     // Evidence Factor: 0.70 + (0.30 × confidence / 100), range 0.70–1.00
-    const evidenceFactor = round3(0.7 + 0.3 * (confidenceScore / 100));
+    const evidenceFactor = round3(
+        weights.evidenceFactorBase + weights.evidenceFactorRange * (confidenceScore / 100),
+    );
 
     // Verified ACES-H Score: verifiedScore = baseScore × evidenceFactor
     const verifiedScore = round1(clampScore(baseScore * evidenceFactor));

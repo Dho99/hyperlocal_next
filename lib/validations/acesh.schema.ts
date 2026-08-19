@@ -120,3 +120,47 @@ export const aceshAssessmentResponseSchema = z.object({
     calculatedAt: z.string(),
     calculationVersion: z.string(),
 });
+
+const percentageSchema = z.coerce.number().min(0).max(100);
+
+export const aceshScoringConfigSchema = z
+    .object({
+        version: z.string().trim().min(1).max(50),
+        accessWeight: percentageSchema,
+        communicationWeight: percentageSchema,
+        environmentWeight: percentageSchema,
+        servicesWeight: percentageSchema,
+        spatialAccessibilityWeight: percentageSchema,
+        functionalAvailabilityWeight: percentageSchema,
+        halalAssuranceWeight: percentageSchema,
+        ecosystemConnectivityWeight: percentageSchema,
+        embeddednessContinuityWeight: percentageSchema,
+        sourceReliabilityWeight: percentageSchema,
+        documentEvidenceWeight: percentageSchema,
+        photoGeolocationWeight: percentageSchema,
+        managementConfirmationWeight: percentageSchema,
+        fieldValidationWeight: percentageSchema,
+        dataFreshnessWeight: percentageSchema,
+        baseAcesWeight: percentageSchema,
+        baseHyperlocalWeight: percentageSchema,
+        evidenceFactorBase: percentageSchema,
+        evidenceFactorRange: percentageSchema,
+    })
+    .superRefine((value, ctx) => {
+        const groups: Array<[string, number]> = [
+            ["Bobot ACES", value.accessWeight + value.communicationWeight + value.environmentWeight + value.servicesWeight],
+            ["Bobot Hyperlocal", value.spatialAccessibilityWeight + value.functionalAvailabilityWeight + value.halalAssuranceWeight + value.ecosystemConnectivityWeight + value.embeddednessContinuityWeight],
+            ["Bobot Evidence", value.sourceReliabilityWeight + value.documentEvidenceWeight + value.photoGeolocationWeight + value.managementConfirmationWeight + value.fieldValidationWeight + value.dataFreshnessWeight],
+            ["Komposisi Base", value.baseAcesWeight + value.baseHyperlocalWeight],
+            ["Evidence Factor", value.evidenceFactorBase + value.evidenceFactorRange],
+        ];
+
+        for (const [label, total] of groups) {
+            if (Math.abs(total - 100) > 0.001) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: `${label} harus berjumlah 100% (saat ini ${total}%)`,
+                });
+            }
+        }
+    });
