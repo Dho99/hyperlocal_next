@@ -11,9 +11,18 @@ import {
     ArrowLeft,
     Bookmark,
     Navigation,
+    Building2,
+    Store,
+    CheckCircle2,
+    Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+    getFacilityIcon,
+    getFacilityIconBg,
+} from "@/fitur/destinasi/data/destinasi-detail-data";
 import SaveButton from "./components/save-button";
 
 interface ItineraryItemData {
@@ -33,11 +42,42 @@ interface DestinationInfo {
     longitude: number | null;
 }
 
+interface ItineraryFacility {
+    id: string;
+    name: string;
+    instanceName: string | null;
+    type: string | null;
+    distanceMeters: number | null;
+    travelMinutes: number | null;
+    latitude: number | null;
+    longitude: number | null;
+}
+
+interface ItineraryUmkm {
+    id: string;
+    name: string;
+    slug: string;
+    categoryName: string | null;
+    rating: number | null;
+    reviewCount: number | null;
+    primaryImage: string | null;
+    validCertification: boolean;
+    distanceMeters: number | null;
+}
+
 interface ItineraryPayload {
     title: string;
     days: number;
     items: ItineraryItemData[];
     destinations: Record<string, DestinationInfo>;
+    facilities?: Record<string, ItineraryFacility[]>;
+    umkms?: Record<string, ItineraryUmkm[]>;
+}
+
+function formatMeters(meters: number | null): string {
+    if (meters == null) return "Di sekitar destinasi";
+    if (meters < 1000) return `${Math.round(meters)} m`;
+    return `${(meters / 1000).toFixed(1)} km`;
 }
 
 function ItineraryContent() {
@@ -275,6 +315,171 @@ function ItineraryContent() {
                                                                 </Button>
                                                             )}
                                                     </div>
+
+                                                    {payload.facilities?.[
+                                                        item.destinationId
+                                                    ]?.length ? (
+                                                        <div className="mt-4">
+                                                            <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                                                                <Building2 className="h-3.5 w-3.5" />
+                                                                Fasilitas
+                                                                Terdekat
+                                                            </h4>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {payload.facilities[
+                                                                    item
+                                                                        .destinationId
+                                                                ].map(
+                                                                    (fac) => {
+                                                                        const Icon =
+                                                                            getFacilityIcon(
+                                                                                fac.type,
+                                                                            );
+                                                                        const iconBg =
+                                                                            getFacilityIconBg(
+                                                                                fac.type,
+                                                                            );
+                                                                        const mapsHref =
+                                                                            fac.latitude !=
+                                                                                null &&
+                                                                            fac.longitude !=
+                                                                                null
+                                                                                ? `https://www.google.com/maps?q=${fac.latitude},${fac.longitude}`
+                                                                                : null;
+                                                                        return (
+                                                                            <div
+                                                                                key={
+                                                                                    fac.id
+                                                                                }
+                                                                                className="flex items-center gap-2 rounded-lg border border-border/60 bg-muted/50 px-3 py-1.5"
+                                                                            >
+                                                                                <span
+                                                                                    className={cn(
+                                                                                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
+                                                                                        iconBg,
+                                                                                    )}
+                                                                                >
+                                                                                    <Icon className="size-3.5" />
+                                                                                </span>
+                                                                                <span className="font-medium text-foreground">
+                                                                                    {fac.instanceName ||
+                                                                                        fac.name}
+                                                                                </span>
+                                                                                <span className="text-muted-foreground">
+                                                                                    {formatMeters(
+                                                                                        fac.distanceMeters,
+                                                                                    )}
+                                                                                    {fac.travelMinutes !=
+                                                                                        null
+                                                                                        ? ` • ±${fac.travelMinutes} mnt`
+                                                                                        : ""}
+                                                                                </span>
+                                                                                {mapsHref && (
+                                                                                    <a
+                                                                                        href={
+                                                                                            mapsHref
+                                                                                        }
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        className="font-medium text-emerald-700 hover:underline dark:text-emerald-300"
+                                                                                    >
+                                                                                        Maps
+                                                                                    </a>
+                                                                                )}
+                                                                            </div>
+                                                                        );
+                                                                    },
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
+
+                                                    {payload.umkms?.[
+                                                        item.destinationId
+                                                    ]?.length ? (
+                                                        <div className="mt-4">
+                                                            <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                                                                <Store className="h-3.5 w-3.5" />
+                                                                UMKM Terkait
+                                                            </h4>
+                                                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                                                {payload.umkms[
+                                                                    item
+                                                                        .destinationId
+                                                                ].map(
+                                                                    (umkm) => (
+                                                                        <a
+                                                                            key={
+                                                                                umkm.id
+                                                                            }
+                                                                            href={`/umkm/${umkm.id}`}
+                                                                            target="_blank"
+                                                                            className="flex items-center gap-3 rounded-lg border border-border/60 bg-muted/40 p-2 transition-colors hover:border-emerald-300 hover:bg-muted/70"
+                                                                        >
+                                                                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-accent">
+                                                                                {umkm.primaryImage ? (
+                                                                                    <Image
+                                                                                        src={
+                                                                                            umkm.primaryImage
+                                                                                        }
+                                                                                        alt={
+                                                                                            umkm.name
+                                                                                        }
+                                                                                        fill
+                                                                                        sizes="48px"
+                                                                                        className="object-cover"
+                                                                                    />
+                                                                                ) : (
+                                                                                    <div className="flex h-full items-center justify-center">
+                                                                                        <Store className="size-5 text-border" />
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                            <div className="min-w-0 flex-1">
+                                                                                <div className="flex items-center gap-1">
+                                                                                    <span className="line-clamp-1 text-sm font-bold text-foreground">
+                                                                                        {
+                                                                                            umkm.name
+                                                                                        }
+                                                                                    </span>
+                                                                                    {umkm.validCertification && (
+                                                                                        <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+                                                                                    )}
+                                                                                </div>
+                                                                                <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                                                                                    {umkm.categoryName ??
+                                                                                        "UMKM"}
+                                                                                    {umkm.distanceMeters !=
+                                                                                        null
+                                                                                        ? ` • ${formatMeters(umkm.distanceMeters)}`
+                                                                                        : ""}
+                                                                                </p>
+                                                                                {umkm.rating !=
+                                                                                    null && (
+                                                                                    <p className="mt-0.5 inline-flex items-center gap-1 text-xs font-semibold text-foreground">
+                                                                                        <Star className="size-3 fill-[#e7c365] text-[#e7c365]" />
+                                                                                        {umkm.rating.toFixed(
+                                                                                            1,
+                                                                                        )}
+                                                                                        {umkm.reviewCount !=
+                                                                                            null && (
+                                                                                            <span className="font-normal text-muted-foreground">
+                                                                                                (
+                                                                                                {
+                                                                                                    umkm.reviewCount
+                                                                                                }
+                                                                                                )
+                                                                                            </span>
+                                                                                        )}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+                                                                        </a>
+                                                                    ),
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
                                                 </div>
                                             </div>
                                         </div>

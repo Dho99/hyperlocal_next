@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getPublicAceshScores, publicDisplayScore } from "@/lib/services/acesh/public-score-service";
+import {
+    getPublicAceshScores,
+    publicDisplayScore,
+} from "@/lib/services/acesh/public-score-service";
 import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
 import { createGeminiModel } from "@/lib/utils/ai-gemini";
@@ -57,13 +60,17 @@ Urutkan dari matchScore tertinggi ke terendah.`;
 
 function buildFallback(
     candidates: Array<{ id: string; halalScore: number | null }>,
-    scores: Map<string, import("@/lib/services/acesh/public-score-service").PublicAceshScore>,
+    scores: Map<
+        string,
+        import("@/lib/services/acesh/public-score-service").PublicAceshScore
+    >,
     limit: number,
 ) {
     return candidates
-        .sort((a, b) =>
-            publicDisplayScore(scores.get(b.id), b.halalScore) -
-            publicDisplayScore(scores.get(a.id), a.halalScore),
+        .sort(
+            (a, b) =>
+                publicDisplayScore(scores.get(b.id), b.halalScore) -
+                publicDisplayScore(scores.get(a.id), a.halalScore),
         )
         .slice(0, limit)
         .map((d) => ({
@@ -160,9 +167,7 @@ export async function POST(request: Request) {
                 );
             }
 
-            const destinationMap = new Map(
-                candidates.map((d) => [d.id, d]),
-            );
+            const destinationMap = new Map(candidates.map((d) => [d.id, d]));
 
             const recommendations = aiResult
                 .filter((r) => destinationMap.has(r.destinationId))
@@ -176,9 +181,7 @@ export async function POST(request: Request) {
             while (recommendations.length < limit) {
                 const remaining = candidates.filter(
                     (d) =>
-                        !recommendations.some(
-                            (r) => r.destinationId === d.id,
-                        ),
+                        !recommendations.some((r) => r.destinationId === d.id),
                 );
                 if (remaining.length === 0) break;
                 recommendations.push({

@@ -5,6 +5,7 @@ import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
 import OpenAI from "openai";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
+import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { extractCityFromQuery, getLocationNames, isNameWithinLocation, isAddressWithinLocation } from "@/lib/utils/ai-location";
 
 const querySchema = z.object({
@@ -28,11 +29,36 @@ interface DestinationInfo {
     longitude: number | null;
 }
 
+interface ItineraryFacility {
+    id: string;
+    name: string;
+    instanceName: string | null;
+    type: string | null;
+    distanceMeters: number | null;
+    travelMinutes: number | null;
+    latitude: number | null;
+    longitude: number | null;
+}
+
+interface ItineraryUmkm {
+    id: string;
+    name: string;
+    slug: string;
+    categoryName: string | null;
+    rating: number | null;
+    reviewCount: number | null;
+    primaryImage: string | null;
+    validCertification: boolean;
+    distanceMeters: number | null;
+}
+
 interface ItineraryPayload {
     title: string;
     days: number;
     items: ItineraryItemPayload[];
     destinations: Record<string, DestinationInfo>;
+    facilities: Record<string, ItineraryFacility[]>;
+    umkms: Record<string, ItineraryUmkm[]>;
 }
 
 interface RouteFinderResponse {
@@ -221,6 +247,124 @@ function formatFacilityDistance(distanceMeters: number): string {
     return distanceMeters >= 1000
         ? `${(distanceMeters / 1000).toFixed(1)} km`
         : `${distanceMeters} m`;
+function isWorshipFacility(type: string | null, name: string): boolean {
+    const value = `${type ?? ""} ${name}`.toLowerCase();
+    return (
+        value.includes("masjid") ||
+        value.includes("mushola") ||
+        value.includes("musholla") ||
+        value.includes("mosque") ||
+        value.includes("prayer")
+    );
+}
+
+interface EnrichedDestination {
+    id: string;
+    latitude: Prisma.Decimal | null;
+    longitude: Prisma.Decimal | null;
+    destinationHalalFacilities?: Array<{
+        name: string | null;
+        distanceMeters: number | null;
+        travelMinutes: number | null;
+        latitude: number | null;
+        longitude: number | null;
+        facility: {
+            id: string;
+            name: string;
+            facilityType: string | null;
+            latitude: Prisma.Decimal | null;
+            longitude: Prisma.Decimal | null;
+        };
+    }>;
+    umkms?: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        rating: number | null;
+        reviewCount: number | null;
+        latitude: Prisma.Decimal | null;
+        longitude: Prisma.Decimal | null;
+        category: { name: string } | null;
+        images: Array<{ imageUrl: string }>;
+        certifications: Array<{ id: string }>;
+    }>;
+}
+
+function buildItineraryFacilities(
+    destination: EnrichedDestination,
+): ItineraryFacility[] {
+    return (destination.destinationHalalFacilities ?? [])
+        .map((dhf) => {
+            const facilityLat =
+                dhf.latitude ??
+                (dhf.facility.latitude != null
+                    ? Number(dhf.facility.latitude)
+                    : null);
+            const facilityLng =
+                dhf.longitude ??
+                (dhf.facility.longitude != null
+                    ? Number(dhf.facility.longitude)
+                    : null);
+            return {
+                id: dhf.facility.id,
+                name: dhf.facility.name,
+                instanceName: dhf.name,
+                type: dhf.facility.facilityType,
+                distanceMeters: dhf.distanceMeters,
+                travelMinutes: dhf.travelMinutes,
+                latitude: facilityLat,
+                longitude: facilityLng,
+            };
+        })
+        .sort((a, b) => {
+            const worshipA = isWorshipFacility(a.type, a.name) ? 1 : 0;
+            const worshipB = isWorshipFacility(b.type, b.name) ? 1 : 0;
+            if (worshipA !== worshipB) return worshipB - worshipA;
+            return (a.distanceMeters ?? Infinity) - (b.distanceMeters ?? Infinity);
+        })
+        .slice(0, 3);
+}
+
+function buildItineraryUmkms(
+    destination: EnrichedDestination,
+): ItineraryUmkm[] {
+    const destLat =
+        destination.latitude != null ? Number(destination.latitude) : null;
+    const destLng =
+        destination.longitude != null ? Number(destination.longitude) : null;
+
+    return (destination.umkms ?? [])
+        .map((u) => {
+            const umkmLat = u.latitude != null ? Number(u.latitude) : null;
+            const umkmLng = u.longitude != null ? Number(u.longitude) : null;
+            const distanceMeters =
+                destLat != null &&
+                destLng != null &&
+                umkmLat != null &&
+                umkmLng != null
+                    ? Math.round(
+                          haversineDistance(
+                              destLat,
+                              destLng,
+                              umkmLat,
+                              umkmLng,
+                          ) * 1000,
+                      )
+                    : null;
+            return {
+                id: u.id,
+                name: u.name,
+                slug: u.slug,
+                categoryName: u.category?.name ?? null,
+                rating: u.rating,
+                reviewCount: u.reviewCount,
+                primaryImage: u.images?.[0]?.imageUrl ?? null,
+                validCertification: (u.certifications?.length ?? 0) > 0,
+                distanceMeters,
+            };
+        })
+        .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+        .slice(0, 3);
 }
 
 export async function POST(request: Request) {
@@ -678,6 +822,33 @@ export async function POST(request: Request) {
                 );
             }
 
+            const enriched = await prisma.destination.findMany({
+                where: { id: { in: validItems.map((i) => i.destinationId) } },
+                include: {
+                    destinationHalalFacilities: {
+                        include: { facility: true },
+                    },
+                    umkms: {
+                        where: { validationStatus: "APPROVED" },
+                        include: {
+                            category: true,
+                            images: { take: 1 },
+                            certifications: {
+                                where: { status: "VALID" },
+                                select: { id: true },
+                            },
+                        },
+                    },
+                },
+            });
+
+            const facilitiesMap: Record<string, ItineraryFacility[]> = {};
+            const umkmsMap: Record<string, ItineraryUmkm[]> = {};
+            for (const dest of enriched) {
+                facilitiesMap[dest.id] = buildItineraryFacilities(dest);
+                umkmsMap[dest.id] = buildItineraryUmkms(dest);
+            }
+
             const validIdsArr = validItems.map((i) => i.destinationId);
             const destMap: Record<string, DestinationInfo> = {};
             for (const c of candidates) {
@@ -704,6 +875,8 @@ export async function POST(request: Request) {
                     days: requestedDays,
                     items: validItems,
                     destinations: destMap,
+                    facilities: facilitiesMap,
+                    umkms: umkmsMap,
                 },
             });
         }
