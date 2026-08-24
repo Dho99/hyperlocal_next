@@ -6,7 +6,12 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
-import { extractCityFromQuery, getLocationNames, isNameWithinLocation, isAddressWithinLocation } from "@/lib/utils/ai-location";
+import {
+    extractCityFromQuery,
+    getLocationNames,
+    isNameWithinLocation,
+    isAddressWithinLocation,
+} from "@/lib/utils/ai-location";
 
 const querySchema = z.object({
     query: z.string().min(1, "Query wajib diisi"),
@@ -62,7 +67,10 @@ interface ItineraryPayload {
 }
 
 interface RouteFinderResponse {
-    intent: "DESTINATION_SEARCH" | "ITINERARY_RECOMMENDATION" | "FACILITY_CHECK";
+    intent:
+        | "DESTINATION_SEARCH"
+        | "ITINERARY_RECOMMENDATION"
+        | "FACILITY_CHECK";
     redirectTo: string;
     payload: ItineraryPayload | null;
 }
@@ -73,15 +81,42 @@ function getLocationSearchTerms(location: string): string[] {
         .replace(/^(?:kota|kabupaten|kab\.?)[\s]+/i, "")
         .trim();
 
-    return [...new Set([normalized, withoutPrefix].filter((term) => term.length >= 3))];
+    return [
+        ...new Set(
+            [normalized, withoutPrefix].filter((term) => term.length >= 3),
+        ),
+    ];
 }
 
 const ROUTE_FINDER_STOP_WORDS = new Set([
-    "cari", "carikan", "temukan", "tampilkan", "lihat", "tunjukkan",
-    "rekomendasi", "rekomendasikan", "sarankan", "saran",
-    "di", "ke", "dari", "untuk", "yang", "ada", "sekitar",
-    "halal", "wisata", "destinasi", "tempat", "lokasi",
-    "tolong", "bantu", "dong", "deh", "ya", "yuk",
+    "cari",
+    "carikan",
+    "temukan",
+    "tampilkan",
+    "lihat",
+    "tunjukkan",
+    "rekomendasi",
+    "rekomendasikan",
+    "sarankan",
+    "saran",
+    "di",
+    "ke",
+    "dari",
+    "untuk",
+    "yang",
+    "ada",
+    "sekitar",
+    "halal",
+    "wisata",
+    "destinasi",
+    "tempat",
+    "lokasi",
+    "tolong",
+    "bantu",
+    "dong",
+    "deh",
+    "ya",
+    "yuk",
 ]);
 
 async function findDestinationByName(
@@ -148,7 +183,10 @@ async function findDestinationByName(
     return null;
 }
 
-function buildSystemPrompt(candidates: string, matchedLocation?: string | null): string {
+function buildSystemPrompt(
+    candidates: string,
+    matchedLocation?: string | null,
+): string {
     const locationInstruction = matchedLocation
         ? `\n⚠️ LOKASI — GUNAKAN PENGETAHUAN ANDA:
 Pengguna mencari di "${matchedLocation}".
@@ -304,7 +342,9 @@ function buildItineraryFacilities(
             const worshipA = isWorshipFacility(a.type, a.name) ? 1 : 0;
             const worshipB = isWorshipFacility(b.type, b.name) ? 1 : 0;
             if (worshipA !== worshipB) return worshipB - worshipA;
-            return (a.distanceMeters ?? Infinity) - (b.distanceMeters ?? Infinity);
+            return (
+                (a.distanceMeters ?? Infinity) - (b.distanceMeters ?? Infinity)
+            );
         })
         .slice(0, 3);
 }
@@ -414,18 +454,41 @@ export async function POST(request: Request) {
         const whereLocation = matchedLocation
             ? {
                   OR: locationTerms.flatMap((term) => [
-                      { city: { contains: term, mode: "insensitive" as const } },
+                      {
+                          city: {
+                              contains: term,
+                              mode: "insensitive" as const,
+                          },
+                      },
                       {
                           AND: [
                               { city: null },
                               {
                                   OR: [
-                                      { province: { contains: term, mode: "insensitive" as const } },
-                                      { address: { contains: term, mode: "insensitive" as const } },
-                                      { name: { contains: term, mode: "insensitive" as const } },
+                                      {
+                                          province: {
+                                              contains: term,
+                                              mode: "insensitive" as const,
+                                          },
+                                      },
+                                      {
+                                          address: {
+                                              contains: term,
+                                              mode: "insensitive" as const,
+                                          },
+                                      },
+                                      {
+                                          name: {
+                                              contains: term,
+                                              mode: "insensitive" as const,
+                                          },
+                                      },
                                       {
                                           coverageArea: {
-                                              name: { contains: term, mode: "insensitive" as const },
+                                              name: {
+                                                  contains: term,
+                                                  mode: "insensitive" as const,
+                                              },
                                               isActive: true,
                                           },
                                       },
@@ -471,7 +534,10 @@ export async function POST(request: Request) {
 
         function buildFallbackItinerary(): RouteFinderResponse {
             const days = extractRequestedDays(query);
-            const selected = candidates.slice(0, Math.min(candidates.length, Math.max(days, 5)));
+            const selected = candidates.slice(
+                0,
+                Math.min(candidates.length, Math.max(days, 5)),
+            );
             const destinations: Record<string, DestinationInfo> = {};
             const facilities: Record<string, ItineraryFacility[]> = {};
             const umkms: Record<string, ItineraryUmkm[]> = {};
@@ -496,16 +562,19 @@ export async function POST(request: Request) {
                 facilities[candidate.id] = buildItineraryFacilities(candidate);
                 umkms[candidate.id] = [];
 
-                const closestFacility = [...candidate.destinationHalalFacilities]
+                const closestFacility = [
+                    ...candidate.destinationHalalFacilities,
+                ]
                     .filter((item) => item.distanceMeters != null)
                     .sort(
                         (a, b) =>
                             (a.distanceMeters ?? Infinity) -
                             (b.distanceMeters ?? Infinity),
                     )[0];
-                const facilityNote = closestFacility?.distanceMeters != null
-                    ? ` Fasilitas terdekat: ${closestFacility.name ?? closestFacility.facility.name} (${formatFacilityDistance(closestFacility.distanceMeters)} dari destinasi).`
-                    : "";
+                const facilityNote =
+                    closestFacility?.distanceMeters != null
+                        ? ` Fasilitas terdekat: ${closestFacility.name ?? closestFacility.facility.name} (${formatFacilityDistance(closestFacility.distanceMeters)} dari destinasi).`
+                        : "";
 
                 return {
                     orderIndex: index + 1,
@@ -531,7 +600,9 @@ export async function POST(request: Request) {
         }
 
         if (!process.env.GROQ_API_KEY) {
-            console.log("[AI_INTENT_TRACE] GROQ_API_KEY not configured, skip AI");
+            console.log(
+                "[AI_INTENT_TRACE] GROQ_API_KEY not configured, skip AI",
+            );
             return NextResponse.json<RouteFinderResponse>(
                 isExplicitItineraryQuery(query)
                     ? buildFallbackItinerary()
@@ -554,10 +625,11 @@ export async function POST(request: Request) {
         async function attemptAiCall(
             correctiveMessage?: string,
         ): Promise<{ json: string; raw: string } | null> {
-            const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: query },
-            ];
+            const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
+                [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: query },
+                ];
             if (correctiveMessage) {
                 messages.push({
                     role: "user",
@@ -636,7 +708,9 @@ export async function POST(request: Request) {
                 "redirectTo",
                 "payload",
             ];
-            const isValidStructure = requiredKeys.every((key) => key in aiResult);
+            const isValidStructure = requiredKeys.every(
+                (key) => key in aiResult,
+            );
             if (!isValidStructure) {
                 const missing = requiredKeys
                     .filter((k) => !(k in aiResult))
@@ -646,8 +720,12 @@ export async function POST(request: Request) {
                 );
                 if (!retry) return null;
                 try {
-                    const retryParsed = JSON.parse(retry.json) as RouteFinderResponse;
-                    const retryValid = requiredKeys.every((k) => k in retryParsed);
+                    const retryParsed = JSON.parse(
+                        retry.json,
+                    ) as RouteFinderResponse;
+                    const retryValid = requiredKeys.every(
+                        (k) => k in retryParsed,
+                    );
                     if (!retryValid) return null;
                     aiResult = retryParsed;
                 } catch {
@@ -670,7 +748,9 @@ export async function POST(request: Request) {
                 );
                 if (!retry) return null;
                 try {
-                    const retryParsed = JSON.parse(retry.json) as RouteFinderResponse;
+                    const retryParsed = JSON.parse(
+                        retry.json,
+                    ) as RouteFinderResponse;
                     if (
                         !validIntents.includes(
                             retryParsed.intent as (typeof validIntents)[number],
@@ -691,7 +771,9 @@ export async function POST(request: Request) {
         const parsedResult = await tryParseWithRetry();
 
         if (!parsedResult) {
-            console.log("[AI_INTENT_TRACE] All AI attempts failed, falling back");
+            console.log(
+                "[AI_INTENT_TRACE] All AI attempts failed, falling back",
+            );
             try {
                 await prisma.aiIntentLog.create({
                     data: {
@@ -729,7 +811,8 @@ export async function POST(request: Request) {
                     userQuery: query,
                     intent: aiResult.intent,
                     redirectTo: aiResult.redirectTo ?? "",
-                    payload: aiResult.payload as unknown as Prisma.InputJsonValue,
+                    payload:
+                        aiResult.payload as unknown as Prisma.InputJsonValue,
                 },
             });
         } catch (err) {
@@ -744,8 +827,8 @@ export async function POST(request: Request) {
             const validIds = new Set(candidates.map((d) => d.id));
             const requestedItems = aiResult.payload?.items ?? [];
             const requestedDays = Math.max(aiResult.payload?.days ?? 1, 1);
-            let validItems = requestedItems.filter(
-                (item) => validIds.has(item.destinationId),
+            let validItems = requestedItems.filter((item) =>
+                validIds.has(item.destinationId),
             );
 
             // Guardrail: deduplicate destinations across days
@@ -754,18 +837,25 @@ export async function POST(request: Request) {
             // Guardrail: filter by location if location was matched
             if (matchedLocation) {
                 validItems = validItems.filter((item) => {
-                    const dest = candidates.find((c) => c.id === item.destinationId);
-                    return dest ? isWithinLocation(dest, matchedLocation) : false;
+                    const dest = candidates.find(
+                        (c) => c.id === item.destinationId,
+                    );
+                    return dest
+                        ? isWithinLocation(dest, matchedLocation)
+                        : false;
                 });
             }
 
             // Guardrail: name + description + address location conflict detection
             if (matchedLocation && knownLocations.length > 0) {
                 validItems = validItems.filter((item) => {
-                    const dest = candidates.find((c) => c.id === item.destinationId);
+                    const dest = candidates.find(
+                        (c) => c.id === item.destinationId,
+                    );
                     if (!dest) return false;
                     const desc =
-                        typeof dest.description === "object" && dest.description !== null
+                        typeof dest.description === "object" &&
+                        dest.description !== null
                             ? JSON.stringify(dest.description)
                             : (dest.description as string | null);
                     if (
@@ -779,10 +869,7 @@ export async function POST(request: Request) {
                         return false;
                     }
                     if (
-                        !isAddressWithinLocation(
-                            dest.address,
-                            matchedLocation,
-                        )
+                        !isAddressWithinLocation(dest.address, matchedLocation)
                     ) {
                         return false;
                     }
@@ -790,7 +877,9 @@ export async function POST(request: Request) {
                 });
             }
 
-            const selectedIds = new Set(validItems.map((item) => item.destinationId));
+            const selectedIds = new Set(
+                validItems.map((item) => item.destinationId),
+            );
             const targetItemCount = Math.min(
                 candidates.length,
                 Math.max(requestedItems.length, requestedDays),
@@ -879,7 +968,7 @@ export async function POST(request: Request) {
                 payload: {
                     title: matchedLocation
                         ? `Rencana Perjalanan ${requestedDays} Hari di ${matchedLocation}`
-                        : aiResult.payload?.title ?? "Rencana Perjalanan",
+                        : (aiResult.payload?.title ?? "Rencana Perjalanan"),
                     days: requestedDays,
                     items: validItems,
                     destinations: destMap,
