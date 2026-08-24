@@ -21,9 +21,15 @@ export async function getReachabilityConfig(
 ): Promise<ReachabilityParams> {
     const normalized = normalizeFacilityType(facilityType);
 
-    const stored = await prisma.reachabilityConfig.findUnique({
-        where: { facilityType: normalized },
-    });
+    let stored: ReachabilityConfig | null = null;
+    try {
+        stored = await prisma.reachabilityConfig.findUnique({
+            where: { facilityType: normalized },
+        });
+    } catch {
+        // Database lama mungkin belum memiliki tabel konfigurasi ACES-H.
+        // Dalam kondisi tersebut, gunakan konfigurasi bawaan di bawah.
+    }
     if (stored) return toParams(stored);
 
     const fallback = DEFAULT_REACHABILITY[normalized];

@@ -193,6 +193,7 @@ Petunjuk penting:
 - Jika query menanyakan ketersediaan atau keberadaan fasilitas tertentu (musala, masjid, tempat wudu, toilet, parkir, sertifikat halal) di suatu tempat, gunakan FACILITY_CHECK.
 - Untuk FACILITY_CHECK, ekstrak slug destinasi dan nama fasilitas dari query.
 - Untuk ITINERARY_RECOMMENDATION, pilah destinasi dari kandidat yang diberikan, atur secara kronologis berdasarkan lokasi dan jam operasional, dan berikan notes yang informatif dalam Bahasa Indonesia.
+- Data \`facilities[].distanceMeters\` adalah jarak fasilitas ke destinasi. Untuk ITINERARY_RECOMMENDATION, prioritaskan fasilitas relevan yang lebih dekat dan sebutkan nama serta jaraknya dalam notes bila datanya tersedia.
 - Untuk DESTINATION_SEARCH, gunakan query asli pengguna secara penuh di redirectTo, jangan singkat atau ubah kata kunci.
 - Jika Anda tidak yakin dengan intent yang paling tepat, default ke DESTINATION_SEARCH. Jangan memaksakan FACILITY_CHECK atau ITINERARY_RECOMMENDATION jika tidak ada indikasi kuat.${locationInstruction}
 
@@ -230,6 +231,22 @@ function buildFallbackSearch(query: string): RouteFinderResponse {
     };
 }
 
+function isExplicitItineraryQuery(query: string): boolean {
+    return /\b(itinerary|rute|rencana\s+perjalanan|trip|jalan-jalan|tour|sehari|full\s+day|\d+\s*hari)\b/i.test(
+        query,
+    );
+}
+
+function extractRequestedDays(query: string): number {
+    const numericDays = query.match(/\b(\d+)\s*hari\b/i)?.[1];
+    if (numericDays) return Math.min(Math.max(Number(numericDays), 1), 30);
+    return /\b(sehari|full\s+day)\b/i.test(query) ? 1 : 1;
+}
+
+function formatFacilityDistance(distanceMeters: number): string {
+    return distanceMeters >= 1000
+        ? `${(distanceMeters / 1000).toFixed(1)} km`
+        : `${distanceMeters} m`;
 function isWorshipFacility(type: string | null, name: string): boolean {
     const value = `${type ?? ""} ${name}`.toLowerCase();
     return (
@@ -450,10 +467,67 @@ export async function POST(request: Request) {
             );
         }
 
+        function buildFallbackItinerary(): RouteFinderResponse {
+            const days = extractRequestedDays(query);
+            const selected = candidates.slice(0, Math.min(candidates.length, Math.max(days, 5)));
+            const destinations: Record<string, DestinationInfo> = {};
+
+            const items = selected.map((candidate, index) => {
+                destinations[candidate.id] = {
+                    id: candidate.id,
+                    name: candidate.name,
+                    slug: candidate.slug,
+                    city: candidate.city,
+                    imageUrl: candidate.images?.[0]?.imageUrl ?? null,
+                    categoryName: candidate.category?.name ?? null,
+                    latitude:
+                        candidate.latitude != null
+                            ? Number(candidate.latitude)
+                            : null,
+                    longitude:
+                        candidate.longitude != null
+                            ? Number(candidate.longitude)
+                            : null,
+                };
+
+                const closestFacility = [...candidate.destinationHalalFacilities]
+                    .filter((item) => item.distanceMeters != null)
+                    .sort(
+                        (a, b) =>
+                            (a.distanceMeters ?? Infinity) -
+                            (b.distanceMeters ?? Infinity),
+                    )[0];
+                const facilityNote = closestFacility?.distanceMeters != null
+                    ? ` Fasilitas terdekat: ${closestFacility.name ?? closestFacility.facility.name} (${formatFacilityDistance(closestFacility.distanceMeters)} dari destinasi).`
+                    : "";
+
+                return {
+                    orderIndex: index + 1,
+                    destinationId: candidate.id,
+                    notes: `${candidate.name} dipilih berdasarkan lokasi dan kesiapan wisata halal.${facilityNote}`,
+                };
+            });
+
+            return {
+                intent: "ITINERARY_RECOMMENDATION",
+                redirectTo: "/itinerary-recommendation",
+                payload: {
+                    title: matchedLocation
+                        ? `Rencana Perjalanan ${days} Hari di ${matchedLocation}`
+                        : `Rencana Perjalanan ${days} Hari`,
+                    days,
+                    items,
+                    destinations,
+                },
+            };
+        }
+
         if (!process.env.GROQ_API_KEY) {
             console.log("[AI_INTENT_TRACE] GROQ_API_KEY not configured, skip AI");
             return NextResponse.json<RouteFinderResponse>(
-                buildFallbackSearch(query),
+                isExplicitItineraryQuery(query)
+                    ? buildFallbackItinerary()
+                    : buildFallbackSearch(query),
                 { status: 200 },
             );
         }
@@ -624,7 +698,9 @@ export async function POST(request: Request) {
                 // Silently ignore
             }
             return NextResponse.json<RouteFinderResponse>(
-                buildFallbackSearch(query),
+                isExplicitItineraryQuery(query)
+                    ? buildFallbackItinerary()
+                    : buildFallbackSearch(query),
                 { status: 200 },
             );
         }

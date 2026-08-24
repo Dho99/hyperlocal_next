@@ -23,9 +23,11 @@ import type {
 } from "@/types/destination";
 import PetaSidebar from "./peta-sidebar";
 import UserLocationMarker from "./user-location-marker";
-import FacilityRoutePolyline from "./facility-route-polyline";
+import FacilityRoutePolyline, {
+    type OsrmRouteInfo,
+} from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, Navigation, Route } from "lucide-react";
 
 fixLeafletIcons();
 
@@ -85,6 +87,10 @@ export default function PetaMapClient() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [selectedDestination, setSelectedDestination] =
         useState<Destination | null>(null);
+    const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(
+        null,
+    );
+    const [routeInfo, setRouteInfo] = useState<OsrmRouteInfo | null>(null);
     const [locationDenied, setLocationDenied] = useState(false);
     const [loading, setLoading] = useState(true);
     const [coverageAreas, setCoverageAreas] = useState<CoverageArea[]>([]);
@@ -226,6 +232,16 @@ export default function PetaMapClient() {
         () => selectedDestination?.destinationHalalFacilities ?? [],
         [selectedDestination],
     );
+    const selectedFacility = useMemo(
+        () =>
+            selectedFacilities.find(
+                (facility) => facility.id === selectedFacilityId,
+            ) ?? null,
+        [selectedFacilities, selectedFacilityId],
+    );
+    const handleRouteInfo = useCallback((info: OsrmRouteInfo | null) => {
+        setRouteInfo(info);
+    }, []);
 
     if (loading) {
         return (
@@ -244,6 +260,7 @@ export default function PetaMapClient() {
                 searchQuery={searchQuery}
                 activeCategory={activeCategory}
                 selectedDestination={selectedDestination}
+                selectedFacilityId={selectedFacilityId}
                 locationDenied={locationDenied}
                 coverageAreas={coverageAreas}
                 selectedAreaId={selectedAreaId}
@@ -253,9 +270,15 @@ export default function PetaMapClient() {
                 onCategoryChange={setActiveCategory}
                 onDestinationSelect={(d) => {
                     setSelectedDestination(d);
+                    setSelectedFacilityId(null);
+                    setRouteInfo(null);
                     if (d && d.latitude != null && d.longitude != null) {
                         setRadius((prev) => prev);
                     }
+                }}
+                onFacilitySelect={(facilityId) => {
+                    setSelectedFacilityId(facilityId);
+                    setRouteInfo(null);
                 }}
                 onLocateMe={handleLocateMe}
                 onAreaChange={handleAreaChange}
@@ -275,6 +298,46 @@ export default function PetaMapClient() {
             </button>
 
             <main className="relative flex-1 w-full transition-all duration-300">
+                {selectedDestination && selectedFacility && (
+                    <div className="absolute left-1/2 top-4 z-[500] w-[min(92%,430px)] -translate-x-1/2 rounded-2xl border border-white/60 bg-card/95 p-4 shadow-xl backdrop-blur-md">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                                    <Route className="size-4" />
+                                    {routeInfo ? "Rute OSRM" : "Memuat rute"}
+                                </div>
+                                <p className="font-semibold text-foreground">
+                                    {selectedFacility.name ??
+                                        selectedFacility.facility?.name ??
+                                        "Fasilitas"}
+                                </p>
+                            </div>
+                            {routeInfo && (
+                                <div className="flex shrink-0 gap-3 text-sm">
+                                    <span className="flex items-center gap-1 font-medium">
+                                        <Navigation className="size-4 text-emerald-600" />
+                                        {routeInfo.distanceMeters >= 1000
+                                            ? `${(routeInfo.distanceMeters / 1000).toFixed(1)} km`
+                                            : `${routeInfo.distanceMeters} m`}
+                                    </span>
+                                    <span className="flex items-center gap-1 font-medium">
+                                        <Clock className="size-4 text-emerald-600" />
+                                        {routeInfo.durationMinutes} mnt
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                        <a
+                            href={`https://www.google.com/maps/dir/?api=1&origin=${selectedDestination.latitude},${selectedDestination.longitude}&destination=${selectedFacility.latitude},${selectedFacility.longitude}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800"
+                        >
+                            <Navigation className="size-4" />
+                            Mulai Navigasi
+                        </a>
+                    </div>
+                )}
                 <MapContainer
                     center={mapCenter}
                     zoom={DEFAULT_ZOOM}
@@ -347,8 +410,12 @@ export default function PetaMapClient() {
                                           })
                                         : icon
                                 }
-                                eventHandlers={{
-                                    click: () => setSelectedDestination(d),
+                                        eventHandlers={{
+                                    click: () => {
+                                        setSelectedDestination(d);
+                                        setSelectedFacilityId(null);
+                                        setRouteInfo(null);
+                                    },
                                 }}
                             >
                                 <Popup>
@@ -394,6 +461,12 @@ export default function PetaMapClient() {
                                         key={dhf.id}
                                         position={[dhf.latitude, dhf.longitude]}
                                         icon={facilityIcon}
+                                        eventHandlers={{
+                                            click: () => {
+                                                setSelectedFacilityId(dhf.id);
+                                                setRouteInfo(null);
+                                            },
+                                        }}
                                     >
                                         <Popup>
                                             <div className="p-1">
@@ -411,10 +484,14 @@ export default function PetaMapClient() {
                                                 )}
                                             </div>
                                         </Popup>
-                                        <FacilityRoutePolyline
-                                            from={[destLat, destLng]}
-                                            to={[dhf.latitude, dhf.longitude]}
-                                        />
+                                        {selectedFacilityId === dhf.id && (
+                                            <FacilityRoutePolyline
+                                                from={[destLat, destLng]}
+                                                to={[dhf.latitude, dhf.longitude]}
+                                                travelMode={dhf.travelMode}
+                                                onRouteInfo={handleRouteInfo}
+                                            />
+                                        )}
                                     </Marker>
                                 );
                             });

@@ -40,7 +40,7 @@ export function AdminTopbar({ user }: { user: User }) {
     void router;
 
     return (
-        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-background px-4 max-w-7xl">
+        <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border bg-background px-4 w-full">
             {/* Mobile Sidebar */}
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
                 <SheetTrigger asChild>

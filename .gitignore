@@ -51,3 +51,4 @@ opencode.jsonc
 .verification-links.log
 
 /lib/generated/*
+.env*

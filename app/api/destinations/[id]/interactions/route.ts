@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { trackInteraction } from "@/lib/services/analytics-service";
 import { interactionSchema } from "@/lib/validations/analytics.schema";
 import { getErrorMessage } from "@/lib/api-error";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(
   request: Request,
@@ -11,6 +12,16 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    const destination = await prisma.destination.findFirst({
+      where: { OR: [{ id }, { slug: id }] },
+      select: { id: true },
+    });
+    if (!destination) {
+      return NextResponse.json(
+        { error: "Destinasi tidak ditemukan" },
+        { status: 404 }
+      );
+    }
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -26,7 +37,7 @@ export async function POST(
     }
 
     const interaction = await trackInteraction({
-      destinationId: id,
+      destinationId: destination.id,
       userId: session?.user.id,
       ...validated.data,
     });

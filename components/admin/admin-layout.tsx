@@ -17,7 +17,7 @@ export function AdminLayout({ children, user }: AdminLayoutProps) {
     return (
         <div className="admin-scale flex min-h-dvh bg-background">
             <AdminSidebar />
-            <div className="flex flex-1 flex-col relative">
+            <div className="flex flex-1 flex-col relative min-w-0">
                 <AdminTopbar user={user} />
                 <main className="flex-1 overflow-y-auto">
                     <div className="mx-auto max-w-dvw overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 px-4 py-5 md:px-5 lg:px-6">
