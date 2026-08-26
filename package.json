@@ -12,7 +12,9 @@
         "test": "vitest run",
         "test:acesh": "vitest run tests/unit",
         "test:integration": "vitest run tests/integration",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "migrate:images": "tsx scripts/migrate-images.ts",
+        "check:google-images": "tsx scripts/check-google-images.ts"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
