@@ -7,10 +7,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
-import {
-    DEFAULT_CENTER,
-    DEFAULT_ZOOM,
-} from "@/lib/maps/geo-utils";
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/lib/maps/geo-utils";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 import { getCategoryColor, createPinSvg } from "@/lib/config/map-categories";
 
@@ -31,12 +28,12 @@ function createPinIcon(category?: string): L.DivIcon {
 
 const CLUSTER_CATEGORY_COLORS: Record<string, string> = {
     "Wisata Alam": "#16a34a",
-    "Pantai": "#2563eb",
+    Pantai: "#2563eb",
     "Kuliner Halal": "#ea580c",
-    "Kuliner": "#ea580c",
-    "Penginapan": "#d97706",
-    "Hotel": "#d97706",
-    "Masjid": "#7c3aed",
+    Kuliner: "#ea580c",
+    Penginapan: "#d97706",
+    Hotel: "#d97706",
+    Masjid: "#7c3aed",
     "Tempat Ibadah": "#7c3aed",
 };
 
@@ -89,7 +86,11 @@ const createClusterIcon = (cluster: L.MarkerCluster) => {
     });
 };
 
-function MapBoundsFitter({ destinations }: { destinations: DashboardMapDestination[] }) {
+function MapBoundsFitter({
+    destinations,
+}: {
+    destinations: DashboardMapDestination[];
+}) {
     const map = useMap();
     const prevCountRef = useRef(destinations.length);
 
@@ -141,7 +142,7 @@ export default function HeroMapClient({
                 className="h-full w-full"
             >
                 <ThemeTileLayer
-                    lightUrl="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    lightUrl={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
                 />
 
                 <MarkerClusterGroup

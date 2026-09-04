@@ -27,7 +27,13 @@ import FacilityRoutePolyline, {
     type OsrmRouteInfo,
 } from "./facility-route-polyline";
 import type { UserLocation } from "./peta-types";
-import { ChevronLeft, ChevronRight, Clock, Navigation, Route } from "lucide-react";
+import {
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Navigation,
+    Route,
+} from "lucide-react";
 
 fixLeafletIcons();
 
@@ -344,9 +350,9 @@ export default function PetaMapClient() {
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
-                <ThemeTileLayer
-                    lightUrl="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                />
+                    <ThemeTileLayer
+                        lightUrl={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+                    />
 
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 
@@ -410,7 +416,7 @@ export default function PetaMapClient() {
                                           })
                                         : icon
                                 }
-                                        eventHandlers={{
+                                eventHandlers={{
                                     click: () => {
                                         setSelectedDestination(d);
                                         setSelectedFacilityId(null);
@@ -487,7 +493,10 @@ export default function PetaMapClient() {
                                         {selectedFacilityId === dhf.id && (
                                             <FacilityRoutePolyline
                                                 from={[destLat, destLng]}
-                                                to={[dhf.latitude, dhf.longitude]}
+                                                to={[
+                                                    dhf.latitude,
+                                                    dhf.longitude,
+                                                ]}
                                                 travelMode={dhf.travelMode}
                                                 onRouteInfo={handleRouteInfo}
                                             />
