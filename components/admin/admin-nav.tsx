@@ -20,6 +20,7 @@ import {
     Globe,
     FileDown,
     FileUp,
+    Layers,
 } from "lucide-react";
 
 export const navItems = [
@@ -91,6 +92,11 @@ export const navItems = [
                 href: "/validasi/penginapan",
             },
         ],
+    },
+    {
+        title: "Dashboard ACES-H",
+        href: "/dashboard/acesh",
+        icon: Layers,
     },
     {
         title: "Statistik",
