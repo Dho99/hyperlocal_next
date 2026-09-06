@@ -89,14 +89,14 @@ export function AdminTopbar({ user }: { user: User }) {
             </h2> */}
 
             {/* Desktop Search */}
-            <div className="relative hidden max-w-[460px] flex-1 items-center md:flex">
+            {/* <div className="relative hidden max-w-[460px] flex-1 items-center md:flex">
                 <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                     type="search"
                     placeholder="Cari destinasi, UMKM..."
                     className="h-9 w-full rounded-full border-border bg-muted pl-10 text-sm text-foreground shadow-none focus-visible:ring-primary/20"
                 />
-            </div>
+            </div> */}
 
             <div className="ml-auto flex items-center gap-2">
                 <ThemeToggle />
