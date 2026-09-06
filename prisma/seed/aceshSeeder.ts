@@ -50,7 +50,7 @@ export const ACESH_INDICATOR_SEEDS: IndicatorSeed[] = [
  * ACES = 66.8, Hyperlocal = 59.5, base = 64.2, confidence = 69.0,
  * factor = 0.907, verified = 58.2 → BERKEMBANG.
  */
-const TARGET_SCORES: Record<string, number[]> = {
+export const TARGET_SCORES: Record<string, number[]> = {
     ACCESS: [3, 3, 3],
     COMMUNICATION: [2, 2, 2],
     ENVIRONMENT: [2, 2, 2],
@@ -62,7 +62,7 @@ const TARGET_SCORES: Record<string, number[]> = {
     EMBEDDEDNESS_CONTINUITY: [3, 3, 0],
 };
 
-const REACHABILITY_SEEDS: Array<{
+export const REACHABILITY_SEEDS: Array<{
     facilityType: string;
     label: string;
     maxDistanceMeters: number | null;
@@ -94,7 +94,7 @@ const EVIDENCE_TYPES = [
  * document 75%, photo+geolocation 70%, management 65%, field 70%,
  * freshness avg 60 → confidence 69.0.
  */
-function buildEvidenceRecords(destinationId: string) {
+export function buildEvidenceRecords(destinationId: string) {
     const now = Date.now();
     const day = 24 * 60 * 60 * 1000;
     const freshnessAges = [
@@ -144,12 +144,12 @@ function buildEvidenceRecords(destinationId: string) {
 }
 
 /**
- * Seeds the ACES-H catalogue (27 indicators), reachability parameters, and a
- * full demo assessment for the first destination whose scores reproduce the
- * official simulation (58.2 → BERKEMBANG).
+ * Seeds only the ACES-H catalogue: 27 indicators + 8 reachability configs.
+ * Idempotent (upsert by unique code/facilityType). Safe to reuse for any
+ * destination sample without touching demo assessments.
  */
-export async function seedAcesh() {
-    logger.info("Seeding ACES-H indicators, reachability, and demo assessment...");
+export async function seedAceshCatalog() {
+    logger.info("Seeding ACES-H indicators and reachability...");
 
     for (const indicator of ACESH_INDICATOR_SEEDS) {
         await prisma.aceshIndicator.upsert({
@@ -181,6 +181,17 @@ export async function seedAcesh() {
         });
     }
     logger.success("Konfigurasi jangkauan (reachability) diperbarui.");
+}
+
+/**
+ * Seeds the ACES-H catalogue (27 indicators), reachability parameters, and a
+ * full demo assessment for the first destination whose scores reproduce the
+ * official simulation (58.2 → BERKEMBANG).
+ */
+export async function seedAcesh() {
+    logger.info("Seeding ACES-H indicators, reachability, and demo assessment...");
+
+    await seedAceshCatalog();
 
     const indicators = await prisma.aceshIndicator.findMany({
         where: { isActive: true },
@@ -237,7 +248,7 @@ export async function seedAcesh() {
 
     const snapshot = await calculateAndSaveAssessment(
         target.id,
-        null,
+        undefined,
         "Seed simulasi ACES-H (contoh skor 58.2)",
     );
 

@@ -11,6 +11,7 @@
         "seed:dev": "tsx prisma/seed.ts",
         "sync:images": "tsx scripts/sync-images-to-cloudinary.ts --all",
         "sync:images:dry": "tsx scripts/sync-images-to-cloudinary.ts --limit=3 --dry-run",
+        "acesh:sample": "tsx scripts/acesh-sample-situ-gede.ts",
         "test": "vitest run",
         "test:acesh": "vitest run tests/unit",
         "test:integration": "vitest run tests/integration",
