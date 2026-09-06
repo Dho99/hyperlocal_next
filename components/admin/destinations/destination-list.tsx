@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { deleteDestination } from "@/lib/api/destination";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
@@ -148,6 +148,7 @@ export function DestinationList({
                             <TableHead>KATEGORI</TableHead>
                             <TableHead>LOKASI</TableHead>
                             <TableHead>HALAL SCORE</TableHead>
+                            <TableHead>ACES-H</TableHead>
                             <TableHead>STATUS</TableHead>
                             <TableHead className="w-[100px] text-center">
                                 AKSI
@@ -158,7 +159,7 @@ export function DestinationList({
                         {destinations.length === 0 && !isLoading ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={6}
+                                    colSpan={7}
                                     className="h-32 text-center text-muted-foreground"
                                 >
                                     Tidak ada destinasi ditemukan.
@@ -217,6 +218,9 @@ export function DestinationList({
                                     </TableCell>
                                     <TableCell>
                                         <ScoreCell halalScore={destination.halalScore} validatedScore={destination.validatedScore} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <AceshScoreCell destinationId={destination.id} />
                                     </TableCell>
                                     <TableCell>
                                         {destination.status === "APPROVED" && (
@@ -344,6 +348,33 @@ export function DestinationList({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+        </div>
+    );
+}
+
+function AceshScoreCell({ destinationId }: { destinationId: string }) {
+    const [datum, setDatum] = useState<{ baseScore: number | null; verifiedScore: number | null; classification: string | null; verificationStatus: string | null } | null>(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await fetch(`/api/destinations/${destinationId}/acesh`);
+                if (!res.ok) { if (!cancelled) setDatum(null); return; }
+                const json = await res.json();
+                if (!cancelled) setDatum(json.data);
+            } catch { if (!cancelled) setDatum(null); } finally { if (!cancelled) setLoading(false); }
+        })();
+        return () => { cancelled = true; };
+    }, [destinationId]);
+    if (loading) return <span className="text-[11px] text-muted-foreground">...</span>;
+    if (!datum || datum.baseScore == null) return <span className="text-[11px] text-muted-foreground">— Belum dinilai</span>;
+    const score = datum.verificationStatus === "VERIFIED" && datum.verifiedScore != null ? datum.verifiedScore : datum.baseScore;
+    const isVerified = datum.verificationStatus === "VERIFIED";
+    return (
+        <div className="flex flex-col">
+            <span className={cn("text-xs font-bold", isVerified ? "text-emerald-700" : "text-amber-700")}>{score.toFixed(1)}</span>
+            <span className="text-[10px] leading-tight text-muted-foreground">{datum.classification?.replace(/_/g," ") ?? "—"} {isVerified ? "✓" : "• PENDING"}</span>
         </div>
     );
 }
