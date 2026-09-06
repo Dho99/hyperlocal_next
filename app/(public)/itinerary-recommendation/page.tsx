@@ -19,6 +19,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { normalizeImageUrl } from "@/lib/cloudinary/image-url";
 import {
     getFacilityIcon,
     getFacilityIconBg,
@@ -236,7 +237,10 @@ function ItineraryContent() {
                                                 <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-lg bg-muted">
                                                     {dest.imageUrl ? (
                                                         <Image
-                                                            src={dest.imageUrl}
+                                                            src={
+                                                                normalizeImageUrl(dest.imageUrl) ??
+                                                                dest.imageUrl
+                                                            }
                                                             alt={dest.name}
                                                             fill
                                                             className="object-cover"
@@ -420,7 +424,9 @@ function ItineraryContent() {
                                                                                 {umkm.primaryImage ? (
                                                                                     <Image
                                                                                         src={
-                                                                                            umkm.primaryImage
+                                                                                            normalizeImageUrl(
+                                                                                                umkm.primaryImage,
+                                                                                            ) ?? umkm.primaryImage
                                                                                         }
                                                                                         alt={
                                                                                             umkm.name

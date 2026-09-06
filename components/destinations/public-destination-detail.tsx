@@ -11,6 +11,7 @@ import { api } from "@/lib/axios";
 import { authClient } from "@/lib/auth-client";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
+import { normalizeImageUrl } from "@/lib/cloudinary/image-url";
 import {
     googleMapsUrl,
     type NearbyUmkm,
@@ -115,14 +116,20 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         const primary = destination.images.find(
             (img) => "isPrimary" in img && img.isPrimary === true,
         );
-        return primary?.imageUrl ?? destination.images[0].imageUrl;
+        const raw = primary?.imageUrl ?? destination.images[0].imageUrl;
+        return normalizeImageUrl(raw) ?? raw;
     }, [destination]);
 
     const secondaryImages = useMemo(() => {
         if (!destination?.images?.length) return [];
+        const rawPrimary = (() => {
+            const p = destination.images.find((img) => "isPrimary" in img && img.isPrimary === true);
+            return p?.imageUrl ?? destination.images[0].imageUrl;
+        })();
         return destination.images
             .slice(0, 3)
-            .filter((img) => img.imageUrl !== primaryImage);
+            .filter((img) => img.imageUrl !== rawPrimary)
+            .map((img) => ({ ...img, imageUrl: normalizeImageUrl(img.imageUrl) ?? img.imageUrl }));
     }, [destination, primaryImage]);
 
     const allFacilities = useMemo(() => {
@@ -187,11 +194,11 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     rating: umkm.rating ?? null,
                     reviewCount: umkm.reviewCount ?? null,
                     distance,
-                    primaryImage:
-                        umkm.images?.find((image) => image.isPrimary)
-                            ?.imageUrl ??
-                        umkm.images?.[0]?.imageUrl ??
-                        null,
+                    primaryImage: normalizeImageUrl(
+                        umkm.images?.find((image) => image.isPrimary)?.imageUrl ??
+                            umkm.images?.[0]?.imageUrl ??
+                            null,
+                    ),
                     validCertification:
                         umkm.certifications?.some(
                             (cert) => cert.status === "VALID",
@@ -377,7 +384,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                 </div>
 
                 <PhotoGallery
-                    images={destination.images ?? []}
+                    images={(destination.images ?? []).map((img) => ({
+                        ...img,
+                        imageUrl: normalizeImageUrl(img.imageUrl) ?? img.imageUrl,
+                    }))}
                     name={destination.name}
                     heading="Galeri Foto"
                     controller={lightbox}
@@ -386,7 +396,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             </main>
 
             <ImageLightbox
-                images={destination.images ?? []}
+                images={(destination.images ?? []).map((img) => ({
+                    ...img,
+                    imageUrl: normalizeImageUrl(img.imageUrl) ?? img.imageUrl,
+                }))}
                 open={lightbox.open}
                 index={lightbox.index}
                 onOpenChange={lightbox.setOpen}

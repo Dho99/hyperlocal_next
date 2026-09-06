@@ -309,8 +309,10 @@ export async function createDestination(values: DestinationFormValues) {
                 halalScore,
                 images: {
                     create:
-                        images?.map((image) => ({
+                        images?.map((image: any, idx: number) => ({
                             imageUrl: image.imageUrl,
+                            isPrimary: idx === 0 ? true : ((image.isPrimary as boolean | undefined) ?? false),
+                            caption: (image.caption as string | null | undefined) ?? null,
                         })) || [],
                 },
                 destinationHalalFacilities: {
@@ -443,8 +445,10 @@ export async function updateDestination(
                 images: {
                     deleteMany: {},
                     create:
-                        images?.map((image) => ({
+                        images?.map((image: any, idx: number) => ({
                             imageUrl: image.imageUrl,
+                            isPrimary: idx === 0 ? true : ((image.isPrimary as boolean | undefined) ?? false),
+                            caption: (image.caption as string | null | undefined) ?? null,
                         })) || [],
                 },
             },
