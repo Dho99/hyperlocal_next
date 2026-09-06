@@ -350,9 +350,7 @@ export default function PetaMapClient() {
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
-                    <ThemeTileLayer
-                        lightUrl={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
-                    />
+                    <ThemeTileLayer />
 
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 

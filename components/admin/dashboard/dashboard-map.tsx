@@ -75,9 +75,7 @@ export default function DashboardMap({ destinations }: DashboardMapProps) {
                 scrollWheelZoom={true}
                 className="h-full w-full"
             >
-                <ThemeTileLayer
-                    lightUrl="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                />
+                <ThemeTileLayer />
 
                 <MarkerClusterGroup
                     chunkedLoading
