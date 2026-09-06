@@ -219,6 +219,7 @@ export function ImageDropzone({
                                     src={file.preview}
                                     alt="preview"
                                     fill
+                                    unoptimized
                                     className="object-cover"
                                 />
                                 {file.status === "uploading" && (

@@ -44,13 +44,17 @@ export function MultiImageDropzone({
     const [files, setFiles] = useState<UploadingFile[]>([]);
 
     useEffect(() => {
-        const currentUrls = files
-            .filter((f) => f.status === "success" && f.url)
-            .map((f) => f.url!);
-        const sorted = [...currentUrls].sort();
-        const sortedValue = [...value].sort();
-        if (JSON.stringify(sorted) !== JSON.stringify(sortedValue)) {
-            const mapped = value.map((url) => ({
+        // Functional set — hindari closure stale `files` saat parent update via onChange
+        setFiles((prev) => {
+            const currentUrls = prev
+                .filter((f) => f.status === "success" && f.url)
+                .map((f) => f.url!);
+            const sorted = [...currentUrls].sort();
+            const sortedValue = [...(value ?? [])].sort();
+            if (JSON.stringify(sorted) === JSON.stringify(sortedValue)) {
+                return prev;
+            }
+            return (value ?? []).map((url) => ({
                 id: url,
                 file: new File([], url),
                 preview: url,
@@ -58,8 +62,7 @@ export function MultiImageDropzone({
                 status: "success" as const,
                 url,
             }));
-            setFiles(mapped);
-        }
+        });
     }, [value]);
 
     const triggerOnChange = useCallback(
@@ -90,34 +93,44 @@ export function MultiImageDropzone({
                     method: "POST",
                     body: formData,
                 });
-                const data = await res.json();
+                const data = await res.json().catch(() => null);
 
-                if (data.success) {
-                    const url = data.data.path;
-                    let nextFiles: UploadingFile[] = [];
-                    setFiles((prev) => {
-                        nextFiles = prev.map((f) =>
-                            f.id === fileObj.id
-                                ? {
-                                      ...f,
-                                      status: "success" as const,
-                                      url,
-                                      progress: 100,
-                                  }
-                                : f,
-                        );
-                        return nextFiles;
-                    });
-                    triggerOnChange(nextFiles);
+                if (!res.ok || !data?.success) {
+                    throw new Error(
+                        data?.message || `Upload gagal (${res.status})`,
+                    );
                 }
-            } catch {
+
+                const url = data.data.path as string;
+                const oldPreview = fileObj.preview;
+                setFiles((prev) => {
+                    const next = prev.map((f) =>
+                        f.id === fileObj.id
+                            ? {
+                                  ...f,
+                                  status: "success" as const,
+                                  url,
+                                  progress: 100,
+                              }
+                            : f,
+                    );
+                    // Blob lokal tak lagi dipakai setelah URL cloudinary ada — revoke agar tak leak
+                    if (oldPreview.startsWith("blob:")) {
+                        queueMicrotask(() => URL.revokeObjectURL(oldPreview));
+                    }
+                    // setState updater async — propagate via microtask agar state flush dulu
+                    queueMicrotask(() => triggerOnChange(next));
+                    return next;
+                });
+            } catch (err) {
                 setFiles((prev) =>
                     prev.map((f) =>
                         f.id === fileObj.id
                             ? {
                                   ...f,
                                   status: "error" as const,
-                                  error: "Upload gagal",
+                                  error:
+                                      (err as Error).message || "Upload gagal",
                               }
                             : f,
                     ),
@@ -129,22 +142,22 @@ export function MultiImageDropzone({
 
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
-            const newFiles: UploadingFile[] = acceptedFiles.map((file) => ({
-                id: Math.random().toString(36).substring(7),
+            // Slot tersisa dari state render saat ini; hanya file yang masuk kuota yang di-upload
+            // (hindari orphan upload dari file ter-slice maxFiles=5)
+            const available = Math.max(0, maxFiles - files.length);
+            const capped = acceptedFiles.slice(0, available);
+            if (capped.length === 0) return;
+            const toUpload: UploadingFile[] = capped.map((file) => ({
+                id: `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`,
                 file,
                 preview: URL.createObjectURL(file),
                 progress: 0,
                 status: "idle" as const,
             }));
-
-            setFiles((prev) => {
-                const combined = [...prev, ...newFiles].slice(0, maxFiles);
-                return combined;
-            });
-
-            newFiles.forEach((f) => uploadFile(f));
+            setFiles((prev) => [...prev, ...toUpload].slice(0, maxFiles));
+            toUpload.forEach((f) => uploadFile(f));
         },
-        [maxFiles, uploadFile],
+        [maxFiles, files.length, uploadFile],
     );
 
     const removeFile = useCallback(
@@ -234,6 +247,7 @@ export function MultiImageDropzone({
                                     src={file.preview}
                                     alt="preview"
                                     fill
+                                    unoptimized
                                     className="object-cover opacity-60"
                                 />
                             )}
