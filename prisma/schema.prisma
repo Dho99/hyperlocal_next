@@ -209,6 +209,7 @@ model Destination {
   aceshEvidenceRecords       AceshEvidenceRecord[]
   aceshAssessment            AceshAssessment?
   aceshAssessmentHistory     AceshAssessmentHistory[]
+  recommendationActions      RecommendationAction[]
 
   @@index([categoryId])
   @@index([coverageAreaId])
@@ -714,7 +715,8 @@ model AceshIndicator {
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @updatedAt @map("updated_at")
 
-  indicatorScores AceshIndicatorScore[]
+  indicatorScores       AceshIndicatorScore[]
+  recommendationActions RecommendationAction[]
 
   @@index([group])
   @@map("acesh_indicators")
@@ -852,4 +854,56 @@ model ReachabilityConfig {
   updatedAt         DateTime        @updatedAt @map("updated_at")
 
   @@map("reachability_configs")
+}
+
+enum RecommendationActionType {
+  BUILD
+  IMPROVE
+  VERIFY
+  MAINTAIN
+}
+
+enum RecommendationTimeline {
+  QUICK
+  MEDIUM
+  STRATEGIC
+}
+
+enum RecommendationStatus {
+  OPEN
+  IN_PROGRESS
+  SUBMITTED
+  VALIDATING
+  VERIFIED
+}
+
+model RecommendationAction {
+  id               String                   @id @default(uuid())
+  destinationId    String                   @map("destination_id")
+  indicatorId      String?                  @map("indicator_id")
+  ruleId           String?                  @map("rule_id")
+  actionType       RecommendationActionType @map("action_type")
+  timeline         RecommendationTimeline
+  title            String
+  description      String?
+  priorityScore    Float                    @map("priority_score")
+  ris              Float?
+  gap              Float?
+  reason           Json?                    @map("reason")
+  beforeAfter      Json?                    @map("before_after")
+  prerequisite     Json?                    @map("prerequisite")
+  status           RecommendationStatus     @default(OPEN) @map("status")
+  createdAt        DateTime                 @default(now()) @map("created_at")
+  updatedAt        DateTime                 @updatedAt @map("updated_at")
+  completedAt      DateTime?                @map("completed_at")
+  verifiedBy       String?                  @map("verified_by")
+  verifiedAt       DateTime?                @map("verified_at")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  indicator   AceshIndicator? @relation(fields: [indicatorId], references: [id], onDelete: SetNull)
+
+  @@index([destinationId])
+  @@index([indicatorId])
+  @@index([status])
+  @@map("recommendation_actions")
 }
