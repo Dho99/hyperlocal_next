@@ -263,7 +263,7 @@ function sortByDistance(
 
 const exploreDestinationInclude = {
     category: true,
-    images: { take: 1 },
+    images: { orderBy: { isPrimary: "desc" as const }, take: 1 },
     destinationHalalFacilities: {
         include: { facility: true },
     },

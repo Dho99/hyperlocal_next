@@ -58,7 +58,7 @@ const itineraryInclude = {
         include: {
           category: true,
           images: {
-            where: { isPrimary: true },
+            orderBy: { isPrimary: "desc" as const },
             take: 1,
           },
         },
@@ -117,7 +117,7 @@ export async function generateItineraryRecommendation(params: {
     where,
     include: {
       category: true,
-      images: { where: { isPrimary: true }, take: 1 },
+      images: { orderBy: { isPrimary: "desc" as const }, take: 1 },
       destinationHalalFacilities: true,
       trends: {
         where: { period: "weekly" },

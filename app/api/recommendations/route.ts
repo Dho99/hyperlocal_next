@@ -109,7 +109,7 @@ export async function POST(request: Request) {
             },
             include: {
                 category: true,
-                images: { take: 1 },
+                images: { orderBy: { isPrimary: "desc" }, take: 1 },
                 destinationHalalFacilities: {
                     include: { facility: true },
                 },
