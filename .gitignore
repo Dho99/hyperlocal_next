@@ -52,3 +52,5 @@ opencode.jsonc
 
 /lib/generated/*
 .env*
+
+/plans
