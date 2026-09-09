@@ -907,3 +907,18 @@ model RecommendationAction {
   @@index([status])
   @@map("recommendation_actions")
 }
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  action    String
+  target    String
+  targetId  String?  @map("target_id")
+  ip        String?
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([action])
+  @@map("audit_logs")
+}
