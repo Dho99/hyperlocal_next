@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { assertAdmin } from "@/lib/auth-guard";
 import { destinationSchema } from "@/lib/validations/destination.schema";
 import type { DestinationFormValues } from "@/types/destination";
 import {
@@ -19,6 +20,7 @@ function toFacilityType(type: string | null): FacilityType {
 }
 
 export async function createDestination(values: DestinationFormValues) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     const validatedFields = destinationSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -97,6 +99,7 @@ export async function updateDestination(
     id: string,
     values: DestinationFormValues,
 ) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     const validatedFields = destinationSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -187,6 +190,7 @@ export async function updateDestination(
 }
 
 export async function deleteDestination(id: string) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     try {
         await prisma.destination.delete({
             where: { id },

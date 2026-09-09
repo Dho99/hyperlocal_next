@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { assertAdmin } from "@/lib/auth-guard";
 import { 
     createUmkm as createUmkmService, 
     updateUmkm as updateUmkmService, 
@@ -9,6 +10,7 @@ import {
 import { umkmSchema, type UmkmFormValues } from "@/lib/validations/umkm.schema";
 
 export async function createUmkm(values: UmkmFormValues) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     const validatedFields = umkmSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -31,6 +33,7 @@ export async function createUmkm(values: UmkmFormValues) {
 }
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     const validatedFields = umkmSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -53,6 +56,7 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
 }
 
 export async function deleteUmkm(id: string) {
+    try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
     try {
         await deleteUmkmService(id);
 

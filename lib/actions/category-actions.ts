@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
+import { assertAdmin } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { categorySchema } from "@/lib/validations/category.schema";
 import type { CategoryFormValues } from "@/types/category";
@@ -8,6 +9,7 @@ import type { CategoryFormValues } from "@/types/category";
 import { CategoryType } from "../generated/prisma";
 
 export async function createCategory(values: CategoryFormValues) {
+  try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
   const validatedFields = categorySchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -36,6 +38,7 @@ export async function createCategory(values: CategoryFormValues) {
 }
 
 export async function updateCategory(id: string, values: CategoryFormValues) {
+  try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
   const validatedFields = categorySchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -65,6 +68,7 @@ export async function updateCategory(id: string, values: CategoryFormValues) {
 }
 
 export async function deleteCategory(id: string) {
+  try { await assertAdmin(); } catch { return { error: "Unauthorized" }; }
   try {
     await prisma.category.delete({
       where: { id },
