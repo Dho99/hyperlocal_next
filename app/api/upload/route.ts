@@ -4,6 +4,7 @@ import { UPLOAD_CONFIG, FOLDER_MAPPING } from "@/lib/upload/config";
 import { optimizeImage } from "@/lib/upload/optimizeImage";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -25,6 +26,8 @@ function extractPublicId(url: string): string | null {
 }
 
 export async function POST(req: NextRequest) {
+    const rl = rateLimit(getClientKey(req, "upload"), 20, 60_000);
+    if (!rl.allowed) return NextResponse.json({ success: false, message: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
         const session = await auth.api.getSession({
             headers: await headers(),

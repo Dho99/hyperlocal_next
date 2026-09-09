@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 import { z } from "zod";
 import {
     getLocationNames,
@@ -17,7 +18,7 @@ import { getReachabilityConfig } from "@/lib/services/acesh/reachability-config-
 import { getPublicAceshScores, publicDisplayScore } from "@/lib/services/acesh/public-score-service";
 
 const exploreQuerySchema = z.object({
-    q: z.string().min(1, "Query wajib diisi"),
+    q: z.string().min(1, "Query wajib diisi").max(500),
     lat: z.coerce.number().optional(),
     lng: z.coerce.number().optional(),
 });
@@ -88,9 +89,8 @@ const EXPLORE_STOP_WORDS = new Set([
     "bantu",
 ]);
 
-function buildPrompt(
+function buildSystemPrompt(
     candidates: string,
-    userQuery: string,
     isNearby = false,
     matchedLocation?: string | null,
 ): string {
@@ -137,12 +137,10 @@ ${geoInstruction}
 KANDIDAT DESTINASI:
 ${candidates}
 
-QUERY PENGGUNA:
-${userQuery}
-
 Response HARUS array JSON tanpa teks lain:
 [{ "destinationId": "uuid", "matchScore": 85, "aiReason": "Alasan singkat dalam Bahasa Indonesia mengapa destinasi ini cocok dengan query pengguna" }]
-Urutkan dari matchScore tertinggi ke terendah. Maksimal 5 hasil.`;
+Urutkan dari matchScore tertinggi ke terendah. Maksimal 5 hasil.
+Query pengguna akan diberikan terpisah pada user role.`;
 
     return prompt;
 }
@@ -294,6 +292,8 @@ function buildFallback(
 }
 
 export async function GET(request: Request) {
+    const rl = rateLimit(getClientKey(request, "explore"), 30, 60_000);
+    if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
         const { searchParams } = new URL(request.url);
         const q = searchParams.get("q") ?? "";
@@ -434,23 +434,13 @@ export async function GET(request: Request) {
 
         try {
             const candidateData = candidates.map(mapToCandidateData);
-            const prompt = buildPrompt(
-                JSON.stringify(candidateData),
-                query,
-                isNearby,
-                matchedLocation,
-            );
-
-            const model = createGeminiModel();
+            const systemPrompt = buildSystemPrompt(JSON.stringify(candidateData), isNearby, matchedLocation);
+            const model = createGeminiModel(systemPrompt);
             if (!model) {
                 const data = buildFallback(candidates, scores);
-                return NextResponse.json<ExploreResponse>(
-                    { query, data },
-                    { status: 200 },
-                );
+                return NextResponse.json<ExploreResponse>({ query, data }, { status: 200 });
             }
-
-            const result = await model.generateContent(prompt);
+            const result = await model.generateContent(JSON.stringify({ input: query.slice(0, 500) }));
             const text = result.response.text();
 
             let aiResult: AIRecommendation[];

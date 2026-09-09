@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 import {
     getPublicAceshScores,
     publicDisplayScore,
@@ -25,37 +26,16 @@ interface RecommenderResponse {
     }>;
 }
 
-function buildPrompt(
-    candidates: CandidateDestination[],
-    preferences: string[],
-    limit: number,
-): string {
-    return `Anda adalah kurator wisata halal yang membantu merekomendasikan destinasi.
+function buildSystemPrompt(candidates: CandidateDestination[], limit: number): string {
+    return `Anda adalah kurator wisata halal. Pilih TOP ${limit} destinasi paling sesuai dari kandidat.
 
-Tugas Anda adalah menganalisis preferensi pengguna terhadap data destinasi berikut,
-lalu pilih TOP ${limit} destinasi yang paling sesuai.
+⚠️ HANYA gunakan ID kandidat. Jangan buat ID palsu. Jika tidak cocok kembalikan [].
 
-⚠️ PERATURAN PENTING:
-- HANYA gunakan ID dari kandidat yang diberikan di bawah ini.
-- JANGAN PERNAH membuat atau menebak ID destinasi palsu.
-- Jika tidak ada kandidat yang cocok, kembalikan array kosong [].
-
-KANDIDAT DESTINASI (JSON):
+KANDIDAT (JSON):
 ${JSON.stringify(candidates)}
 
-PREFERENSI PENGGUNA:
-${preferences.length > 0 ? preferences.join(", ") : "Tidak ada preferensi khusus, tampilkan rekomendasi terbaik"}
-
-Response HARUS berupa array JSON dengan format berikut, tanpa teks tambahan:
-[
-  {
-    "destinationId": "uuid-destinasi",
-    "reason": "Alasan personal dalam Bahasa Indonesia mengapa destinasi ini cocok",
-    "matchScore": 85
-  }
-]
-
-Urutkan dari matchScore tertinggi ke terendah.`;
+Response HARUS array JSON: [{ "destinationId": "uuid", "reason": "Alasan Bahasa Indonesia", "matchScore": 85 }]
+Urutkan matchScore tertinggi ke terendah. Preferensi pengguna akan di user role.`;
 }
 
 function buildFallback(
@@ -81,6 +61,8 @@ function buildFallback(
 }
 
 export async function POST(request: Request) {
+    const rl = rateLimit(getClientKey(request, "recommendations"), 30, 60_000);
+    if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
         const body = await request.json();
         const parsed = requestSchema.safeParse(body);
@@ -141,17 +123,10 @@ export async function POST(request: Request) {
         const candidateData = candidates.map(mapToCandidateDestination);
 
         try {
-            const prompt = buildPrompt(candidateData, preferences, limit);
-
-            const model = createGeminiModel();
-            if (!model) {
-                return NextResponse.json(
-                    { data: buildFallback(candidates, scores, limit) },
-                    { status: 200 },
-                );
-            }
-
-            const result = await model.generateContent(prompt);
+            const systemPrompt = buildSystemPrompt(candidateData, limit);
+            const model = createGeminiModel(systemPrompt);
+            if (!model) return NextResponse.json({ data: buildFallback(candidates, scores, limit) }, { status: 200 });
+            const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: JSON.stringify({ preferences: preferences.slice(0, 20).map((p) => p.slice(0, 100)), limit }) }] }] } as any);
             const text = result.response.text();
 
             let aiResult: AIRecommendation[];

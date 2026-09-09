@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 import { z } from "zod";
 import OpenAI from "openai";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
@@ -14,7 +15,7 @@ import {
 } from "@/lib/utils/ai-location";
 
 const querySchema = z.object({
-    query: z.string().min(1, "Query wajib diisi"),
+    query: z.string().min(1, "Query wajib diisi").max(500),
 });
 
 interface ItineraryItemPayload {
@@ -410,6 +411,8 @@ function formatFacilityDistance(distanceMeters: number): string {
 }
 
 export async function POST(request: Request) {
+    const rl = rateLimit(getClientKey(request, "route-finder"), 30, 60_000);
+    if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
         const body = await request.json();
         const parsed = querySchema.safeParse(body);
@@ -641,8 +644,9 @@ export async function POST(request: Request) {
                 const response = await aiClient.chat.completions.create({
                     model: "llama-3.1-8b-instant",
                     response_format: { type: "json_object" },
+                    max_tokens: 1500,
                     messages,
-                });
+                } as any);
                 const raw = response.choices[0]?.message?.content;
                 if (!raw) return null;
                 return { json: raw, raw };
