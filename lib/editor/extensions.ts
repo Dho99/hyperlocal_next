@@ -18,9 +18,8 @@ export const extensions = [
   }),
   Link.configure({
     openOnClick: false,
-    HTMLAttributes: {
-      class: "text-primary underline underline-offset-4 cursor-pointer",
-    },
+    HTMLAttributes: { class: "text-primary underline underline-offset-4 cursor-pointer", rel: "noopener noreferrer" },
+    validate: (href) => /^https?:\/\//.test(href),
   }),
   Underline,
   TextAlign.configure({
