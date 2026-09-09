@@ -69,7 +69,6 @@ export default function RegisterForm() {
       email: values.email,
       password: values.password,
       name: values.name,
-      role: "user",
       fetchOptions: {
         onSuccess: () => {
           setIsSuccess(true);
