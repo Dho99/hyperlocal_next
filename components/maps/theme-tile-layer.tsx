@@ -10,13 +10,13 @@ interface ThemeTileLayerProps {
     attribution?: string;
 }
 
-const CARTO_ATTRIBUTION =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>';
+const DEFAULT_ATTRIBUTION =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.esri.com/">Esri</a>';
 
 export function ThemeTileLayer({
-    lightUrl = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    darkUrl = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution = CARTO_ATTRIBUTION,
+    lightUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    darkUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    attribution = DEFAULT_ATTRIBUTION,
 }: ThemeTileLayerProps) {
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
