@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/auth-guard";
 import {
     getTopBookmarkedDestinations,
     getTopWhatsappClickedUmkms,
@@ -10,16 +9,7 @@ import { getErrorMessage } from "@/lib/api-error";
 
 export async function GET() {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-
-        if (!session?.user.id) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            );
-        }
+        if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 
         const [topBookmarked, topWhatsapp, ctaSummary] = await Promise.all([
             getTopBookmarkedDestinations(10),

@@ -3,14 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { processValidationSchema } from "@/lib/validations/unified-validation";
 import { processDestinationValidationSchema } from "@/lib/validations/halal-validation.schema";
 import { ZodError } from "zod";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/auth-guard";
 import { calculateAndSaveAssessment } from "@/lib/services/acesh/assessment-recalculation-service";
+import { auditLog } from "@/lib/audit";
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const { id } = await params;
         const validation = await prisma.halalValidation.findUnique({
@@ -87,15 +88,12 @@ export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const session = await requireAdmin();
+    if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const validatorId = session.user.id;
     try {
         const { id } = await params;
         const body = await request.json();
-
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-
-        const validatorId = session?.user?.id || null;
 
         const currentValidation = await prisma.halalValidation.findUnique({
             where: { id },
@@ -140,27 +138,11 @@ export async function PATCH(
                 return { validation, destination };
             });
 
-            // Trigger ACES-H recalculation so the verified score reflects the new validation state
             try {
-                await calculateAndSaveAssessment(
-                    currentValidation.destinationId,
-                    validatorId ?? undefined,
-                    "Validasi destinasi diperbarui",
-                );
-            } catch (recalcError) {
-                console.error("ACES-H recalculation after validation failed:", recalcError);
-            }
-
-            return NextResponse.json(
-                {
-                    success: true,
-                    message: isApproved
-                        ? "Destinasi berhasil divalidasi"
-                        : "Destinasi ditolak",
-                    data: result,
-                },
-                { status: 200 }
-            );
+                await calculateAndSaveAssessment(currentValidation.destinationId, validatorId, "Validasi destinasi diperbarui");
+            } catch (recalcError) { console.error("ACES-H recalculation after validation failed:", recalcError); }
+            void auditLog({ userId: validatorId, action: isApproved ? "validation.approve" : "validation.reject", target: "halalValidation", targetId: id, ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null, userAgent: request.headers.get("user-agent") });
+            return NextResponse.json({ success: true, message: isApproved ? "Destinasi berhasil divalidasi" : "Destinasi ditolak", data: result }, { status: 200 });
         }
 
         // Certification validation path (legacy)
@@ -234,6 +216,7 @@ export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const { id } = await params;
         await prisma.halalValidation.delete({

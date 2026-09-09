@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { requireAdmin } from "@/lib/auth-guard";
 
 const CLASS_KEYS = ["SANGAT_SIAP", "SIAP", "BERKEMBANG", "PERLU_PENGEMBANGAN", "BELUM_SIAP"] as const;
 
 export async function GET(request: Request) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const { searchParams } = new URL(request.url);
         const siapFilter = searchParams.get("siap"); // "siap" | "belum" | "berkembang" | all

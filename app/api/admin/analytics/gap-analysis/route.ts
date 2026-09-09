@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { requireAdmin } from "@/lib/auth-guard";
 
 interface EngagementMetrics {
     views: number;
@@ -66,6 +67,7 @@ function buildUmkmActionText(name: string): string {
 }
 
 export async function GET() {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const [destinations, trends, umkms] = await Promise.all([
             prisma.destination.findMany({

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getErrorMessage } from "@/lib/api-error";
+import { requireAdmin } from "@/lib/auth-guard";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 
 const TEST_CASES = [
     { query: "cari destinasi wisata di bandung", expected: "DESTINATION_SEARCH" },
@@ -21,7 +23,10 @@ interface TestResult {
     rawResponse?: string;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const rl = rateLimit(getClientKey(request, "ai-test"), 10, 60_000);
+    if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     if (!process.env.GROQ_API_KEY) {
         return NextResponse.json(
             { error: "GROQ_API_KEY not configured" },
@@ -51,14 +56,7 @@ Response HARUS JSON dalam format EXACT berikut:
 HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
 
         try {
-            const response = await aiClient.chat.completions.create({
-                model: "llama-3.1-8b-instant",
-                response_format: { type: "json_object" },
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: tc.query },
-                ],
-            });
+            const response = await aiClient.chat.completions.create({ model: "llama-3.1-8b-instant", response_format: { type: "json_object" }, max_tokens: 200, messages: [ { role: "system", content: systemPrompt }, { role: "user", content: tc.query } ] } as any);
 
             const jsonString = response.choices[0]?.message?.content;
             if (!jsonString) throw new Error("AI returned empty response");

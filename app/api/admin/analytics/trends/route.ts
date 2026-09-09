@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { subMonths, startOfMonth, format } from "date-fns";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { requireAdmin } from "@/lib/auth-guard";
 
 const MONTH_LABELS = [
     "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
@@ -23,16 +23,7 @@ interface TrendPoint {
 
 export async function GET() {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-
-        if (!session?.user.id) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 },
-            );
-        }
+        if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 
         const now = new Date();
         const sixMonthsAgo = startOfMonth(subMonths(now, 5));

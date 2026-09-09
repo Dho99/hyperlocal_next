@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { requireAdmin } from "@/lib/auth-guard";
 import { calculateAssessmentSnapshot } from "@/lib/services/acesh/assessment-recalculation-service";
 import { deriveEvidenceConfidence } from "@/lib/services/acesh/evidence-derivation";
 import { calculateGroupGaps } from "@/lib/services/acesh/gap-engine";
@@ -27,6 +28,7 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const { id } = await params;
     const dest = await prisma.destination.findFirst({
@@ -240,6 +242,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const { id } = await params;
     const body = await req.json();

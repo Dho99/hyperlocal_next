@@ -4,8 +4,10 @@ import { createValidationSchema } from "@/lib/validations/halal-validation.schem
 import { withCursorPagination } from "@/lib/pagination/cursorPagination";
 import { ZodError } from "zod";
 import { ValidationStatus } from "@/lib/generated/prisma";
+import { requireAdmin } from "@/lib/auth-guard";
 
 export async function GET(request: Request) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const { searchParams } = new URL(request.url);
         const limit = searchParams.get("limit")
@@ -64,6 +66,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const body = await request.json();
         const validatedData = createValidationSchema.parse(body);
