@@ -310,7 +310,7 @@ export function AceshModelDiagram({
   const kategori = tree?.outputs.kategori;
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-4" data-testid="acesh-model-diagram">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="font-heading text-base sm:text-lg font-extrabold tracking-tight text-emerald-900 flex items-center gap-2">
@@ -597,7 +597,7 @@ export function AceshModelDiagram({
         </div>
       </div>
 
-      <div className="w-full rounded-xl bg-emerald-900 px-4 py-5 text-center text-white shadow sm:px-6">
+      <div className="w-full rounded-xl bg-emerald-900 px-4 py-5 text-center text-white shadow sm:px-6" data-testid="acesh-score-card">
         <p className="flex items-center justify-center gap-2 text-sm font-extrabold tracking-widest">
           <ShieldCheck className="h-5 w-5" /> VERIFIED ACES-H SCORE
         </p>
