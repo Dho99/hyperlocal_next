@@ -54,3 +54,7 @@ opencode.jsonc
 .env*
 
 /plans
+/playwright-report
+/test-results
+/playwright/.cache
+/tests/e2e/.auth
