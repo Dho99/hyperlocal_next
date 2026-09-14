@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,11 +49,14 @@ const TIMELINE_LABEL: Record<string, string> = {
     STRATEGIC: "Strategic >6 bulan",
 };
 
-function RecCard({ r, onStatus }: { r: Rec; onStatus?: (id: string, status: string) => void }) {
+function RecCard({ r, status, updating, onStatus }: { r: Rec; status?: string; updating?: boolean; onStatus?: (id: string, status: string) => void }) {
     const [open, setOpen] = useState(false);
     const Icon = TYPE_ICON[r.actionType] ?? Lightbulb;
     const priorityLabel = r.priorityScore > 0.08 ? "Tinggi" : r.priorityScore > 0.04 ? "Sedang" : "Rendah";
     const priorityColor = r.priorityScore > 0.08 ? "bg-red-100 text-red-700 border-red-200" : r.priorityScore > 0.04 ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-slate-100 text-slate-600";
+    const isVerified = status === "VERIFIED";
+    const isSubmitted = status === "SUBMITTED" || status === "VALIDATING";
+    const isInProgress = status === "IN_PROGRESS";
     return (
         <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
             <button onClick={() => setOpen((v) => !v)} className="w-full flex items-start justify-between gap-3 p-4 text-left hover:bg-muted/30 transition-colors">
@@ -65,6 +70,9 @@ function RecCard({ r, onStatus }: { r: Rec; onStatus?: (id: string, status: stri
                             <Badge variant="outline" className="h-5 rounded-full text-[10px]">{r.group.replace(/_/g, " ")}</Badge>
                             <Badge className={cn("h-5 rounded-full px-2 text-[10px] border", priorityColor)}>{priorityLabel}</Badge>
                             <Badge variant="outline" className="h-5 rounded-full text-[10px] flex items-center gap-1"><Clock className="h-3 w-3" />{TIMELINE_LABEL[r.timeline] ?? r.timeline}</Badge>
+                            {isSubmitted && <Badge className="h-5 rounded-full px-2 text-[10px] bg-amber-100 text-amber-700 border-amber-200">Menunggu Validasi</Badge>}
+                            {isVerified && <Badge className="h-5 rounded-full px-2 text-[10px] bg-emerald-100 text-emerald-700 border-emerald-200">Terverifikasi</Badge>}
+                            {isInProgress && <Badge className="h-5 rounded-full px-2 text-[10px] bg-blue-100 text-blue-700 border-blue-200">Dikerjakan</Badge>}
                         </div>
                         <p className="mt-1.5 text-sm font-bold leading-tight truncate">{r.title}</p>
                         <p className="text-xs text-muted-foreground line-clamp-2">{r.description}</p>
@@ -102,8 +110,15 @@ function RecCard({ r, onStatus }: { r: Rec; onStatus?: (id: string, status: stri
                             </div>
                         )}
                         <div className="flex gap-2">
-                            <Button size="sm" className="h-7 text-xs bg-[#047857] text-white" onClick={() => onStatus?.(r.indicatorId ?? r.id, "IN_PROGRESS")}>Mulai</Button>
-                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onStatus?.(r.indicatorId ?? r.id, "SUBMITTED")}>Ajukan Verifikasi</Button>
+                            {isVerified ? (
+                                <Badge className="h-7 px-3 text-xs bg-emerald-100 text-emerald-700 border-emerald-200">Terverifikasi</Badge>
+                            ) : isSubmitted ? (
+                                <Badge className="h-7 px-3 text-xs bg-amber-100 text-amber-700 border-amber-200">Menunggu Validasi</Badge>
+                            ) : isInProgress ? (
+                                <Button size="sm" variant="outline" className="h-7 text-xs" disabled={updating} onClick={() => onStatus?.(r.indicatorId ?? r.id, "SUBMITTED")}>{updating ? "..." : "Ajukan Verifikasi"}</Button>
+                            ) : (
+                                <Button size="sm" className="h-7 text-xs bg-[#047857] text-white" disabled={updating} onClick={() => onStatus?.(r.indicatorId ?? r.id, "IN_PROGRESS")}>{updating ? "..." : "Mulai Pengerjaan"}</Button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -116,6 +131,9 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
     const [data, setData] = useState<{ recommendations: Rec[]; quickWins: Rec[]; medium: Rec[]; strategic: Rec[] } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [statusMap, setStatusMap] = useState<Record<string, string>>({});
+    const [updating, setUpdating] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         let cancelled = false;
@@ -125,7 +143,12 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
                 const res = await fetch(`/api/admin/destinations/${destinationId}/acesh/recommendations`);
                 if (!res.ok) throw new Error("Gagal memuat rekomendasi");
                 const json = await res.json();
-                if (!cancelled) setData(json.data);
+                if (!cancelled) {
+                    setData(json.data);
+                    const m: Record<string, string> = {};
+                    for (const p of json.data.persisted ?? []) if (p.indicatorId) m[p.indicatorId] = p.status;
+                    setStatusMap(m);
+                }
             } catch (e: any) {
                 if (!cancelled) setError(e.message);
             } finally {
@@ -136,7 +159,19 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
     }, [destinationId]);
 
     async function updateStatus(indicatorId: string, status: string) {
-        await fetch(`/api/admin/destinations/${destinationId}/acesh/recommendations`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ indicatorId, status }) });
+        setUpdating(indicatorId);
+        try {
+            const res = await fetch(`/api/admin/destinations/${destinationId}/acesh/recommendations`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ indicatorId, status }) });
+            if (!res.ok) throw new Error("Gagal memperbarui status");
+            setStatusMap((prev) => ({ ...prev, [indicatorId]: status }));
+            toast.success(status === "IN_PROGRESS" ? "Pengerjaan dimulai" : "Diajukan untuk verifikasi");
+            router.push(`/destinations/${destinationId}`);
+            router.refresh();
+        } catch (e: any) {
+            toast.error(e.message ?? "Gagal memperbarui status");
+        } finally {
+            setUpdating(null);
+        }
     }
 
     if (loading) return <div className="py-10 text-center text-sm text-muted-foreground animate-pulse">Memuat rekomendasi...</div>;
@@ -150,18 +185,16 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
                 <span className="text-xs text-muted-foreground">{data.recommendations.length} prioritas • RIS ranking</span>
             </div>
 
-            {/* Explainability header */}
             <div className="rounded-lg border bg-amber-50 p-3 text-xs">
                 <p className="font-bold">Prioritas = Gap × Bobot × Dimensi × Confidence × Visitor × Feasibility</p>
                 <p className="text-muted-foreground">Setiap kartu menjelaskan mengapa muncul (low_score, high_weight, high_need) dan estimasi kenaikan Verified.</p>
             </div>
 
-            {/* Quick wins */}
             {data.quickWins.length > 0 && (
                 <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wide text-emerald-700 flex items-center gap-1"><Clock className="h-3 w-3" /> Quick Wins &lt;30 hari</h4>
                     <div className="grid gap-3 md:grid-cols-2">
-                        {data.quickWins.map((r) => <RecCard key={r.id} r={r} onStatus={updateStatus} />)}
+                        {data.quickWins.map((r) => { const k = r.indicatorId ?? r.id; return <RecCard key={r.id} r={r} status={statusMap[k]} updating={updating === k} onStatus={updateStatus} />; })}
                     </div>
                 </div>
             )}
@@ -169,7 +202,7 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
                 <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wide text-amber-700">Medium 1–6 bulan</h4>
                     <div className="grid gap-3 md:grid-cols-2">
-                        {data.medium.map((r) => <RecCard key={r.id} r={r} onStatus={updateStatus} />)}
+                        {data.medium.map((r) => { const k = r.indicatorId ?? r.id; return <RecCard key={r.id} r={r} status={statusMap[k]} updating={updating === k} onStatus={updateStatus} />; })}
                     </div>
                 </div>
             )}
@@ -177,12 +210,11 @@ export function AceshRuleActions({ destinationId }: { destinationId: string }) {
                 <div className="space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wide text-slate-600">Strategic &gt;6 bulan</h4>
                     <div className="grid gap-3 md:grid-cols-2">
-                        {data.strategic.map((r) => <RecCard key={r.id} r={r} onStatus={updateStatus} />)}
+                        {data.strategic.map((r) => { const k = r.indicatorId ?? r.id; return <RecCard key={r.id} r={r} status={statusMap[k]} updating={updating === k} onStatus={updateStatus} />; })}
                     </div>
                 </div>
             )}
 
-            {/* Confidence-aware note */}
             <div className="rounded-lg border border-teal-200 bg-teal-50 p-3 text-xs">
                 <p className="font-bold text-teal-800">Confidence-Aware</p>
                 <p className="text-muted-foreground">Jika confidence &lt;60 dan gap tinggi → “Validate first” didahulukan daripada Build. Field Validation bobot 25% paling besar.</p>

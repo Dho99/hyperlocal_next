@@ -26,7 +26,7 @@ export const destinationSchema = z.object({
     facilities: z
         .array(
             z.object({
-                facilityId: z.string().uuid("Pilih fasilitas yang valid"),
+                facilityId: z.string().min(1, "Pilih fasilitas yang valid"), // ponytail: uuid cek skip, FK di service; ketat lagi bila ID campur cuid/uuid perlu .uuid().or(.cuid())
                 name: z.string().optional(),
                 latitude: z.number().nullable(),
                 longitude: z.number().nullable(),

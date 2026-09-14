@@ -1,20 +1,18 @@
 /**
- * sync-images-to-cloudinary.ts (hybrid Opsi 1)
+ * sync-images-to-cloudinary.ts (hybrid)
  * -------------------------------------------
- * Gabungan `migrate` + `crawl`:
+ * Gabungan `migrate` + `crawl` untuk semua kind (destinations, umkm, accommodations):
  * 1. Coba migrate fresh: uploadCrawledImageToCloudinary(existing lh3 URL) via Cloudinary remote fetch
  *    – murah, 1 call, work jika token masih fresh (< jam)
  * 2. Jika 403/expired → fallback crawl fresh: TextSearch → Details → Photo API → uploadBuffer
  *
- * Untuk halaman /itinerary-recommendation & /destinasi/[slug] agar imageUrl = res.cloudinary.com.
- *
  * Usage:
  *   npx tsx scripts/sync-images-to-cloudinary.ts --slug=taman-rekreasi-air-fun-park-grand-nusa-indah --dry-run
  *   npx tsx scripts/sync-images-to-cloudinary.ts --limit=3
- *   npx tsx scripts/sync-images-to-cloudinary.ts --limit=5 --fresh-only
- *   npx tsx scripts/sync-images-to-cloudinary.ts --limit=5 --backfill-only
- *   npx tsx scripts/sync-images-to-cloudinary.ts --all
- *   npx tsx scripts/sync-images-to-cloudinary.ts --all --concurrency=1 --kind=destinations
+ *   npx tsx scripts/sync-images-to-cloudinary.ts --limit=5 --kind=umkm
+ *   npx tsx scripts/sync-images-to-cloudinary.ts --limit=5 --kind=umkm --dry-run
+ *   npx tsx scripts/sync-images-to-cloudinary.ts --all --kind=umkm
+ *   npx tsx scripts/sync-images-to-cloudinary.ts --all --kind=all
  */
 
 import "dotenv/config";
@@ -53,41 +51,50 @@ function parseArgs(): Args {
     };
 }
 
-async function tryMigrateFresh(dest: { id: string; slug: string }, images: Array<{ id: string; imageUrl: string }>, dryRun: boolean): Promise<{ ok: number; fail: number; urls?: string[] }> {
+type Entity = {
+    id: string;
+    name: string;
+    slug: string;
+    city: string | null;
+    province: string | null;
+    address: string | null;
+    images: Array<{ id: string; imageUrl: string }>;
+    kind: Exclude<Kind, "all">;
+};
+
+async function tryMigrateFresh(entity: Entity, dryRun: boolean): Promise<{ ok: number; fail: number }> {
     let ok = 0, fail = 0;
-    const urls: string[] = [];
-    for (const img of images) {
-        if (isAlreadyCloudinary(img.imageUrl)) { ok++; urls.push(img.imageUrl); continue; }
-        if (dryRun) { ok++; urls.push(`[dry]${img.imageUrl.slice(0,40)}`); continue; }
+    for (const img of entity.images) {
+        if (isAlreadyCloudinary(img.imageUrl)) { ok++; continue; }
+        if (dryRun) { ok++; continue; }
         try {
-            const url = await uploadCrawledImageToCloudinary(img.imageUrl, { slug: dest.slug, kind: "destinations" });
-            // update row inplace if url changed
+            const url = await uploadCrawledImageToCloudinary(img.imageUrl, { slug: entity.slug, kind: entity.kind });
             if (url !== img.imageUrl) {
-                await prisma.destinationImage.update({ where: { id: img.id }, data: { imageUrl: url } });
+                if (entity.kind === "destinations") await prisma.destinationImage.update({ where: { id: img.id }, data: { imageUrl: url } });
+                else if (entity.kind === "umkm") await prisma.umkmImage.update({ where: { id: img.id }, data: { imageUrl: url } });
+                else await prisma.accommodationImage.update({ where: { id: img.id }, data: { imageUrl: url } });
                 console.log(`    migrate ✓ ${img.id} -> ${url.slice(0,70)}...`);
-            } else {
-                console.log(`    migrate = skip (already cloudinary) ${img.id}`);
             }
-            urls.push(url);
             ok++;
         } catch (e: any) {
             const msg = e.message ?? String(e);
-            // 403 expired → signal fallback
             if (msg.includes("403") || msg.includes("Forbidden") || msg.includes("expired")) {
                 console.log(`    migrate ✗ 403/expired ${img.id}: ${msg.slice(0,120)} → need backfill`);
-                fail++;
-                // do not throw, let caller fallback to crawl
             } else {
                 console.log(`    migrate ✗ ${img.id}: ${msg.slice(0,120)}`);
-                fail++;
             }
+            fail++;
         }
     }
-    return { ok, fail, urls };
+    return { ok, fail };
 }
 
-async function backfillViaCrawl(dest: { id: string; name: string; slug: string; city: string | null; province: string | null; address: string | null }, dryRun: boolean): Promise<{ uploaded: number }> {
-    const query = [dest.name, dest.city, dest.province].filter(Boolean).join(", ");
+function buildQuery(e: Entity): string {
+    return [e.name, e.address, e.city, e.province].filter(Boolean).join(", ");
+}
+
+async function backfillViaCrawl(entity: Entity, dryRun: boolean): Promise<{ uploaded: number }> {
+    const query = buildQuery(entity);
     console.log(`  crawl query: ${query}`);
     const placeId = await searchPlaceId(query);
     if (!placeId) throw new Error("no_place_id");
@@ -97,7 +104,7 @@ async function backfillViaCrawl(dest: { id: string; name: string; slug: string; 
     if (!refs.length) throw new Error("no_photos");
     const take = Math.min(refs.length, 5);
     if (dryRun) {
-        console.log(`  [DRY] would crawl ${take} photos`);
+        console.log(`  [DRY] would crawl ${take} photos -> hyperlocal/${entity.kind}/${entity.slug}`);
         return { uploaded: take };
     }
     const uploadedUrls: string[] = [];
@@ -105,29 +112,78 @@ async function backfillViaCrawl(dest: { id: string; name: string; slug: string; 
         const ref = refs[i];
         const buf = await fetchPhotoBuffer(ref);
         console.log(`    photo ${i+1}/${take} ${buf.length}b`);
-        const url = await uploadBufferToCloudinary(buf, dest.slug, ref, "destinations");
+        const url = await uploadBufferToCloudinary(buf, entity.slug, ref, entity.kind);
         console.log(`    -> ${url.slice(0,70)}...`);
         uploadedUrls.push(url);
         await new Promise(r => setTimeout(r, 300));
     }
-    // replace all images for this destination
-    const oldCount = await prisma.destinationImage.count({ where: { destinationId: dest.id } });
-    console.log(`  DB replace ${oldCount} -> ${uploadedUrls.length}`);
-    await prisma.$transaction(async (tx) => {
-        await tx.destinationImage.deleteMany({ where: { destinationId: dest.id } });
-        for (let i = 0; i < uploadedUrls.length; i++) {
-            await tx.destinationImage.create({
-                data: {
-                    destinationId: dest.id,
-                    imageUrl: uploadedUrls[i],
-                    caption: i === 0 ? "Foto utama" : `Foto ${i+1}`,
-                    isPrimary: i === 0,
-                }
-            });
-        }
-    });
+    const oldCount = entity.images.length;
+    console.log(`  DB replace ${oldCount} -> ${uploadedUrls.length} (${entity.kind})`);
+    if (entity.kind === "destinations") {
+        await prisma.$transaction(async (tx) => {
+            await tx.destinationImage.deleteMany({ where: { destinationId: entity.id } });
+            for (let i = 0; i < uploadedUrls.length; i++) {
+                await tx.destinationImage.create({ data: { destinationId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            }
+        });
+    } else if (entity.kind === "umkm") {
+        await prisma.$transaction(async (tx) => {
+            await tx.umkmImage.deleteMany({ where: { umkmId: entity.id } });
+            for (let i = 0; i < uploadedUrls.length; i++) {
+                await tx.umkmImage.create({ data: { umkmId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            }
+        });
+    } else {
+        await prisma.$transaction(async (tx) => {
+            await tx.accommodationImage.deleteMany({ where: { accommodationId: entity.id } });
+            for (let i = 0; i < uploadedUrls.length; i++) {
+                await tx.accommodationImage.create({ data: { accommodationId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            }
+        });
+    }
     console.log(`  ✓ DB updated`);
     return { uploaded: uploadedUrls.length };
+}
+
+async function loadEntities(kind: Exclude<Kind, "all">, args: Args): Promise<Entity[]> {
+    if (args.slug) {
+        if (kind === "destinations") {
+            const d = await prisma.destination.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } } });
+            if (!d) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
+            return [{ ...d, kind }];
+        }
+        if (kind === "umkm") {
+            const u = await prisma.umkm.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true } } } });
+            if (!u) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
+            return [{ id: u.id, name: u.name, slug: u.slug, city: u.destination?.city ?? null, province: u.destination?.province ?? null, address: u.address, images: u.images, kind }];
+        }
+        const a = await prisma.accommodation.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } } });
+        if (!a) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
+        return [{ ...a, kind }];
+    }
+
+    if (kind === "destinations") {
+        const all = await prisma.destination.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+        let pending = all.filter(d => d.images.length === 0 || d.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
+        console.log(`Total dest ${all.length}, pending (0 or lh3) ${pending.length}`);
+        if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
+        else if (!args.all && args.limit == null) pending = pending.slice(0, 3);
+        return pending.map(p => ({ ...p, kind } as Entity));
+    }
+    if (kind === "umkm") {
+        const all = await prisma.umkm.findMany({ select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+        let pending = all.filter(u => u.images.length === 0 || u.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
+        console.log(`Total umkm ${all.length}, pending (0 or lh3) ${pending.length}`);
+        if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
+        else if (!args.all && args.limit == null) pending = pending.slice(0, 3);
+        return pending.map(u => ({ id: u.id, name: u.name, slug: u.slug, city: u.destination?.city ?? null, province: u.destination?.province ?? null, address: u.address, images: u.images, kind } as Entity));
+    }
+    const all = await prisma.accommodation.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+    let pending = all.filter(a => a.images.length === 0 || a.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
+    console.log(`Total accommodations ${all.length}, pending (0 or lh3) ${pending.length}`);
+    if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
+    else if (!args.all && args.limit == null) pending = pending.slice(0, 3);
+    return pending.map(p => ({ ...p, kind } as Entity));
 }
 
 async function main(){
@@ -135,63 +191,42 @@ async function main(){
     console.log("Args", args);
     if (args.freshOnly && args.backfillOnly) { console.error("Cannot use both --fresh-only and --backfill-only"); process.exit(1); }
 
-    let dests: Array<{ id:string; name:string; slug:string; city:string|null; province:string|null; address:string|null; images: Array<{id:string; imageUrl:string}> }> = [];
-    if (args.slug) {
-        const d = await prisma.destination.findUnique({
-            where: { slug: args.slug },
-            select: { id:true, name:true, slug:true, city:true, province:true, address:true, images:{select:{id:true, imageUrl:true}} }
-        });
-        if (!d) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
-        dests = [d as any];
-    } else if (args.kind !== "destinations") {
-        console.error("Hybrid sync saat ini hanya destinations; untuk umkm/accommodations gunakan migrate lama atau tunggu extend");
-        process.exit(1);
-    } else {
-        const all = await prisma.destination.findMany({
-            select: { id:true, name:true, slug:true, city:true, province:true, address:true, images:{select:{id:true, imageUrl:true}} },
-            orderBy:{ createdAt:"asc" }
-        });
-        let pending = all.filter(d => d.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
-        console.log(`Total dest ${all.length}, pending (has lh3) ${pending.length}`);
-        if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
-        else if (!args.all && args.limit == null) pending = pending.slice(0, 3);
-        dests = pending as any;
-        console.log(`Will sync ${dests.length} dests (${args.freshOnly ? "freshOnly" : args.backfillOnly ? "backfillOnly" : "hybrid"})`);
+    const kinds: Exclude<Kind, "all">[] = args.kind === "all" ? ["destinations", "umkm", "accommodations"] : [args.kind];
+    let allEntities: Entity[] = [];
+    for (const k of kinds) {
+        const ents = await loadEntities(k, args);
+        allEntities.push(...ents);
     }
+    // dedup by id when kind=all (no overlap across tables, but safe)
+    console.log(`Will sync ${allEntities.length} entities (${kinds.join(",")}) (${args.freshOnly ? "freshOnly" : args.backfillOnly ? "backfillOnly" : "hybrid"})`);
 
-    if (dests.length === 0) { console.log("No pending"); await prisma.$disconnect(); return; }
+    if (allEntities.length === 0) { console.log("No pending"); await prisma.$disconnect(); return; }
 
     let ok=0, fail=0, crawled=0, migrated=0;
-    for (const dest of dests) {
-        console.log(`\n--- ${dest.name} (${dest.slug}) ${dest.images.length} images ---`);
+    for (const ent of allEntities) {
+        console.log(`\n--- [${ent.kind}] ${ent.name} (${ent.slug}) ${ent.images.length} images ---`);
         try {
             if (!args.backfillOnly) {
-                const res = await tryMigrateFresh(dest, dest.images as any, args.dryRun);
+                const res = await tryMigrateFresh(ent, args.dryRun);
                 console.log(`  migrate result ok=${res.ok} fail=${res.fail}`);
                 if (res.fail === 0) { ok++; migrated++; continue; }
-                // partial fail → fallback if not freshOnly
                 if (args.freshOnly) { fail++; continue; }
                 console.log(`  migrate partial fail → fallback crawl...`);
             }
             if (!args.freshOnly) {
-                if (args.dryRun) {
-                    const r = await backfillViaCrawl(dest as any, true);
-                    console.log(`  crawl dry uploaded=${r.uploaded}`);
-                    ok++; crawled++;
-                } else {
-                    const r = await backfillViaCrawl(dest as any, false);
-                    ok++; crawled++;
-                }
+                const r = await backfillViaCrawl(ent, args.dryRun);
+                console.log(`  crawl uploaded=${r.uploaded}`);
+                ok++; crawled++;
             } else {
                 fail++;
             }
         } catch (e:any) {
-            console.error(`✗ ${dest.slug} fatal: ${e.message}`);
+            console.error(`✗ ${ent.slug} fatal: ${e.message}`);
             fail++;
         }
         await new Promise(r=>setTimeout(r, 800));
     }
-    console.log(`\n=== SUMMARY === ok ${ok} fail ${fail} migrated ${migrated} crawled ${crawled} / total ${dests.length} ${args.dryRun ? "(DRY)" : ""}`);
+    console.log(`\n=== SUMMARY === ok ${ok} fail ${fail} migrated ${migrated} crawled ${crawled} / total ${allEntities.length} ${args.dryRun ? "(DRY)" : ""}`);
     await prisma.$disconnect();
 }
 main().catch(e=>{ console.error(e); process.exit(1); });

@@ -96,19 +96,19 @@ type DestinationWithIncludes = Prisma.DestinationGetPayload<{
 function serializeDestination(raw: DestinationWithIncludes): Destination {
     return {
         ...raw,
-        latitude: raw.latitude ? Number(raw.latitude) : null,
-        longitude: raw.longitude ? Number(raw.longitude) : null,
+        latitude: raw.latitude != null ? Number(raw.latitude) : null,
+        longitude: raw.longitude != null ? Number(raw.longitude) : null,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
         destinationHalalFacilities: raw.destinationHalalFacilities?.map((dhf) => ({
             ...dhf,
-            latitude: dhf.latitude ? Number(dhf.latitude) : null,
-            longitude: dhf.longitude ? Number(dhf.longitude) : null,
+            latitude: dhf.latitude != null ? Number(dhf.latitude) : null,
+            longitude: dhf.longitude != null ? Number(dhf.longitude) : null,
         })),
         umkms: raw.umkms?.map((umkm) => ({
             ...umkm,
-            latitude: umkm.latitude ? Number(umkm.latitude) : null,
-            longitude: umkm.longitude ? Number(umkm.longitude) : null,
+            latitude: umkm.latitude != null ? Number(umkm.latitude) : null,
+            longitude: umkm.longitude != null ? Number(umkm.longitude) : null,
         })),
     };
 }

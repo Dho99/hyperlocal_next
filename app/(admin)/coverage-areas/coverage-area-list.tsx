@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { OSM_URL, OSM_ATTRIBUTION, MAP_MAX_ZOOM, MAP_DEFAULT_CENTER } from "@/lib/config/maps";
 
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
@@ -115,14 +116,24 @@ function MapPreview({
     useEffect(() => {
         if (!mapRef.current || mapInstanceRef.current) return;
         const map = L.map(mapRef.current, {
-            center: [-7.3274, 108.2207],
+            center: MAP_DEFAULT_CENTER,
             zoom: 10,
             zoomControl: true,
             attributionControl: false,
         });
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 19,
+        const base = L.tileLayer(OSM_URL, {
+            maxZoom: MAP_MAX_ZOOM,
+            attribution: OSM_ATTRIBUTION,
         }).addTo(map);
+        base.on("tileerror", () => {
+            try {
+                if (map.hasLayer(base)) map.removeLayer(base);
+                L.tileLayer(OSM_URL, {
+                    maxZoom: MAP_MAX_ZOOM,
+                    attribution: OSM_ATTRIBUTION,
+                }).addTo(map);
+            } catch {}
+        });
         mapInstanceRef.current = map;
         return () => {
             map.remove();
