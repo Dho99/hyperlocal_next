@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export const ValidationStatusEnum = z.enum(["PENDING", "APPROVED", "REJECTED"]);
 

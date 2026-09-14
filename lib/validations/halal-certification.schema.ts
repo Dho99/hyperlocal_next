@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { CertificationStatus } from "@/lib/generated/prisma";
 
 export const createCertificationSchema = z.object({

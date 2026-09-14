@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { CategoryType } from "../generated/prisma";
 
 export const categorySchema = z.object({

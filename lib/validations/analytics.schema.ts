@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { InteractionType, SentimentLabel } from "@/lib/generated/prisma/client";
 
 export const userInteractionSchema = z.object({

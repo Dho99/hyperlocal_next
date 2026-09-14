@@ -1,9 +1,8 @@
-import "./init";
+import { z } from "@/lib/zod";
 import {
     OpenAPIRegistry,
     OpenApiGeneratorV31,
 } from "@asteasolutions/zod-to-openapi";
-import { z } from "zod";
 
 import { loginSchema, registerSchema } from "@/lib/validations/auth.schema";
 import { destinationSchema } from "@/lib/validations/destination.schema";
