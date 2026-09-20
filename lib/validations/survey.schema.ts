@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export const surveyScoresSchema = z.object({
     indicators: z.record(z.string(), z.number().min(0).max(4)),

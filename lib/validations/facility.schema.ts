@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { FACILITY_TYPES } from "@/lib/config/halal-readiness";
 
 export const facilitySchema = z.object({

@@ -69,12 +69,13 @@ export async function importOperationalHours() {
     const hoursJson = parseOpeningHours(jadwal, buka, tutup);
     if (!hoursJson) continue;
 
+    const conditions = [];
+    if (id) conditions.push({ externalId: id });
+    if (nama) conditions.push({ name: { equals: nama, mode: "insensitive" as const } });
+
     const umkm = await prisma.umkm.findFirst({
       where: {
-        OR: [
-          ...(id ? [{ externalId: id }] : []),
-          ...(nama ? [{ name: { equals: nama, mode: "insensitive" as const } }] : []),
-        ],
+        OR: conditions,
       },
     });
 

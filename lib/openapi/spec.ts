@@ -1,4 +1,4 @@
-import { z } from "./init";
+import { z } from "@/lib/zod";
 import {
     OpenAPIRegistry,
     OpenApiGeneratorV31,

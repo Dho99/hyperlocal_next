@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export const umkmSchema = z.object({
     name: z.string().min(2, "Nama UMKM minimal 2 karakter"),

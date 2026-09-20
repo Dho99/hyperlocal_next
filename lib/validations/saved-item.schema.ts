@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export const savedItemSchema = z.object({
   targetSlug: z.string().min(1, "targetSlug is required"),

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export const accommodationSchema = z.object({
     name: z.string().min(2, "Nama penginapan minimal 2 karakter"),
