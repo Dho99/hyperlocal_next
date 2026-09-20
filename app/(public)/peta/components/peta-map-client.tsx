@@ -11,7 +11,6 @@ import {
 } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import { toast } from "sonner";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/lib/maps/geo-utils";

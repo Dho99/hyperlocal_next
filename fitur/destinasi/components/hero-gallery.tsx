@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowLeft, ImageIcon, ShieldCheck, MapPin, Star, Clock } from "lucide-react";
+import { ImageIcon, ShieldCheck, MapPin, Star, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BookmarkButton } from "@/components/destinations/bookmark-button";
 import type { GalleryImage } from "@/fitur/destinasi/data/destinasi-detail-data";
@@ -11,7 +11,6 @@ interface HeroGalleryProps {
     destination: Destination;
     heroLoaded: boolean;
     onHeroLoad: () => void;
-    onBack: () => void;
     destinationId: string;
     onImageClick?: (index: number) => void;
 }
@@ -61,7 +60,6 @@ export function HeroGallery({
     destination,
     heroLoaded,
     onHeroLoad,
-    onBack,
     destinationId,
     onImageClick,
 }: HeroGalleryProps) {
@@ -76,14 +74,6 @@ export function HeroGallery({
     return (
         <section className="grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,220px)] gap-2 md:gap-3 h-auto md:h-[614px] rounded-xl overflow-hidden shadow-md">
             <div className="bg-accent relative group min-h-[380px] md:min-h-0">
-                <button
-                    type="button"
-                    onClick={onBack}
-                    aria-label="Kembali ke Destinasi"
-                    className="absolute top-4 left-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-white/90 text-foreground shadow-sm transition hover:bg-emerald-50 backdrop-blur-sm"
-                >
-                    <ArrowLeft className="h-5 w-5" />
-                </button>
                 {primaryImage ? (
                     <Image
                         src={primaryImage}

@@ -165,7 +165,8 @@ export function DestinationValidationForm({
     }, [categories, localCategoryScores]);
 
     const handleScoreChange = (facilityType: string, value: string) => {
-        const num = Math.min(Math.max(Number(value) || 0, 0), 100);
+        const digits = value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
+        const num = digits === "" ? 0 : Math.min(Number(digits), 100);
         setCategoryScores((prev) => ({ ...prev, [facilityType]: num }));
     };
 

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { generateOpenApiDocument } from "@/lib/openapi/spec";
 
 export async function GET() {
     try {
+        const { generateOpenApiDocument } = await import("@/lib/openapi/spec");
         const doc = generateOpenApiDocument();
         return NextResponse.json(doc, {
             status: 200,

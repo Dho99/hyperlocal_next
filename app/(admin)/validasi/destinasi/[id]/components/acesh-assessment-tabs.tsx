@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
     Card,
     CardContent,
@@ -12,18 +13,22 @@ import {
 } from "@/components/ui/card";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
-import { IndicatorGroupEditor, type IndicatorEditorItem } from "./acesh-indicator-group";
-import { EvidencePanel, type EvidenceRecordItem } from "./acesh-evidence-panel";
+import {
+    AceshLayerForm,
+    type EvidenceComponentValues,
+} from "@/components/acesh/acesh-layer-form";
 import {
     ReachabilityPanel,
     type ReachabilityConfigItem,
     type FacilityMetricItem,
 } from "./acesh-reachability-panel";
+import type { EvidenceRecordItem } from "./acesh-evidence-panel";
 import {
-    ACES_GROUPS,
-    HYPERLOCAL_GROUPS,
-    GROUP_LABELS,
-} from "@/lib/services/acesh/constants";
+    CLASSIFICATION_LABELS,
+    CLASSIFICATION_STYLES,
+} from "@/lib/config/acesh-labels";
+
+const SELF_MARKER = "ACESH_SELF:";
 
 interface AssessmentPayload {
     assessment: {
@@ -75,13 +80,41 @@ interface AssessmentPayload {
     }>;
 }
 
-const CLASSIFICATION_STYLES: Record<string, string> = {
-    BELUM_SIAP: "bg-red-100 text-red-800",
-    PERLU_PENGEMBANGAN: "bg-orange-100 text-orange-800",
-    BERKEMBANG: "bg-yellow-100 text-yellow-800",
-    SIAP: "bg-green-100 text-green-800",
-    SANGAT_SIAP: "bg-emerald-100 text-emerald-800",
+const DEFAULT_EVIDENCE: EvidenceComponentValues = {
+    sourceReliability: 0,
+    documentEvidence: 0,
+    photoGeolocation: 0,
+    managementConfirmation: 0,
+    fieldValidation: 0,
+    dataFreshness: 0,
 };
+
+function deriveEvidence(records: EvidenceRecordItem[]): EvidenceComponentValues {
+    const canonical = records.find((r) => r.notes?.startsWith(SELF_MARKER));
+    if (canonical?.notes) {
+        try {
+            const parsed = JSON.parse(
+                canonical.notes.slice(SELF_MARKER.length),
+            ) as Partial<EvidenceComponentValues>;
+            return { ...DEFAULT_EVIDENCE, ...parsed };
+        } catch {
+            // fall through to derivation
+        }
+    }
+    if (records.length === 0) return DEFAULT_EVIDENCE;
+    const any = (fn: (r: EvidenceRecordItem) => boolean) => records.some(fn);
+    return {
+        sourceReliability: Math.max(
+            0,
+            ...records.map((r) => r.sourceReliabilityScore ?? 0),
+        ),
+        documentEvidence: any((r) => !!r.documentUrl) ? 100 : 0,
+        photoGeolocation: any((r) => !!r.photoUrl) ? 100 : 0,
+        managementConfirmation: any((r) => r.managementConfirmed) ? 100 : 0,
+        fieldValidation: any((r) => r.fieldValidated) ? 100 : 0,
+        dataFreshness: 100,
+    };
+}
 
 export function AceshAssessmentTabs({
     destinationId,
@@ -92,6 +125,8 @@ export function AceshAssessmentTabs({
 }) {
     const [data, setData] = useState<AssessmentPayload | null>(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [showDetail, setShowDetail] = useState(true);
     const [recalculating, setRecalculating] = useState(false);
     const [reachabilityConfigs, setReachabilityConfigs] = useState<
         ReachabilityConfigItem[]
@@ -142,6 +177,41 @@ export function AceshAssessmentTabs({
         };
     }, [load, loadReachability]);
 
+    const handleSaveLayer = async (payload: {
+        scores: Array<{ indicatorId: string; value: number }>;
+        evidence: EvidenceComponentValues;
+    }) => {
+        setSaving(true);
+        try {
+            const [scoreRes, evidenceRes] = await Promise.all([
+                fetch(
+                    `/api/admin/destinations/${destinationId}/acesh-assessment`,
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ scores: payload.scores }),
+                    },
+                ),
+                fetch(`/api/admin/destinations/${destinationId}/evidence`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ components: payload.evidence }),
+                }),
+            ]);
+
+            if (!scoreRes.ok || !evidenceRes.ok) {
+                toast.error("Gagal menyimpan penilaian");
+                return;
+            }
+            toast.success("Penilaian disimpan & skor diperbarui");
+            await load();
+        } catch {
+            toast.error("Terjadi kesalahan saat menyimpan");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const handleRecalculate = async () => {
         setRecalculating(true);
         try {
@@ -181,102 +251,59 @@ export function AceshAssessmentTabs({
     const verified = assessment.verificationStatus === "VERIFIED";
     const classificationKey = assessment.classification ?? "";
 
-    const indicatorsByGroup = (groups: string[]) =>
-        groups.map((group) => ({
-            group,
-            indicators: data.indicators
-                .filter((i) => i.group === group)
-                .map((i) => i as IndicatorEditorItem),
-            breakdown:
-                data.groupBreakdown.find((b) => b.group === group) ?? null,
-        }));
+    const layerIndicators = data.indicators.map((i) => ({
+        id: i.id,
+        code: i.code,
+        name: i.name,
+        description: i.description,
+        weight: i.weight,
+        group: i.group,
+        value: i.score?.value ?? 0,
+    }));
+
+    const evidenceValues = deriveEvidence(data.evidenceRecords);
 
     return (
-        <Tabs defaultValue="aces" className="space-y-4">
+        <Tabs defaultValue="penilaian" className="space-y-4">
             <TabsList className="flex flex-wrap h-auto">
-                <TabsTrigger value="aces">ACES Readiness</TabsTrigger>
-                <TabsTrigger value="hyperlocal">Hyperlocal</TabsTrigger>
-                <TabsTrigger value="evidence">Evidence</TabsTrigger>
-                <TabsTrigger value="reachability">Reachability</TabsTrigger>
+                <TabsTrigger value="penilaian">Penilaian</TabsTrigger>
+                <TabsTrigger value="reachability">Keterjangkauan</TabsTrigger>
                 <TabsTrigger value="result">Hasil & Verifikasi</TabsTrigger>
                 <TabsTrigger value="history">Riwayat</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="aces" className="space-y-4">
+            <TabsContent value="penilaian" className="space-y-4">
                 <Card>
                     <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                             <span className="text-sm text-muted-foreground">
-                                Skor ACES Readiness (0–100)
+                                Skor Kesiapan ACES (0–100)
                             </span>
                             <span className="text-2xl font-bold">
                                 {assessment.acesScore.toFixed(1)}
                             </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Access 20% · Communication 15% · Environment 20% ·
-                            Services 45%
-                        </p>
-                    </CardContent>
-                </Card>
-                {indicatorsByGroup(ACES_GROUPS).map(({ group, indicators, breakdown }) => (
-                    <IndicatorGroupEditor
-                        key={group}
-                        title={GROUP_LABELS[group as keyof typeof GROUP_LABELS]}
-                        description={`Kelompok indikator ${GROUP_LABELS[
-                            group as keyof typeof GROUP_LABELS
-                        ]} (ACES Readiness)`}
-                        indicators={indicators}
-                        groupBreakdown={breakdown}
-                        destinationId={destinationId}
-                        onSaved={load}
-                    />
-                ))}
-            </TabsContent>
-
-            <TabsContent value="hyperlocal" className="space-y-4">
-                <Card>
-                    <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
                             <span className="text-sm text-muted-foreground">
-                                Skor Hyperlocal (0–100)
+                                · Hyperlocal
                             </span>
-                            <span className="text-2xl font-bold">
+                            <span className="text-lg font-semibold">
                                 {assessment.hyperlocalScore.toFixed(1)}
                             </span>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                            Spatial 30% · Functional 25% · Halal assurance 20% ·
-                            Ecosystem 15% · Embeddedness 10%
-                        </p>
+                        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                            Tampilkan detail item
+                            <Switch
+                                checked={showDetail}
+                                onCheckedChange={setShowDetail}
+                            />
+                        </label>
                     </CardContent>
                 </Card>
-                {indicatorsByGroup(HYPERLOCAL_GROUPS).map(
-                    ({ group, indicators, breakdown }) => (
-                        <IndicatorGroupEditor
-                            key={group}
-                            title={
-                                GROUP_LABELS[
-                                    group as keyof typeof GROUP_LABELS
-                                ]
-                            }
-                            description={`Kelompok indikator ${GROUP_LABELS[
-                                group as keyof typeof GROUP_LABELS
-                            ]} (Hyperlocal)`}
-                            indicators={indicators}
-                            groupBreakdown={breakdown}
-                            destinationId={destinationId}
-                            onSaved={load}
-                        />
-                    ),
-                )}
-            </TabsContent>
-
-            <TabsContent value="evidence" className="space-y-4">
-                <EvidencePanel
-                    destinationId={destinationId}
-                    records={data.evidenceRecords}
-                    onChanged={load}
+                <AceshLayerForm
+                    indicators={layerIndicators}
+                    evidence={evidenceValues}
+                    showDetail={showDetail}
+                    saving={saving}
+                    onSubmit={handleSaveLayer}
                 />
             </TabsContent>
 
@@ -337,8 +364,11 @@ export function AceshAssessmentTabs({
                                             ] ?? ""
                                         }
                                     >
-                                        {assessment.classification ??
-                                            "Belum diklasifikasi"}
+                                        {assessment.classification
+                                            ? (CLASSIFICATION_LABELS[
+                                                  assessment.classification
+                                              ] ?? assessment.classification)
+                                            : "Belum diklasifikasi"}
                                     </Badge>
                                     <Badge
                                         variant={
@@ -353,7 +383,7 @@ export function AceshAssessmentTabs({
                                 {!verified && (
                                     <p className="text-xs text-muted-foreground max-w-md">
                                         Skor belum ditampilkan ke traveller —
-                                        verifikasi evidence lapangan & konfirmasi
+                                        verifikasi bukti lapangan & konfirmasi
                                         pengelola terlebih dahulu.
                                     </p>
                                 )}
@@ -363,7 +393,7 @@ export function AceshAssessmentTabs({
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                             {[
                                 {
-                                    label: "ACES Readiness",
+                                    label: "Kesiapan ACES",
                                     value: assessment.acesScore,
                                 },
                                 {
@@ -375,7 +405,7 @@ export function AceshAssessmentTabs({
                                     value: assessment.baseScore,
                                 },
                                 {
-                                    label: "Confidence",
+                                    label: "Keyakinan Bukti",
                                     value: assessment.evidenceConfidenceScore,
                                 },
                                 {
@@ -398,11 +428,11 @@ export function AceshAssessmentTabs({
                         </div>
 
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                            Skor dasar = 65% × ACES + 35% × Hyperlocal. Faktor bukti
-                            (evidence) = 0,70 + 0,30 × Confidence/100, diterapkan
-                            pada skor dasar untuk memperoleh skor terverifikasi.
-                            Skor akhir dibulatkan 1 desimal dan diklasifikasikan
-                            ke 5 level kesiapan.
+                            Skor dasar = 65% × Kesiapan ACES + 35% × Hyperlocal.
+                            Faktor bukti = 0,70 + 0,30 × Keyakinan Bukti/100,
+                            diterapkan pada skor dasar untuk memperoleh skor
+                            terverifikasi. Skor akhir dibulatkan 1 desimal dan
+                            diklasifikasikan ke 5 level kesiapan.
                         </p>
                     </CardContent>
                 </Card>
@@ -457,8 +487,11 @@ export function AceshAssessmentTabs({
                                                     ] ?? ""
                                                 }
                                             >
-                                                {entry.classification ??
-                                                    "—"}
+                                                {entry.classification
+                                                    ? (CLASSIFICATION_LABELS[
+                                                          entry.classification
+                                                      ] ?? entry.classification)
+                                                    : "—"}
                                             </Badge>
                                         </div>
                                     </div>

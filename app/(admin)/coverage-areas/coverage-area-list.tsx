@@ -14,7 +14,6 @@ import {
     RotateCcw,
 } from "lucide-react";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import { OSM_URL, OSM_ATTRIBUTION, MAP_MAX_ZOOM, MAP_DEFAULT_CENTER } from "@/lib/config/maps";
 
 import { useCursorPagination } from "@/hooks/use-cursor-pagination";
@@ -125,14 +124,15 @@ function MapPreview({
             maxZoom: MAP_MAX_ZOOM,
             attribution: OSM_ATTRIBUTION,
         }).addTo(map);
-        base.on("tileerror", () => {
-            try {
-                if (map.hasLayer(base)) map.removeLayer(base);
-                L.tileLayer(OSM_URL, {
-                    maxZoom: MAP_MAX_ZOOM,
-                    attribution: OSM_ATTRIBUTION,
-                }).addTo(map);
-            } catch {}
+        let tileErrors = 0;
+        base.on("tileerror", (event) => {
+            tileErrors += 1;
+            if (tileErrors === 1) {
+                console.warn(
+                    "[MapPreview] Gagal memuat tile peta:",
+                    event?.tile?.src,
+                );
+            }
         });
         mapInstanceRef.current = map;
         return () => {

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "priangan-halal-v2";
+const CACHE_VERSION = "priangan-halal-v3";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 

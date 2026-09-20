@@ -95,6 +95,7 @@ model User {
   userInteractions         UserInteraction[]
   itineraries              Itinerary[]
   reports                  Report[]
+  surveyResponses          DestinationSurveyResponse[]
 
   @@unique([email])
   @@map("user")
@@ -210,6 +211,7 @@ model Destination {
   aceshAssessment            AceshAssessment?
   aceshAssessmentHistory     AceshAssessmentHistory[]
   recommendationActions      RecommendationAction[]
+  surveyResponses            DestinationSurveyResponse[]
 
   @@index([categoryId])
   @@index([coverageAreaId])
@@ -466,6 +468,23 @@ model ReviewSentiment {
 
   @@index([label])
   @@map("review_sentiments")
+}
+
+model DestinationSurveyResponse {
+  id            String   @id @default(uuid())
+  destinationId String   @map("destination_id")
+  userId        String?  @map("user_id")
+  scores        Json
+  overallScore  Float?   @map("overall_score")
+  comment       String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([destinationId])
+  @@index([userId])
+  @@map("destination_survey_responses")
 }
 
 model Itinerary {

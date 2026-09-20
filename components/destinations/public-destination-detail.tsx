@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import type { Destination } from "@/types/destination";
-import type { PublicReview } from "@/types/review";
 import { getDestination } from "@/lib/api/destination";
-import { getDestinationReviews } from "@/lib/api/review";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { api } from "@/lib/axios";
 import { authClient } from "@/lib/auth-client";
@@ -22,7 +21,8 @@ import { NotFoundState } from "@/fitur/destinasi/components/not-found-state";
 import { HeroGallery } from "@/fitur/destinasi/components/hero-gallery";
 import { FacilitiesSection } from "@/fitur/destinasi/components/facilities-section";
 import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
-import { ReviewSection } from "@/fitur/destinasi/components/review-section";
+import { SurveyDialog } from "@/fitur/destinasi/components/survey-dialog";
+import { HalalBadge } from "@/components/ui/halal-badge";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import {
     ImageLightbox,
@@ -63,7 +63,6 @@ const CLASSIFICATION_STYLES: Record<string, string> = {
 export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const router = useRouter();
     const [destination, setDestination] = useState<Destination | null>(null);
-    const [reviews, setReviews] = useState<PublicReview[]>([]);
     const [acesh, setAcesh] = useState<PublicAceshAssessment | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -78,12 +77,8 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             try {
                 setLoading(true);
                 setError(null);
-                const [dest, reviewData] = await Promise.all([
-                    getDestination(id),
-                    getDestinationReviews(id),
-                ]);
+                const dest = await getDestination(id);
                 setDestination(dest);
-                setReviews(reviewData);
             } catch (err: unknown) {
                 setError(getApiErrorMessage(err));
             } finally {
@@ -283,9 +278,9 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
         );
     }, [destination, trackInteraction]);
 
-    const handleReviewSubmitted = useCallback(
-        (_updatedReviews: PublicReview[]) => {},
-        [],
+    const halalScore = useMemo(
+        () => destination?.validatedScore ?? destination?.halalScore ?? null,
+        [destination],
     );
 
     if (loading) return <LoadingState />;
@@ -296,16 +291,38 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     return (
         <div className="min-h-screen bg-background">
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8 space-y-6 sm:space-y-8">
+                <button
+                    type="button"
+                    onClick={() => router.push("/destinasi")}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Kembali
+                </button>
+
                 <HeroGallery
                     primaryImage={primaryImage}
                     secondaryImages={secondaryImages}
                     destination={destination}
                     heroLoaded={heroLoaded}
                     onHeroLoad={() => setHeroLoaded(true)}
-                    onBack={() => router.push("/destinasi")}
                     destinationId={id}
                     onImageClick={lightbox.openAt}
                 />
+
+                {halalScore != null && (
+                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                        <HalalBadge score={halalScore} inline />
+                        <div>
+                            <p className="text-sm font-bold text-foreground">
+                                Skor Halal {halalScore}/100
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                Klasifikasi kesiapan halal destinasi.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 {acesh && acesh.baseScore != null && (
                     <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
@@ -364,13 +381,24 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
 
                         <FacilitiesSection facilities={allFacilities} />
                         <UmkmSection umkms={nearbyUmkms} />
-                        <ReviewSection
-                            destinationId={id}
-                            initialReviews={reviews}
-                            session={session}
-                            sessionPending={sessionPending}
-                            onReviewSubmitted={handleReviewSubmitted}
-                        />
+                        <section className="pt-4 border-t border-border/30">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground">
+                                        Penilaian Destinasi
+                                    </h2>
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Nilai setiap item model SAFAR ACES-H
+                                        untuk membantu traveller lain.
+                                    </p>
+                                </div>
+                                <SurveyDialog
+                                    destinationId={id}
+                                    session={session}
+                                    sessionPending={sessionPending}
+                                />
+                            </div>
+                        </section>
                     </div>
 
                     <MapSidebar

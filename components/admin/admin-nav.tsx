@@ -20,14 +20,24 @@ import {
     Globe,
     FileDown,
     FileUp,
-    Layers,
+    Star,
 } from "lucide-react";
 
 export const navItems = [
     {
-        title: "Dashboard",
+        title: "Dashboard Utama",
         href: "/dashboard",
         icon: LayoutDashboard,
+        subItems: [
+            {
+                title: "Dashboard",
+                href: "/dashboard",
+            },
+            {
+                title: "Dashboard ACES-H",
+                href: "/dashboard/acesh",
+            },
+        ],
     },
     {
         title: "Area Cakupan",
@@ -94,9 +104,9 @@ export const navItems = [
         ],
     },
     {
-        title: "Dashboard ACES-H",
-        href: "/dashboard/acesh",
-        icon: Layers,
+        title: "Penilaian Destinasi",
+        href: "/penilaian",
+        icon: Star,
     },
     {
         title: "Statistik",

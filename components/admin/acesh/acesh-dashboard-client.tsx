@@ -629,7 +629,7 @@ export function AceshDashboardClient() {
                           size="icon"
                           className="text-[#047857]"
                           onClick={() =>
-                            router.push(`/destinations/${it.destinationId}`)
+                            router.push(`/validasi/destinasi/${it.destinationId}`)
                           }
                         >
                           <Eye className="h-5 w-5" />

@@ -44,15 +44,34 @@ function getBadgeConfig(score: number): BadgeConfig {
 interface HalalBadgeProps {
     score: number | null | undefined;
     className?: string;
+    inline?: boolean;
 }
 
 export function HalalBadge({
     score,
     className = "",
+    inline = false,
 }: HalalBadgeProps): ReactNode {
     if (score == null) return null;
 
     const config = getBadgeConfig(score);
+
+    if (inline) {
+        return (
+            <div
+                className={`relative inline-block h-[72px] w-[96px] shrink-0 drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)] ${className}`}
+                title={`${config.label} — Skor ${score}`}
+            >
+                <Image
+                    src={config.imageSrc}
+                    alt={config.label}
+                    fill
+                    sizes="96px"
+                    className="object-contain"
+                />
+            </div>
+        );
+    }
 
     return (
         <div

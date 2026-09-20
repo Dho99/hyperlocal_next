@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import React from "react";
+import { MapErrorBoundary } from "./map-error-boundary";
 
 /**
  * Loading state for maps
@@ -15,7 +16,7 @@ const MapSkeleton = () => (
 /**
  * MapPicker component - Dynamically loaded for SSR compatibility
  */
-export const MapPicker = dynamic(() => import("./map-picker-client"), {
+const MapPickerDynamic = dynamic(() => import("./map-picker-client"), {
   ssr: false,
   loading: () => <MapSkeleton />,
 });
@@ -23,10 +24,30 @@ export const MapPicker = dynamic(() => import("./map-picker-client"), {
 /**
  * ReadonlyMap component - Dynamically loaded for SSR compatibility
  */
-export const ReadonlyMap = dynamic(() => import("./readonly-map-client"), {
+const ReadonlyMapDynamic = dynamic(() => import("./readonly-map-client"), {
   ssr: false,
   loading: () => <MapSkeleton />,
 });
+
+export function MapPicker(
+  props: React.ComponentProps<typeof MapPickerDynamic>,
+) {
+  return (
+    <MapErrorBoundary>
+      <MapPickerDynamic {...props} />
+    </MapErrorBoundary>
+  );
+}
+
+export function ReadonlyMap(
+  props: React.ComponentProps<typeof ReadonlyMapDynamic>,
+) {
+  return (
+    <MapErrorBoundary>
+      <ReadonlyMapDynamic {...props} />
+    </MapErrorBoundary>
+  );
+}
 
 export { DynamicContextMap } from "./dynamic-context-map";
 export { DynamicDashboardMap } from "../admin/dashboard/dynamic-dashboard-map";

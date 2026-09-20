@@ -2,7 +2,7 @@
 
 import { TileLayer } from "react-leaflet";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { OSM_URL, ESRI_DARK_URL, ESRI_ATTRIBUTION, OSM_ATTRIBUTION } from "@/lib/config/maps";
 
 interface ThemeTileLayerProps {
@@ -25,6 +25,7 @@ export function ThemeTileLayer({
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [failed, setFailed] = useState(false);
+    const errorCount = useRef(0);
 
     useEffect(() => {
         setMounted(true);
@@ -35,6 +36,7 @@ export function ThemeTileLayer({
     const key = `${primaryUrl}|${failed ? "fallback" : "primary"}`;
 
     useEffect(() => {
+        errorCount.current = 0;
         setFailed(false);
     }, [primaryUrl]);
 
@@ -49,7 +51,8 @@ export function ThemeTileLayer({
             attribution={attribution}
             eventHandlers={{
                 tileerror: () => {
-                    setFailed(true);
+                    errorCount.current += 1;
+                    if (errorCount.current >= 3) setFailed(true);
                 },
             }}
         />

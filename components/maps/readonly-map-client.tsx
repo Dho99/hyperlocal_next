@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { MapContainer, Marker, Popup } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
-import "leaflet/dist/leaflet.css";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import {
     DEFAULT_CENTER,

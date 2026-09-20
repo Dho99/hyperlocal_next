@@ -9,7 +9,6 @@ import {
 } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import {
     DEFAULT_CENTER,

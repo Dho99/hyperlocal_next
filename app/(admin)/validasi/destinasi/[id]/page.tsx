@@ -226,7 +226,7 @@ export default function ProcessValidationPage() {
                 </div>
 
                 <DestinationValidationForm
-                    validationId={id}
+                    validationId={validation.id ?? id}
                     destination={validation.destination}
                     currentStatus={validation.status}
                     currentNotes={validation.notes as string}

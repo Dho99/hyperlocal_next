@@ -4,7 +4,6 @@ import { useMemo, useCallback } from "react";
 import { MapContainer, Marker, Popup } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import {

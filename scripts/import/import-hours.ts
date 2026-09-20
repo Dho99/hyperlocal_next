@@ -73,7 +73,7 @@ export async function importOperationalHours() {
       where: {
         OR: [
           ...(id ? [{ externalId: id }] : []),
-          ...(nama ? [{ name: { equals: nama, mode: "insensitive" } }] : []),
+          ...(nama ? [{ name: { equals: nama, mode: "insensitive" as const } }] : []),
         ],
       },
     });
