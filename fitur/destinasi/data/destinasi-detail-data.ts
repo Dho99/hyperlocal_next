@@ -10,6 +10,13 @@ export interface FacilityInfo {
     distance: number | null;
     maxDistance: number | null;
     travelMinutes?: number | null;
+    photoValidity?: {
+        total: number;
+        valid: number;
+        invalidPosition: number;
+        invalidTime: number;
+        noMetadata: number;
+    } | null;
 }
 
 export interface NearbyUmkm {

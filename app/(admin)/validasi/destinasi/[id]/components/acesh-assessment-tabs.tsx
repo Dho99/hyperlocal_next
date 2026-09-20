@@ -23,6 +23,7 @@ import {
     type FacilityMetricItem,
 } from "./acesh-reachability-panel";
 import type { EvidenceRecordItem } from "./acesh-evidence-panel";
+import { AceshModelDiagram } from "@/components/admin/acesh/acesh-model-diagram";
 import {
     CLASSIFICATION_LABELS,
     CLASSIFICATION_STYLES,
@@ -119,14 +120,17 @@ function deriveEvidence(records: EvidenceRecordItem[]): EvidenceComponentValues 
 export function AceshAssessmentTabs({
     destinationId,
     facilities,
+    profile,
 }: {
     destinationId: string;
     facilities: FacilityMetricItem[];
+    profile?: { slug?: string; categoryName?: string; city?: string };
 }) {
     const [data, setData] = useState<AssessmentPayload | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [showDetail, setShowDetail] = useState(true);
+    const [showModel, setShowModel] = useState(false);
     const [recalculating, setRecalculating] = useState(false);
     const [reachabilityConfigs, setReachabilityConfigs] = useState<
         ReachabilityConfigItem[]
@@ -264,7 +268,56 @@ export function AceshAssessmentTabs({
     const evidenceValues = deriveEvidence(data.evidenceRecords);
 
     return (
-        <Tabs defaultValue="penilaian" className="space-y-4">
+        <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm text-muted-foreground">
+                    Form penilaian 3 lapis. Model SAFAR ACES-H menampilkan
+                    diagnosis kesenjangan & rekomendasi prioritas.
+                </p>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowModel((v) => !v)}
+                >
+                    {showModel
+                        ? "Sembunyikan Model SAFAR ACES-H"
+                        : "Tampilkan Model SAFAR ACES-H"}
+                </Button>
+            </div>
+
+            {showModel && (
+                <AceshModelDiagram
+                    data={{
+                        acesScore: assessment.acesScore,
+                        hyperlocalScore: assessment.hyperlocalScore,
+                        baseScore: assessment.baseScore,
+                        evidenceConfidenceScore:
+                            assessment.evidenceConfidenceScore,
+                        evidenceFactor: assessment.evidenceFactor,
+                        verifiedScore: assessment.verifiedScore,
+                        classification: assessment.classification,
+                        verificationStatus: assessment.verificationStatus,
+                        calculatedAt: assessment.calculatedAt,
+                    }}
+                    groupBreakdown={data.groupBreakdown.map((b) => ({
+                        group: b.group,
+                        groupScore: b.groupScore,
+                        dimensionWeight: b.dimensionWeight ?? 0,
+                    }))}
+                    indicators={layerIndicators.map((i) => ({
+                        id: i.id,
+                        code: i.code,
+                        name: i.name,
+                        group: i.group,
+                        weight: i.weight,
+                        value: i.value,
+                    }))}
+                    evidenceRecords={data.evidenceRecords}
+                    profile={profile}
+                />
+            )}
+
+            <Tabs defaultValue="penilaian" className="space-y-4">
             <TabsList className="flex flex-wrap h-auto">
                 <TabsTrigger value="penilaian">Penilaian</TabsTrigger>
                 <TabsTrigger value="reachability">Keterjangkauan</TabsTrigger>
@@ -501,6 +554,7 @@ export function AceshAssessmentTabs({
                     </CardContent>
                 </Card>
             </TabsContent>
-        </Tabs>
+            </Tabs>
+        </div>
     );
 }

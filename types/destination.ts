@@ -21,10 +21,26 @@ export interface DestinationImage {
     caption?: string | null;
     isPrimary?: boolean;
     createdAt?: Date | string;
+    latitude?: number | null;
+    longitude?: number | null;
+    capturedAt?: Date | string | null;
+    distanceMeters?: number | null;
+    positionValid?: boolean | null;
+    timeValid?: boolean | null;
+    validityStatus?: string | null;
+    validityNotes?: string | null;
 }
 
 export interface DestinationFacilityEvidence {
     imageUrl: string;
+    latitude?: number | null;
+    longitude?: number | null;
+    capturedAt?: Date | string | null;
+    distanceMeters?: number | null;
+    positionValid?: boolean | null;
+    timeValid?: boolean | null;
+    validityStatus?: string | null;
+    validityNotes?: string | null;
 }
 
 export interface DestinationHalalFacility {

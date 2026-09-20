@@ -12,7 +12,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
+import { isBlockingPhotoStatus } from "@/lib/config/photo-validation";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface UploadingFile {
     id: string;
@@ -31,6 +33,12 @@ interface MultiImageDropzoneProps {
     maxFiles?: number;
     disabled?: boolean;
     className?: string;
+    /** Enable server-side EXIF/geo validation for uploaded photos. */
+    validatePhoto?: boolean;
+    targetLat?: number | null;
+    targetLng?: number | null;
+    toleranceMeters?: number | null;
+    targetLabel?: string;
 }
 
 export function MultiImageDropzone({
@@ -40,8 +48,26 @@ export function MultiImageDropzone({
     maxFiles = 5,
     disabled = false,
     className,
+    validatePhoto = false,
+    targetLat = null,
+    targetLng = null,
+    toleranceMeters = null,
+    targetLabel = "lokasi tujuan",
 }: MultiImageDropzoneProps) {
     const [files, setFiles] = useState<UploadingFile[]>([]);
+
+    const buildUploadUrl = useCallback(() => {
+        const params = new URLSearchParams({ folder });
+        if (validatePhoto && targetLat != null && targetLng != null) {
+            params.set("lat", String(targetLat));
+            params.set("lng", String(targetLng));
+            if (toleranceMeters != null) {
+                params.set("tolerance", String(toleranceMeters));
+            }
+            params.set("label", targetLabel);
+        }
+        return `/api/upload?${params.toString()}`;
+    }, [folder, validatePhoto, targetLat, targetLng, toleranceMeters, targetLabel]);
 
     useEffect(() => {
         // Functional set — hindari closure stale `files` saat parent update via onChange
@@ -89,7 +115,7 @@ export function MultiImageDropzone({
             );
 
             try {
-                const res = await fetch(`/api/upload?folder=${folder}`, {
+                const res = await fetch(buildUploadUrl(), {
                     method: "POST",
                     body: formData,
                 });
@@ -102,16 +128,33 @@ export function MultiImageDropzone({
                 }
 
                 const url = data.data.path as string;
+                const validity = data.data.validity;
+                const blocked =
+                    validatePhoto &&
+                    validity &&
+                    isBlockingPhotoStatus(validity.validityStatus);
+                if (blocked) {
+                    toast.error(validity.message || "Foto tidak valid");
+                }
                 const oldPreview = fileObj.preview;
                 setFiles((prev) => {
                     const next = prev.map((f) =>
                         f.id === fileObj.id
-                            ? {
-                                  ...f,
-                                  status: "success" as const,
-                                  url,
-                                  progress: 100,
-                              }
+                            ? blocked
+                                ? {
+                                      ...f,
+                                      status: "error" as const,
+                                      progress: 100,
+                                      error:
+                                          validity.message ||
+                                          "Foto tidak valid",
+                                  }
+                                : {
+                                      ...f,
+                                      status: "success" as const,
+                                      url,
+                                      progress: 100,
+                                  }
                             : f,
                     );
                     // Blob lokal tak lagi dipakai setelah URL cloudinary ada — revoke agar tak leak
@@ -137,7 +180,7 @@ export function MultiImageDropzone({
                 );
             }
         },
-        [folder, triggerOnChange],
+        [buildUploadUrl, triggerOnChange, validatePhoto],
     );
 
     const onDrop = useCallback(
@@ -200,6 +243,8 @@ export function MultiImageDropzone({
     const existingCount = files.filter(
         (f) => f.status === "success" && f.url,
     ).length;
+
+    const errorFiles = files.filter((f) => f.status === "error" && f.error);
 
     return (
         <div className={cn("space-y-3", className)}>
@@ -268,7 +313,10 @@ export function MultiImageDropzone({
                             )}
 
                             {file.status === "error" && (
-                                <div className="absolute inset-0 bg-destructive/10 flex items-center justify-center">
+                                <div
+                                    className="absolute inset-0 bg-destructive/10 flex items-center justify-center"
+                                    title={file.error}
+                                >
                                     <AlertCircle className="h-5 w-5 text-destructive" />
                                 </div>
                             )}
@@ -292,6 +340,20 @@ export function MultiImageDropzone({
                         </div>
                     ))}
                 </div>
+            )}
+
+            {errorFiles.length > 0 && (
+                <ul className="space-y-1">
+                    {errorFiles.map((f) => (
+                        <li
+                            key={f.id}
+                            className="flex items-start gap-1.5 text-[10px] leading-snug text-destructive"
+                        >
+                            <AlertCircle className="mt-0.5 h-3 w-3 shrink-0" />
+                            <span className="break-words">{f.error}</span>
+                        </li>
+                    ))}
+                </ul>
             )}
 
             {files.length === 0 && (

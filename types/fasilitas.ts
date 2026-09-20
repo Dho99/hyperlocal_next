@@ -5,6 +5,7 @@ export interface Facility {
     facilityType: string | null;
     weight: number | null;
     maxDistance: number;
+    photoToleranceMeters: number;
     createdAt: Date;
     updatedAt: Date;
 }

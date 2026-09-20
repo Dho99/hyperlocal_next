@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Save, Layers, Sparkles, ShieldCheck } from "lucide-react";
+import { Loader2, Save, Layers, Sparkles, ShieldCheck, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
     ACES_GROUPS,
@@ -50,6 +50,8 @@ interface AceshLayerFormProps {
     readOnly?: boolean;
     saving?: boolean;
     submitLabel?: string;
+    /** Optional content rendered between the layers and the submit button. */
+    beforeSubmit?: React.ReactNode;
     onSubmit: (payload: AceshLayerFormSubmit) => Promise<void> | void;
 }
 
@@ -76,6 +78,7 @@ function LayerCard({
     className?: string;
     children: React.ReactNode;
 }) {
+    const [open, setOpen] = useState(true);
     return (
         <div
             className={cn(
@@ -83,7 +86,12 @@ function LayerCard({
                 className,
             )}
         >
-            <div className="flex items-center justify-between gap-2 border-b border-inherit px-4 py-3">
+            <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                className="flex w-full items-center justify-between gap-2 border-b border-inherit px-4 py-3 text-left transition-colors hover:bg-black/5"
+            >
                 <div className="flex items-center gap-2">
                     {icon}
                     <div>
@@ -93,13 +101,21 @@ function LayerCard({
                         </p>
                     </div>
                 </div>
-                {score && (
-                    <span className="text-xs font-semibold text-muted-foreground">
-                        {score}
-                    </span>
-                )}
-            </div>
-            <div className="p-3 space-y-3">{children}</div>
+                <div className="flex items-center gap-2">
+                    {score && (
+                        <span className="text-xs font-semibold text-muted-foreground">
+                            {score}
+                        </span>
+                    )}
+                    <ChevronDown
+                        className={cn(
+                            "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                            open && "rotate-180",
+                        )}
+                    />
+                </div>
+            </button>
+            {open && <div className="p-3 space-y-3">{children}</div>}
         </div>
     );
 }
@@ -111,6 +127,7 @@ export function AceshLayerForm({
     readOnly = false,
     saving = false,
     submitLabel = "Simpan Penilaian",
+    beforeSubmit,
     onSubmit,
 }: AceshLayerFormProps) {
     const [values, setValues] = useState<Record<string, string>>(() =>
@@ -141,15 +158,20 @@ export function AceshLayerForm({
         return map;
     }, [indicators]);
 
-    const groupScore = (group: string): number | null => {
-        const list = indicatorsByGroup.get(group) ?? [];
-        const scored = list.filter((i) => values[i.id] !== "" && values[i.id] != null);
-        if (scored.length === 0) return null;
-        const avg =
-            scored.reduce((sum, i) => sum + Number(values[i.id] ?? 0), 0) /
-            scored.length;
-        return Math.round(avg * 25 * 10) / 10;
-    };
+    const groupScore = useCallback(
+        (group: string): number | null => {
+            const list = indicatorsByGroup.get(group) ?? [];
+            const scored = list.filter(
+                (i) => values[i.id] !== "" && values[i.id] != null,
+            );
+            if (scored.length === 0) return null;
+            const avg =
+                scored.reduce((sum, i) => sum + Number(values[i.id] ?? 0), 0) /
+                scored.length;
+            return Math.round(avg * 25 * 10) / 10;
+        },
+        [indicatorsByGroup, values],
+    );
 
     const acesScore = useMemo(() => {
         let weighted = 0;
@@ -162,7 +184,7 @@ export function AceshLayerForm({
             weightSum += w;
         }
         return weightSum > 0 ? Math.round((weighted / weightSum) * 10) / 10 : null;
-    }, [indicatorsByGroup, values]);
+    }, [groupScore]);
 
     const evidenceScore = useMemo(() => {
         let total = 0;
@@ -328,6 +350,8 @@ export function AceshLayerForm({
                     </div>
                 </LayerCard>
             </div>
+
+            {beforeSubmit}
 
             {!readOnly && (
                 <div className="flex justify-end">

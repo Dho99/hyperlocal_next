@@ -31,14 +31,14 @@ type TooltipData = {
 } | null;
 
 const METRICS = [
-    { key: "bookmarks" as const, label: "Bookmark", color: "#047857" },
+    { key: "bookmarks" as const, label: "Bookmark", color: "var(--chart-1)" },
     {
         key: "whatsappClicks" as const,
         label: "Klik WhatsApp",
         color: "#25D366",
     },
-    { key: "routeClicks" as const, label: "Rute", color: "#c9a74d" },
-    { key: "totalViews" as const, label: "Kunjungan", color: "#0f766e" },
+    { key: "routeClicks" as const, label: "Rute", color: "var(--chart-3)" },
+    { key: "totalViews" as const, label: "Kunjungan", color: "var(--chart-5)" },
 ];
 
 export default function TrendChart() {
@@ -106,7 +106,7 @@ export default function TrendChart() {
                         size="icon"
                         onClick={fetchTrends}
                         disabled={loading}
-                        className="h-8 w-8 text-accent"
+                        className="h-8 w-8 text-primary"
                     >
                         <RefreshCw
                             className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
@@ -131,7 +131,7 @@ export default function TrendChart() {
                 </div>
 
                 {loading ? (
-                    <div className="flex flex-1 items-end gap-2 rounded-lg bg-background px-3 pb-3 pt-4">
+                    <div className="flex flex-1 items-end gap-2 rounded-lg bg-muted/40 px-3 pb-3 pt-4">
                         {Array.from({ length: 6 }).map((_, i) => (
                             <div
                                 key={i}
@@ -148,20 +148,20 @@ export default function TrendChart() {
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-lg bg-background text-destructive">
+                    <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-lg bg-muted/40 text-destructive">
                         <AlertCircle className="h-6 w-6" />
                         <p className="text-sm font-medium">{error}</p>
                         <Button
                             variant="outline"
                             size="sm"
                             onClick={fetchTrends}
-                            className="border-border text-accent"
+                            className="border-border text-primary"
                         >
                             Coba Lagi
                         </Button>
                     </div>
                 ) : data.length === 0 ? (
-                    <div className="flex flex-1 items-center justify-center rounded-lg bg-background text-muted-foreground">
+                    <div className="flex flex-1 items-center justify-center rounded-lg bg-muted/40 text-muted-foreground">
                         <p className="text-sm">Belum ada data interaksi.</p>
                     </div>
                 ) : (
@@ -175,7 +175,7 @@ export default function TrendChart() {
                                 <span className="border-t border-dashed border-border/70 text-[10px] text-muted-foreground" />
                             </div>
 
-                            <div className="flex h-full min-h-40 items-end gap-2 rounded-lg bg-background px-3 pb-3 pt-4">
+                            <div className="flex h-full min-h-40 items-end gap-2 rounded-lg bg-muted/40 px-3 pb-3 pt-4">
                                 {data.map((item) => {
                                     const pct = (val: number) =>
                                         Math.max(2, (val / maxValue) * 100);

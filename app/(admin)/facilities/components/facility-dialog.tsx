@@ -66,6 +66,7 @@ export function FacilityDialog({
             facilityType: undefined,
             weight: undefined,
             maxDistance: 5.0,
+            photoToleranceMeters: 100,
         },
     });
 
@@ -77,6 +78,7 @@ export function FacilityDialog({
                 facilityType: facility.facilityType as FacilityFormData["facilityType"],
                 weight: facility.weight ?? undefined,
                 maxDistance: facility.maxDistance,
+                photoToleranceMeters: facility.photoToleranceMeters ?? 100,
             });
         } else {
             form.reset({
@@ -85,6 +87,7 @@ export function FacilityDialog({
                 facilityType: undefined,
                 weight: undefined,
                 maxDistance: 5.0,
+                photoToleranceMeters: 100,
             });
         }
     }, [facility, form, open]);
@@ -98,6 +101,7 @@ export function FacilityDialog({
                 facilityType: data.facilityType ?? null,
                 weight: data.weight ?? null,
                 maxDistance: data.maxDistance,
+                photoToleranceMeters: data.photoToleranceMeters,
             };
             if (facility) {
                 await updateFacility(facility.id, payload);
@@ -248,6 +252,33 @@ export function FacilityDialog({
                                             {...field}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="photoToleranceMeters"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Toleransi Foto (meter)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            max={10000}
+                                            step={1}
+                                            placeholder="Contoh: 100"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <p className="text-[10px] text-muted-foreground">
+                                        Jarak maksimal koordinat EXIF foto
+                                        terhadap lokasi. Default 100 m.
+                                    </p>
                                     <FormMessage />
                                 </FormItem>
                             )}

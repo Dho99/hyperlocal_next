@@ -25,6 +25,14 @@ enum ValidationStatus {
   REJECTED
 }
 
+enum PhotoValidityStatus {
+  PENDING
+  VALID
+  INVALID_POSITION
+  INVALID_TIME
+  NO_METADATA
+}
+
 enum AceshIndicatorGroup {
   ACCESS
   COMMUNICATION
@@ -286,6 +294,15 @@ model DestinationImage {
   isPrimary     Boolean  @default(false) @map("is_primary")
   createdAt     DateTime @default(now()) @map("created_at")
 
+  latitude       Float?
+  longitude      Float?
+  capturedAt     DateTime?           @map("captured_at")
+  distanceMeters Int?                @map("distance_meters")
+  positionValid  Boolean?            @map("position_valid")
+  timeValid      Boolean?            @map("time_valid")
+  validityStatus PhotoValidityStatus @default(PENDING) @map("validity_status")
+  validityNotes  String?             @map("validity_notes")
+
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
 
   @@index([destinationId])
@@ -319,10 +336,33 @@ model DestinationFacilityEvidence {
   imageUrl       String   @map("image_url")
   createdAt      DateTime @default(now()) @map("created_at")
 
+  latitude       Float?
+  longitude      Float?
+  capturedAt     DateTime?           @map("captured_at")
+  distanceMeters Int?                @map("distance_meters")
+  positionValid  Boolean?            @map("position_valid")
+  timeValid      Boolean?            @map("time_valid")
+  validityStatus PhotoValidityStatus @default(PENDING) @map("validity_status")
+  validityNotes  String?             @map("validity_notes")
+
   destFacility DestinationHalalFacility @relation(fields: [destFacilityId], references: [id], onDelete: Cascade)
 
   @@index([destFacilityId])
   @@map("destination_facility_evidences")
+}
+
+model PhotoMetadata {
+  id         String   @id @default(uuid())
+  url        String   @unique
+  publicId   String?  @map("public_id")
+  latitude   Float?
+  longitude  Float?
+  capturedAt DateTime? @map("captured_at")
+  uploadedAt DateTime  @default(now()) @map("uploaded_at")
+  exif       Json?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@map("photo_metadata")
 }
 
 model HalalFacility {
@@ -338,6 +378,7 @@ model HalalFacility {
   updatedAt      DateTime @updatedAt @map("updated_at")
   weight         Int?     @default(0)
   maxDistance    Float    @default(5.0) @map("max_distance")
+  photoToleranceMeters Int @default(100) @map("photo_tolerance_meters")
 
   destinationHalalFacilities   DestinationHalalFacility[]
   umkmHalalFacilities          UmkmHalalFacility[]

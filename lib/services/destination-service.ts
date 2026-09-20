@@ -12,6 +12,16 @@ import { estimateTravelTime } from "@/lib/services/acesh/travel-time-service";
 import { calculateAndSaveAssessment } from "@/lib/services/acesh/assessment-recalculation-service";
 import { parseCoordinate } from "@/lib/maps/geo-utils";
 import { defaultTravelModeForType } from "@/lib/services/acesh/constants";
+import {
+    evaluatePhotoValidity,
+    getPhotoMetadataByUrls,
+    PhotoValidationError,
+    type PhotoValidationIssue,
+} from "@/lib/services/photo-validation-service";
+import {
+    DEFAULT_PHOTO_TOLERANCE_METERS,
+    type PhotoValidityStatusValue,
+} from "@/lib/config/photo-validation";
 
 export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
@@ -19,6 +29,12 @@ interface FacilityMetrics {
     distanceMeters: number | null;
     travelMinutes: number | null;
     travelMode: string | null;
+}
+
+interface DestinationImageInput {
+    imageUrl: string;
+    isPrimary?: boolean;
+    caption?: string | null;
 }
 
 async function computeFacilityMetrics(
@@ -53,6 +69,81 @@ async function computeFacilityMetrics(
         };
     } catch {
         return { distanceMeters: null, travelMinutes: null, travelMode: null };
+    }
+}
+
+interface PhotoValidityFields {
+    latitude: number | null;
+    longitude: number | null;
+    capturedAt: Date | null;
+    distanceMeters: number | null;
+    positionValid: boolean | null;
+    timeValid: boolean | null;
+    validityStatus: PhotoValidityStatusValue;
+    validityNotes: string;
+}
+
+async function buildPhotoValidity(
+    urls: string[],
+    targetLat: number | null,
+    targetLng: number | null,
+    toleranceMeters: number,
+    targetLabel: string,
+): Promise<Map<string, PhotoValidityFields>> {
+    const map = new Map<string, PhotoValidityFields>();
+    if (urls.length === 0) return map;
+
+    const metadataMap = await getPhotoMetadataByUrls(urls);
+    for (const url of urls) {
+        if (map.has(url)) continue;
+        const meta = metadataMap.get(url);
+        const validity = evaluatePhotoValidity({
+            photoLat: meta?.latitude ?? null,
+            photoLng: meta?.longitude ?? null,
+            targetLat,
+            targetLng,
+            toleranceMeters,
+            capturedAt: meta?.capturedAt ?? null,
+            uploadedAt: meta?.uploadedAt ?? null,
+            hasMetadata: Boolean(meta),
+            targetLabel,
+        });
+        map.set(url, {
+            latitude: meta?.latitude ?? null,
+            longitude: meta?.longitude ?? null,
+            capturedAt: meta?.capturedAt ?? null,
+            distanceMeters: validity.distanceMeters,
+            positionValid: validity.positionValid,
+            timeValid: validity.timeValid,
+            validityStatus: validity.validityStatus,
+            validityNotes: validity.notes,
+        });
+    }
+    return map;
+}
+
+const BLOCKING_STATUSES: PhotoValidityStatusValue[] = [
+    "INVALID_POSITION",
+    "INVALID_TIME",
+];
+
+function collectPhotoIssues(
+    issues: PhotoValidationIssue[],
+    map: Map<string, PhotoValidityFields>,
+    label: string,
+    toleranceMeters: number,
+): void {
+    for (const [url, v] of map) {
+        if (BLOCKING_STATUSES.includes(v.validityStatus)) {
+            issues.push({
+                url,
+                label,
+                status: v.validityStatus,
+                distanceMeters: v.distanceMeters,
+                toleranceMeters,
+                message: `${label}: ${v.validityNotes}`,
+            });
+        }
     }
 }
 
@@ -261,6 +352,47 @@ export async function createDestination(values: DestinationFormValues) {
             where: { id: { in: facilityIds } },
         });
 
+        const photoIssues: PhotoValidationIssue[] = [];
+
+        const galleryUrls =
+            images?.map((i: DestinationImageInput) => i.imageUrl) ?? [];
+        const galleryValidity = await buildPhotoValidity(
+            galleryUrls,
+            data.latitude ?? null,
+            data.longitude ?? null,
+            DEFAULT_PHOTO_TOLERANCE_METERS,
+            "destinasi",
+        );
+        collectPhotoIssues(
+            photoIssues,
+            galleryValidity,
+            "Galeri destinasi",
+            DEFAULT_PHOTO_TOLERANCE_METERS,
+        );
+
+        const evidenceValidity = new Map<string, PhotoValidityFields>();
+        for (const f of facilities ?? []) {
+            const mf = masterFacilities.find((m) => m.id === f.facilityId);
+            const tolerance =
+                mf?.photoToleranceMeters ?? DEFAULT_PHOTO_TOLERANCE_METERS;
+            const label = mf?.name ?? f.name ?? "fasilitas";
+            const map = await buildPhotoValidity(
+                f.evidenceUrls ?? [],
+                f.latitude ?? data.latitude ?? null,
+                f.longitude ?? data.longitude ?? null,
+                tolerance,
+                label,
+            );
+            for (const [url, v] of map) {
+                evidenceValidity.set(url, v);
+            }
+            collectPhotoIssues(photoIssues, map, label, tolerance);
+        }
+
+        if (photoIssues.length > 0) {
+            throw new PhotoValidationError(photoIssues);
+        }
+
         if (data.latitude != null && data.longitude != null) {
             for (const f of facilities ?? []) {
                 if (f.latitude == null || f.longitude == null) continue;
@@ -309,10 +441,11 @@ export async function createDestination(values: DestinationFormValues) {
                 halalScore,
                 images: {
                     create:
-                        images?.map((image: any, idx: number) => ({
+                        images?.map((image: DestinationImageInput, idx: number) => ({
                             imageUrl: image.imageUrl,
                             isPrimary: idx === 0 ? true : ((image.isPrimary as boolean | undefined) ?? false),
                             caption: (image.caption as string | null | undefined) ?? null,
+                            ...galleryValidity.get(image.imageUrl),
                         })) || [],
                 },
                 destinationHalalFacilities: {
@@ -331,6 +464,7 @@ export async function createDestination(values: DestinationFormValues) {
                                     create:
                                         f.evidenceUrls?.map((url) => ({
                                             imageUrl: url,
+                                            ...evidenceValidity.get(url),
                                         })) || [],
                                 },
                             };
@@ -369,6 +503,47 @@ export async function updateDestination(
         const masterFacilities = await tx.halalFacility.findMany({
             where: { id: { in: facilityIds } },
         });
+
+        const photoIssues: PhotoValidationIssue[] = [];
+
+        const galleryUrls =
+            images?.map((i: DestinationImageInput) => i.imageUrl) ?? [];
+        const galleryValidity = await buildPhotoValidity(
+            galleryUrls,
+            data.latitude ?? null,
+            data.longitude ?? null,
+            DEFAULT_PHOTO_TOLERANCE_METERS,
+            "destinasi",
+        );
+        collectPhotoIssues(
+            photoIssues,
+            galleryValidity,
+            "Galeri destinasi",
+            DEFAULT_PHOTO_TOLERANCE_METERS,
+        );
+
+        const evidenceValidity = new Map<string, PhotoValidityFields>();
+        for (const f of facilities ?? []) {
+            const mf = masterFacilities.find((m) => m.id === f.facilityId);
+            const tolerance =
+                mf?.photoToleranceMeters ?? DEFAULT_PHOTO_TOLERANCE_METERS;
+            const label = mf?.name ?? f.name ?? "fasilitas";
+            const map = await buildPhotoValidity(
+                f.evidenceUrls ?? [],
+                f.latitude ?? data.latitude ?? null,
+                f.longitude ?? data.longitude ?? null,
+                tolerance,
+                label,
+            );
+            for (const [url, v] of map) {
+                evidenceValidity.set(url, v);
+            }
+            collectPhotoIssues(photoIssues, map, label, tolerance);
+        }
+
+        if (photoIssues.length > 0) {
+            throw new PhotoValidationError(photoIssues);
+        }
 
         if (data.latitude != null && data.longitude != null) {
             for (const f of facilities ?? []) {
@@ -437,6 +612,7 @@ export async function updateDestination(
                                     create:
                                         f.evidenceUrls?.map((url) => ({
                                             imageUrl: url,
+                                            ...evidenceValidity.get(url),
                                         })) || [],
                                 },
                             };
@@ -445,10 +621,11 @@ export async function updateDestination(
                 images: {
                     deleteMany: {},
                     create:
-                        images?.map((image: any, idx: number) => ({
+                        images?.map((image: DestinationImageInput, idx: number) => ({
                             imageUrl: image.imageUrl,
                             isPrimary: idx === 0 ? true : ((image.isPrimary as boolean | undefined) ?? false),
                             caption: (image.caption as string | null | undefined) ?? null,
+                            ...galleryValidity.get(image.imageUrl),
                         })) || [],
                 },
             },

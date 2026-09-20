@@ -9,6 +9,22 @@ import {
     getSurveySummary,
 } from "@/lib/services/survey-service";
 
+const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/** Resolve a destination id or slug to its canonical id. */
+async function resolveDestinationId(
+    idOrSlug: string,
+): Promise<string | null> {
+    const destination = await prisma.destination.findFirst({
+        where: UUID_RE.test(idOrSlug)
+            ? { id: idOrSlug }
+            : { slug: idOrSlug },
+        select: { id: true },
+    });
+    return destination?.id ?? null;
+}
+
 export async function GET(
     _request: Request,
     { params }: { params: Promise<{ id: string }> },
@@ -16,11 +32,8 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const destination = await prisma.destination.findUnique({
-            where: { id },
-            select: { id: true },
-        });
-        if (!destination) {
+        const destinationId = await resolveDestinationId(id);
+        if (!destinationId) {
             return NextResponse.json(
                 { error: "Destinasi tidak ditemukan" },
                 { status: 404 },
@@ -40,7 +53,7 @@ export async function GET(
                     group: true,
                 },
             }),
-            getSurveySummary(id),
+            getSurveySummary(destinationId),
         ]);
 
         return NextResponse.json({ data: { indicators, summary } });
@@ -68,6 +81,14 @@ export async function POST(
         }
 
         const { id } = await params;
+        const destinationId = await resolveDestinationId(id);
+        if (!destinationId) {
+            return NextResponse.json(
+                { error: "Destinasi tidak ditemukan" },
+                { status: 404 },
+            );
+        }
+
         const body = await request.json();
         const validated = createSurveySchema.safeParse(body);
 
@@ -82,7 +103,7 @@ export async function POST(
         }
 
         const survey = await createSurveyResponse({
-            destinationId: id,
+            destinationId,
             userId: session.user.id,
             scores: validated.data.scores,
             comment: validated.data.comment ?? null,

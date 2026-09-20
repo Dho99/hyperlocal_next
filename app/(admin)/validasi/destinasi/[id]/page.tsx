@@ -232,36 +232,42 @@ export default function ProcessValidationPage() {
                     currentNotes={validation.notes as string}
                     currentAdminScore={validation.adminScore as number}
                     currentCategoryScores={validation.categoryScores}
-                />
-
-                <div className="space-y-4">
-                    <div>
-                        <h2 className="text-2xl font-bold tracking-tight">
-                            Penilaian ACES-H
-                        </h2>
-                        <p className="text-muted-foreground">
-                            Skor berbasis indikator ACES + Hyperlocal dengan
-                            verifikasi bukti.
-                        </p>
+                >
+                    <div className="space-y-4">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight">
+                                Penilaian ACES-H
+                            </h2>
+                            <p className="text-muted-foreground">
+                                Skor berbasis indikator ACES + Hyperlocal dengan
+                                verifikasi bukti.
+                            </p>
+                        </div>
+                        <AceshAssessmentTabs
+                            destinationId={validation.destination.id}
+                            profile={{
+                                slug: validation.destination.slug,
+                                categoryName:
+                                    validation.destination.category?.name,
+                                city: validation.destination.city ?? undefined,
+                            }}
+                            facilities={(
+                                validation.destination
+                                    .destinationHalalFacilities ?? []
+                            ).map((dhf) => ({
+                                id: dhf.id,
+                                facility: {
+                                    id: dhf.facility?.id ?? "",
+                                    name: dhf.facility?.name ?? "Fasilitas",
+                                    type: dhf.facility?.facilityType ?? null,
+                                },
+                                distanceMeters: dhf.distanceMeters ?? null,
+                                travelMinutes: dhf.travelMinutes ?? null,
+                                travelMode: dhf.travelMode ?? null,
+                            }))}
+                        />
                     </div>
-                    <AceshAssessmentTabs
-                        destinationId={validation.destination.id}
-                        facilities={(
-                            validation.destination.destinationHalalFacilities ??
-                            []
-                        ).map((dhf) => ({
-                            id: dhf.id,
-                            facility: {
-                                id: dhf.facility?.id ?? "",
-                                name: dhf.facility?.name ?? "Fasilitas",
-                                type: dhf.facility?.facilityType ?? null,
-                            },
-                            distanceMeters: dhf.distanceMeters ?? null,
-                            travelMinutes: dhf.travelMinutes ?? null,
-                            travelMode: dhf.travelMode ?? null,
-                        }))}
-                    />
-                </div>
+                </DestinationValidationForm>
             </div>
         );
     }

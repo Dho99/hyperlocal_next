@@ -4,6 +4,11 @@ import type { AceshModelDatum } from "@/components/admin/acesh/acesh-model-diagr
 import { calculateRIS, classifyActionType, timelineFromFeasibility } from "./recommendation-engine";
 import { findRule } from "./recommendation-rules";
 import { simulateImprovement, simulateEvidenceImprovement } from "./recommendation-simulator";
+import {
+    GROUP_LABELS_ID,
+    EVIDENCE_COMPONENT_LABELS,
+    CLASSIFICATION_LABELS,
+} from "@/lib/config/acesh-labels";
 
 export interface RecommendationInsight {
     id?: string;
@@ -85,10 +90,10 @@ export function buildAnnotatedTree(params: {
 
     const acesMap: Record<string, AnnotatedDomain> = {};
     const acesGroups = [
-        { key: "ACCESS", label: "Access", weight: ACES_DIMENSION_WEIGHTS.ACCESS },
-        { key: "COMMUNICATION", label: "Communication", weight: ACES_DIMENSION_WEIGHTS.COMMUNICATION },
-        { key: "ENVIRONMENT", label: "Environment", weight: ACES_DIMENSION_WEIGHTS.ENVIRONMENT },
-        { key: "SERVICES", label: "Services", weight: ACES_DIMENSION_WEIGHTS.SERVICES },
+        { key: "ACCESS", label: GROUP_LABELS_ID.ACCESS, weight: ACES_DIMENSION_WEIGHTS.ACCESS },
+        { key: "COMMUNICATION", label: GROUP_LABELS_ID.COMMUNICATION, weight: ACES_DIMENSION_WEIGHTS.COMMUNICATION },
+        { key: "ENVIRONMENT", label: GROUP_LABELS_ID.ENVIRONMENT, weight: ACES_DIMENSION_WEIGHTS.ENVIRONMENT },
+        { key: "SERVICES", label: GROUP_LABELS_ID.SERVICES, weight: ACES_DIMENSION_WEIGHTS.SERVICES },
     ];
     for (const g of acesGroups) {
         const gb = groupBreakdown.find((x) => x.group === g.key);
@@ -176,11 +181,11 @@ export function buildAnnotatedTree(params: {
     }
 
     const hyperGroups = [
-        { key: "SPATIAL_ACCESSIBILITY", label: "Spatial Accessibility", weight: HYPERLOCAL_DIMENSION_WEIGHTS.SPATIAL_ACCESSIBILITY },
-        { key: "FUNCTIONAL_AVAILABILITY", label: "Functional Availability", weight: HYPERLOCAL_DIMENSION_WEIGHTS.FUNCTIONAL_AVAILABILITY },
-        { key: "HALAL_ASSURANCE", label: "Halal Assurance", weight: HYPERLOCAL_DIMENSION_WEIGHTS.HALAL_ASSURANCE },
-        { key: "ECOSYSTEM_CONNECTIVITY", label: "Ecosystem Connectivity", weight: HYPERLOCAL_DIMENSION_WEIGHTS.ECOSYSTEM_CONNECTIVITY },
-        { key: "EMBEDDEDNESS_CONTINUITY", label: "Embeddedness & Continuity", weight: HYPERLOCAL_DIMENSION_WEIGHTS.EMBEDDEDNESS_CONTINUITY },
+        { key: "SPATIAL_ACCESSIBILITY", label: GROUP_LABELS_ID.SPATIAL_ACCESSIBILITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.SPATIAL_ACCESSIBILITY },
+        { key: "FUNCTIONAL_AVAILABILITY", label: GROUP_LABELS_ID.FUNCTIONAL_AVAILABILITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.FUNCTIONAL_AVAILABILITY },
+        { key: "HALAL_ASSURANCE", label: GROUP_LABELS_ID.HALAL_ASSURANCE, weight: HYPERLOCAL_DIMENSION_WEIGHTS.HALAL_ASSURANCE },
+        { key: "ECOSYSTEM_CONNECTIVITY", label: GROUP_LABELS_ID.ECOSYSTEM_CONNECTIVITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.ECOSYSTEM_CONNECTIVITY },
+        { key: "EMBEDDEDNESS_CONTINUITY", label: GROUP_LABELS_ID.EMBEDDEDNESS_CONTINUITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.EMBEDDEDNESS_CONTINUITY },
     ];
     const hyperMap: Record<string, AnnotatedDomain> = {};
     for (const g of hyperGroups) {
@@ -253,14 +258,7 @@ export function buildAnnotatedTree(params: {
         hyperMap[g.key] = { key: g.key, label: g.label, weight: g.weight, score, gap, diagnosis: diagnosisFor(g.key, score, gap), insights };
     }
 
-    const evidenceLabels: Record<string, string> = {
-        sourceReliability: "Source Reliability",
-        documentEvidence: "Document Evidence",
-        photoGeolocation: "Photo & Geolocation",
-        managementConfirmation: "Management Confirmation",
-        fieldValidation: "Field Validation",
-        dataFreshness: "Data Freshness",
-    };
+    const evidenceLabels: Record<string, string> = EVIDENCE_COMPONENT_LABELS;
     const evidenceWeights: Record<string, number> = { sourceReliability: 0.15, documentEvidence: 0.2, photoGeolocation: 0.15, managementConfirmation: 0.1, fieldValidation: 0.25, dataFreshness: 0.15 };
     const evidenceMap: Record<string, AnnotatedDomain> = {};
     // derive evidence component scores from EVC breakdown approximation: use single evc value for demo, split via gaps
@@ -303,8 +301,8 @@ export function buildAnnotatedTree(params: {
 
     // Top gaps across all groups
     const allGaps: Array<{ label: string; gap: number; group: string }> = [];
-    for (const [k, v] of Object.entries(acesMap)) if (v.gap != null) allGaps.push({ label: k, gap: v.gap!, group: k });
-    for (const [k, v] of Object.entries(hyperMap)) if (v.gap != null) allGaps.push({ label: k, gap: v.gap!, group: k });
+    for (const [k, v] of Object.entries(acesMap)) if (v.gap != null) allGaps.push({ label: GROUP_LABELS_ID[k as keyof typeof GROUP_LABELS_ID] ?? k, gap: v.gap!, group: k });
+    for (const [k, v] of Object.entries(hyperMap)) if (v.gap != null) allGaps.push({ label: GROUP_LABELS_ID[k as keyof typeof GROUP_LABELS_ID] ?? k, gap: v.gap!, group: k });
     for (const [k, v] of Object.entries(evidenceMap)) if (v.gap != null) allGaps.push({ label: v.label, gap: v.gap!, group: k });
     allGaps.sort((a, b) => b.gap - a.gap);
     const topGaps = allGaps.slice(0, 3);
@@ -323,7 +321,7 @@ export function buildAnnotatedTree(params: {
         hyperlocal: hyperMap,
         evidence: evidenceMap,
         outputs: {
-            kategori: { label: data?.classification ? data.classification.replace(/_/g, " ") : "Belum dinilai", alasan },
+            kategori: { label: data?.classification ? (CLASSIFICATION_LABELS[data.classification] ?? data.classification) : "Belum dinilai", alasan },
             topGaps,
             priorityList: allInsights.slice(0, 5),
             hyperlocalMap: [], // filled by caller if facility data available

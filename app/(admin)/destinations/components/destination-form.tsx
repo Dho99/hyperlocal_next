@@ -23,7 +23,7 @@ import { getFacilities } from "@/lib/api/facility";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Building2, MapPin } from "lucide-react";
+import { Loader2, Building2, MapPin, AlertCircle } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -65,6 +65,9 @@ export function DestinationForm({
     const router = useRouter();
     const [masterFacilities, setMasterFacilities] = useState<Facility[]>([]);
     const [coverageAreas, setCoverageAreas] = useState<CoverageAreaOption[]>([]);
+    const [photoIssues, setPhotoIssues] = useState<
+        Array<{ label: string; message: string }>
+    >([]);
 
     useEffect(() => {
         async function fetchCoverageAreas() {
@@ -159,6 +162,7 @@ export function DestinationForm({
 
     async function onSubmit(values: DestinationFormValues) {
         startTransition(async () => {
+            setPhotoIssues([]);
             try {
                 if (initialData) {
                     await updateDestination(initialData.id, values);
@@ -172,9 +176,15 @@ export function DestinationForm({
                 router.refresh();
             } catch (err) {
                 if (err instanceof AxiosError) {
+                    const data = err.response?.data as
+                        | { error?: string; issues?: Array<{ label: string; message: string }> }
+                        | undefined;
                     toast.error(
                         getApiErrorMessage(err.response?.data) ||
                             "Terjadi kesalahan saat menyimpan destinasi",
+                    );
+                    setPhotoIssues(
+                        Array.isArray(data?.issues) ? data.issues : [],
                     );
                     console.log(err.response?.data);
                 }
@@ -193,8 +203,20 @@ export function DestinationForm({
                 onSubmit={form.handleSubmit(onSubmit, onError)}
                 className="space-y-8 w-full mx-auto pb-20"
             >
-                <div className="grid gap-6 md:grid-cols-3">
-                    <div className="md:col-span-2 space-y-6">
+                {photoIssues.length > 0 && (
+                    <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4">
+                        <p className="flex items-center gap-2 text-sm font-bold text-destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            Foto tidak valid — perbaiki sebelum menyimpan
+                        </p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-destructive">
+                            {photoIssues.map((issue, i) => (
+                                <li key={i}>{issue.message}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <div className="space-y-6">
                         <Card className="border-none shadow-sm ring-1 ring-border/50">
                             <CardHeader>
                                 <CardTitle className="text-lg font-heading">
@@ -507,14 +529,12 @@ export function DestinationForm({
                                 </div>
                             </CardContent>
                         </Card>
-                    </div>
 
-                    <div className="space-y-6">
                         <Card className="border-none shadow-sm ring-1 ring-border/50 overflow-hidden">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2 text-lg font-heading">
                                     <Building2 className="h-5 w-5 text-primary" />
-                                    Fasilitas Halal
+                                    Fasilitas Destinasi
                                 </CardTitle>
                                 <CardDescription>
                                     Data fasilitas halal yang tersedia di
@@ -570,6 +590,10 @@ export function DestinationForm({
                                     folder="destinations"
                                     multiple={true}
                                     maxFiles={5}
+                                    validatePhoto
+                                    targetLat={form.watch("latitude") ?? null}
+                                    targetLng={form.watch("longitude") ?? null}
+                                    targetLabel={initialData?.name ?? "destinasi"}
                                     onUploadComplete={(urls) => {
                                         form.setValue(
                                             "images",
@@ -606,7 +630,6 @@ export function DestinationForm({
                                 Batal
                             </Button>
                         </div>
-                    </div>
                 </div>
             </form>
         </FormProvider>

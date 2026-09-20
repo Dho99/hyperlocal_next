@@ -10,6 +10,46 @@ interface FacilitiesSectionProps {
     facilities: FacilityInfo[];
 }
 
+function PhotoValidityBadge({
+    validity,
+}: {
+    validity: FacilityInfo["photoValidity"];
+}) {
+    if (!validity) {
+        return (
+            <span className="mt-2 inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                Belum ada bukti foto
+            </span>
+        );
+    }
+    if (validity.invalidPosition > 0) {
+        return (
+            <span className="mt-2 inline-flex rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700">
+                Bukti foto di luar radius
+            </span>
+        );
+    }
+    if (validity.invalidTime > 0) {
+        return (
+            <span className="mt-2 inline-flex rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold text-orange-700">
+                Waktu foto tidak wajar
+            </span>
+        );
+    }
+    if (validity.valid === validity.total) {
+        return (
+            <span className="mt-2 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                Bukti foto valid ({validity.valid}/{validity.total})
+            </span>
+        );
+    }
+    return (
+        <span className="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+            Sebagian bukti tanpa metadata
+        </span>
+    );
+}
+
 export function FacilitiesSection({ facilities }: FacilitiesSectionProps) {
     if (facilities.length === 0) return null;
 
@@ -45,6 +85,11 @@ export function FacilitiesSection({ facilities }: FacilitiesSectionProps) {
                                     : ""}
                                 {fac.type ? ` • ${fac.type}` : ""}
                             </p>
+                            <div className="flex">
+                                <PhotoValidityBadge
+                                    validity={fac.photoValidity}
+                                />
+                            </div>
                         </div>
                     );
                 })}

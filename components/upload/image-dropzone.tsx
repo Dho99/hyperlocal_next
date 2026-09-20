@@ -6,8 +6,10 @@ import { Upload, X, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { isBlockingPhotoStatus } from "@/lib/config/photo-validation";
 import axios from "axios";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface ImageDropzoneProps {
     folder:
@@ -22,6 +24,12 @@ interface ImageDropzoneProps {
     maxFiles?: number;
     onUploadComplete?: (urls: string[]) => void;
     className?: string;
+    /** Enable server-side EXIF/geo validation for uploaded photos. */
+    validatePhoto?: boolean;
+    targetLat?: number | null;
+    targetLng?: number | null;
+    toleranceMeters?: number | null;
+    targetLabel?: string;
 }
 
 interface UploadingFile {
@@ -40,8 +48,26 @@ export function ImageDropzone({
     maxFiles = 1,
     onUploadComplete,
     className,
+    validatePhoto = false,
+    targetLat = null,
+    targetLng = null,
+    toleranceMeters = null,
+    targetLabel = "lokasi tujuan",
 }: ImageDropzoneProps) {
     const [files, setFiles] = useState<UploadingFile[]>([]);
+
+    const buildUploadUrl = useCallback(() => {
+        const params = new URLSearchParams({ folder });
+        if (validatePhoto && targetLat != null && targetLng != null) {
+            params.set("lat", String(targetLat));
+            params.set("lng", String(targetLng));
+            if (toleranceMeters != null) {
+                params.set("tolerance", String(toleranceMeters));
+            }
+            params.set("label", targetLabel);
+        }
+        return `/api/upload?${params.toString()}`;
+    }, [folder, validatePhoto, targetLat, targetLng, toleranceMeters, targetLabel]);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -78,7 +104,7 @@ export function ImageDropzone({
 
         try {
             const response = await axios.post(
-                `/api/upload?folder=${folder}`,
+                buildUploadUrl(),
                 formData,
                 {
                     onUploadProgress: (progressEvent) => {
@@ -99,15 +125,32 @@ export function ImageDropzone({
 
             if (response.data.success) {
                 const url = response.data.data.path;
+                const validity = response.data.data.validity;
+                const blocked =
+                    validatePhoto &&
+                    validity &&
+                    isBlockingPhotoStatus(validity.validityStatus);
+                if (blocked) {
+                    toast.error(validity.message || "Foto tidak valid");
+                }
                 setFiles((prev) => {
                     const updated = prev.map((f) =>
                         f.id === fileObj.id
-                            ? {
-                                  ...f,
-                                  status: "success" as const,
-                                  url,
-                                  progress: 100,
-                              }
+                            ? blocked
+                                ? {
+                                      ...f,
+                                      status: "error" as const,
+                                      progress: 100,
+                                      error:
+                                          validity.message ||
+                                          "Foto tidak valid",
+                                  }
+                                : {
+                                      ...f,
+                                      status: "success" as const,
+                                      url,
+                                      progress: 100,
+                                  }
                             : f,
                     );
 
@@ -256,9 +299,12 @@ export function ImageDropzone({
                                 )}
 
                                 {file.status === "error" && (
-                                    <div className="flex items-center gap-1.5 text-destructive">
-                                        <AlertCircle className="h-3.5 w-3.5" />
-                                        <span className="text-[10px] font-medium truncate">
+                                    <div
+                                        className="flex items-start gap-1.5 text-destructive"
+                                        title={file.error}
+                                    >
+                                        <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                        <span className="text-[10px] font-medium leading-snug break-words">
                                             {file.error || "Gagal"}
                                         </span>
                                     </div>

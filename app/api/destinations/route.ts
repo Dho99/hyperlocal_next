@@ -9,6 +9,7 @@ import {
 } from "@/lib/services/destination-service";
 import { destinationSchema } from "@/lib/validations/destination.schema";
 import { getErrorMessage } from "@/lib/api-error";
+import { PhotoValidationError } from "@/lib/services/photo-validation-service";
 
 export async function GET(request: Request) {
     try {
@@ -109,6 +110,12 @@ export async function POST(request: Request) {
         const destination = await createDestination(validated.data);
         return NextResponse.json({ data: destination }, { status: 201 });
     } catch (error: unknown) {
+        if (error instanceof PhotoValidationError) {
+            return NextResponse.json(
+                { error: error.message, issues: error.issues },
+                { status: 400 },
+            );
+        }
         return NextResponse.json(
             { error: getErrorMessage(error) },
             { status: 500 },

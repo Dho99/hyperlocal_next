@@ -42,7 +42,9 @@ export function DashboardMapSection() {
     }, []);
 
     useEffect(() => {
-        fetchMapData();
+        queueMicrotask(() => {
+            void fetchMapData();
+        });
     }, [fetchMapData]);
 
     if (loading) {
@@ -58,8 +60,8 @@ export function DashboardMapSection() {
 
     if (error) {
         return (
-            <div className="h-[320px] sm:h-[480px] w-full bg-red-50 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-2 text-red-600">
+            <div className="h-[320px] sm:h-[480px] w-full bg-destructive/10 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2 text-destructive">
                     <AlertCircle className="h-6 w-6" />
                     <p className="text-sm font-medium">{error}</p>
                 </div>

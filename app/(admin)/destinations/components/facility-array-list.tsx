@@ -29,7 +29,7 @@ export function FacilityArrayList({
     return (
         <div className="space-y-4">
             {fields.length > 0 && (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {fields.map((field, index) => (
                         <FacilityItemCard
                             key={field.id}

@@ -44,22 +44,6 @@ interface PublicAceshAssessment {
     calculationVersion: string | null;
 }
 
-const CLASSIFICATION_LABELS: Record<string, string> = {
-    BELUM_SIAP: "Belum siap",
-    PERLU_PENGEMBANGAN: "Perlu pengembangan",
-    BERKEMBANG: "Berkembang",
-    SIAP: "Siap",
-    SANGAT_SIAP: "Sangat siap",
-};
-
-const CLASSIFICATION_STYLES: Record<string, string> = {
-    BELUM_SIAP: "bg-red-50 text-red-700 ring-red-200",
-    PERLU_PENGEMBANGAN: "bg-orange-50 text-orange-700 ring-orange-200",
-    BERKEMBANG: "bg-yellow-50 text-yellow-700 ring-yellow-200",
-    SIAP: "bg-green-50 text-green-700 ring-green-200",
-    SANGAT_SIAP: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-};
-
 export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const router = useRouter();
     const [destination, setDestination] = useState<Destination | null>(null);
@@ -154,6 +138,21 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     distance: dist,
                     maxDistance: dhf.facility?.maxDistance ?? null,
                     travelMinutes: dhf.travelMinutes ?? null,
+                    photoValidity: (() => {
+                        const evidences = dhf.evidences ?? [];
+                        if (evidences.length === 0) return null;
+                        const count = (status: string) =>
+                            evidences.filter(
+                                (e) => e.validityStatus === status,
+                            ).length;
+                        return {
+                            total: evidences.length,
+                            valid: count("VALID"),
+                            invalidPosition: count("INVALID_POSITION"),
+                            invalidTime: count("INVALID_TIME"),
+                            noMetadata: count("NO_METADATA"),
+                        };
+                    })(),
                 };
             })
             .sort(
@@ -310,22 +309,11 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     onImageClick={lightbox.openAt}
                 />
 
-                {halalScore != null && (
-                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
-                        <HalalBadge score={halalScore} inline />
-                        <div>
-                            <p className="text-sm font-bold text-foreground">
-                                Skor Halal {halalScore}/100
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                Klasifikasi kesiapan halal destinasi.
-                            </p>
-                        </div>
-                    </div>
-                )}
-
                 {acesh && acesh.baseScore != null && (
-                    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                        {halalScore != null && (
+                            <HalalBadge score={halalScore} inline />
+                        )}
                         <div>
                             <p className="text-xs uppercase tracking-wide text-muted-foreground">
                                 Skor ACES-H
@@ -336,35 +324,6 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                     ? acesh.verifiedScore.toFixed(1)
                                     : acesh.baseScore.toFixed(1)}
                             </p>
-                        </div>
-                        {acesh.classification && (
-                            <span
-                                className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${
-                                    CLASSIFICATION_STYLES[
-                                        acesh.classification
-                                    ] ?? "bg-muted text-muted-foreground ring-border"
-                                }`}
-                            >
-                                {CLASSIFICATION_LABELS[acesh.classification] ??
-                                    acesh.classification}
-                            </span>
-                        )}
-                        <div className="text-xs text-muted-foreground">
-                            {acesh.verificationStatus === "VERIFIED" ? (
-                                <p>
-                                    Skor terverifikasi · diperbarui{" "}
-                                    {acesh.calculatedAt
-                                        ? new Date(
-                                              acesh.calculatedAt,
-                                          ).toLocaleDateString("id-ID")
-                                        : "-"}
-                                </p>
-                            ) : (
-                                <p>
-                                    Skor sementara — data belum sepenuhnya
-                                    tervalidasi.
-                                </p>
-                            )}
                         </div>
                     </div>
                 )}

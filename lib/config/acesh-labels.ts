@@ -95,6 +95,27 @@ export const VALUE_LABELS: Record<number, string> = {
     4: "Sangat baik",
 };
 
+/** Severity (gap) labels. */
+export const SEVERITY_LABELS: Record<string, string> = {
+    HIGH: "Tinggi",
+    MEDIUM: "Sedang",
+    LOW: "Rendah",
+};
+
+/** Recommendation timeline labels. */
+export const TIMELINE_LABELS: Record<string, string> = {
+    QUICK: "Cepat (<30 hari)",
+    MEDIUM: "Sedang (1–6 bulan)",
+    STRATEGIC: "Strategis (>6 bulan)",
+};
+
+/** Hyperlocal facility status labels. */
+export const FACILITY_STATUS_LABELS: Record<string, string> = {
+    VERIFIED: "Terverifikasi",
+    PARTIAL: "Sebagian",
+    NEED_VALIDATION: "Perlu Validasi",
+};
+
 /**
  * Readiness diagnosis from a 0–100 score. Mirrors the wording used by the
  * annotated tree so admin and public views stay consistent.

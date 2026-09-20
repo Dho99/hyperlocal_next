@@ -17,6 +17,11 @@ import {
   type AnnotatedDomain,
   type RecommendationInsight,
 } from "@/lib/services/acesh/annotated-tree";
+import {
+  SEVERITY_LABELS,
+  TIMELINE_LABELS,
+  FACILITY_STATUS_LABELS,
+} from "@/lib/config/acesh-labels";
 
 export interface AceshModelDatum {
   acesScore: number | null;
@@ -83,7 +88,7 @@ function SeverityBadge({ s }: { s: string }) {
         cls,
       )}
     >
-      {s}
+      {SEVERITY_LABELS[s] ?? s}
     </span>
   );
 }
@@ -174,7 +179,6 @@ function DomainCard({
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-bold">{domain.key}</span>
             <span className="text-xs text-muted-foreground">
               {Pct(domain.weight)}
             </span>
@@ -223,7 +227,7 @@ function DomainCard({
               Verified
             </span>
             <span className="text-[10px] bg-white border rounded-full px-2 py-0.5">
-              {insight.timeline}
+              {TIMELINE_LABELS[insight.timeline] ?? insight.timeline}
             </span>
           </div>
           {expanded && showSim && insight.estimatedGain && (
@@ -704,7 +708,12 @@ export function AceshModelDiagram({
             area layanan dan tiga status bukti
           </p>
           <div className="mt-2 space-y-1 text-xs">
-            <p>Facility Status: VERIFIED / PARTIAL / NEED VALIDATION</p>
+            <p>
+              Status Fasilitas:{" "}
+              {FACILITY_STATUS_LABELS.VERIFIED} /{" "}
+              {FACILITY_STATUS_LABELS.PARTIAL} /{" "}
+              {FACILITY_STATUS_LABELS.NEED_VALIDATION}
+            </p>
           </div>
         </div>
       </div>

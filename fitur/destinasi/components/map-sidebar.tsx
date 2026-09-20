@@ -35,21 +35,21 @@ export function MapSidebar({
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-4">
-                <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+                <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden isolate">
                     <div className="p-4 border-b border-border/30">
                         <h3 className="font-bold text-base text-foreground">
                             Cek Sekitar
                         </h3>
                     </div>
                     {mapData ? (
-                        <div className="h-48 bg-muted relative">
+                        <div className="relative z-0 h-48 overflow-hidden bg-muted">
                             <DynamicContextMap
                                 destination={mapData}
                                 className="h-full w-full"
                             />
                         </div>
                     ) : (
-                        <div className="h-48 bg-muted relative flex items-center justify-center">
+                        <div className="relative z-0 h-48 overflow-hidden bg-muted flex items-center justify-center">
                             <MapPin className="h-8 w-8 text-border" />
                         </div>
                     )}

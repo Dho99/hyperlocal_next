@@ -44,20 +44,20 @@ function statusBadge(status: "PENDING" | "APPROVED" | "REJECTED") {
     if (status === "APPROVED") {
         return {
             label: "Terverifikasi",
-            className: "bg-[#d1fae5] text-[#047857] border-transparent",
+            className: "bg-primary/10 text-primary",
         };
     }
 
     if (status === "REJECTED") {
         return {
             label: "Ditolak",
-            className: "bg-[#ffdad6] text-[#93000a] border-transparent",
+            className: "bg-destructive/10 text-destructive",
         };
     }
 
     return {
         label: "Pending",
-        className: "bg-[#ffdad6] text-[#93000a] border-transparent",
+        className: "bg-chart-3/15 text-chart-3",
     };
 }
 
@@ -66,38 +66,38 @@ export default async function DashboardPage() {
 
     const stats = [
         {
-            label: "TOTAL",
+            label: "Total",
             title: "Total Destinasi",
             value: dashboard.stats.totalDestinations,
             icon: Map,
-            tone: "bg-[#ccfbf1] text-[#0f766e]",
+            tone: "bg-primary/10 text-primary",
             valueTone: "text-foreground",
         },
         {
-            label: "HALAL",
+            label: "Halal",
             title: "Total Tervalidasi",
             value: dashboard.stats.approvedDestinations,
             icon: ShieldCheck,
-            tone: "bg-[#047857] text-white",
-            valueTone: "text-[#047857]",
+            tone: "bg-primary text-primary-foreground",
+            valueTone: "text-primary",
         },
         {
-            label: "KULINER",
+            label: "Kuliner",
             title: "UMKM & Kuliner",
             value: dashboard.stats.totalUmkms,
             icon: Utensils,
-            tone: "bg-[#c9a74d] text-[#241a00]",
-            valueTone: "text-[#765b00]",
+            tone: "bg-chart-3/15 text-chart-3",
+            valueTone: "text-chart-3",
         },
         {
-            label: "ACTION",
+            label: "Aksi",
             title: "Pending Verification",
             value:
                 dashboard.stats.pendingDestinations +
                 dashboard.stats.pendingValidations,
             icon: AlertCircle,
-            tone: "bg-[#ffdad6] text-[#93000a]",
-            valueTone: "text-[#ba1a1a]",
+            tone: "bg-destructive/10 text-destructive",
+            valueTone: "text-destructive",
         },
     ];
 
@@ -107,55 +107,52 @@ export default async function DashboardPage() {
             : dashboard.latestDestinations;
 
     return (
-        <div className="space-y-4 pb-5">
+        <div className="space-y-5">
             <section className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <h1 className="font-heading text-2xl font-bold leading-tight tracking-normal text-foreground">
+                    <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
                         Dashboard Overview
                     </h1>
                     <p className="mt-1 text-sm text-muted-foreground">
                         Ringkasan data pariwisata halal terkini.
                     </p>
                 </div>
-                <Button className="h-8 gap-2 rounded-lg bg-accent px-3.5 text-xs font-semibold text-white shadow-sm hover:bg-accent/80">
-                    <Download className="h-3.5 w-3.5" />
+                <Button className="h-9 gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90">
+                    <Download className="h-4 w-4" />
                     Unduh Laporan
                 </Button>
             </section>
 
-            <section className="grid gap-3.5 lg:grid-cols-2 xl:grid-cols-4">
+            <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 {stats.map((stat) => (
                     <Card
                         key={stat.label}
-                        className="h-28 min-h-0 rounded-lg border-border bg-card py-0 shadow-none"
+                        className="rounded-xl border-border bg-card py-0 shadow-none"
                     >
-                        <CardContent className="flex h-full items-center gap-4 p-4">
+                        <CardContent className="flex items-center gap-4 p-4">
                             <div
                                 className={cn(
-                                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg",
                                     stat.tone,
                                 )}
                             >
                                 <stat.icon className="h-5 w-5" />
                             </div>
                             <div className="min-w-0 flex-1">
-                                <div className="mb-1.5 flex items-center justify-between gap-2">
+                                <div className="flex items-baseline justify-between gap-2">
                                     <p
                                         className={cn(
-                                            "font-heading text-[32px] font-bold leading-none",
+                                            "font-heading text-3xl font-semibold leading-none tracking-tight",
                                             stat.valueTone,
                                         )}
                                     >
                                         {stat.value.toLocaleString("id-ID")}
                                     </p>
-                                    <Badge
-                                        variant="outline"
-                                        className="h-6 rounded-md border-transparent bg-muted px-2.5 text-[11px] font-semibold tracking-[0.14em] text-foreground"
-                                    >
+                                    <span className="text-xs font-medium text-muted-foreground">
                                         {stat.label}
-                                    </Badge>
+                                    </span>
                                 </div>
-                                <p className="truncate text-sm text-muted-foreground">
+                                <p className="mt-1 truncate text-sm text-muted-foreground">
                                     {stat.title}
                                 </p>
                             </div>
@@ -164,10 +161,10 @@ export default async function DashboardPage() {
                 ))}
             </section>
 
-            <section className="rounded-xl border border-border bg-card shadow-none overflow-hidden">
-                <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
+            <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
+                <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-4">
                     <div>
-                        <CardTitle className="font-heading text-xl font-semibold">
+                        <CardTitle className="font-heading text-lg font-semibold">
                             Kesiapan ACES-H
                         </CardTitle>
                         <CardDescription className="text-sm">
@@ -177,9 +174,9 @@ export default async function DashboardPage() {
                     </div>
                     <Link
                         href="/validasi/destinasi"
-                        className="text-sm font-medium text-primary hover:underline"
+                        className="shrink-0 text-sm font-medium text-primary hover:underline"
                     >
-                        Kelola Penilaian →
+                        Kelola Penilaian
                     </Link>
                 </CardHeader>
                 <CardContent className="p-5">
@@ -190,12 +187,12 @@ export default async function DashboardPage() {
                             untuk memulai.
                         </p>
                     ) : (
-                        <div className="grid gap-4 md:grid-cols-5">
+                        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
                             <div className="space-y-1">
-                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                <p className="text-xs font-medium text-muted-foreground">
                                     Dinilai
                                 </p>
-                                <p className="font-heading text-2xl font-bold">
+                                <p className="font-heading text-2xl font-semibold tracking-tight">
                                     {dashboard.acesh.totalAssessed}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
@@ -204,23 +201,23 @@ export default async function DashboardPage() {
                                 </p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                <p className="text-xs font-medium text-muted-foreground">
                                     Rerata Skor Terverifikasi
                                 </p>
-                                <p className="font-heading text-2xl font-bold">
+                                <p className="font-heading text-2xl font-semibold tracking-tight">
                                     {dashboard.acesh.averageVerifiedScore != null
                                         ? dashboard.acesh.averageVerifiedScore.toFixed(1)
                                         : "—"}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                    dari destinasi VERIFIED
+                                    dari destinasi terverifikasi
                                 </p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                <p className="text-xs font-medium text-muted-foreground">
                                     Rerata Skor Dasar
                                 </p>
-                                <p className="font-heading text-2xl font-bold">
+                                <p className="font-heading text-2xl font-semibold tracking-tight">
                                     {dashboard.acesh.averageBaseScore != null
                                         ? dashboard.acesh.averageBaseScore.toFixed(1)
                                         : "—"}
@@ -230,10 +227,10 @@ export default async function DashboardPage() {
                                 </p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                <p className="text-xs font-medium text-muted-foreground">
                                     Rerata Confidence
                                 </p>
-                                <p className="font-heading text-2xl font-bold">
+                                <p className="font-heading text-2xl font-semibold tracking-tight">
                                     {dashboard.acesh.averageConfidence != null
                                         ? dashboard.acesh.averageConfidence.toFixed(1)
                                         : "—"}
@@ -243,7 +240,7 @@ export default async function DashboardPage() {
                                 </p>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                <p className="text-xs font-medium text-muted-foreground">
                                     Distribusi Klasifikasi
                                 </p>
                                 {dashboard.acesh.classificationDistribution.map(
@@ -265,27 +262,28 @@ export default async function DashboardPage() {
                         </div>
                     )}
                 </CardContent>
-            </section>
+            </Card>
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(300px,0.86fr)]">
                 <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
-                        <CardTitle className="font-heading text-xl font-semibold">
+                    <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-4">
+                        <CardTitle className="font-heading text-lg font-semibold">
                             Peta Persebaran
                         </CardTitle>
                         <div className="flex flex-wrap gap-2">
-                            <Badge className="h-7 rounded-full bg-[#047857] px-3.5 text-xs font-semibold text-white">
-                                ✓ Destinasi
+                            <Badge className="h-7 gap-1.5 rounded-full bg-primary px-3 text-xs font-medium text-primary-foreground">
+                                <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />
+                                Destinasi
                             </Badge>
                             <Badge
                                 variant="outline"
-                                className="h-7 rounded-full border-border bg-background px-3.5 text-xs font-semibold text-foreground"
+                                className="h-7 rounded-full border-border bg-background px-3 text-xs font-medium text-foreground"
                             >
                                 Fasilitas
                             </Badge>
                             <Badge
                                 variant="outline"
-                                className="h-7 rounded-full border-border bg-background px-3.5 text-xs font-semibold text-foreground"
+                                className="h-7 rounded-full border-border bg-background px-3 text-xs font-medium text-foreground"
                             >
                                 UMKM
                             </Badge>
@@ -297,17 +295,17 @@ export default async function DashboardPage() {
                 </Card>
 
                 <Card className="rounded-xl border-border bg-card shadow-none">
-                    <CardHeader className="px-5 pb-5 pt-6">
-                        <CardTitle className="font-heading text-xl font-semibold">
+                    <CardHeader className="border-b border-border px-5 py-4">
+                        <CardTitle className="font-heading text-lg font-semibold">
                             Halal Readiness
                         </CardTitle>
-                        <CardDescription className="text-sm text-muted-foreground">
+                        <CardDescription className="text-sm">
                             Skor kesiapan berdasarkan kategori.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6 px-5 pb-5 pt-6">
+                    <CardContent className="space-y-5 p-5">
                         {dashboard.readiness.map((item, index) => (
-                            <div key={item.label} className="space-y-3">
+                            <div key={item.label} className="space-y-2.5">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="font-medium text-foreground">
                                         {item.label}
@@ -316,8 +314,10 @@ export default async function DashboardPage() {
                                         className={cn(
                                             "font-semibold",
                                             index === 1
-                                                ? "text-[#765b00]"
-                                                : "text-[#047857]",
+                                                ? "text-chart-3"
+                                                : index === 2
+                                                  ? "text-chart-5"
+                                                  : "text-primary",
                                         )}
                                     >
                                         {item.value}%
@@ -325,13 +325,13 @@ export default async function DashboardPage() {
                                 </div>
                                 <Progress
                                     value={item.value}
-                                    className="h-2.5 bg-muted"
+                                    className="h-2 bg-muted"
                                     indicatorClassName={
                                         index === 1
-                                            ? "bg-[#765b00]"
+                                            ? "bg-chart-3"
                                             : index === 2
-                                              ? "bg-[#0f766e]"
-                                              : "bg-[#047857]"
+                                              ? "bg-chart-5"
+                                              : "bg-primary"
                                     }
                                 />
                             </div>
@@ -340,179 +340,175 @@ export default async function DashboardPage() {
                 </Card>
             </section>
 
-            <section>
-                <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
-                        <div>
-                            <CardTitle className="font-heading text-xl font-semibold">
-                                Daftar Validasi Terbaru
-                            </CardTitle>
-                            <CardDescription className="mt-1 text-sm text-muted-foreground">
-                                Menunggu tindakan verifikator.
-                            </CardDescription>
-                        </div>
-                        <Button
-                            asChild
-                            variant="ghost"
-                            className="text-xs font-medium text-[#047857]"
-                        >
-                            <Link href="/validasi/destinasi">Lihat Semua</Link>
-                        </Button>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                            <table className="w-full min-w-[820px] text-xs">
-                                <thead className="border-b border-border bg-card text-xs uppercase tracking-[0.16em] text-foreground">
-                                    <tr>
-                                        <th className="px-5 py-4 text-left font-semibold">
-                                            Nama Destinasi
-                                        </th>
-                                        <th className="px-5 py-4 text-left font-semibold">
-                                            Kategori
-                                        </th>
-                                        <th className="px-5 py-4 text-left font-semibold">
-                                            Tanggal Input
-                                        </th>
-                                        <th className="px-5 py-4 text-left font-semibold">
-                                            Status
-                                        </th>
-                                        <th className="px-5 py-4 text-right font-semibold">
-                                            Aksi
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {recentRows.slice(0, 3).map((row) => {
-                                        const badge = statusBadge(
-                                            row.status as ValidationStatus,
-                                        );
-                                        return (
-                                            <tr
-                                                key={row.id}
-                                                className="border-b border-[#dbe7df]"
-                                            >
-                                                <td className="px-7 py-6 font-medium text-foreground">
-                                                    {row.name}
-                                                </td>
-                                                <td className="px-7 py-6 text-muted-foreground">
-                                                    {row.category}
-                                                </td>
-                                                <td className="px-7 py-6 text-muted-foreground">
-                                                    {formatDate(row.date)}
-                                                </td>
-                                                <td className="px-7 py-6">
-                                                    <Badge
-                                                        variant="outline"
-                                                        className={cn(
-                                                            "h-7 rounded-full px-4 text-sm font-semibold",
-                                                            badge.className,
-                                                        )}
+            <Card className="overflow-hidden rounded-xl border-border bg-card shadow-none">
+                <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-4">
+                    <div>
+                        <CardTitle className="font-heading text-lg font-semibold">
+                            Daftar Validasi Terbaru
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                            Menunggu tindakan verifikator.
+                        </CardDescription>
+                    </div>
+                    <Button
+                        asChild
+                        variant="ghost"
+                        className="shrink-0 text-sm font-medium text-primary hover:bg-primary/10"
+                    >
+                        <Link href="/validasi/destinasi">Lihat Semua</Link>
+                    </Button>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[820px] text-sm">
+                            <thead className="border-b border-border bg-muted/40">
+                                <tr className="text-xs font-medium text-muted-foreground">
+                                    <th className="px-5 py-3 text-left font-medium">
+                                        Nama Destinasi
+                                    </th>
+                                    <th className="px-5 py-3 text-left font-medium">
+                                        Kategori
+                                    </th>
+                                    <th className="px-5 py-3 text-left font-medium">
+                                        Tanggal Input
+                                    </th>
+                                    <th className="px-5 py-3 text-left font-medium">
+                                        Status
+                                    </th>
+                                    <th className="px-5 py-3 text-right font-medium">
+                                        Aksi
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recentRows.slice(0, 3).map((row) => {
+                                    const badge = statusBadge(
+                                        row.status as ValidationStatus,
+                                    );
+                                    return (
+                                        <tr
+                                            key={row.id}
+                                            className="border-b border-border last:border-b-0"
+                                        >
+                                            <td className="px-5 py-3 font-medium text-foreground">
+                                                {row.name}
+                                            </td>
+                                            <td className="px-5 py-3 text-muted-foreground">
+                                                {row.category}
+                                            </td>
+                                            <td className="px-5 py-3 text-muted-foreground">
+                                                {formatDate(row.date)}
+                                            </td>
+                                            <td className="px-5 py-3">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "h-6 rounded-full border-transparent px-3 text-xs font-medium",
+                                                        badge.className,
+                                                    )}
+                                                >
+                                                    {badge.label}
+                                                </Badge>
+                                            </td>
+                                            <td className="px-5 py-3 text-right">
+                                                <Button
+                                                    asChild
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    className="text-primary hover:bg-primary/10"
+                                                >
+                                                    <Link
+                                                        href={
+                                                            "city" in row
+                                                                ? `/destinations/${row.id}`
+                                                                : "/validasi/destinasi"
+                                                        }
                                                     >
-                                                        • {badge.label}
-                                                    </Badge>
-                                                </td>
-                                                <td className="px-7 py-6 text-right">
-                                                    <Button
-                                                        asChild
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="text-[#047857]"
-                                                    >
-                                                        <Link
-                                                            href={
-                                                                "city" in row
-                                                                    ? `/destinations/${row.id}`
-                                                                    : "/validasi/destinasi"
-                                                            }
-                                                        >
-                                                            <Eye className="h-5 w-5" />
-                                                        </Link>
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
+                                                        <Eye className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
 
-            <section className="grid gap-5 xl:grid-cols-1">
-                <Card className="rounded-xl border-border bg-card shadow-none">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
-                        <div>
-                            <CardTitle className="font-heading text-xl font-semibold">
-                                Trending Saat Ini
-                            </CardTitle>
-                            <CardDescription className="mt-1 text-sm text-muted-foreground">
-                                Destinasi dengan jumlah kunjungan terbanyak.
-                            </CardDescription>
-                        </div>
-                        <TrendingUp className="h-4.5 w-4.5 text-[#047857]" />
-                    </CardHeader>
-                    <CardContent className="p-5">
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                            {dashboard.trendingDestinations
-                                .slice(0, 5)
-                                .map((destination, index) => (
-                                    <div
-                                        key={destination.id}
-                                        className="flex items-center gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
-                                    >
-                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#047857] text-xs font-bold text-white">
-                                            {index + 1}
-                                        </span>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate font-semibold text-sm">
-                                                {destination.name}
-                                            </p>
-                                            <p className="truncate text-xs text-muted-foreground">
-                                                {destination.category} •{" "}
-                                                {destination.city}
-                                            </p>
-                                        </div>
-                                        <span className="inline-flex items-center gap-1 text-xs font-bold text-[#047857] shrink-0">
-                                            <Eye className="h-3.5 w-3.5" />
-                                            {destination.viewCount?.toLocaleString(
-                                                "id-ID",
-                                            ) ?? 0}
-                                        </span>
+            <Card className="rounded-xl border-border bg-card shadow-none">
+                <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-4">
+                    <div>
+                        <CardTitle className="font-heading text-lg font-semibold">
+                            Trending Saat Ini
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                            Destinasi dengan jumlah kunjungan terbanyak.
+                        </CardDescription>
+                    </div>
+                    <TrendingUp className="h-5 w-5 shrink-0 text-primary" />
+                </CardHeader>
+                <CardContent className="p-5">
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                        {dashboard.trendingDestinations
+                            .slice(0, 5)
+                            .map((destination, index) => (
+                                <div
+                                    key={destination.id}
+                                    className="flex items-center gap-2.5 rounded-lg border border-border p-2.5"
+                                >
+                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                                        {index + 1}
+                                    </span>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold">
+                                            {destination.name}
+                                        </p>
+                                        <p className="truncate text-xs text-muted-foreground">
+                                            {destination.category} ·{" "}
+                                            {destination.city}
+                                        </p>
                                     </div>
-                                ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
+                                    <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-primary">
+                                        <Eye className="h-3.5 w-3.5" />
+                                        {destination.viewCount?.toLocaleString(
+                                            "id-ID",
+                                        ) ?? 0}
+                                    </span>
+                                </div>
+                            ))}
+                    </div>
+                </CardContent>
+            </Card>
 
             <EngagementMetrics />
 
-            <section className="grid gap-5 pt-1 xl:grid-cols-3">
+            <section className="grid gap-5 xl:grid-cols-3">
                 <TrendChart />
 
                 <Card className="flex min-h-[340px] flex-col rounded-xl border-border bg-card shadow-none">
-                    <CardHeader className="flex flex-row items-start justify-between border-b border-border px-5 py-4">
+                    <CardHeader className="flex flex-row items-start justify-between gap-3 border-b border-border px-5 py-4">
                         <div>
-                            <CardTitle className="font-heading text-lg">
+                            <CardTitle className="font-heading text-lg font-semibold">
                                 Top Destinasi
                             </CardTitle>
-                            <CardDescription className="mt-1 text-sm">
+                            <CardDescription className="text-sm">
                                 Berdasarkan rating dan engagement.
                             </CardDescription>
                         </div>
-                        <BarChart3 className="h-5 w-5 text-[#047857]" />
+                        <BarChart3 className="h-5 w-5 shrink-0 text-primary" />
                     </CardHeader>
-                    <CardContent className="flex flex-1 flex-col gap-2.5 p-5">
+                    <CardContent className="flex flex-1 flex-col gap-3 p-5">
                         {dashboard.topDestinations.length > 0 ? (
                             dashboard.topDestinations
                                 .slice(0, 3)
                                 .map((destination, index) => (
                                     <div
                                         key={destination.id}
-                                        className="flex items-center gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
+                                        className="flex items-center gap-2.5 rounded-lg border border-border p-2.5"
                                     >
-                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
+                                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
                                             {destination.imageUrl ? (
                                                 <Image
                                                     src={destination.imageUrl}
@@ -523,7 +519,7 @@ export default async function DashboardPage() {
                                                 />
                                             ) : (
                                                 <div className="flex h-full w-full items-center justify-center">
-                                                    <MapPin className="h-5 w-5 text-[#047857]" />
+                                                    <MapPin className="h-5 w-5 text-primary" />
                                                 </div>
                                             )}
                                         </div>
@@ -532,12 +528,12 @@ export default async function DashboardPage() {
                                                 #{index + 1} {destination.name}
                                             </p>
                                             <p className="truncate text-xs text-muted-foreground">
-                                                {destination.category} •{" "}
+                                                {destination.category} ·{" "}
                                                 {destination.city}
                                             </p>
                                         </div>
                                         <div className="flex shrink-0 flex-col items-end gap-1">
-                                            <span className="inline-flex items-center gap-1 text-sm text-[#765b00]">
+                                            <span className="inline-flex items-center gap-1 text-sm text-chart-3">
                                                 <Star className="h-4 w-4 fill-current" />
                                                 {destination.rating.toFixed(1)}
                                             </span>
@@ -549,8 +545,8 @@ export default async function DashboardPage() {
                                     </div>
                                 ))
                         ) : (
-                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-background px-5 text-center">
-                                <BarChart3 className="mb-3 h-7 w-7 text-[#047857]" />
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-muted/40 px-5 text-center">
+                                <BarChart3 className="mb-3 h-7 w-7 text-primary" />
                                 <p className="text-sm font-semibold text-foreground">
                                     Belum ada top destinasi
                                 </p>
@@ -565,23 +561,23 @@ export default async function DashboardPage() {
 
                 <Card className="flex min-h-[340px] flex-col rounded-xl border-border bg-card shadow-none">
                     <CardHeader className="border-b border-border px-5 py-4">
-                        <CardTitle className="font-heading text-lg">
+                        <CardTitle className="font-heading text-lg font-semibold">
                             Aktivitas Terbaru
                         </CardTitle>
-                        <CardDescription className="mt-1 text-sm">
+                        <CardDescription className="text-sm">
                             Sinyal perilaku wisatawan terbaru.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-1 flex-col gap-2.5 p-5">
+                    <CardContent className="flex flex-1 flex-col gap-3 p-5">
                         {dashboard.recentActivities.length > 0 ? (
                             dashboard.recentActivities
                                 .slice(0, 3)
                                 .map((activity) => (
                                     <div
                                         key={activity.id}
-                                        className="flex gap-2.5 rounded-lg border border-[#dbe7df] p-2.5"
+                                        className="flex gap-2.5 rounded-lg border border-border p-2.5"
                                     >
-                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#d1fae5] text-[#047857]">
+                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                                             {activity.type === "SAVE" ? (
                                                 <CheckCircle2 className="h-4 w-4" />
                                             ) : (
@@ -603,8 +599,8 @@ export default async function DashboardPage() {
                                     </div>
                                 ))
                         ) : (
-                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-background px-5 text-center">
-                                <Activity className="mb-3 h-7 w-7 text-[#047857]" />
+                            <div className="flex flex-1 flex-col items-center justify-center rounded-lg bg-muted/40 px-5 text-center">
+                                <Activity className="mb-3 h-7 w-7 text-primary" />
                                 <p className="text-sm font-semibold text-foreground">
                                     Belum ada aktivitas
                                 </p>

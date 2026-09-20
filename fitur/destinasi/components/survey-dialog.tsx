@@ -119,7 +119,7 @@ export function SurveyDialog({
                     Beri Penilaian
                 </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="font-heading">
                         Penilaian Destinasi
@@ -172,20 +172,24 @@ export function SurveyDialog({
                             showDetail={showDetail}
                             saving={submitting}
                             submitLabel="Kirim Penilaian"
+                            beforeSubmit={
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium">
+                                        Komentar (opsional)
+                                    </label>
+                                    <Textarea
+                                        value={comment}
+                                        onChange={(e) =>
+                                            setComment(e.target.value)
+                                        }
+                                        rows={3}
+                                        maxLength={1000}
+                                        placeholder="Bagikan catatan tambahan..."
+                                    />
+                                </div>
+                            }
                             onSubmit={handleSubmit}
                         />
-                        <div className="space-y-2">
-                            <label className="text-xs font-medium">
-                                Komentar (opsional)
-                            </label>
-                            <Textarea
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                rows={3}
-                                maxLength={1000}
-                                placeholder="Bagikan catatan tambahan..."
-                            />
-                        </div>
                     </div>
                 )}
             </DialogContent>

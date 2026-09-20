@@ -5,6 +5,11 @@ import { optimizeImage } from "@/lib/upload/optimizeImage";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
+import {
+    extractExif,
+    recordPhotoMetadata,
+    evaluatePhotoValidity,
+} from "@/lib/services/photo-validation-service";
 
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -73,7 +78,43 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
+        // Extract EXIF (GPS + capture time) from the original file before
+        // optimization re-encodes it to WebP and strips metadata.
+        const exif = await extractExif(buffer);
         const optimizedBuffer = await optimizeImage(buffer);
+
+        // Server-side validity check (EXIF GPS + capture time) for every
+        // upload. Target coordinates are optional; when absent the result
+        // still flags missing GPS metadata or missing target coordinates.
+        const latParam = req.nextUrl.searchParams.get("lat");
+        const lngParam = req.nextUrl.searchParams.get("lng");
+        const toleranceParam = req.nextUrl.searchParams.get("tolerance");
+        const targetLabel =
+            req.nextUrl.searchParams.get("label") || "lokasi tujuan";
+        const parsedLat =
+            latParam != null && latParam !== "" ? Number(latParam) : null;
+        const parsedLng =
+            lngParam != null && lngParam !== "" ? Number(lngParam) : null;
+        const targetLat =
+            parsedLat != null && !Number.isNaN(parsedLat) ? parsedLat : null;
+        const targetLng =
+            parsedLng != null && !Number.isNaN(parsedLng) ? parsedLng : null;
+        const toleranceMeters =
+            toleranceParam != null && toleranceParam !== ""
+                ? Number(toleranceParam)
+                : undefined;
+
+        const validity = evaluatePhotoValidity({
+            photoLat: exif.latitude,
+            photoLng: exif.longitude,
+            targetLat,
+            targetLng,
+            toleranceMeters,
+            capturedAt: exif.capturedAt,
+            uploadedAt: new Date(),
+            hasMetadata: true,
+            targetLabel,
+        });
 
         const cloudinaryFolder = FOLDER_MAPPING[folder] ?? `hyperlocal/${folder}`;
 
@@ -100,6 +141,16 @@ export async function POST(req: NextRequest) {
             uploadStream.end(optimizedBuffer);
         });
 
+        try {
+            await recordPhotoMetadata({
+                url: result.secure_url,
+                publicId: result.public_id,
+                exif,
+            });
+        } catch (metadataError) {
+            console.error("Failed to store photo metadata:", metadataError);
+        }
+
         return NextResponse.json({
             success: true,
             message: "Image uploaded successfully",
@@ -109,6 +160,18 @@ export async function POST(req: NextRequest) {
                 url: result.secure_url,
                 size: result.bytes,
                 mimeType: result.format,
+                metadata: {
+                    latitude: exif.latitude,
+                    longitude: exif.longitude,
+                    capturedAt: exif.capturedAt
+                        ? exif.capturedAt.toISOString()
+                        : null,
+                },
+                validity: {
+                    validityStatus: validity.validityStatus,
+                    distanceMeters: validity.distanceMeters,
+                    message: validity.notes,
+                },
             },
         });
     } catch (error: unknown) {

@@ -45,12 +45,15 @@ interface HalalBadgeProps {
     score: number | null | undefined;
     className?: string;
     inline?: boolean;
+    /** Absolute placement when `inline` is false. */
+    placement?: "card" | "corner";
 }
 
 export function HalalBadge({
     score,
     className = "",
     inline = false,
+    placement = "card",
 }: HalalBadgeProps): ReactNode {
     if (score == null) return null;
 
@@ -73,9 +76,14 @@ export function HalalBadge({
         );
     }
 
+    const placementClass =
+        placement === "corner"
+            ? "-top-8 -left-6 w-[104px] h-[78px]"
+            : "-top-[31px] -left-[52px] w-[120px] h-[90px]";
+
     return (
         <div
-            className={`absolute -top-[31px] -left-[52px] w-[120px] h-[90px] z-20 pointer-events-none drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)] ${className}`}
+            className={`absolute ${placementClass} z-20 pointer-events-none drop-shadow-[0_4px_6px_rgba(0,0,0,0.15)] ${className}`}
         >
             <Image
                 src={config.imageSrc}

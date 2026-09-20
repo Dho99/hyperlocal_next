@@ -310,6 +310,21 @@ export function FacilityItemCard({
                                         onChange={field.onChange}
                                         folder="facility-evidences"
                                         maxFiles={5}
+                                        validatePhoto
+                                        targetLat={
+                                            latitude ?? destLatitude ?? null
+                                        }
+                                        targetLng={
+                                            longitude ?? destLongitude ?? null
+                                        }
+                                        toleranceMeters={
+                                            selectedFacility?.photoToleranceMeters ??
+                                            null
+                                        }
+                                        targetLabel={
+                                            selectedFacility?.name ??
+                                            "fasilitas"
+                                        }
                                     />
                                 </FormControl>
                                 <FormMessage />
