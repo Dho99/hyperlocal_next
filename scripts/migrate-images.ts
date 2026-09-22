@@ -16,7 +16,7 @@ interface ImageEntity {
 interface MigrationConfig {
     entityType: "destinations" | "umkms" | "accommodations";
     findMany: () => Promise<ImageEntity[]>;
-    updateImage: (id: string, url: string) => Promise<void>;
+    updateImage: (id: string, url: string) => Promise<unknown>;
 }
 
 const connectionString = `${process.env.DATABASE_URL}`;
