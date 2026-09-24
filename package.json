@@ -13,6 +13,7 @@
         "sync:images:dry": "tsx scripts/sync-images-to-cloudinary.ts --limit=3 --dry-run",
         "acesh:sample": "tsx scripts/acesh-sample-situ-gede.ts",
         "import:data": "tsx scripts/import/import-all.ts",
+        "import:poi": "tsx scripts/import/import-poi-csv.ts",
         "test": "vitest run",
         "test:acesh": "vitest run tests/unit",
         "test:integration": "vitest run tests/integration",
