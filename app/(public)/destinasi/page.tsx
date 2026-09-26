@@ -12,8 +12,8 @@ export default async function DestinasiPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-                <div className="text-center space-y-4 mb-12">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 md:pt-16 pb-12">
+                <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-10">
                     <h1 className="text-4xl sm:text-5xl font-heading font-bold text-foreground">
                         Jelajahi Destinasi
                     </h1>
