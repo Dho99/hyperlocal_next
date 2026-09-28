@@ -54,6 +54,7 @@ opencode.jsonc
 .env*
 
 /plans
+/scripts/output
 /playwright-report
 /test-results
 /playwright/.cache
