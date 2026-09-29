@@ -18,7 +18,8 @@
         "test:integration": "vitest run tests/integration",
         "coverage": "vitest run --coverage",
         "migrate:images": "tsx scripts/migrate-images.ts",
-        "check:google-images": "tsx scripts/check-google-images.ts"
+        "check:google-images": "tsx scripts/check-google-images.ts",
+        "scrape:safar": "tsx scripts/scrape-safar-dataset.ts"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"

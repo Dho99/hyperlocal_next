@@ -101,15 +101,19 @@ export function PublicAccommodationList() {
 
     return (
         <div className="space-y-8">
-            <div className="relative max-w-md mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                <input
-                    type="text"
-                    placeholder="Cari penginapan..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-11 pr-4 py-2.5 rounded-full bg-background/80 backdrop-blur-md border border-border text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-shadow"
-                />
+            <div className="sticky top-16 z-40 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 bg-background/95 backdrop-blur-sm py-4">
+                <div className="relative max-w-2xl mx-auto">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <Search className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Cari penginapan..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent/20"
+                    />
+                </div>
             </div>
 
             {error && (

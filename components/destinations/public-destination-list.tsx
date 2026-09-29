@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -101,10 +101,31 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
     const [categoryId, setCategoryId] = useState("all");
     const [minScore, setMinScore] = useState("all");
     const [sort, setSort] = useState("newest");
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
     const deferredSearch = useDeferredValue(search);
 
-    const hasActiveFilters =
-        categoryId !== "all" || minScore !== "all" || sort !== "newest";
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 80);
+        };
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const activeFilterCount =
+        (categoryId !== "all" ? 1 : 0) +
+        (minScore !== "all" ? 1 : 0) +
+        (sort !== "newest" ? 1 : 0);
+
+    const hasActiveFilters = activeFilterCount > 0;
+
+    const handleReset = () => {
+        setSearch("");
+        setCategoryId("all");
+        setMinScore("all");
+        setSort("newest");
+    };
 
     const params = useMemo(() => {
         const p: Record<string, string> = { status: "APPROVED" };
@@ -124,78 +145,197 @@ export function PublicDestinationList({ categories }: PublicDestinationListProps
 
     return (
         <div className="space-y-8">
-            <div className="rounded-xl border border-border/50 bg-card/75 p-4 shadow-sm backdrop-blur-md">
-                <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_180px_160px_190px_auto]">
-                    <div className="relative">
-                        <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                        <input
-                            type="search"
-                            placeholder="Cari destinasi..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="h-10 w-full rounded-md border border-border bg-card pl-10 pr-4 text-sm text-foreground shadow-xs placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                        />
+            {/* Sticky Search & Filter Toolbar */}
+            <div
+                className={`sticky top-16 z-30 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 transition-all duration-300 ${
+                    isScrolled
+                        ? "bg-background/95 backdrop-blur-md border-b border-border/50 shadow-xs"
+                        : "bg-transparent border-b border-transparent"
+                }`}
+            >
+                <div className="max-w-7xl mx-auto">
+                    <div className="rounded-xl border border-border/60 bg-card/90 p-3 sm:p-4 shadow-xs backdrop-blur-md transition-shadow">
+                        {/* Mobile Layout (< md) */}
+                        <div className="md:hidden space-y-3">
+                            <div className="flex items-center gap-2">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                                    <input
+                                        type="text"
+                                        placeholder="Cari destinasi..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="h-10 w-full rounded-md border border-border bg-card pl-10 pr-9 text-sm text-foreground shadow-xs placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    />
+                                    {search && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setSearch("")}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            aria-label="Hapus pencarian"
+                                        >
+                                            <X className="size-3.5" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <Button
+                                    type="button"
+                                    variant={showMobileFilters ? "default" : "outline"}
+                                    className="relative h-10 px-3 border-border bg-card text-foreground"
+                                    onClick={() => setShowMobileFilters(!showMobileFilters)}
+                                    aria-label="Filter destinasi"
+                                >
+                                    <SlidersHorizontal className="size-4 mr-1.5" />
+                                    <span className="text-xs font-medium">Filter</span>
+                                    {activeFilterCount > 0 && (
+                                        <span className="ml-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground px-1">
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                </Button>
+
+                                {(hasActiveFilters || search) && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="h-10 w-10 p-0 shrink-0 border-border bg-card text-muted-foreground hover:bg-muted"
+                                        onClick={handleReset}
+                                        aria-label="Reset filter"
+                                    >
+                                        <X className="size-4" />
+                                    </Button>
+                                )}
+                            </div>
+
+                            {/* Collapsible Mobile Filter Controls */}
+                            {showMobileFilters && (
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 animate-in fade-in-0 slide-in-from-top-1 duration-200">
+                                    <Select value={categoryId} onValueChange={setCategoryId}>
+                                        <SelectTrigger className="h-9 border-border bg-card text-foreground text-xs">
+                                            <SlidersHorizontal className="mr-2 size-3.5 text-muted-foreground" />
+                                            <SelectValue placeholder="Kategori" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Semua kategori</SelectItem>
+                                            {categories.map((category) => (
+                                                <SelectItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Select value={minScore} onValueChange={setMinScore}>
+                                        <SelectTrigger className="h-9 border-border bg-card text-foreground text-xs">
+                                            <Star className="mr-2 size-3.5 text-muted-foreground" />
+                                            <SelectValue placeholder="Skor" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {scoreFilters.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Select value={sort} onValueChange={setSort}>
+                                        <SelectTrigger className="h-9 border-border bg-card text-foreground text-xs">
+                                            <ArrowDownUp className="mr-2 size-3.5 text-muted-foreground" />
+                                            <SelectValue placeholder="Urutkan" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {sortOptions.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Tablet & Desktop Layout (md and up) */}
+                        <div className="hidden md:grid gap-3 md:grid-cols-[minmax(200px,1fr)_160px_140px_160px_auto] lg:grid-cols-[minmax(240px,1fr)_180px_160px_190px_auto] items-center">
+                            <div className="relative">
+                                <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                                <input
+                                    type="text"
+                                    placeholder="Cari destinasi..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="h-10 w-full rounded-md border border-border bg-card pl-10 pr-9 text-sm text-foreground shadow-xs placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                />
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearch("")}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                        aria-label="Hapus pencarian"
+                                    >
+                                        <X className="size-3.5" />
+                                    </button>
+                                )}
+                            </div>
+
+                            <Select value={categoryId} onValueChange={setCategoryId}>
+                                <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                                    <SlidersHorizontal className="mr-2 size-4 text-muted-foreground" />
+                                    <SelectValue placeholder="Kategori" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Semua kategori</SelectItem>
+                                    {categories.map((category) => (
+                                        <SelectItem key={category.id} value={category.id}>
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={minScore} onValueChange={setMinScore}>
+                                <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                                    <Star className="mr-2 size-4 text-muted-foreground" />
+                                    <SelectValue placeholder="Skor" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {scoreFilters.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={sort} onValueChange={setSort}>
+                                <SelectTrigger className="h-10 border-border bg-card text-foreground">
+                                    <ArrowDownUp className="mr-2 size-4 text-muted-foreground" />
+                                    <SelectValue placeholder="Urutkan" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {sortOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="h-10 border-border bg-card text-muted-foreground hover:bg-muted md:w-10 md:px-0"
+                                disabled={!hasActiveFilters && !search}
+                                onClick={handleReset}
+                                aria-label="Reset filter"
+                            >
+                                <X className="size-4" />
+                                <span className="md:sr-only">Reset</span>
+                            </Button>
+                        </div>
                     </div>
-
-                    <Select value={categoryId} onValueChange={setCategoryId}>
-                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
-                            <SlidersHorizontal className="mr-2 size-4 text-muted-foreground" />
-                            <SelectValue placeholder="Kategori" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Semua kategori</SelectItem>
-                            {categories.map((category) => (
-                                <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={minScore} onValueChange={setMinScore}>
-                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
-                            <Star className="mr-2 size-4 text-muted-foreground" />
-                            <SelectValue placeholder="Skor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {scoreFilters.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={sort} onValueChange={setSort}>
-                        <SelectTrigger className="h-10 border-border bg-card text-foreground">
-                            <ArrowDownUp className="mr-2 size-4 text-muted-foreground" />
-                            <SelectValue placeholder="Urutkan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {sortOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="h-10 border-border bg-card text-muted-foreground hover:bg-muted md:w-10 md:px-0"
-                        disabled={!hasActiveFilters && !search}
-                        onClick={() => {
-                            setSearch("");
-                            setCategoryId("all");
-                            setMinScore("all");
-                            setSort("newest");
-                        }}
-                        aria-label="Reset filter"
-                    >
-                        <X className="size-4" />
-                        <span className="md:sr-only">Reset</span>
-                    </Button>
                 </div>
             </div>
 

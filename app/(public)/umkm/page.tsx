@@ -141,27 +141,29 @@ function UmkmTabsContent() {
     };
 
     return (
-        <div className="mx-auto min-h-screen max-w-7xl px-4 py-8 bg-background">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+        <div className="mx-auto min-h-screen max-w-7xl px-4 pb-8 bg-background">
+            <div className="text-center space-y-3 sm:space-y-4 pt-8 sm:pt-12 mb-8 sm:mb-10">
+                <h1 className="text-4xl sm:text-5xl font-heading font-bold text-foreground">
                     Pelaku UMKM
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                     Temukan berbagai UMKM yang terverifikasi di ekosistem kami.
                 </p>
             </div>
 
-            <div className="mb-8 relative max-w-2xl">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                    <Search className="h-5 w-5 text-muted-foreground" />
+            <div className="sticky top-16 z-40 -mx-4 px-4 bg-background/95 backdrop-blur-sm py-4 mb-4">
+                <div className="relative max-w-2xl mx-auto">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <Search className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <input
+                        type="text"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        placeholder="Cari nama UMKM atau destinasi terdekat (misal: Pantai Karang Tawulan)..."
+                        className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent/20"
+                    />
                 </div>
-                <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Cari nama UMKM atau destinasi terdekat (misal: Pantai Karang Tawulan)..."
-                    className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent/20"
-                />
             </div>
 
             {isLoadingCategories ? (
@@ -244,12 +246,11 @@ function UmkmTabsContent() {
                                             )}
                                             {badge && (
                                                 <div
-                                                    className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${
-                                                        badge.variant ===
-                                                        "certified"
+                                                    className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${badge.variant ===
+                                                            "certified"
                                                             ? "bg-accent/90 text-white"
                                                             : "bg-amber-500/20 text-amber-400"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <BadgeCheck size={14} />
                                                     {badge.label}
