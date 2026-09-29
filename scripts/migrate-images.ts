@@ -118,7 +118,9 @@ async function main() {
         process.exit(1);
     }
 
-    const configs: MigrationConfig[] = [
+    const filterArg = process.argv[2]?.toLowerCase().replace(/^-+/, "");
+    const normalize = (s: string) => s.toLowerCase().replace(/s$/, "");
+    const allConfigs: MigrationConfig[] = [
         {
             entityType: "destinations",
             findMany: () => prisma.destination.findMany({ include: { images: true } }),
@@ -135,6 +137,17 @@ async function main() {
             updateImage: (id, url) => prisma.accommodationImage.update({ where: { id }, data: { imageUrl: url } }),
         },
     ];
+
+    const configs = filterArg
+        ? allConfigs.filter((c) => normalize(c.entityType) === normalize(filterArg))
+        : allConfigs;
+
+    if (filterArg && configs.length === 0) {
+        console.error(`Unknown entity filter: "${process.argv[2]}". Valid: destinations, umkms, accommodations`);
+        process.exit(1);
+    }
+
+    console.log(`Migrating: ${configs.map((c) => c.entityType).join(", ")}\n`);
 
     let totalMigrated = 0, totalFailed = 0;
 
