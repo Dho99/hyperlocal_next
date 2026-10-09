@@ -9,7 +9,11 @@ export const umkmSchema = z.object({
             /^[a-z0-9-]+$/,
             "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung",
         ),
-    owner: z.string().min(2, "Nama pemilik minimal 2 karakter"),
+    owner: z
+        .preprocess(
+            (v) => (typeof v === "string" && v.trim() === "" ? null : v),
+            z.string().min(2, "Nama pemilik minimal 2 karakter").nullable().optional(),
+        ),
     destinationId: z
         .string()
         .uuid("Pilih destinasi yang valid")

@@ -127,7 +127,7 @@ async function getUmkmData(startDate: Date, endDate: Date): Promise<ReportData> 
     rows: data.map((u) => ({
       name: u.name,
       slug: u.slug,
-      owner: u.owner,
+      owner: u.owner ?? "",
       address: u.address ?? "",
       phone: u.phone ?? "",
       latitude: u.latitude ? Number(u.latitude) : "",

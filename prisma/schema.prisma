@@ -600,7 +600,7 @@ model Umkm {
   externalSource   String?  @map("external_source")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
-  owner            String
+  owner            String?
   validationStatus String   @default("PENDING") @map("validation_status")
   surveyorNote     String?  @map("surveyor_note")
 

@@ -53,7 +53,7 @@ export interface HalalCertification {
 
 export interface Umkm {
     id: string;
-    owner: string;
+    owner: string | null;
     coverageAreaId: string | null;
     destinationId: string | null;
     categoryId: string | null;

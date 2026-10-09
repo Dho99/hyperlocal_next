@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     }
     if (!type || !VALID_TYPES.includes(type)) {
       return NextResponse.json(
-        { error: "Tipe tidak valid. Pilih: destination, umkm, atau accommodation" },
+        { error: "Tipe tidak valid. Pilih: destination, umkm, accommodation, atau facility" },
         { status: 400 }
       );
     }

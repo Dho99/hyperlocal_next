@@ -174,7 +174,7 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="owner">Nama Pemilik</Label>
+                                    <Label htmlFor="owner">Nama Pemilik (Opsional)</Label>
                                     <div className="relative">
                                         <UserIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                         <Input

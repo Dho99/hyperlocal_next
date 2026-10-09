@@ -115,10 +115,12 @@ export default async function ValidasiUmkmDetailPage({ params }: PageProps) {
                             )}
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-                                <div className="flex items-center gap-2 text-stone-600">
-                                    <User className="w-4 h-4 text-stone-400 shrink-0" />
-                                    <span>{umkm.owner}</span>
-                                </div>
+                                {umkm.owner && (
+                                    <div className="flex items-center gap-2 text-stone-600">
+                                        <User className="w-4 h-4 text-stone-400 shrink-0" />
+                                        <span>{umkm.owner}</span>
+                                    </div>
+                                )}
                                 {umkm.phone && (
                                     <div className="flex items-center gap-2 text-stone-600">
                                         <Phone className="w-4 h-4 text-stone-400 shrink-0" />

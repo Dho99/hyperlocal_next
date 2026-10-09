@@ -29,7 +29,7 @@ const DESTINATION_COLUMNS = [
 
 const UMKM_COLUMNS = [
   { key: "name", label: "Nama UMKM*" },
-  { key: "owner", label: "Pemilik*" },
+  { key: "owner", label: "Pemilik" },
   { key: "address", label: "Alamat" },
   { key: "phone", label: "Telepon" },
   { key: "estimatedCost", label: "Estimasi Biaya" },
@@ -60,6 +60,8 @@ const FACILITY_COLUMNS = [
   { key: "facilityType", label: "Tipe Fasilitas" },
   { key: "weight", label: "Bobot" },
   { key: "maxDistance", label: "Jarak Maksimal (km)" },
+  { key: "latitude", label: "Latitude" },
+  { key: "longitude", label: "Longitude" },
 ] as const;
 
 const SAMPLE_ROW: Record<ImportType, string> = {
@@ -68,6 +70,126 @@ const SAMPLE_ROW: Record<ImportType, string> = {
   accommodation: "Hotel Syariah Lombok",
   facility: "Mushola",
 };
+
+// ─── Header aliases & sheet resolution ───────────────────────────────────────
+// The admin UI accepts one .xlsx per type, but legacy combined workbooks
+// (e.g. dataset_pritim/*.xlsx) contain one sheet per category with the same
+// labels in varying order. Header-based mapping keeps both working.
+
+function normalizeImportHeader(header: string): string {
+  return header.toLowerCase().replace(/\*/g, "").replace(/[^a-z0-9]/g, "");
+}
+
+const IMPORT_HEADER_ALIASES: Record<string, string[]> = {
+  name: ["namadestinasi", "namaumkm", "namapenginapan", "namafasilitas", "nama", "name"],
+  address: ["alamat", "address"],
+  city: ["kota", "city", "kabupatenkota"],
+  province: ["provinsi", "province"],
+  latitude: ["latitude", "lat", "lintang"],
+  longitude: ["longitude", "long", "lon", "bujur"],
+  description: ["deskripsi", "description"],
+  categoryName: ["kategori", "category", "categoryname"],
+  coverageAreaName: ["wilayahcakupan", "wilayah", "coveragearea", "coverageareaname"],
+  owner: ["pemilik", "owner", "namapemilik"],
+  phone: ["telepon", "phone", "telp", "nomortelepon", "kontak"],
+  estimatedCost: ["estimasibiaya", "estimatedcost", "biaya", "harga", "tarif"],
+  destinationName: ["destinasiterkait", "destinationname", "destinasi", "destination"],
+  website: ["website", "situs", "situsweb", "url"],
+  facilityType: ["tipefasilitas", "facilitytype", "tipe", "jenisfasilitas"],
+  weight: ["bobot", "weight"],
+  maxDistance: ["jarakmaksimalkm", "jarakmaksimal", "maxdistance", "jarak", "jarakkm"],
+  icon: ["ikon", "icon"],
+};
+
+/** Map header texts (row 1) to import keys. Exported for testing/reuse. */
+export function buildHeaderIndex(headers: string[]): Map<string, number> {
+  const index = new Map<string, number>();
+  headers.forEach((h, i) => {
+    const normalized = normalizeImportHeader(h);
+    if (!normalized) return;
+    for (const [key, aliases] of Object.entries(IMPORT_HEADER_ALIASES)) {
+      if (aliases.includes(normalized)) {
+        if (!index.has(key)) index.set(key, i);
+        break;
+      }
+    }
+  });
+  return index;
+}
+
+const IMPORT_SHEET_CANDIDATES: Record<ImportType, string[]> = {
+  destination: ["data", "destinasi", "destination", "destinations"],
+  umkm: ["data", "umkm"],
+  accommodation: ["data", "penginapan", "accommodation", "accommodations", "akomodasi"],
+  facility: ["data", "fasilitas", "facility", "facilities"],
+};
+
+interface ImportWorkbook {
+  getWorksheet(name: string): unknown;
+  worksheets: { name: string }[];
+}
+
+/**
+ * Find the sheet to parse for a given import type. Accepts the official
+ * single-type template (sheet "Data") as well as combined workbooks where
+ * each category has its own sheet. Falls back to the first sheet.
+ * Exported for testing/reuse.
+ */
+export function resolveImportSheet(workbook: ImportWorkbook, type: ImportType): unknown {
+  const direct = workbook.getWorksheet("Data");
+  if (direct) return direct;
+  const lowered = new Map(workbook.worksheets.map((ws) => [String(ws.name).toLowerCase().trim(), ws]));
+  for (const candidate of IMPORT_SHEET_CANDIDATES[type]) {
+    if (candidate === "data") continue;
+    const found = lowered.get(candidate);
+    if (found) return found;
+  }
+  return workbook.worksheets[0];
+}
+
+// ACES sub-category labels (used by legacy datasets) → FacilityType codes.
+const FACILITY_TYPE_LABEL_MAP: Record<string, string> = {
+  prayerplaces: "MOSQUE",
+  halaldining: "RESTAURANT",
+  heritageexperiences: "FAMILY",
+  transportinfrastructure: "ACCESSIBILITY",
+  sustainability: "CLEANLINESS",
+  generalsafety: "ADDITIONAL",
+  // Legacy Indonesian values found in older seeds/datasets
+  ibadah: "MOSQUE",
+  mushola: "MOSQUE",
+  musala: "MOSQUE",
+  masjid: "MOSQUE",
+  kuliner: "RESTAURANT",
+  restoran: "RESTAURANT",
+  rekreasi: "FAMILY",
+  transportasi: "ACCESSIBILITY",
+  parkir: "ACCESSIBILITY",
+  akses: "ACCESSIBILITY",
+  sanitasi: "CLEANLINESS",
+  toilet: "CLEANLINESS",
+  wudhu: "CLEANLINESS",
+  kebersihan: "CLEANLINESS",
+  lingkungan: "CLEANLINESS",
+  sertifikasi: "ADDITIONAL",
+  keamanan: "ADDITIONAL",
+  informasi: "ADDITIONAL",
+  fasilitas: "ADDITIONAL",
+};
+
+/**
+ * Normalize a raw facility-type value to a FacilityType code when
+ * recognizable; otherwise keep the raw value (backward compatible).
+ * Exported for testing/reuse.
+ */
+export function mapFacilityType(raw: string): string | null {
+  if (!raw || !raw.trim()) return null;
+  const upper = raw.trim().toUpperCase().replace(/[^A-Z]/g, "");
+  const known = ["MOSQUE", "RESTAURANT", "FAMILY", "ACCESSIBILITY", "CLEANLINESS", "ADDITIONAL"];
+  if (known.includes(upper)) return upper;
+  const normalized = raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return FACILITY_TYPE_LABEL_MAP[normalized] ?? raw.trim();
+}
 
 function toSlug(name: string): string {
   return name
@@ -133,7 +255,9 @@ export async function generateTemplate(
       ? DESTINATION_COLUMNS
       : type === "umkm"
         ? UMKM_COLUMNS
-        : ACCOMMODATION_COLUMNS;
+        : type === "facility"
+          ? FACILITY_COLUMNS
+          : ACCOMMODATION_COLUMNS;
 
   const dataSheet = workbook.addWorksheet("Data");
 
@@ -179,9 +303,11 @@ export async function generateTemplate(
     dataSheet.addRow([
       SAMPLE_ROW.facility,
       "Tempat sholat bagi wisatawan",
-      "mushola",
+      "MOSQUE",
       "10",
       "5.0",
+      "-8.650979",
+      "116.324134",
     ]);
   } else {
     dataSheet.addRow([
@@ -275,7 +401,10 @@ export async function parseAndImport(
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
 
-  const sheet = workbook.getWorksheet("Data") ?? workbook.worksheets[0];
+  const sheet = resolveImportSheet(workbook, type) as {
+    getRow(n: number): { getCell(n: number): { value: unknown }; cellCount: number };
+    rowCount: number;
+  } | undefined;
   if (!sheet) {
     return {
       inserted: 0,
@@ -300,17 +429,38 @@ export async function parseAndImport(
     startRow = 3;
   }
 
-  // Parse rows by column index
+  // Header-based mapping: match row-1 labels to import keys so column order
+  // and extra dataset columns (e.g. Ikon, Destinasi Terkait) don't break parsing.
+  // Falls back to positional mapping for files without a recognizable header.
+  const headerRow = sheet.getRow(1);
+  const headers: string[] = [];
+  const headerWidth = Math.max(headerRow.cellCount, columns.length);
+  for (let i = 1; i <= headerWidth; i++) {
+    headers.push(getCellValue(headerRow.getCell(i).value));
+  }
+  const headerIndex = buildHeaderIndex(headers);
+  const useHeaderMapping = headerIndex.size > 0;
+
+  // Parse rows
   const parsed: { rowNum: number; data: Record<string, string> }[] = [];
 
   for (let r = startRow; r <= sheet.rowCount; r++) {
     const row = sheet.getRow(r);
     const record: Record<string, string> = {};
 
-    columns.forEach((col, i) => {
-      const val = getCellValue(row.getCell(i + 1).value).trim();
-      if (val) record[col.key] = val;
-    });
+    if (useHeaderMapping) {
+      for (const col of columns) {
+        const idx = headerIndex.get(col.key);
+        if (idx === undefined) continue;
+        const val = getCellValue(row.getCell(idx + 1).value).trim();
+        if (val) record[col.key] = val;
+      }
+    } else {
+      columns.forEach((col, i) => {
+        const val = getCellValue(row.getCell(i + 1).value).trim();
+        if (val) record[col.key] = val;
+      });
+    }
 
     // Only include rows that have a name value
     if (record.name) {
@@ -327,7 +477,7 @@ export async function parseAndImport(
 // ─── Per-entity import ────────────────────────────────────────────────────────
 
 async function makeUniqueSlug(base: string, taken: Set<string>): Promise<string> {
-  let slug = toSlug(base) || "item";
+  const slug = toSlug(base) || "item";
   if (!taken.has(slug)) {
     taken.add(slug);
     return slug;
@@ -443,10 +593,8 @@ async function importUmkms(
       errors.push({ row: rowNum, field: "Nama UMKM", message: "Wajib diisi" });
       continue;
     }
-    if (!data.owner) {
-      errors.push({ row: rowNum, field: "Pemilik", message: "Wajib diisi" });
-      continue;
-    }
+    // Owner is optional: empty values are stored as NULL (no placeholder).
+    const owner = data.owner?.trim() ? data.owner : null;
 
     let categoryId: string | null = null;
     if (data.categoryName) {
@@ -486,7 +634,7 @@ async function importUmkms(
     toInsert.push({
       name: data.name,
       slug,
-      owner: data.owner,
+      owner,
       categoryId,
       coverageAreaId,
       destinationId,
@@ -583,10 +731,24 @@ async function importFacilities(
       continue;
     }
 
+    const latitude = data.latitude ? parseFloat(data.latitude) : null;
+    const longitude = data.longitude ? parseFloat(data.longitude) : null;
+
+    if (data.latitude && (isNaN(latitude!) || latitude! < -90 || latitude! > 90)) {
+      errors.push({ row: rowNum, field: "Latitude", message: "Nilai tidak valid (contoh: -7.326689)" });
+      continue;
+    }
+    if (data.longitude && (isNaN(longitude!) || longitude! < -180 || longitude! > 180)) {
+      errors.push({ row: rowNum, field: "Longitude", message: "Nilai tidak valid (contoh: 108.224194)" });
+      continue;
+    }
+
     toInsert.push({
       name: data.name,
       description: data.description ?? null,
-      facilityType: data.facilityType ?? null,
+      facilityType: mapFacilityType(data.facilityType ?? "") ?? null,
+      latitude,
+      longitude,
       weight,
       maxDistance,
     });
