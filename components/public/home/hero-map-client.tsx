@@ -32,8 +32,8 @@ const CLUSTER_CATEGORY_COLORS: Record<string, string> = {
     Kuliner: "#ea580c",
     Penginapan: "#d97706",
     Hotel: "#d97706",
-    Masjid: "#7c3aed",
-    "Tempat Ibadah": "#7c3aed",
+    Masjid: "#064e3b",
+    "Tempat Ibadah": "#064e3b",
 };
 
 function getClusterColor(cluster: L.MarkerCluster): string {
@@ -56,7 +56,7 @@ function getClusterColor(cluster: L.MarkerCluster): string {
     if (dominantCat && CLUSTER_CATEGORY_COLORS[dominantCat]) {
         return CLUSTER_CATEGORY_COLORS[dominantCat];
     }
-    return "#6b21a8";
+    return "#064e3b";
 }
 
 const createClusterIcon = (cluster: L.MarkerCluster) => {
