@@ -33,7 +33,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 Missing photos for destinations, UMKM, and accommodations can be matched against
 Openverse search results. The importer only accepts CC0 or CC BY files and
-saves the photographer, license, and source link in the image caption.
+saves the photographer, license, and source link in the image caption. It also
+searches Wikimedia Commons directly for verified CC0/CC BY files, and can query
+Flickr directly for CC0/CC BY 2.0 photos if `FLICKR_API_KEY` is configured.
+Openverse already indexes some Flickr photos, so Flickr-hosted results may appear
+even without a direct Flickr API key.
+
+Create a Flickr API key from Flickr's API settings and add it to `.env` as
+`FLICKR_API_KEY` to enable direct Flickr queries. Never commit the key.
 
 Preview up to five missing records per entity type:
 
@@ -50,6 +57,33 @@ npm run photos:open:apply
 The importer only adds a photo to records that currently have no images. Google
 Maps pages are not scraped, and Google Places photos are not copied into
 Cloudinary; using Places photos requires compliant API display and attribution.
+
+## Importing photos linked from OpenStreetMap
+
+OpenStreetMap stores map data, not image files. This importer checks nearby
+OpenStreetMap objects using the Nominatim search API for `wikimedia_commons`
+tags, then uses the linked Commons file only when its license is public domain,
+CC0, or CC BY and both object name and coordinates match the record.
+Photographer, image license, Commons source, and OpenStreetMap object attribution
+are saved with the image. OSM `image` URLs without a verifiable reusable license
+are skipped.
+
+Preview up to five coordinate-matched records per entity type:
+
+```bash
+npm run photos:osm:preview
+```
+
+Import matches for up to five records per entity type:
+
+```bash
+npm run photos:osm:apply
+```
+
+Only records with coordinates and no existing image are considered; requests
+are made sequentially with a delay to respect Nominatim's public usage policy.
+For a later batch, pass `--offset=5` (or another offset) to the script. The
+per-run limit is capped at 25 records per entity type.
 
 ## Deploy on Vercel
 

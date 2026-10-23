@@ -25,10 +25,39 @@ type OpenverseImage = {
     foreign_landing_url: string;
     width: number | null;
     height: number | null;
+    source: "Openverse" | "Wikimedia Commons" | "Flickr";
 };
 type OpenverseResponse = {
     results?: OpenverseImage[];
     detail?: string;
+};
+type WikimediaMetadata = { value?: string };
+type WikimediaFile = {
+    title: string;
+    imageinfo?: Array<{
+        thumburl?: string;
+        mime?: string;
+        extmetadata?: Record<string, WikimediaMetadata>;
+    }>;
+};
+type WikimediaResponse = {
+    query?: { pages?: WikimediaFile[] };
+    error?: { info?: string };
+};
+type FlickrPhoto = {
+    id: string;
+    owner: string;
+    ownername?: string;
+    title: string;
+    description?: { _content?: string };
+    tags?: string;
+    license: string;
+    url_l?: string;
+};
+type FlickrResponse = {
+    stat: "ok" | "fail";
+    message?: string;
+    photos?: { photo?: FlickrPhoto[] };
 };
 
 const USER_AGENT =
@@ -87,25 +116,55 @@ function nameTokens(name: string): string[] {
     ))];
 }
 
+function locationTokensFor(entity: Entity, nameTokensList: string[]): string[] {
+    const location = [entity.city, entity.province].filter(Boolean).join(" ")
+        || entity.address
+        || "";
+    return nameTokens(location).filter((token) => !nameTokensList.includes(token));
+}
+
+function isStrongNameAndLocationMatch(
+    entity: Entity,
+    nameText: string,
+    supportingText: string = nameText,
+): boolean {
+    const nameTokensList = nameTokens(entity.name);
+    const nameWords = new Set(normalize(nameText).split(/\s+/));
+    if (nameTokensList.length === 0) return false;
+    const matchedNameTokens = nameTokensList.filter((token) => nameWords.has(token)).length;
+    const requiredNameTokens = nameTokensList.length === 1
+        ? 1
+        : Math.max(2, Math.ceil(nameTokensList.length * 0.8));
+    const locationTokens = locationTokensFor(entity, nameTokensList);
+    if (nameTokensList.length === 1 && locationTokens.length === 0) {
+        return false;
+    }
+    if (matchedNameTokens < requiredNameTokens) return false;
+    const supportingWords = new Set(normalize(supportingText).split(/\s+/));
+    return locationTokens.length === 0
+        || locationTokens.some((token) => supportingWords.has(token));
+}
+
 function isReusableLicense(image: OpenverseImage): boolean {
     if (image.license === "cc0") {
         return image.license_url.startsWith("https://creativecommons.org/publicdomain/zero/");
     }
+    if (image.license === "pd") return true;
     return image.license === "by"
-        && image.license_url.startsWith("https://creativecommons.org/licenses/by/");
+        && /^https:\/\/creativecommons\.org\/licenses\/by\/(?:1\.0|2\.0|2\.5|3\.0|4\.0)\/?$/i.test(image.license_url);
 }
 
 function attributionCaption(image: OpenverseImage): string {
     const creator = image.creator?.replace(/<[^>]*>/g, "").trim() || "Tidak dicantumkan";
     const version = image.license_version ? ` ${image.license_version}` : "";
-    const license = image.license === "cc0" ? "CC0" : "CC BY";
+    const license = image.license === "cc0"
+        ? "CC0"
+        : image.license === "pd" ? "Public Domain" : "CC BY";
     return `Foto: ${image.title} — ${creator}. Lisensi: ${license}${version} (${image.license_url}). Sumber: ${image.foreign_landing_url}`;
 }
 
 async function searchOpenverse(entity: Entity): Promise<OpenverseImage | null> {
     const tokens = nameTokens(entity.name);
-    const location = [entity.city, entity.province].filter(Boolean).join(" ") || entity.address || "";
-    const locationTokens = nameTokens(location).filter((token) => !tokens.includes(token));
     if (tokens.length === 0) return null;
 
     const queries = [...new Set([
@@ -153,32 +212,166 @@ async function searchOpenverse(entity: Entity): Promise<OpenverseImage | null> {
         if (data.detail) throw new Error(`Openverse API error: ${data.detail}`);
 
         const candidates = (data.results ?? [])
-            .filter((image) => {
-                if (!isReusableLicense(image) || !image.url.startsWith("https://")) return false;
-                const titleWords = normalize(image.title).split(" ");
-                const titleMatches = tokens.filter((token) => titleWords.includes(token)).length;
-                const requiredMatches = tokens.length === 1
-                    ? titleMatches === 1 && locationTokens.some((token) => titleWords.includes(token))
-                    : titleMatches >= Math.max(2, Math.ceil(tokens.length * 0.67));
-                if (!requiredMatches) return false;
-                if (locationTokens.length > 0) {
-                    return locationTokens.some((token) => titleWords.includes(token));
-                }
-                return tokens.length >= 3 && titleMatches === tokens.length;
-            })
+            .filter((image) => isReusableLicense(image)
+                && image.url.startsWith("https://")
+                && isStrongNameAndLocationMatch(entity, image.title))
             .sort((left, right) => {
                 const score = (image: OpenverseImage) => {
-                    const titleWords = normalize(image.title).split(" ");
-                    const nameScore = tokens.filter((token) => titleWords.includes(token)).length / tokens.length;
-                    const locationScore = locationTokens.some((token) => titleWords.includes(token)) ? 0.2 : 0;
+                    const textWords = new Set(normalize(image.title).split(/\s+/));
+                    const nameScore = tokens.filter((token) => textWords.has(token)).length / tokens.length;
+                    const locationScore = locationTokensFor(entity, tokens)
+                        .some((token) => textWords.has(token)) ? 0.2 : 0;
                     return nameScore + locationScore;
                 };
                 return score(right) - score(left);
             });
 
-        if (candidates[0]) return candidates[0];
+        if (candidates[0]) return { ...candidates[0], source: "Openverse" };
     }
     return null;
+}
+
+function metadataText(
+    metadata: Record<string, WikimediaMetadata> | undefined,
+    key: string,
+): string {
+    return metadata?.[key]?.value?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() ?? "";
+}
+
+function commonsFileUrl(title: string): string {
+    return `https://commons.wikimedia.org/wiki/${encodeURIComponent(title.replace(/ /g, "_"))}`;
+}
+
+async function searchWikimedia(entity: Entity): Promise<OpenverseImage | null> {
+    const url = new URL("https://commons.wikimedia.org/w/api.php");
+    url.search = new URLSearchParams({
+        action: "query",
+        generator: "search",
+        gsrsearch: [entity.name, entity.city, entity.province].filter(Boolean).join(" "),
+        gsrnamespace: "6",
+        gsrlimit: "30",
+        prop: "imageinfo",
+        iiprop: "url|mime|extmetadata",
+        iiurlwidth: "1600",
+        format: "json",
+        formatversion: "2",
+    }).toString();
+    const response = await fetch(url, {
+        headers: { "User-Agent": USER_AGENT },
+        signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`Wikimedia Commons returned HTTP ${response.status}`);
+    const data = await response.json() as WikimediaResponse;
+    if (data.error) {
+        throw new Error(`Wikimedia Commons error: ${data.error.info ?? "unknown error"}`);
+    }
+
+    const candidates = (data.query?.pages ?? [])
+        .flatMap((file) => {
+            const info = file.imageinfo?.[0];
+            if (!info?.mime?.startsWith("image/") || !info.thumburl) return [];
+            const metadata = info.extmetadata;
+            const licenseName = metadataText(metadata, "LicenseShortName");
+            const licenseUrl = metadataText(metadata, "LicenseUrl");
+            const normalizedLicense = /^cc0(?:\b|$)/i.test(licenseName)
+                && /^https:\/\/creativecommons\.org\/publicdomain\/zero\//i.test(licenseUrl)
+                ? "cc0"
+                : /^CC BY (?:1\.0|2\.0|2\.5|3\.0|4\.0)$/i.test(licenseName)
+                    && /^https:\/\/creativecommons\.org\/licenses\/by\//i.test(licenseUrl)
+                    ? "by"
+                    : null;
+            const description = metadataText(metadata, "ImageDescription");
+            if (
+                !normalizedLicense
+                || !isStrongNameAndLocationMatch(entity, file.title, `${file.title} ${description}`)
+            ) return [];
+            const creator = metadataText(metadata, "Artist")
+                || metadataText(metadata, "Credit")
+                || null;
+            return [{
+                title: file.title.replace(/^File:/i, ""),
+                creator,
+                license: normalizedLicense,
+                license_version: licenseName.match(/\b\d(?:\.\d)?\b/)?.[0] ?? null,
+                license_url: licenseUrl,
+                url: info.thumburl,
+                foreign_landing_url: commonsFileUrl(file.title),
+                width: null,
+                height: null,
+                source: "Wikimedia Commons" as const,
+            }];
+        });
+    return candidates[0] ?? null;
+}
+
+async function searchFlickr(entity: Entity): Promise<OpenverseImage | null> {
+    const apiKey = process.env.FLICKR_API_KEY;
+    if (!apiKey) return null;
+
+    const query = [entity.name, entity.city, entity.province].filter(Boolean).join(" ");
+    const url = new URL("https://www.flickr.com/services/rest/");
+    url.search = new URLSearchParams({
+        method: "flickr.photos.search",
+        api_key: apiKey,
+        text: query,
+        license: "4,9,10,11",
+        content_type: "1",
+        safe_search: "1",
+        sort: "relevance",
+        per_page: "50",
+        page: "1",
+        extras: "license,owner_name,tags,description,url_l",
+        format: "json",
+        nojsoncallback: "1",
+    }).toString();
+    const response = await fetch(url, {
+        headers: { "User-Agent": USER_AGENT },
+        signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`Flickr API returned HTTP ${response.status}`);
+    const data = await response.json() as FlickrResponse;
+    if (data.stat !== "ok") throw new Error(`Flickr API error: ${data.message ?? "unknown error"}`);
+
+    for (const photo of data.photos?.photo ?? []) {
+        const license = photo.license === "9"
+            ? "cc0"
+            : photo.license === "10"
+                ? "pd"
+                : photo.license === "11"
+                    ? "by"
+                    : photo.license === "4" ? "by" : null;
+        const licenseUrl = photo.license === "9"
+            ? "https://creativecommons.org/publicdomain/zero/1.0/"
+            : photo.license === "10"
+                ? "https://creativecommons.org/publicdomain/mark/1.0/"
+                : photo.license === "11"
+                    ? "https://creativecommons.org/licenses/by/4.0/"
+                    : "https://creativecommons.org/licenses/by/2.0/";
+        const text = `${photo.title} ${photo.tags ?? ""} ${photo.description?._content ?? ""}`;
+        if (!license || !photo.url_l
+            || !isStrongNameAndLocationMatch(entity, `${photo.title} ${photo.tags ?? ""}`, text)) continue;
+        return {
+            title: photo.title,
+            creator: photo.ownername ?? photo.owner,
+            license,
+            license_version: license === "cc0" || license === "pd"
+                ? "1.0"
+                : photo.license === "11" ? "4.0" : "2.0",
+            license_url: licenseUrl,
+            url: photo.url_l,
+            foreign_landing_url: `https://www.flickr.com/photos/${photo.owner}/${photo.id}`,
+            width: null,
+            height: null,
+            source: "Flickr",
+        };
+    }
+    return null;
+}
+
+async function findLicensedImage(entity: Entity): Promise<OpenverseImage | null> {
+    return await searchOpenverse(entity)
+        ?? await searchWikimedia(entity)
+        ?? await searchFlickr(entity);
 }
 
 async function downloadImage(image: OpenverseImage): Promise<Buffer> {
@@ -188,7 +381,7 @@ async function downloadImage(image: OpenverseImage): Promise<Buffer> {
     });
     if (!response.ok) throw new Error(`Image download returned HTTP ${response.status}`);
     const contentType = response.headers.get("content-type") ?? "";
-    if (!contentType.startsWith("image/")) throw new Error("Openverse source returned a non-image response");
+    if (!contentType.startsWith("image/")) throw new Error(`${image.source} returned a non-image response`);
     const contentLength = Number(response.headers.get("content-length"));
     if (Number.isFinite(contentLength) && contentLength > MAX_SOURCE_BYTES) {
         throw new Error(`Source image exceeds the ${MAX_SOURCE_BYTES}-byte limit`);
@@ -210,7 +403,7 @@ async function downloadImage(image: OpenverseImage): Promise<Buffer> {
 
 async function uploadImage(entity: Entity, image: OpenverseImage, bytes: Buffer): Promise<string> {
     const folder = `hyperlocal/${entity.kind}/${entity.slug.replace(/[^a-z0-9-]/gi, "-").toLowerCase().slice(0, 80)}`;
-    const publicId = `openverse-${createHash("sha256").update(image.foreign_landing_url).digest("hex").slice(0, 16)}`;
+    const publicId = `${image.source === "Wikimedia Commons" ? "commons" : image.source.toLowerCase()}-${createHash("sha256").update(image.foreign_landing_url).digest("hex").slice(0, 16)}`;
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({
             folder,
@@ -317,6 +510,12 @@ async function main(): Promise<void> {
     )) {
         throw new Error("Cloudinary credentials are required when using --apply");
     }
+    if (!process.env.FLICKR_API_KEY) {
+        console.warn(
+            "FLICKR_API_KEY is not configured; direct Flickr search is skipped. " +
+            "Openverse can still return Flickr-hosted photos.",
+        );
+    }
 
     let matched = 0;
     let added = 0;
@@ -326,13 +525,13 @@ async function main(): Promise<void> {
         while (nextIndex < entities.length) {
             const entity = entities[nextIndex++];
             try {
-                const image = await searchOpenverse(entity);
+                const image = await findLicensedImage(entity);
                 if (!image) {
                     console.log(`NO MATCH [${entity.kind}] ${entity.name}`);
                     continue;
                 }
                 matched++;
-                console.log(`MATCH [${entity.kind}] ${entity.name} -> ${image.title}`);
+                console.log(`MATCH [${image.source}] [${entity.kind}] ${entity.name} -> ${image.title}`);
                 const caption = attributionCaption(image);
                 console.log(`  ${caption}`);
                 if (!args.apply) continue;
