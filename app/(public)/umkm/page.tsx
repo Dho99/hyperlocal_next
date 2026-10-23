@@ -16,6 +16,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Category } from "@/lib/generated/prisma";
 import type { Umkm } from "@/types/umkm";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 function getHalalBadge(
     umkm: Umkm,
@@ -223,69 +224,75 @@ function UmkmTabsContent() {
                         ) : (
                             umkms.map((umkm) => {
                                 const badge = getHalalBadge(umkm);
-                                const cover = umkm.images?.[0]?.imageUrl;
+                                const coverImage = umkm.images?.[0];
+                                const cover = coverImage?.imageUrl;
 
                                 return (
-                                    <Link
-                                        key={umkm.id}
-                                        href={`/umkm/${umkm.slug}`}
-                                        className="group flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm transition-shadow duration-300 hover:shadow-lg"
-                                    >
-                                        <div className="relative h-48 overflow-hidden">
-                                            {cover ? (
-                                                <Image
-                                                    src={cover}
-                                                    alt={umkm.name}
-                                                    fill
-                                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                                />
-                                            ) : (
-                                                <div className="flex h-full items-center justify-center bg-muted">
-                                                    <Store className="h-10 w-10 text-muted-foreground" />
-                                                </div>
-                                            )}
-                                            {badge && (
-                                                <div
-                                                    className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${badge.variant ===
+                                    <div key={umkm.id} className="relative">
+                                        <Link
+                                            href={`/umkm/${umkm.slug}`}
+                                            className="group flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm transition-shadow duration-300 hover:shadow-lg"
+                                        >
+                                            <div className="relative h-48 overflow-hidden">
+                                                {cover ? (
+                                                    <Image
+                                                        src={cover}
+                                                        alt={umkm.name}
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full items-center justify-center bg-muted">
+                                                        <Store className="h-10 w-10 text-muted-foreground" />
+                                                    </div>
+                                                )}
+                                                {badge && (
+                                                    <div
+                                                        className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${badge.variant ===
                                                             "certified"
                                                             ? "bg-accent/90 text-white"
                                                             : "bg-amber-500/20 text-amber-400"
                                                         }`}
-                                                >
-                                                    <BadgeCheck size={14} />
-                                                    {badge.label}
+                                                    >
+                                                        <BadgeCheck size={14} />
+                                                        {badge.label}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-1 flex-col p-4">
+                                                <div className="mb-2 flex items-start justify-between">
+                                                    <h2 className="line-clamp-1 text-base font-semibold text-foreground">
+                                                        {umkm.name}
+                                                    </h2>
+                                                    <div className="flex shrink-0 items-center gap-1 rounded bg-amber-500/15 px-2 py-0.5 text-sm text-amber-400">
+                                                        <Star
+                                                            size={14}
+                                                            className="fill-current"
+                                                        />
+                                                        {getRatingDisplay(
+                                                            umkm,
+                                                        ).toFixed(1)}
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-1 flex-col p-4">
-                                            <div className="mb-2 flex items-start justify-between">
-                                                <h2 className="line-clamp-1 text-base font-semibold text-foreground">
-                                                    {umkm.name}
-                                                </h2>
-                                                <div className="flex shrink-0 items-center gap-1 rounded bg-amber-500/15 px-2 py-0.5 text-sm text-amber-400">
-                                                    <Star
-                                                        size={14}
-                                                        className="fill-current"
-                                                    />
-                                                    {getRatingDisplay(
-                                                        umkm,
-                                                    ).toFixed(1)}
+                                                <p className="mb-3 flex items-center gap-1 text-sm text-muted-foreground">
+                                                    <MapPin size={16} />
+                                                    {umkm.address ||
+                                                        umkm.destination?.city ||
+                                                        "Lokasi UMKM"}
+                                                </p>
+                                                <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-3">
+                                                    <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                                                        {umkm.category?.name ||
+                                                            "UMKM"}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <p className="mb-3 flex items-center gap-1 text-sm text-muted-foreground">
-                                                <MapPin size={16} />
-                                                {umkm.address ||
-                                                    umkm.destination?.city ||
-                                                    "Lokasi UMKM"}
-                                            </p>
-                                            <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-3">
-                                                <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-                                                    {umkm.category?.name ||
-                                                        "UMKM"}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                        <PhotoAttribution
+                                            caption={coverImage?.caption}
+                                            className="absolute left-2 top-[10.5rem] z-20 max-w-[calc(100%-1rem)] rounded bg-background/90 px-2 py-1 shadow-sm backdrop-blur-sm"
+                                        />
+                                    </div>
                                 );
                             })
                         )}

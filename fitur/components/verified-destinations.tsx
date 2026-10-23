@@ -7,6 +7,7 @@ import { MapPin, ShieldCheck } from "lucide-react";
 import type { DestinationCard } from "@/fitur/data/utils";
 import { SectionHeading } from "@/components/public/home/section-heading";
 import { HalalBadge } from "@/components/ui/halal-badge";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 interface VerifiedDestinationsProps {
     items: DestinationCard[];
@@ -80,6 +81,10 @@ export function VerifiedDestinations({ items }: VerifiedDestinationsProps) {
                                 </p>
                             </div>
                         </MotionLink>
+                        <PhotoAttribution
+                            caption={destination.imageCaption}
+                            className="mt-1 px-1"
+                        />
                     </motion.div>
                 ))}
             </motion.div>

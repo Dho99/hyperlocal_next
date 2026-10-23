@@ -7,6 +7,7 @@ import { LocationSection } from "@/fitur/umkm/components/location-section";
 import { ReviewSection } from "@/fitur/umkm/components/review-section";
 import { OperatingHoursSidebar } from "@/fitur/umkm/components/operating-hours-sidebar";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 interface UmkmDetailPageProps {
     params: Promise<{
@@ -28,6 +29,13 @@ export default async function UmkmDetailPage({
         <main className="min-h-screen bg-stone-50">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 pb-8 space-y-6 sm:space-y-8">
                 <HeroSection umkm={umkm} />
+                <PhotoAttribution
+                    caption={
+                        umkm.images?.find((image) => image.isPrimary)?.caption
+                        ?? umkm.images?.[0]?.caption
+                    }
+                    className="justify-end px-1"
+                />
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
                     <div className="space-y-12">

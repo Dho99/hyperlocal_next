@@ -29,6 +29,28 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Importing open-licensed photos
+
+Missing photos for destinations, UMKM, and accommodations can be matched against
+Openverse search results. The importer only accepts CC0 or CC BY files and
+saves the photographer, license, and source link in the image caption.
+
+Preview up to five missing records per entity type:
+
+```bash
+npm run photos:open:preview
+```
+
+Import matching photos into Cloudinary and the database:
+
+```bash
+npm run photos:open:apply
+```
+
+The importer only adds a photo to records that currently have no images. Google
+Maps pages are not scraped, and Google Places photos are not copied into
+Cloudinary; using Places photos requires compliant API display and attribution.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

@@ -9,6 +9,7 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import type { Accommodation } from "@/types/accommodation";
 import { ReportDialog } from "@/components/report/report-dialog";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 import {
   ImageLightbox,
   useImageLightbox,
@@ -113,6 +114,13 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
             </div>
           )}
         </div>
+        <PhotoAttribution
+          caption={
+            accommodation.images?.find((image) => image.isPrimary)?.caption
+            ?? accommodation.images?.[0]?.caption
+          }
+          className="justify-end px-1"
+        />
 
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">

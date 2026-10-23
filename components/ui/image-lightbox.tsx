@@ -6,6 +6,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { ChevronLeft, ChevronRight, X, ImageOff } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 export interface LightboxImage {
     imageUrl: string;
@@ -153,9 +154,10 @@ export function ImageLightbox({
 
                     {/* Caption */}
                     {current?.caption && (
-                        <p className="shrink-0 px-6 pt-3 text-center text-sm text-white/80">
-                            {current.caption}
-                        </p>
+                        <div className="shrink-0 px-6 pt-3 text-center text-sm text-white/80">
+                            <p>{current.caption}</p>
+                            <PhotoAttribution caption={current.caption} className="justify-center text-white/80" />
+                        </div>
                     )}
 
                     {/* Thumbnail strip */}

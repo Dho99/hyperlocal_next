@@ -24,6 +24,7 @@ import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
 import { SurveyDialog } from "@/fitur/destinasi/components/survey-dialog";
 import { HalalBadge } from "@/components/ui/halal-badge";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 import {
     ImageLightbox,
     useImageLightbox,
@@ -307,6 +308,13 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                     onHeroLoad={() => setHeroLoaded(true)}
                     destinationId={id}
                     onImageClick={lightbox.openAt}
+                />
+                <PhotoAttribution
+                    caption={
+                        destination.images?.find((image) => image.isPrimary)?.caption
+                        ?? destination.images?.[0]?.caption
+                    }
+                    className="justify-end px-1"
                 />
 
                 {acesh && acesh.baseScore != null && (

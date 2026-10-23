@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import type { Destination } from "@/types/destination";
 import { HalalBadge } from "@/components/ui/halal-badge";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 interface PublicDestinationListProps {
     categories: Array<{
@@ -48,51 +49,55 @@ const sortOptions = [
 ] as const;
 
 function DestinationCard({ dest }: { dest: Destination }) {
-    const primaryImage =
-        dest.images && dest.images.length > 0
-            ? dest.images[0].imageUrl
-            : null;
+    const primaryImageData = dest.images?.[0];
+    const primaryImage = primaryImageData?.imageUrl ?? null;
     const displayScore = dest.validatedScore ?? dest.halalScore ?? null;
 
     return (
-        <Link
-            href={`/destinasi/${dest.slug}`}
-            className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-        >
-            <HalalBadge score={displayScore} />
-            <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
-                {primaryImage ? (
-                    <Image
-                        src={primaryImage}
-                        alt={dest.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                ) : (
-                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
-                        <MapPin className="h-10 w-10 text-muted-foreground" />
-                    </div>
-                )}
-            </div>
-            <div className="p-4 space-y-2">
-                <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                    {dest.name}
-                </h3>
-                {dest.city && (
-                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <MapPin className="size-3.5 shrink-0" />
-                        {dest.city}
-                        {dest.province && `, ${dest.province}`}
-                    </p>
-                )}
-                {dest.category && (
-                    <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                        {dest.category.name}
-                    </span>
-                )}
-            </div>
-        </Link>
+        <div className="relative">
+            <Link
+                href={`/destinasi/${dest.slug}`}
+                className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+                <HalalBadge score={displayScore} />
+                <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
+                    {primaryImage ? (
+                        <Image
+                            src={primaryImage}
+                            alt={dest.name}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                    ) : (
+                        <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
+                            <MapPin className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                    )}
+                </div>
+                <div className="p-4 space-y-2">
+                    <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                        {dest.name}
+                    </h3>
+                    {dest.city && (
+                        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                            <MapPin className="size-3.5 shrink-0" />
+                            {dest.city}
+                            {dest.province && `, ${dest.province}`}
+                        </p>
+                    )}
+                    {dest.category && (
+                        <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                            {dest.category.name}
+                        </span>
+                    )}
+                </div>
+            </Link>
+            <PhotoAttribution
+                caption={primaryImageData?.caption}
+                className="absolute left-2 top-[10.5rem] z-20 max-w-[calc(100%-1rem)] rounded bg-background/90 px-2 py-1 shadow-sm backdrop-blur-sm"
+            />
+        </div>
     );
 }
 

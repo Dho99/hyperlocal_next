@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 import {
     ImageLightbox,
     useImageLightbox,
@@ -51,23 +52,25 @@ export function PhotoGallery({
             )}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {images.map((img, idx) => (
-                    <button
-                        type="button"
-                        key={`${img.imageUrl}-${idx}`}
-                        onClick={() => lb.openAt(idx)}
-                        aria-label={`Lihat ${name} foto ${idx + 1}`}
-                        className="group relative aspect-square overflow-hidden rounded-xl bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                        <Image
-                            src={img.imageUrl}
-                            alt={img.caption || `${name} ${idx + 1}`}
-                            fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            className={cn(
-                                "object-cover transition-transform duration-300 group-hover:scale-105",
-                            )}
-                        />
-                    </button>
+                    <div key={`${img.imageUrl}-${idx}`} className="min-w-0">
+                        <button
+                            type="button"
+                            onClick={() => lb.openAt(idx)}
+                            aria-label={`Lihat ${name} foto ${idx + 1}`}
+                            className="group relative aspect-square w-full overflow-hidden rounded-xl bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                            <Image
+                                src={img.imageUrl}
+                                alt={img.caption || `${name} ${idx + 1}`}
+                                fill
+                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                className={cn(
+                                    "object-cover transition-transform duration-300 group-hover:scale-105",
+                                )}
+                            />
+                        </button>
+                        <PhotoAttribution caption={img.caption} className="mt-1 px-1" />
+                    </div>
                 ))}
             </div>
 

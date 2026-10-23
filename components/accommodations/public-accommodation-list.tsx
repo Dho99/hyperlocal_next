@@ -8,77 +8,84 @@ import { useCursorPagination } from "@/hooks/use-cursor-pagination";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import type { Accommodation } from "@/types/accommodation";
 import { HalalBadge } from "@/components/ui/halal-badge";
+import { PhotoAttribution } from "@/components/ui/photo-attribution";
 
 function AccommodationCard({ item }: { item: Accommodation }) {
-    const primaryImage =
-        item.images && item.images.length > 0 ? item.images[0].imageUrl : null;
+    const primaryImageData = item.images?.[0];
+    const primaryImage = primaryImageData?.imageUrl ?? null;
     const facilityNames = item.facilities?.map((f) => f.facility.name) ?? [];
 
     return (
-        <Link
-            href={`/penginapan/${item.id}`}
-            className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-        >
-            <HalalBadge score={item.validatedScore} />
-            <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
-                {primaryImage ? (
-                    <Image
-                        src={primaryImage}
-                        alt={item.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                ) : (
-                    <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
-                        <Building className="h-10 w-10 text-muted-foreground" />
-                    </div>
-                )}
-                {item.validationStatus === "APPROVED" && (
-                    <div className="absolute bottom-2 left-2">
+        <div className="relative">
+            <Link
+                href={`/penginapan/${item.id}`}
+                className="group relative block rounded-xl bg-card/70 backdrop-blur-md border border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+                <HalalBadge score={item.validatedScore} />
+                <div className="relative h-48 bg-muted rounded-t-xl overflow-hidden">
+                    {primaryImage ? (
+                        <Image
+                            src={primaryImage}
+                            alt={item.name}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                    ) : (
+                        <div className="flex h-full items-center justify-center rounded-t-xl overflow-hidden">
+                            <Building className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                    )}
+                    {item.validationStatus === "APPROVED" && (
+                        <div className="absolute bottom-2 left-2">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold rounded-full bg-accent/80 text-accent-foreground backdrop-blur-sm shadow-sm">
-                            <BadgeCheck size={11} />
-                            Tervalidasi Halal
-                        </span>
-                    </div>
-                )}
-                {item.rating != null && item.rating > 0 && (
-                    <div                             className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur-md">
-                        <Star className="size-3.5 fill-amber-400 text-amber-400" />
-                        {item.rating.toFixed(1)}
-                    </div>
-                )}
-            </div>
-            <div className="p-4 space-y-2">
+                                <BadgeCheck size={11} />
+                                Tervalidasi Halal
+                            </span>
+                        </div>
+                    )}
+                    {item.rating != null && item.rating > 0 && (
+                        <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur-md">
+                            <Star className="size-3.5 fill-amber-400 text-amber-400" />
+                            {item.rating.toFixed(1)}
+                        </div>
+                    )}
+                </div>
+                <div className="p-4 space-y-2">
                     <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                    {item.name}
-                </h3>
-                {item.city && (
-                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <MapPin className="size-3.5 shrink-0" />
-                        {item.city}
-                        {item.province ? `, ${item.province}` : ""}
-                    </p>
-                )}
-                {facilityNames.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-1">
-                        {facilityNames.slice(0, 4).map((name) => (
-                            <span
-                                key={name}
-                                className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full border border-accent/20"
-                            >
-                                {name}
-                            </span>
-                        ))}
-                        {facilityNames.length > 4 && (
-                            <span className="text-xs text-muted-foreground">
-                                +{facilityNames.length - 4}
-                            </span>
-                        )}
-                    </div>
-                )}
-            </div>
-        </Link>
+                        {item.name}
+                    </h3>
+                    {item.city && (
+                        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                            <MapPin className="size-3.5 shrink-0" />
+                            {item.city}
+                            {item.province ? `, ${item.province}` : ""}
+                        </p>
+                    )}
+                    {facilityNames.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-1">
+                            {facilityNames.slice(0, 4).map((name) => (
+                                <span
+                                    key={name}
+                                    className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full border border-accent/20"
+                                >
+                                    {name}
+                                </span>
+                            ))}
+                            {facilityNames.length > 4 && (
+                                <span className="text-xs text-muted-foreground">
+                                    +{facilityNames.length - 4}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </Link>
+            <PhotoAttribution
+                caption={primaryImageData?.caption}
+                className="absolute left-2 top-[10.5rem] z-20 max-w-[calc(100%-1rem)] rounded bg-background/90 px-2 py-1 shadow-sm backdrop-blur-sm"
+            />
+        </div>
     );
 }
 

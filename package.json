@@ -19,7 +19,9 @@
         "coverage": "vitest run --coverage",
         "migrate:images": "tsx scripts/migrate-images.ts",
         "check:google-images": "tsx scripts/check-google-images.ts",
-        "scrape:safar": "tsx scripts/scrape-safar-dataset.ts"
+        "scrape:safar": "tsx scripts/scrape-safar-dataset.ts",
+        "photos:open:preview": "tsx scripts/import-open-licensed-images.ts --limit=5",
+        "photos:open:apply": "tsx scripts/import-open-licensed-images.ts --apply"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"

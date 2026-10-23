@@ -14,6 +14,7 @@ export interface DestinationCard {
     halalScore: number | null;
     status: string;
     imageUrl: string | null;
+    imageCaption: string | null;
 }
 
 export interface FacilityHighlight {
@@ -82,7 +83,7 @@ export function toDestinationCard(destination: {
     reviewCount: number | null;
     halalScore: number | null;
     category: { name: string } | null;
-    images: Array<{ imageUrl: string }>;
+    images: Array<{ imageUrl: string; caption?: string | null }>;
 }): DestinationCard {
     return {
         id: destination.id,
@@ -98,5 +99,6 @@ export function toDestinationCard(destination: {
                 : null,
         status: destination.status,
         imageUrl: safeImage(destination.images[0]?.imageUrl),
+        imageCaption: destination.images[0]?.caption ?? null,
     };
 }
