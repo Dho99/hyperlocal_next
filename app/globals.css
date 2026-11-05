@@ -94,7 +94,7 @@
     --navbar-bg: #FFFFFFA6;
     --navbar-text: #57534E;
     --navbar-active: #064E3B;
-    --outline: #d6d3d1;
+    --outline: var(--accent);
 }
 
 .dark {
@@ -135,7 +135,7 @@
     --navbar-bg: #0f1b16;
     --navbar-text: #d4d4d4;
     --navbar-active: #94D786;
-    --outline: #94D786;
+    --outline: var(--accent);
 }
 
 @layer base {
