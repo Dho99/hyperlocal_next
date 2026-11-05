@@ -22,6 +22,18 @@ import {
     DEFAULT_PHOTO_TOLERANCE_METERS,
     type PhotoValidityStatusValue,
 } from "@/lib/config/photo-validation";
+import {
+    filterDestinationsByCoverage,
+    isCoordinateVisible,
+    isCoveragePointVisible,
+    isPointInArea,
+    isPointInInactiveCoverage,
+    toCoordinate,
+} from "@/lib/maps/coverage-geometry";
+import {
+    getAllCoverageAreas,
+    getCoverageIndex,
+} from "@/lib/services/coverage-area-service";
 
 export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
@@ -204,13 +216,36 @@ function serializeDestination(raw: DestinationWithIncludes): Destination {
     };
 }
 
-function coverageAreaActiveFilter() {
-    return {
-        OR: [
-            { coverageAreaId: null },
-            { coverageArea: { isActive: true } },
-        ],
-    };
+/**
+ * Resolves which destination ids pass the polygon coverage rule.
+ * Returns null when no coverage areas are configured (no filtering).
+ */
+async function resolveVisibleDestinationIds(
+    areaId?: string,
+): Promise<string[] | null> {
+    const areas = await getAllCoverageAreas();
+    const index = await getCoverageIndex();
+    if (!index.hasAreas) return null;
+
+    const selectedArea = areaId
+        ? (areas.find((area) => area.id === areaId) ?? null)
+        : null;
+    if (areaId && (!selectedArea || !selectedArea.isActive)) return [];
+
+    const candidates = await prisma.destination.findMany({
+        select: { id: true, latitude: true, longitude: true },
+    });
+
+    return candidates
+        .filter((candidate) => {
+            const lng = toCoordinate(candidate.longitude);
+            const lat = toCoordinate(candidate.latitude);
+            if (lng === null || lat === null) return false;
+            if (isPointInInactiveCoverage(lng, lat, index)) return false;
+            if (selectedArea) return isPointInArea(lng, lat, selectedArea);
+            return isCoveragePointVisible(lng, lat, index);
+        })
+        .map((candidate) => candidate.id);
 }
 
 export async function getPaginatedDestinations(
@@ -226,16 +261,17 @@ export async function getPaginatedDestinations(
 ) {
     const orderBy = getDestinationOrderBy(params.sort);
 
-    const scopeOr = params.scope === "public"
-        ? [{ coverageAreaId: null }, { coverageArea: { isActive: true } }]
-        : undefined;
+    const isPublic = params.scope === "public";
+    const visibleIds = isPublic
+        ? await resolveVisibleDestinationIds(params.areaId)
+        : null;
 
     return withCursorPagination(
         async (take, cursor, skip) => {
             const andConditions: Prisma.DestinationWhereInput[] = [];
 
-            if (scopeOr) {
-                andConditions.push({ OR: scopeOr });
+            if (visibleIds) {
+                andConditions.push({ id: { in: visibleIds } });
             }
 
             if (params.minScore != null) {
@@ -253,7 +289,7 @@ export async function getPaginatedDestinations(
                 cursor: cursor ? { id: cursor } : undefined,
                 where: {
                     ...(params.categoryId && { categoryId: params.categoryId }),
-                    ...(params.areaId && { coverageAreaId: params.areaId }),
+                    ...(params.areaId && !isPublic && { coverageAreaId: params.areaId }),
                     ...(params.status && {
                         status: params.status as
                             | "PENDING"
@@ -304,18 +340,16 @@ export async function getDestinations(
     scope?: "admin" | "public",
 ): Promise<Destination[]> {
     const data = await prisma.destination.findMany({
-        where: {
-            ...(scope === "public" && {
-                OR: [
-                    { coverageAreaId: null },
-                    { coverageArea: { isActive: true } },
-                ],
-            }),
-        },
         include: destinationIncludes,
         orderBy: { createdAt: "desc" },
     });
-    return data.map(serializeDestination);
+
+    const visible =
+        scope === "public"
+            ? filterDestinationsByCoverage(data, await getCoverageIndex())
+            : data;
+
+    return visible.map(serializeDestination);
 }
 
 export async function getDestination(
@@ -326,19 +360,22 @@ export async function getDestination(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
             idOrSlug,
         );
+
     const data = await prisma.destination.findFirst({
-        where: {
-            ...(isUuid ? { id: idOrSlug } : { slug: idOrSlug }),
-            ...(scope === "public" && {
-                OR: [
-                    { coverageAreaId: null },
-                    { coverageArea: { isActive: true } },
-                ],
-            }),
-        },
+        where: isUuid ? { id: idOrSlug } : { slug: idOrSlug },
         include: destinationIncludes,
     });
-    return data ? serializeDestination(data) : null;
+
+    if (!data) return null;
+
+    if (
+        scope === "public" &&
+        !isCoordinateVisible(data, await getCoverageIndex())
+    ) {
+        return null;
+    }
+
+    return serializeDestination(data);
 }
 
 export async function createDestination(values: DestinationFormValues) {

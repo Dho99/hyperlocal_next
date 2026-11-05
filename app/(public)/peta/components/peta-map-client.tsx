@@ -14,6 +14,12 @@ import L from "leaflet";
 import { toast } from "sonner";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/lib/maps/geo-utils";
+import {
+    getGeoJsonBounds,
+    toCoverageFeatureCollection,
+    type BoundsLiteral,
+} from "@/lib/maps/coverage-bounds";
+import { useActiveCoverageAreas } from "@/hooks/use-active-coverage-areas";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { getCategoryColor, createPinSvg } from "@/lib/config/map-categories";
 import type {
@@ -36,14 +42,6 @@ import {
 
 fixLeafletIcons();
 
-interface CoverageArea {
-    id: string;
-    name: string;
-    level: string;
-    geoJsonData: unknown;
-    colorHex: string | null;
-}
-
 function MapController({
     center,
     zoom,
@@ -58,20 +56,47 @@ function MapController({
     return null;
 }
 
-function GeoJSONBoundsFitter({ geoJsonData }: { geoJsonData: unknown }) {
+function MapBoundsController({
+    bounds,
+    destinations,
+    fitMarkers,
+}: {
+    bounds: BoundsLiteral | null;
+    destinations: Destination[];
+    fitMarkers: boolean;
+}) {
     const map = useMap();
+    const pointsKey = useMemo(
+        () =>
+            destinations
+                .filter((d) => d.latitude != null && d.longitude != null)
+                .map((d) => `${d.latitude},${d.longitude}`)
+                .join("|"),
+        [destinations],
+    );
+
     useEffect(() => {
-        if (!geoJsonData) return;
-        try {
-            const layer = L.geoJSON(geoJsonData as GeoJSON.GeoJsonObject);
-            const bounds = layer.getBounds();
-            if (bounds.isValid()) {
-                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+        if (bounds) {
+            const target = L.latLngBounds(
+                [bounds.south, bounds.west],
+                [bounds.north, bounds.east],
+            );
+            if (target.isValid()) {
+                map.fitBounds(target, { padding: [50, 50], maxZoom: 14 });
             }
-        } catch {
-            // ignore invalid geojson bounds
+            return;
         }
-    }, [map, geoJsonData]);
+
+        if (!fitMarkers || !pointsKey) return;
+        const points = pointsKey
+            .split("|")
+            .map((pair) => pair.split(",").map(Number) as [number, number]);
+        const target = L.latLngBounds(points);
+        if (target.isValid()) {
+            map.fitBounds(target, { padding: [50, 50], maxZoom: 14 });
+        }
+    }, [map, bounds, pointsKey, fitMarkers]);
+
     return null;
 }
 
@@ -98,36 +123,40 @@ export default function PetaMapClient() {
     const [routeInfo, setRouteInfo] = useState<OsrmRouteInfo | null>(null);
     const [locationDenied, setLocationDenied] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [coverageAreas, setCoverageAreas] = useState<CoverageArea[]>([]);
     const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
-    const [selectedAreaGeo, setSelectedAreaGeo] = useState<unknown>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const { areas: coverageAreas, bounds: activeAreaBounds } =
+        useActiveCoverageAreas();
 
     useEffect(() => {
         fixLeafletIcons();
     }, []);
 
-    useEffect(() => {
-        async function fetchAreas() {
-            try {
-                const res = await fetch("/api/coverage-areas");
-                const json = await res.json();
-                if (res.ok && Array.isArray(json.data)) {
-                    setCoverageAreas(json.data);
-                }
-            } catch {
-                // coverage areas are optional
-            }
-        }
-        fetchAreas();
-    }, []);
+    const selectedArea = useMemo(
+        () => coverageAreas.find((area) => area.id === selectedAreaId) ?? null,
+        [coverageAreas, selectedAreaId],
+    );
+
+    const selectedAreaBounds = useMemo(
+        () =>
+            selectedArea ? getGeoJsonBounds(selectedArea.geoJsonData) : null,
+        [selectedArea],
+    );
+
+    const coverageFeatures = useMemo(
+        () => toCoverageFeatureCollection(coverageAreas),
+        [coverageAreas],
+    );
+
+    const activeAreaId = selectedArea?.id ?? null;
 
     useEffect(() => {
         let cancelled = false;
         async function fetchData() {
             try {
-                const url = selectedAreaId
-                    ? `/api/destinations?areaId=${selectedAreaId}`
+                const url = activeAreaId
+                    ? `/api/destinations?areaId=${activeAreaId}`
                     : "/api/destinations";
                 const res = await fetch(url);
                 const json = await res.json();
@@ -158,7 +187,7 @@ export default function PetaMapClient() {
         return () => {
             cancelled = true;
         };
-    }, [selectedAreaId]);
+    }, [activeAreaId]);
 
     const handleLocateMe = useCallback(() => {
         if (!navigator.geolocation) {
@@ -216,21 +245,11 @@ export default function PetaMapClient() {
         ? [userLocation.lat, userLocation.lng]
         : DEFAULT_CENTER;
 
-    const handleAreaChange = useCallback(async (areaId: string | null) => {
+    const handleAreaChange = useCallback((areaId: string | null) => {
         setSelectedAreaId(areaId);
-        if (areaId) {
-            try {
-                const res = await fetch(`/api/coverage-areas/${areaId}`);
-                const json = await res.json();
-                if (res.ok) {
-                    setSelectedAreaGeo(json.data.geoJsonData);
-                }
-            } catch {
-                setSelectedAreaGeo(null);
-            }
-        } else {
-            setSelectedAreaGeo(null);
-        }
+        setSelectedDestination(null);
+        setSelectedFacilityId(null);
+        setRouteInfo(null);
     }, []);
 
     const selectedFacilities: DestinationHalalFacility[] = useMemo(
@@ -268,7 +287,7 @@ export default function PetaMapClient() {
                 selectedFacilityId={selectedFacilityId}
                 locationDenied={locationDenied}
                 coverageAreas={coverageAreas}
-                selectedAreaId={selectedAreaId}
+                selectedAreaId={activeAreaId}
                 isSidebarOpen={isSidebarOpen}
                 onRadiusChange={setRadius}
                 onSearchChange={setSearchQuery}
@@ -353,19 +372,34 @@ export default function PetaMapClient() {
 
                     <MapController center={mapCenter} zoom={DEFAULT_ZOOM} />
 
-                    <GeoJSONBoundsFitter geoJsonData={selectedAreaGeo} />
+                    <MapBoundsController
+                        bounds={selectedAreaBounds ?? activeAreaBounds}
+                        destinations={filteredDestinations}
+                        fitMarkers={!userLocation}
+                    />
                     <MapResizer isOpen={isSidebarOpen} />
 
-                    {!!selectedAreaGeo && (
+                    {coverageFeatures && (
                         <GeoJSON
-                            key={selectedAreaId ?? "none"}
-                            data={selectedAreaGeo as GeoJSON.GeoJsonObject}
-                            style={() => ({
-                                color: "#047857",
-                                weight: 2,
-                                fillColor: "#d1fae5",
-                                fillOpacity: 0.2,
-                            })}
+                            key={`${activeAreaId ?? "all"}-${coverageFeatures.features.length}`}
+                            data={
+                                coverageFeatures as unknown as GeoJSON.GeoJsonObject
+                            }
+                            style={(feature) => {
+                                const properties = feature?.properties as
+                                    | { id?: string; colorHex?: string }
+                                    | undefined;
+                                const isSelected =
+                                    properties?.id === activeAreaId;
+                                const color =
+                                    properties?.colorHex || "#047857";
+                                return {
+                                    color,
+                                    weight: isSelected ? 3 : 1.5,
+                                    fillColor: color,
+                                    fillOpacity: isSelected ? 0.25 : 0.1,
+                                };
+                            }}
                         />
                     )}
 

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
 import { withCursorPagination } from "@/lib/pagination/cursorPagination";
+import { clearCoverageAreaCache } from "@/lib/services/coverage-area-service";
 
 export async function GET(request: Request) {
   try {
@@ -57,6 +58,8 @@ export async function POST(request: Request) {
     const area = await prisma.coverageArea.create({
       data: { name, level, geoJsonData, colorHex, isActive },
     });
+
+    clearCoverageAreaCache();
 
     return NextResponse.json({ data: area }, { status: 201 });
   } catch (error: unknown) {

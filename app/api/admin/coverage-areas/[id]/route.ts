@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { clearCoverageAreaCache } from "@/lib/services/coverage-area-service";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -47,6 +48,8 @@ export async function PUT(request: Request, context: RouteContext) {
             },
         });
 
+        clearCoverageAreaCache();
+
         return NextResponse.json({ data: area }, { status: 200 });
     } catch (error: unknown) {
         return NextResponse.json(
@@ -68,6 +71,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
         const { id } = await context.params;
         await prisma.coverageArea.delete({ where: { id } });
+        clearCoverageAreaCache();
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error: unknown) {
         return NextResponse.json(

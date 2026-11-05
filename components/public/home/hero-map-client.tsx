@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useEffect, useRef, useCallback } from "react";
+import { useMemo, useEffect } from "react";
 import { MapContainer, Marker, useMap } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { fixLeafletIcons } from "@/lib/maps/leaflet-fix";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/lib/maps/geo-utils";
+import { type BoundsLiteral } from "@/lib/maps/coverage-bounds";
+import { useActiveCoverageAreas } from "@/hooks/use-active-coverage-areas";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 import { getCategoryColor, createPinSvg } from "@/lib/config/map-categories";
 
@@ -85,28 +87,50 @@ const createClusterIcon = (cluster: L.MarkerCluster) => {
     });
 };
 
-function MapBoundsFitter({
+function MapBoundsController({
+    bounds,
     destinations,
 }: {
+    bounds: BoundsLiteral | null;
     destinations: DashboardMapDestination[];
 }) {
     const map = useMap();
-    const prevCountRef = useRef(destinations.length);
+    const pointsKey = useMemo(
+        () =>
+            destinations
+                .filter(
+                    (d) =>
+                        d.latitude != null &&
+                        d.longitude != null &&
+                        !isNaN(d.latitude) &&
+                        !isNaN(d.longitude),
+                )
+                .map((d) => `${d.latitude},${d.longitude}`)
+                .join("|"),
+        [destinations],
+    );
 
     useEffect(() => {
-        if (destinations.length === 0) return;
-
-        if (destinations.length === prevCountRef.current) return;
-        prevCountRef.current = destinations.length;
-
-        const bounds = L.latLngBounds(
-            destinations.map((d) => [d.latitude, d.longitude]),
-        );
-
-        if (bounds.isValid()) {
-            map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
+        if (bounds) {
+            const target = L.latLngBounds(
+                [bounds.south, bounds.west],
+                [bounds.north, bounds.east],
+            );
+            if (target.isValid()) {
+                map.fitBounds(target, { padding: [60, 60], maxZoom: 13 });
+            }
+            return;
         }
-    }, [destinations, map]);
+
+        if (!pointsKey) return;
+        const points = pointsKey
+            .split("|")
+            .map((pair) => pair.split(",").map(Number) as [number, number]);
+        const target = L.latLngBounds(points);
+        if (target.isValid()) {
+            map.fitBounds(target, { padding: [60, 60], maxZoom: 13 });
+        }
+    }, [map, bounds, pointsKey]);
 
     return null;
 }
@@ -120,6 +144,8 @@ export default function HeroMapClient({
     destinations,
     onMarkerClick,
 }: HeroMapClientProps) {
+    const { bounds } = useActiveCoverageAreas();
+
     const validDestinations = useMemo(
         () =>
             destinations.filter(
@@ -158,7 +184,10 @@ export default function HeroMapClient({
                     ))}
                 </MarkerClusterGroup>
 
-                <MapBoundsFitter destinations={validDestinations} />
+                <MapBoundsController
+                    bounds={bounds}
+                    destinations={validDestinations}
+                />
             </MapContainer>
         </div>
     );

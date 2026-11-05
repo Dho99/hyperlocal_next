@@ -2,35 +2,45 @@ import { subDays, startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import type { CertificationStatus } from "../generated/prisma";
 import type { DashboardMapDestination } from "@/types/map-viewer";
+import { filterDestinationsByCoverage } from "@/lib/maps/coverage-geometry";
+import { getCoverageIndex } from "@/lib/services/coverage-area-service";
 
 export async function getAllMapDestinations(): Promise<
     DashboardMapDestination[]
 > {
-    const destinations = await prisma.destination.findMany({
-        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-        select: {
-            id: true,
-            name: true,
-            slug: true,
-            status: true,
-            latitude: true,
-            longitude: true,
-            category: {
-                select: {
-                    name: true,
+    const [coverageIndex, destinations] = await Promise.all([
+        getCoverageIndex(),
+        prisma.destination.findMany({
+            orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                status: true,
+                latitude: true,
+                longitude: true,
+                category: {
+                    select: {
+                        name: true,
+                    },
+                },
+                images: {
+                    take: 1,
+                    orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+                    select: {
+                        imageUrl: true,
+                    },
                 },
             },
-            images: {
-                take: 1,
-                orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
-                select: {
-                    imageUrl: true,
-                },
-            },
-        },
-    });
+        }),
+    ]);
 
-    return destinations.map((d) => ({
+    const visibleDestinations = filterDestinationsByCoverage(
+        destinations,
+        coverageIndex,
+    );
+
+    return visibleDestinations.map((d) => ({
         id: d.id,
         name: d.name,
         slug: d.slug,

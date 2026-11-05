@@ -6,6 +6,13 @@ export async function GET() {
   try {
     const areas = await prisma.coverageArea.findMany({
       where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        level: true,
+        geoJsonData: true,
+        colorHex: true,
+      },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ data: areas }, { status: 200 });

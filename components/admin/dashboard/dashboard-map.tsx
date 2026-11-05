@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
-import { MapContainer, Marker, Popup } from "react-leaflet";
+import { useMemo, useCallback, useEffect } from "react";
+import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import { ThemeTileLayer } from "@/components/maps/theme-tile-layer";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -10,6 +10,8 @@ import {
     DEFAULT_CENTER,
     DEFAULT_ZOOM,
 } from "@/lib/maps/geo-utils";
+import { type BoundsLiteral } from "@/lib/maps/coverage-bounds";
+import { useActiveCoverageAreas } from "@/hooks/use-active-coverage-areas";
 import type { DashboardMapDestination } from "@/types/map-viewer";
 import { useRouter } from "next/navigation";
 
@@ -44,8 +46,57 @@ interface DashboardMapProps {
     destinations: DashboardMapDestination[];
 }
 
+function MapBoundsController({
+    bounds,
+    destinations,
+}: {
+    bounds: BoundsLiteral | null;
+    destinations: DashboardMapDestination[];
+}) {
+    const map = useMap();
+    const pointsKey = useMemo(
+        () =>
+            destinations
+                .filter(
+                    (d) =>
+                        d.latitude != null &&
+                        d.longitude != null &&
+                        !isNaN(d.latitude) &&
+                        !isNaN(d.longitude),
+                )
+                .map((d) => `${d.latitude},${d.longitude}`)
+                .join("|"),
+        [destinations],
+    );
+
+    useEffect(() => {
+        if (bounds) {
+            const target = L.latLngBounds(
+                [bounds.south, bounds.west],
+                [bounds.north, bounds.east],
+            );
+            if (target.isValid()) {
+                map.fitBounds(target, { padding: [40, 40], maxZoom: 13 });
+            }
+            return;
+        }
+
+        if (!pointsKey) return;
+        const points = pointsKey
+            .split("|")
+            .map((pair) => pair.split(",").map(Number) as [number, number]);
+        const target = L.latLngBounds(points);
+        if (target.isValid()) {
+            map.fitBounds(target, { padding: [40, 40], maxZoom: 13 });
+        }
+    }, [map, bounds, pointsKey]);
+
+    return null;
+}
+
 export default function DashboardMap({ destinations }: DashboardMapProps) {
     const router = useRouter();
+    const { bounds } = useActiveCoverageAreas();
 
     const validDestinations = useMemo(
         () =>
@@ -75,6 +126,11 @@ export default function DashboardMap({ destinations }: DashboardMapProps) {
                 className="h-full w-full"
             >
                 <ThemeTileLayer />
+
+                <MapBoundsController
+                    bounds={bounds}
+                    destinations={validDestinations}
+                />
 
                 <MarkerClusterGroup
                     chunkedLoading
