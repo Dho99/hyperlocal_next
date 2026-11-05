@@ -245,8 +245,12 @@ registry.registerPath({
     tags: ["Admin"],
     summary: "Destination & UMKM Engagement Gap Analysis (Admin Only)",
     security: [{ cookieAuth: [] }],
+    parameters: [
+        { name: "page", in: "query", schema: { type: "integer", default: 1, minimum: 1 } },
+        { name: "limit", in: "query", schema: { type: "integer", default: 10, minimum: 1, maximum: 100 } },
+    ],
     responses: {
-        200: { description: "List of high-engagement low-validation destinations & UMKMs" },
+        200: { description: "Paginated list of high-engagement low-validation destinations & UMKMs" },
         401: { description: "Unauthorized", content: { "application/json": { schema: UnauthorizedResponse } } },
     },
 });

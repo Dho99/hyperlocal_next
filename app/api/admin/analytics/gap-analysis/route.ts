@@ -42,6 +42,16 @@ interface UmkmGapItem {
 
 type GapItem = DestinationGapItem | UmkmGapItem;
 
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 100;
+
+function parsePageParam(value: string | null, fallback: number): number {
+    if (!value) return fallback;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return fallback;
+    return Math.trunc(parsed);
+}
+
 function getEngagementPercentile(
     values: number[],
     percentile: number,
@@ -66,7 +76,7 @@ function buildUmkmActionText(name: string): string {
     return `${name} memiliki potensi pasar yang baik namun status validasi belum tervalidasi. Rekomendasi Tindakan: Prioritaskan proses validasi halal untuk memastikan produk sesuai standar ekosistem halal.`;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     if (!(await requireAdmin())) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     try {
         const [destinations, trends, umkms] = await Promise.all([
@@ -213,15 +223,45 @@ export async function GET() {
         items.sort((a, b) => {
             if (a.severity === "HIGH" && b.severity !== "HIGH") return -1;
             if (a.severity !== "HIGH" && b.severity === "HIGH") return 1;
-            return b.engagement.total - a.engagement.total;
+            const engagementDiff = b.engagement.total - a.engagement.total;
+            if (engagementDiff !== 0) return engagementDiff;
+            return a.name.localeCompare(b.name) || a.id.localeCompare(b.id);
         });
 
+        const url = new URL(request.url);
+        const requestedPage = Math.max(
+            1,
+            parsePageParam(url.searchParams.get("page"), 1),
+        );
+        const limit = Math.min(
+            Math.max(
+                1,
+                parsePageParam(
+                    url.searchParams.get("limit"),
+                    DEFAULT_PAGE_SIZE,
+                ),
+            ),
+            MAX_PAGE_SIZE,
+        );
+        const total = items.length;
+        const totalPages = Math.max(1, Math.ceil(total / limit));
+        const page = Math.min(requestedPage, totalPages);
+        const start = (page - 1) * limit;
+
         return NextResponse.json({
-            data: items,
+            data: items.slice(start, start + limit),
             meta: {
-                total: items.length,
-                highPriority: items.filter((i) => i.severity === "HIGH").length,
+                total,
+                highPriority: items.filter((i) => i.severity === "HIGH")
+                    .length,
                 threshold: threshold75,
+                page,
+                limit,
+                totalPages,
+                maxEngagement: items.reduce(
+                    (max, item) => Math.max(max, item.engagement.total),
+                    0,
+                ),
             },
         });
     } catch (error: unknown) {
