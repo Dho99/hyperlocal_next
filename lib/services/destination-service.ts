@@ -34,6 +34,12 @@ import {
     getAllCoverageAreas,
     getCoverageIndex,
 } from "@/lib/services/coverage-area-service";
+import {
+    getDestinationOrderBy,
+    type DestinationSort,
+} from "@/lib/utils/destination-order";
+
+export type { DestinationSort };
 
 export const TRIAGE_NOTE = "PERLU ATENSI KHUSUS: Skor awal di bawah ambang batas minimal ekosistem.";
 
@@ -189,7 +195,9 @@ const destinationIncludes = {
         orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
         take: 8,
     },
-    images: true,
+    images: {
+        orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+    },
 } satisfies Prisma.DestinationInclude;
 
 type DestinationWithIncludes = Prisma.DestinationGetPayload<{
@@ -313,35 +321,12 @@ export async function getPaginatedDestinations(
     );
 }
 
-export type DestinationSort =
-    | "newest"
-    | "rating"
-    | "score"
-    | "reviews"
-    | "name";
-
-function getDestinationOrderBy(sort: DestinationSort = "newest") {
-    const orderByMap = {
-        newest: [{ createdAt: "desc" }, { id: "desc" }],
-        rating: [{ rating: "desc" }, { reviewCount: "desc" }, { id: "desc" }],
-        score: [
-            { validatedScore: { sort: "desc", nulls: "last" } },
-            { halalScore: { sort: "desc", nulls: "last" } },
-            { id: "desc" },
-        ],
-        reviews: [{ reviewCount: "desc" }, { rating: "desc" }, { id: "desc" }],
-        name: [{ name: "asc" }, { id: "asc" }],
-    } satisfies Record<DestinationSort, Prisma.DestinationOrderByWithRelationInput[]>;
-
-    return orderByMap[sort];
-}
-
 export async function getDestinations(
     scope?: "admin" | "public",
 ): Promise<Destination[]> {
     const data = await prisma.destination.findMany({
         include: destinationIncludes,
-        orderBy: { createdAt: "desc" },
+        orderBy: getDestinationOrderBy("newest"),
     });
 
     const visible =

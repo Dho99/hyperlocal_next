@@ -24,7 +24,7 @@ export function normalizeImageUrl(url: string | null | undefined): string | null
     if (isCloudinaryUrl(url)) return url;
     // Belum migrasi -> kembalikan URL asli (browser akan hit lh3 langsung).
     // Ini menghindari 403 saat Cloudinary mencoba fetch lh3 yang sudah expired.
-    // Setelah script migrate-images-to-cloudinary berhasil (re-crawl fresh),
+    // Setelah script sync-images-to-cloudinary berhasil (migrasi/re-crawl fresh),
     // URL akan menjadi res.cloudinary.com dan tidak masuk cabang ini.
     return url;
 }

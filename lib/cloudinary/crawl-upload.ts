@@ -71,8 +71,8 @@ export async function uploadCrawledImageToCloudinary(
         });
         if (!result.secure_url) throw new Error("Cloudinary upload tidak mengembalikan secure_url");
         return result.secure_url;
-    } catch (e: any) {
-        const msg = e?.message ?? String(e);
+    } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
         // Jika 403/Forbidden dari lh3, coba fetch lokal dengan header browser-like
         // supaya dapat error yang lebih deskriptif. Jika masih 403, beri hint re-crawl.
         if (msg.includes("403") || msg.includes("Forbidden")) {
@@ -103,14 +103,14 @@ export async function uploadCrawledImageToCloudinary(
                             quality: "auto",
                             fetch_format: "auto",
                         },
-                        (err, res) => (err ? reject(err) : resolve(res as any)),
+                        (err, res) => (err ? reject(err) : resolve(res as { secure_url: string })),
                     );
                     stream.end(buf);
                 });
                 if (!result.secure_url) throw new Error("Cloudinary upload_stream tidak mengembalikan secure_url");
                 return result.secure_url;
-            } catch (fetchErr: any) {
-                throw new Error(`${msg} | Local fetch also failed: ${fetchErr.message}. Hint: lh3 place-photos URL expired, lakukan re-crawl dengan GOOGLE_MAPS_API_KEY untuk dapat photo_reference fresh.`);
+            } catch (fetchErr: unknown) {
+                throw new Error(`${msg} | Local fetch also failed: ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}. Hint: lh3 place-photos URL expired, lakukan re-crawl dengan GOOGLE_MAPS_API_KEY untuk dapat photo_reference fresh.`);
             }
         }
         throw e;
@@ -138,13 +138,24 @@ export function toCloudinaryFetchUrl(sourceUrl: string | null | undefined): stri
 }
 
 // ── Google Places helpers untuk hybrid fallback (expired lh3 → fresh via API) ──
+type GoogleTextSearchResponse = {
+    status: string;
+    error_message?: string;
+    results?: Array<{ place_id: string }>;
+};
+type GoogleDetailsResponse = {
+    status: string;
+    error_message?: string;
+    result?: { photos?: Array<{ photo_reference: string }> };
+};
+
 export async function searchPlaceId(query: string): Promise<string | null> {
     const key = process.env.GOOGLE_MAPS_API_KEY;
     if (!key) throw new Error("GOOGLE_MAPS_API_KEY belum set");
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${key}&language=id`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`TextSearch ${res.status} ${await res.text().then(t=>t.slice(0,300))}`);
-    const json: any = await res.json();
+    const json = await res.json() as GoogleTextSearchResponse;
     if (json.status !== "OK" && json.status !== "ZERO_RESULTS") {
         throw new Error(`TextSearch status ${json.status}: ${json.error_message ?? JSON.stringify(json).slice(0,500)}`);
     }
@@ -158,7 +169,7 @@ export async function getPhotoReferences(placeId: string): Promise<string[]> {
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=photos&key=${key}&language=id`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Details ${res.status}`);
-    const json: any = await res.json();
+    const json = await res.json() as GoogleDetailsResponse;
     if (json.status !== "OK") {
         if (json.status === "ZERO_RESULTS") return [];
         throw new Error(`Details status ${json.status}: ${json.error_message ?? ""}`);
@@ -178,30 +189,4 @@ export async function fetchPhotoBuffer(photoRef: string): Promise<Buffer> {
         throw new Error(`Photo fetch ${res.status} ${txt.slice(0,300)}`);
     }
     return Buffer.from(await res.arrayBuffer());
-}
-
-export async function uploadBufferToCloudinary(buffer: Buffer, slug: string, photoRef: string, kind: CrawlUploadOptions["kind"] = "destinations"): Promise<string> {
-    const safeSlug = slug.replace(/[^a-z0-9-]/gi, "-").toLowerCase().slice(0,80);
-    const baseFolder = FOLDER_MAPPING[kind ?? "destinations"] ?? `hyperlocal/${kind ?? "destinations"}`;
-    const folder = `${baseFolder}/${safeSlug}`;
-    const publicId = `crawl-${hashUrl(photoRef)}`;
-    try {
-        const existing = await cloudinary.api.resource(`${folder}/${publicId}`, { resource_type: "image" });
-        if (existing?.secure_url) return existing.secure_url as string;
-    } catch {}
-    const result: any = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream({
-            folder,
-            public_id: publicId,
-            resource_type: "image",
-            overwrite: false,
-            unique_filename: false,
-            use_filename: false,
-            quality: "auto",
-            fetch_format: "auto",
-        }, (err, res) => err ? reject(err) : resolve(res));
-        stream.end(buffer);
-    });
-    if (!result.secure_url) throw new Error("No secure_url");
-    return result.secure_url;
 }

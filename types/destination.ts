@@ -18,6 +18,8 @@ export interface HalalFacility {
 export interface DestinationImage {
     id?: string;
     imageUrl: string;
+    publicId?: string | null;
+    source?: string | null;
     caption?: string | null;
     isPrimary?: boolean;
     createdAt?: Date | string;

@@ -12,6 +12,8 @@ export interface UmkmImage {
     id: string;
     umkmId: string;
     imageUrl: string;
+    publicId?: string | null;
+    source?: string | null;
     caption: string | null;
     isPrimary: boolean;
     createdAt: Date | string;

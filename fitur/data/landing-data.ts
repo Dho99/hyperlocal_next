@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { ShieldCheck, Landmark, Utensils, Hotel } from "lucide-react";
 import type { ComponentType } from "react";
+import { filterDestinationsByCoverage } from "@/lib/maps/coverage-geometry";
+import { getCoverageIndex } from "@/lib/services/coverage-area-service";
 import type { Faq } from "./landing";
 
 export interface DestinationCard {
@@ -127,6 +129,7 @@ export async function getLandingData() {
         verifiedRaw,
         recentReviews,
         topUmkms,
+        coverageIndex,
     ] = await Promise.all([
         prisma.destination.count(),
         prisma.destination.count({ where: { status: "APPROVED" } }),
@@ -146,9 +149,9 @@ export async function getLandingData() {
             },
         }),
         prisma.destination.findMany({
-            take: 8,
             where: { status: "APPROVED" },
             orderBy: [
+                { images: { _count: "desc" } },
                 { reviewCount: "desc" },
                 { rating: "desc" },
                 { updatedAt: "desc" },
@@ -163,6 +166,8 @@ export async function getLandingData() {
                 rating: true,
                 reviewCount: true,
                 halalScore: true,
+                latitude: true,
+                longitude: true,
                 category: {
                     select: {
                         name: true,
@@ -179,9 +184,9 @@ export async function getLandingData() {
             },
         }),
         prisma.destination.findMany({
-            take: 6,
             where: { status: "APPROVED" },
             orderBy: [
+                { images: { _count: "desc" } },
                 { rating: "desc" },
                 { reviewCount: "desc" },
                 { updatedAt: "desc" },
@@ -196,6 +201,8 @@ export async function getLandingData() {
                 rating: true,
                 reviewCount: true,
                 halalScore: true,
+                latitude: true,
+                longitude: true,
                 category: {
                     select: {
                         name: true,
@@ -269,11 +276,23 @@ export async function getLandingData() {
                 },
             },
         }),
+        getCoverageIndex(),
     ]);
 
-    const popular = popularRaw.map(toDestinationCard);
-    const verifiedSource = verifiedRaw.length ? verifiedRaw : popularRaw;
-    const verified = verifiedSource.map(toDestinationCard).slice(0, 3);
+    const visiblePopular = filterDestinationsByCoverage(
+        popularRaw,
+        coverageIndex,
+    );
+    const visibleVerified = filterDestinationsByCoverage(
+        verifiedRaw,
+        coverageIndex,
+    );
+
+    const popular = visiblePopular.slice(0, 8).map(toDestinationCard);
+    const verifiedSource = visibleVerified.length
+        ? visibleVerified
+        : visiblePopular;
+    const verified = verifiedSource.slice(0, 3).map(toDestinationCard);
 
     const facilityHighlights: FacilityHighlight[] = [
         {

@@ -229,6 +229,6 @@ export async function getDestinations() {
                 include: { facility: true, evidences: true },
             },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ images: { _count: "desc" } }, { createdAt: "desc" }],
     });
 }

@@ -23,8 +23,11 @@ import {
     searchPlaceId,
     getPhotoReferences,
     fetchPhotoBuffer,
-    uploadBufferToCloudinary,
 } from "../lib/cloudinary/crawl-upload";
+import {
+    publicIdFromCloudinaryUrl,
+    uploadImageToCloudinary,
+} from "../lib/cloudinary/persist-image";
 
 type Kind = "destinations" | "umkm" | "accommodations" | "all";
 type Args = {
@@ -58,26 +61,36 @@ type Entity = {
     city: string | null;
     province: string | null;
     address: string | null;
-    images: Array<{ id: string; imageUrl: string }>;
+    images: Array<{ id: string; imageUrl: string; publicId: string | null }>;
     kind: Exclude<Kind, "all">;
 };
 
 async function tryMigrateFresh(entity: Entity, dryRun: boolean): Promise<{ ok: number; fail: number }> {
     let ok = 0, fail = 0;
     for (const img of entity.images) {
-        if (isAlreadyCloudinary(img.imageUrl)) { ok++; continue; }
+        if (isAlreadyCloudinary(img.imageUrl)) {
+            const publicId = publicIdFromCloudinaryUrl(img.imageUrl);
+            if (publicId && !img.publicId) {
+                if (entity.kind === "destinations") await prisma.destinationImage.update({ where: { id: img.id }, data: { publicId } });
+                else if (entity.kind === "umkm") await prisma.umkmImage.update({ where: { id: img.id }, data: { publicId } });
+                else await prisma.accommodationImage.update({ where: { id: img.id }, data: { publicId } });
+            }
+            ok++;
+            continue;
+        }
         if (dryRun) { ok++; continue; }
         try {
             const url = await uploadCrawledImageToCloudinary(img.imageUrl, { slug: entity.slug, kind: entity.kind });
             if (url !== img.imageUrl) {
-                if (entity.kind === "destinations") await prisma.destinationImage.update({ where: { id: img.id }, data: { imageUrl: url } });
-                else if (entity.kind === "umkm") await prisma.umkmImage.update({ where: { id: img.id }, data: { imageUrl: url } });
-                else await prisma.accommodationImage.update({ where: { id: img.id }, data: { imageUrl: url } });
+                const publicId = publicIdFromCloudinaryUrl(url);
+                if (entity.kind === "destinations") await prisma.destinationImage.update({ where: { id: img.id }, data: { imageUrl: url, publicId, source: "legacy-google" } });
+                else if (entity.kind === "umkm") await prisma.umkmImage.update({ where: { id: img.id }, data: { imageUrl: url, publicId, source: "legacy-google" } });
+                else await prisma.accommodationImage.update({ where: { id: img.id }, data: { imageUrl: url, publicId, source: "legacy-google" } });
                 console.log(`    migrate ✓ ${img.id} -> ${url.slice(0,70)}...`);
             }
             ok++;
-        } catch (e: any) {
-            const msg = e.message ?? String(e);
+        } catch (e: unknown) {
+            const msg = e instanceof Error ? e.message : String(e);
             if (msg.includes("403") || msg.includes("Forbidden") || msg.includes("expired")) {
                 console.log(`    migrate ✗ 403/expired ${img.id}: ${msg.slice(0,120)} → need backfill`);
             } else {
@@ -107,63 +120,68 @@ async function backfillViaCrawl(entity: Entity, dryRun: boolean): Promise<{ uplo
         console.log(`  [DRY] would crawl ${take} photos -> hyperlocal/${entity.kind}/${entity.slug}`);
         return { uploaded: take };
     }
-    const uploadedUrls: string[] = [];
+    const uploaded: Array<{ url: string; publicId: string }> = [];
     for (let i = 0; i < take; i++) {
         const ref = refs[i];
         const buf = await fetchPhotoBuffer(ref);
         console.log(`    photo ${i+1}/${take} ${buf.length}b`);
-        const url = await uploadBufferToCloudinary(buf, entity.slug, ref, entity.kind);
-        console.log(`    -> ${url.slice(0,70)}...`);
-        uploadedUrls.push(url);
+        const cloud = await uploadImageToCloudinary(buf, {
+            kind: entity.kind,
+            slug: entity.slug,
+            sourceKey: ref,
+            prefix: "legacy",
+        });
+        console.log(`    -> ${cloud.imageUrl.slice(0,70)}...`);
+        uploaded.push({ url: cloud.imageUrl, publicId: cloud.publicId });
         await new Promise(r => setTimeout(r, 300));
     }
     const oldCount = entity.images.length;
-    console.log(`  DB replace ${oldCount} -> ${uploadedUrls.length} (${entity.kind})`);
+    console.log(`  DB replace ${oldCount} -> ${uploaded.length} (${entity.kind})`);
     if (entity.kind === "destinations") {
         await prisma.$transaction(async (tx) => {
             await tx.destinationImage.deleteMany({ where: { destinationId: entity.id } });
-            for (let i = 0; i < uploadedUrls.length; i++) {
-                await tx.destinationImage.create({ data: { destinationId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            for (let i = 0; i < uploaded.length; i++) {
+                await tx.destinationImage.create({ data: { destinationId: entity.id, imageUrl: uploaded[i].url, publicId: uploaded[i].publicId, source: "legacy-google", caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
             }
         });
     } else if (entity.kind === "umkm") {
         await prisma.$transaction(async (tx) => {
             await tx.umkmImage.deleteMany({ where: { umkmId: entity.id } });
-            for (let i = 0; i < uploadedUrls.length; i++) {
-                await tx.umkmImage.create({ data: { umkmId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            for (let i = 0; i < uploaded.length; i++) {
+                await tx.umkmImage.create({ data: { umkmId: entity.id, imageUrl: uploaded[i].url, publicId: uploaded[i].publicId, source: "legacy-google", caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
             }
         });
     } else {
         await prisma.$transaction(async (tx) => {
             await tx.accommodationImage.deleteMany({ where: { accommodationId: entity.id } });
-            for (let i = 0; i < uploadedUrls.length; i++) {
-                await tx.accommodationImage.create({ data: { accommodationId: entity.id, imageUrl: uploadedUrls[i], caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
+            for (let i = 0; i < uploaded.length; i++) {
+                await tx.accommodationImage.create({ data: { accommodationId: entity.id, imageUrl: uploaded[i].url, publicId: uploaded[i].publicId, source: "legacy-google", caption: i === 0 ? "Foto utama" : `Foto ${i+1}`, isPrimary: i === 0 } });
             }
         });
     }
     console.log(`  ✓ DB updated`);
-    return { uploaded: uploadedUrls.length };
+    return { uploaded: uploaded.length };
 }
 
 async function loadEntities(kind: Exclude<Kind, "all">, args: Args): Promise<Entity[]> {
     if (args.slug) {
         if (kind === "destinations") {
-            const d = await prisma.destination.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } } });
+            const d = await prisma.destination.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true, publicId: true } } } });
             if (!d) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
             return [{ ...d, kind }];
         }
         if (kind === "umkm") {
-            const u = await prisma.umkm.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true } } } });
+            const u = await prisma.umkm.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true, publicId: true } } } });
             if (!u) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
             return [{ id: u.id, name: u.name, slug: u.slug, city: u.destination?.city ?? null, province: u.destination?.province ?? null, address: u.address, images: u.images, kind }];
         }
-        const a = await prisma.accommodation.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } } });
+        const a = await prisma.accommodation.findUnique({ where: { slug: args.slug }, select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true, publicId: true } } } });
         if (!a) { console.error(`Slug not found: ${args.slug}`); process.exit(1); }
         return [{ ...a, kind }];
     }
 
     if (kind === "destinations") {
-        const all = await prisma.destination.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+        const all = await prisma.destination.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true, publicId: true } } }, orderBy: { createdAt: "asc" } });
         let pending = all.filter(d => d.images.length === 0 || d.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
         console.log(`Total dest ${all.length}, pending (0 or lh3) ${pending.length}`);
         if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
@@ -171,14 +189,14 @@ async function loadEntities(kind: Exclude<Kind, "all">, args: Args): Promise<Ent
         return pending.map(p => ({ ...p, kind } as Entity));
     }
     if (kind === "umkm") {
-        const all = await prisma.umkm.findMany({ select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+        const all = await prisma.umkm.findMany({ select: { id: true, name: true, slug: true, address: true, destination: { select: { city: true, province: true } }, images: { select: { id: true, imageUrl: true, publicId: true } } }, orderBy: { createdAt: "asc" } });
         let pending = all.filter(u => u.images.length === 0 || u.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
         console.log(`Total umkm ${all.length}, pending (0 or lh3) ${pending.length}`);
         if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
         else if (!args.all && args.limit == null) pending = pending.slice(0, 3);
         return pending.map(u => ({ id: u.id, name: u.name, slug: u.slug, city: u.destination?.city ?? null, province: u.destination?.province ?? null, address: u.address, images: u.images, kind } as Entity));
     }
-    const all = await prisma.accommodation.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true } } }, orderBy: { createdAt: "asc" } });
+    const all = await prisma.accommodation.findMany({ select: { id: true, name: true, slug: true, city: true, province: true, address: true, images: { select: { id: true, imageUrl: true, publicId: true } } }, orderBy: { createdAt: "asc" } });
     let pending = all.filter(a => a.images.length === 0 || a.images.some(img => !isAlreadyCloudinary(img.imageUrl)));
     console.log(`Total accommodations ${all.length}, pending (0 or lh3) ${pending.length}`);
     if (!args.all && args.limit != null) pending = pending.slice(0, args.limit);
@@ -192,7 +210,7 @@ async function main(){
     if (args.freshOnly && args.backfillOnly) { console.error("Cannot use both --fresh-only and --backfill-only"); process.exit(1); }
 
     const kinds: Exclude<Kind, "all">[] = args.kind === "all" ? ["destinations", "umkm", "accommodations"] : [args.kind];
-    let allEntities: Entity[] = [];
+    const allEntities: Entity[] = [];
     for (const k of kinds) {
         const ents = await loadEntities(k, args);
         allEntities.push(...ents);
@@ -220,8 +238,8 @@ async function main(){
             } else {
                 fail++;
             }
-        } catch (e:any) {
-            console.error(`✗ ${ent.slug} fatal: ${e.message}`);
+        } catch (e: unknown) {
+            console.error(`✗ ${ent.slug} fatal: ${e instanceof Error ? e.message : String(e)}`);
             fail++;
         }
         await new Promise(r=>setTimeout(r, 800));

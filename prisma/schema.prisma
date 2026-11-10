@@ -262,6 +262,8 @@ model AccommodationImage {
   id              String   @id @default(uuid())
   accommodationId String   @map("accommodation_id")
   imageUrl        String   @map("image_url")
+  publicId        String?  @map("public_id")
+  source          String?
   caption         String?
   isPrimary       Boolean  @default(false) @map("is_primary")
   createdAt       DateTime @default(now()) @map("created_at")
@@ -269,6 +271,7 @@ model AccommodationImage {
   accommodation Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
 
   @@index([accommodationId])
+  @@index([publicId])
   @@map("accommodation_images")
 }
 
@@ -290,6 +293,8 @@ model DestinationImage {
   id            String   @id @default(uuid())
   destinationId String   @map("destination_id")
   imageUrl      String   @map("image_url")
+  publicId      String?  @map("public_id")
+  source        String?
   caption       String?
   isPrimary     Boolean  @default(false) @map("is_primary")
   createdAt     DateTime @default(now()) @map("created_at")
@@ -306,6 +311,7 @@ model DestinationImage {
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
 
   @@index([destinationId])
+  @@index([publicId])
   @@map("destination_images")
 }
 
@@ -623,6 +629,8 @@ model UmkmImage {
   id        String   @id @default(uuid())
   umkmId    String   @map("umkm_id")
   imageUrl  String   @map("image_url")
+  publicId  String?  @map("public_id")
+  source    String?
   caption   String?
   isPrimary Boolean  @default(false) @map("is_primary")
   createdAt DateTime @default(now()) @map("created_at")
@@ -630,6 +638,7 @@ model UmkmImage {
   umkm Umkm @relation(fields: [umkmId], references: [id], onDelete: Cascade)
 
   @@index([umkmId])
+  @@index([publicId])
   @@map("umkm_images")
 }
 
