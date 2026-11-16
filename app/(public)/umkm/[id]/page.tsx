@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { HeroSection } from "@/fitur/umkm/components/hero-section";
 import { AboutSection } from "@/fitur/umkm/components/about-section";
 import { FacilitiesSection } from "@/fitur/umkm/components/facilities-section";
+import { HalalCertificationSection } from "@/fitur/umkm/components/halal-certification-section";
 import { LocationSection } from "@/fitur/umkm/components/location-section";
 import { ReviewSection } from "@/fitur/umkm/components/review-section";
 import { OperatingHoursSidebar } from "@/fitur/umkm/components/operating-hours-sidebar";
@@ -40,6 +41,9 @@ export default async function UmkmDetailPage({
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
                     <div className="space-y-12">
                         <AboutSection description={umkm.description} />
+                        <HalalCertificationSection
+                            certifications={umkm.certifications}
+                        />
                         <PhotoGallery
                             images={umkm.images ?? []}
                             name={umkm.name}

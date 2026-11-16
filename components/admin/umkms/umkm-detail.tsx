@@ -6,17 +6,13 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import type { Umkm } from "@/types/umkm";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import {
     Store,
-    ArrowLeft,
     Clock,
     ShieldCheck,
     Award,
     Info,
     Phone,
-    Globe,
-    Mail,
     MapPin,
     ImagePlus,
     Loader2,
@@ -40,10 +36,10 @@ function formatDate(date: Date | string) {
 
 function getHalalStatus(umkm: Umkm) {
     const cert = umkm.certifications?.[0];
-    if (!cert) return { label: "Belum Terdaftar", color: "bg-muted text-muted-foreground" };
+    if (!cert) return { label: "Belum Ada", color: "bg-muted text-muted-foreground" };
     switch (cert.status) {
         case "VALID":
-            return { label: "Tervalidasi", color: "bg-primary/15 text-primary" };
+            return { label: "Sudah Ada (Tervalidasi)", color: "bg-primary/15 text-primary" };
         case "PENDING":
             return { label: "Dalam Proses", color: "bg-amber-100 text-amber-800" };
         case "EXPIRED":
@@ -51,7 +47,7 @@ function getHalalStatus(umkm: Umkm) {
         case "REVOKED":
             return { label: "Dicabut", color: "bg-red-100 text-red-800" };
         default:
-            return { label: "Belum Terdaftar", color: "bg-muted text-muted-foreground" };
+            return { label: "Belum Ada", color: "bg-muted text-muted-foreground" };
     }
 }
 
@@ -235,10 +231,41 @@ export function UmkmDetail({ id }: UmkmDetailProps) {
                             <div className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
                                 <Award className="mt-0.5 text-primary" />
                                 <div>
-                                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Sertifikasi MUI</p>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Nomor Sertifikat</p>
                                     <p className="text-sm text-muted-foreground">{umkm.certifications[0].certificateNo}</p>
+                                    {umkm.certifications[0].issuer && (
+                                        <p className="text-xs text-muted-foreground">Penerbit: {umkm.certifications[0].issuer}</p>
+                                    )}
                                 </div>
                             </div>
+                        )}
+                        {umkm.certifications?.[0]?.issuedAt && (
+                            <div className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
+                                <Clock className="mt-0.5 text-primary" />
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Masa Berlaku</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {formatDate(umkm.certifications[0].issuedAt)}
+                                        {umkm.certifications[0].expiredAt
+                                            ? ` – ${formatDate(umkm.certifications[0].expiredAt)}`
+                                            : ""}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                        {umkm.certifications?.[0]?.documentUrl && (
+                            <a
+                                href={umkm.certifications[0].documentUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:bg-muted/60"
+                            >
+                                <ImagePlus className="mt-0.5 text-primary" />
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Bukti Sertifikat</p>
+                                    <p className="text-sm text-primary underline">Lihat dokumen</p>
+                                </div>
+                            </a>
                         )}
                         <div className="flex items-start gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
                             <ShieldCheck className="mt-0.5 text-primary" />

@@ -42,15 +42,17 @@ const ratingFilters = [
 
 function getHalalBadge(
     umkm: Umkm,
-): { label: string; variant: "certified" | "friendly" } | null {
+): { label: string; variant: "certified" | "friendly" | "none" } {
     const cert = umkm.certifications?.[0];
     if (cert?.status === "VALID")
         return { label: "Bersertifikat Halal", variant: "certified" };
     if (umkm.validationStatus === "APPROVED")
         return { label: "Tervalidasi Halal", variant: "certified" };
     if (cert?.status === "PENDING")
-        return { label: "Muslim Friendly", variant: "friendly" };
-    return null;
+        return { label: "Dalam Proses Sertifikasi", variant: "friendly" };
+    if (cert?.status === "EXPIRED" || cert?.status === "REVOKED")
+        return { label: "Sertifikat Tidak Berlaku", variant: "none" };
+    return { label: "Belum Bersertifikat", variant: "none" };
 }
 
 function getRatingDisplay(umkm: Umkm): number {
@@ -315,8 +317,11 @@ export function UmkmList({ initialSearch, initialCategory }: UmkmListProps) {
                                                         className={`absolute left-3 top-3 flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold backdrop-blur-sm ${
                                                             badge.variant ===
                                                             "certified"
-                                                    ? "bg-accent/90 text-white"
-                                                            : "bg-amber-500/20 text-amber-400"
+                                                                ? "bg-accent/90 text-white"
+                                                                : badge.variant ===
+                                                                    "friendly"
+                                                                  ? "bg-amber-500/20 text-amber-400"
+                                                                  : "bg-card/80 text-muted-foreground"
                                                         }`}
                                                     >
                                                         <BadgeCheck

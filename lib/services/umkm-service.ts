@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma";
 import type { Destination } from "@/types/destination";
 import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import type { UmkmCertificationValues } from "@/lib/validations/umkm.schema";
 import type { PublicReview } from "@/types/review";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
 import {
@@ -26,6 +27,29 @@ async function validateUmkmCategory(
             "Kategori yang dipilih bukan kategori UMKM. Pilih kategori dengan tipe UMKM.",
         );
     }
+}
+
+function parseDateInput(value?: string | null): Date | null {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Maps the admin form certification payload to HalalCertification columns.
+ * Empty strings are stored as null so the unique certificate number does not
+ * collide on empty values.
+ */
+function buildCertificationData(input: UmkmCertificationValues) {
+    return {
+        certificateNo: input.certificateNo?.trim() || null,
+        issuer: input.issuer?.trim() || null,
+        issuedAt: parseDateInput(input.issuedAt),
+        expiredAt: parseDateInput(input.expiredAt),
+        status: input.status ?? "VALID",
+        documentUrl: input.documentUrl?.trim() || null,
+        notes: input.notes?.trim() || null,
+    };
 }
 
 function serializeUmkm(raw: unknown): Umkm {
@@ -141,6 +165,7 @@ export async function getPaginatedUmkms(
                     destination: true,
                     images: true,
                     certifications: {
+                        orderBy: { createdAt: "asc" },
                         include: {
                             validations: true,
                         },
@@ -171,6 +196,7 @@ export async function getUmkms(scope?: "admin" | "public") {
             destination: true,
             images: true,
             certifications: {
+                orderBy: { createdAt: "asc" },
                 include: {
                     validations: true,
                 },
@@ -198,6 +224,7 @@ export async function getUmkm(id: string, scope?: "admin" | "public") {
             destination: true,
             images: true,
             certifications: {
+                orderBy: { createdAt: "asc" },
                 include: {
                     validations: {
                         include: {
@@ -216,7 +243,7 @@ export async function createUmkm(
     values: UmkmFormValues,
     facilityIds?: string[],
 ) {
-    const { images, ...data } = values;
+    const { images, certification, ...data } = values;
     await validateUmkmCategory(data.categoryId);
 
     let halalScore = 0;
@@ -243,6 +270,13 @@ export async function createUmkm(
                       })),
                   }
                 : undefined,
+            ...(certification?.hasCertification
+                ? {
+                      certifications: {
+                          create: buildCertificationData(certification),
+                      },
+                  }
+                : {}),
             ...(facilityIds && facilityIds.length > 0
                 ? {
                       umkmHalalFacilities: {
@@ -261,6 +295,10 @@ export async function createUmkm(
             destination: true,
             images: true,
             umkmHalalFacilities: true,
+            certifications: {
+                orderBy: { createdAt: "asc" },
+                include: { validations: true },
+            },
         },
     });
 
@@ -268,7 +306,7 @@ export async function createUmkm(
 }
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
-    const { images, ...data } = values;
+    const { images, certification, ...data } = values;
     await validateUmkmCategory(data.categoryId);
 
     const umkm = await prisma.$transaction(async (tx) => {
@@ -277,6 +315,34 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
             await tx.umkmImage.deleteMany({
                 where: { umkmId: id },
             });
+        }
+
+        if (certification) {
+            const existing = await tx.halalCertification.findFirst({
+                where: { umkmId: id },
+                orderBy: { createdAt: "asc" },
+                select: { id: true },
+            });
+
+            if (!certification.hasCertification) {
+                if (existing) {
+                    await tx.halalCertification.delete({
+                        where: { id: existing.id },
+                    });
+                }
+            } else if (existing) {
+                await tx.halalCertification.update({
+                    where: { id: existing.id },
+                    data: buildCertificationData(certification),
+                });
+            } else {
+                await tx.halalCertification.create({
+                    data: {
+                        umkmId: id,
+                        ...buildCertificationData(certification),
+                    },
+                });
+            }
         }
 
         return await tx.umkm.update({
@@ -297,6 +363,10 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
                 category: true,
                 destination: true,
                 images: true,
+                certifications: {
+                    orderBy: { createdAt: "asc" },
+                    include: { validations: true },
+                },
             },
         });
     });
@@ -349,6 +419,7 @@ export async function getUmkmDetail(idOrSlug: string, scope?: "admin" | "public"
             },
             images: true,
             certifications: {
+                orderBy: { createdAt: "asc" },
                 include: {
                     validations: {
                         include: {

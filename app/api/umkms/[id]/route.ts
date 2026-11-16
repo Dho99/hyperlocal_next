@@ -89,6 +89,19 @@ export async function PATCH(
         const updated = await updateUmkm(id, validated.data as UmkmFormValues);
         return NextResponse.json({ data: updated }, { status: 200 });
     } catch (error: unknown) {
+        if (
+            typeof error === "object" &&
+            error !== null &&
+            "code" in error &&
+            (error as { code?: string }).code === "P2002"
+        ) {
+            return NextResponse.json(
+                {
+                    error: "Nomor sertifikat halal sudah digunakan UMKM lain",
+                },
+                { status: 400 },
+            );
+        }
         return NextResponse.json(
             { error: getErrorMessage(error) },
             { status: 500 },

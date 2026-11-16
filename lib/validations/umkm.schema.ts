@@ -1,5 +1,31 @@
 import { z } from "@/lib/zod";
 
+export const UMKM_CERTIFICATION_STATUSES = [
+    "VALID",
+    "PENDING",
+    "EXPIRED",
+    "REVOKED",
+] as const;
+
+/**
+ * Halal certification data attached to a UMKM. `hasCertification: false`
+ * means the business has no certificate at all (status "Belum ada").
+ */
+export const umkmCertificationSchema = z.object({
+    hasCertification: z.boolean(),
+    certificateNo: z.string().trim().max(120).optional().nullable(),
+    issuer: z.string().trim().max(150).optional().nullable(),
+    issuedAt: z.string().optional().nullable(),
+    expiredAt: z.string().optional().nullable(),
+    status: z.enum(UMKM_CERTIFICATION_STATUSES).optional(),
+    documentUrl: z.string().trim().optional().nullable(),
+    notes: z.string().trim().max(500).optional().nullable(),
+});
+
+export type UmkmCertificationValues = z.infer<
+    typeof umkmCertificationSchema
+>;
+
 export const umkmSchema = z.object({
     name: z.string().min(2, "Nama UMKM minimal 2 karakter"),
     slug: z
@@ -44,6 +70,7 @@ export const umkmSchema = z.object({
     latitude: z.number().optional().nullable(),
     longitude: z.number().optional().nullable(),
     images: z.array(z.object({ imageUrl: z.string() })).optional(),
+    certification: umkmCertificationSchema.optional().nullable(),
 });
 
 export type UmkmFormValues = z.infer<typeof umkmSchema>;

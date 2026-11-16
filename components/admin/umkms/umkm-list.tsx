@@ -27,6 +27,7 @@ import {
     Clock,
     XCircle,
     MapPin,
+    FileText,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -97,20 +98,33 @@ export function UmkmList({ categories }: UmkmListProps) {
         if (!cert)
             return (
                 <Badge variant="outline" className="text-[10px]">
-                    Belum Ada Sertifikat
+                    Belum Ada
                 </Badge>
             );
 
         switch (cert.status) {
             case "VALID":
                 return (
-                    <Badge
-                        variant="success"
-                        className="text-[10px] font-bold gap-1"
-                    >
-                        <CheckCircle2 className="h-3 w-3" />
-                        Valid
-                    </Badge>
+                    <div className="flex flex-wrap items-center gap-1">
+                        <Badge
+                            variant="success"
+                            className="text-[10px] font-bold gap-1"
+                        >
+                            <CheckCircle2 className="h-3 w-3" />
+                            Sudah Ada
+                        </Badge>
+                        {cert.documentUrl && (
+                            <a
+                                href={cert.documentUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                title="Lihat bukti sertifikat"
+                                className="text-muted-foreground transition-colors hover:text-primary"
+                            >
+                                <FileText className="h-3.5 w-3.5" />
+                            </a>
+                        )}
+                    </div>
                 );
             case "PENDING":
                 return (

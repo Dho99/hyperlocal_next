@@ -48,6 +48,7 @@ export interface HalalCertification {
     expiredAt: Date | string | null;
     status: CertificationStatus;
     documentUrl: string | null;
+    notes: string | null;
     createdAt: Date | string;
     updatedAt: Date | string;
     validations?: HalalValidation[];

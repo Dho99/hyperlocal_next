@@ -14,7 +14,7 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, MapPin, Store, Phone, User as UserIcon } from "lucide-react";
+import { Loader2, MapPin, Store, Phone, User as UserIcon, BadgeCheck, FileText, X } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -41,11 +41,28 @@ interface UmkmFormProps {
     categories: Category[];
 }
 
+function toDateInput(value?: Date | string | null) {
+    if (!value) return "";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+        ? ""
+        : date.toISOString().slice(0, 10);
+}
+
+const CERTIFICATION_STATUS_OPTIONS = [
+    { value: "VALID", label: "Berlaku / Tersertifikasi" },
+    { value: "PENDING", label: "Dalam Proses" },
+    { value: "EXPIRED", label: "Kedaluwarsa" },
+    { value: "REVOKED", label: "Dicabut" },
+] as const;
+
 export function UmkmForm({ initialData, categories }: UmkmFormProps) {
     const [isPending, startTransition] = useTransition();
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [coverageAreas, setCoverageAreas] = useState<CoverageAreaOption[]>([]);
     const router = useRouter();
+
+    const existingCertification = initialData?.certifications?.[0];
 
     const form = useForm<UmkmFormValues>({
         resolver: zodResolver(
@@ -72,6 +89,18 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                 initialData?.images?.map((img) => ({
                     imageUrl: img.imageUrl,
                 })) || [],
+            certification: existingCertification
+                ? {
+                      hasCertification: true,
+                      certificateNo: existingCertification.certificateNo ?? "",
+                      issuer: existingCertification.issuer ?? "",
+                      issuedAt: toDateInput(existingCertification.issuedAt),
+                      expiredAt: toDateInput(existingCertification.expiredAt),
+                      status: existingCertification.status,
+                      documentUrl: existingCertification.documentUrl ?? "",
+                      notes: existingCertification.notes ?? "",
+                  }
+                : { hasCertification: false, status: "VALID" },
         },
     });
 
@@ -101,6 +130,18 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
     }, []);
 
     async function onSubmit(values: UmkmFormValues) {
+        const certification = values.certification;
+        if (
+            certification?.hasCertification &&
+            !certification.certificateNo?.trim() &&
+            !certification.documentUrl?.trim()
+        ) {
+            toast.error(
+                "Isi nomor sertifikat atau unggah bukti sertifikat halal",
+            );
+            return;
+        }
+
         startTransition(async () => {
             try {
                 if (initialData) {
@@ -130,6 +171,9 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
             form.setValue("slug", slug);
         }
     };
+
+    const hasCertification = form.watch("certification.hasCertification");
+    const certificationDocumentUrl = form.watch("certification.documentUrl");
 
     // const onError = (errors: any) => {
     //     console.log("Validation errors:", errors);
@@ -320,6 +364,221 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                                     </p>
                                 )}
                             </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-none shadow-sm ring-1 ring-border/50">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg font-heading">
+                                <BadgeCheck className="h-5 w-5 text-primary" />
+                                Sertifikasi Halal
+                            </CardTitle>
+                            <CardDescription>
+                                Status sertifikasi halal dan bukti sertifikat
+                                UMKM.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid gap-2">
+                                <Label>Status Sertifikasi</Label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            form.setValue(
+                                                "certification.hasCertification",
+                                                true,
+                                            )
+                                        }
+                                        className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-semibold transition-colors ${
+                                            hasCertification
+                                                ? "border-primary bg-primary/10 text-primary"
+                                                : "border-border bg-background text-muted-foreground hover:bg-muted"
+                                        }`}
+                                    >
+                                        <BadgeCheck className="h-4 w-4" />
+                                        Sudah Ada
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            form.setValue(
+                                                "certification.hasCertification",
+                                                false,
+                                            )
+                                        }
+                                        className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-semibold transition-colors ${
+                                            !hasCertification
+                                                ? "border-amber-300 bg-amber-50 text-amber-700"
+                                                : "border-border bg-background text-muted-foreground hover:bg-muted"
+                                        }`}
+                                    >
+                                        Belum Ada
+                                    </button>
+                                </div>
+                                <p className="text-[10px] text-muted-foreground">
+                                    Pilih &ldquo;Sudah Ada&rdquo; jika UMKM
+                                    memiliki sertifikat halal resmi beserta
+                                    nomor atau bukti sertifikatnya.
+                                </p>
+                            </div>
+
+                            {hasCertification && (
+                                <>
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="certificateNo">
+                                                Nomor Sertifikat
+                                            </Label>
+                                            <Input
+                                                id="certificateNo"
+                                                placeholder="Contoh: ID00110000234567"
+                                                {...form.register(
+                                                    "certification.certificateNo",
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="certificationIssuer">
+                                                Lembaga Penerbit
+                                            </Label>
+                                            <Input
+                                                id="certificationIssuer"
+                                                placeholder="Contoh: BPJPH / MUI"
+                                                {...form.register(
+                                                    "certification.issuer",
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="certificationIssuedAt">
+                                                Tanggal Terbit
+                                            </Label>
+                                            <Input
+                                                id="certificationIssuedAt"
+                                                type="date"
+                                                {...form.register(
+                                                    "certification.issuedAt",
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="certificationExpiredAt">
+                                                Berlaku Sampai
+                                            </Label>
+                                            <Input
+                                                id="certificationExpiredAt"
+                                                type="date"
+                                                {...form.register(
+                                                    "certification.expiredAt",
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="certificationStatus">
+                                            Status Keberlakuan
+                                        </Label>
+                                        <select
+                                            id="certificationStatus"
+                                            className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                            {...form.register(
+                                                "certification.status",
+                                            )}
+                                        >
+                                            {CERTIFICATION_STATUS_OPTIONS.map(
+                                                (option) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={option.value}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                        <p className="text-[10px] text-muted-foreground">
+                                            Status &ldquo;Berlaku /
+                                            Tersertifikasi&rdquo; akan
+                                            menampilkan badge halal pada
+                                            halaman publik.
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label>
+                                            Bukti / Dokumen Sertifikat
+                                        </Label>
+                                        {certificationDocumentUrl ? (
+                                            <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 p-3">
+                                                <a
+                                                    href={
+                                                        certificationDocumentUrl
+                                                    }
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="flex min-w-0 items-center gap-2 text-sm font-medium text-primary hover:underline"
+                                                >
+                                                    <FileText className="h-4 w-4 shrink-0" />
+                                                    <span className="truncate">
+                                                        Lihat bukti sertifikat
+                                                    </span>
+                                                </a>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-7 w-7 shrink-0 text-destructive hover:text-destructive"
+                                                    onClick={() =>
+                                                        form.setValue(
+                                                            "certification.documentUrl",
+                                                            "",
+                                                        )
+                                                    }
+                                                    title="Hapus bukti sertifikat"
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <ImageDropzone
+                                                folder="validations"
+                                                multiple={false}
+                                                maxFiles={1}
+                                                onUploadComplete={(urls) =>
+                                                    form.setValue(
+                                                        "certification.documentUrl",
+                                                        urls[0] ?? "",
+                                                    )
+                                                }
+                                            />
+                                        )}
+                                        <p className="text-[10px] text-muted-foreground">
+                                            Unggah foto atau hasil pindai
+                                            sertifikat halal (maks. 5MB).
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="certificationNotes">
+                                            Catatan (Opsional)
+                                        </Label>
+                                        <textarea
+                                            id="certificationNotes"
+                                            rows={2}
+                                            className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                            placeholder="Catatan tambahan terkait sertifikasi..."
+                                            {...form.register(
+                                                "certification.notes",
+                                            )}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
 
