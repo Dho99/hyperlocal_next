@@ -524,6 +524,10 @@ model DestinationSurveyResponse {
   scores        Json
   overallScore  Float?   @map("overall_score")
   comment       String?
+  scoreHiddenAt DateTime? @map("score_hidden_at")
+  scoreHiddenBy String?   @map("score_hidden_by")
+  commentHiddenAt DateTime? @map("comment_hidden_at")
+  commentHiddenBy String? @map("comment_hidden_by")
   createdAt     DateTime @default(now()) @map("created_at")
 
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
@@ -531,6 +535,7 @@ model DestinationSurveyResponse {
 
   @@index([destinationId])
   @@index([userId])
+  @@index([scoreHiddenAt])
   @@map("destination_survey_responses")
 }
 
@@ -796,6 +801,7 @@ model AceshIndicatorScore {
   destinationId  String   @map("destination_id")
   indicatorId    String   @map("indicator_id")
   value          Int      @default(0)
+  adminValue     Int?     @map("admin_value")
   convertedScore Float    @default(0) @map("converted_score")
   notes          String?
   assessedBy     String?  @map("assessed_by")

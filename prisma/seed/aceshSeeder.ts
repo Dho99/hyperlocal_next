@@ -234,6 +234,7 @@ export async function seedAcesh() {
             destinationId: target.id,
             indicatorId: indicator.id,
             value,
+            adminValue: value,
             convertedScore: toIndicatorScore(value),
             notes: "Skor dari simulasi resmi ACES-H (seed).",
         });

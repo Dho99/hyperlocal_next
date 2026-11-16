@@ -6,6 +6,7 @@ import { getErrorMessage } from "@/lib/api-error";
 import { createSurveySchema } from "@/lib/validations/survey.schema";
 import {
     createSurveyResponse,
+    getPublicSurveyComments,
     getSurveySummary,
 } from "@/lib/services/survey-service";
 
@@ -40,7 +41,7 @@ export async function GET(
             );
         }
 
-        const [indicators, summary] = await Promise.all([
+        const [indicators, summary, comments] = await Promise.all([
             prisma.aceshIndicator.findMany({
                 where: { isActive: true },
                 orderBy: [{ group: "asc" }, { code: "asc" }],
@@ -54,9 +55,10 @@ export async function GET(
                 },
             }),
             getSurveySummary(destinationId),
+            getPublicSurveyComments(destinationId),
         ]);
 
-        return NextResponse.json({ data: { indicators, summary } });
+        return NextResponse.json({ data: { indicators, summary, comments } });
     } catch (error: unknown) {
         return NextResponse.json(
             { error: getErrorMessage(error) },

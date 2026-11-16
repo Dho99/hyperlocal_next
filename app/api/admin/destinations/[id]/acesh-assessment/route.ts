@@ -12,8 +12,8 @@ import {
 } from "@/lib/services/acesh/constants";
 import {
     calculateAssessmentSnapshot,
-    calculateAndSaveAssessment,
 } from "@/lib/services/acesh/assessment-recalculation-service";
+import { recalculateCumulativeAcesh } from "@/lib/services/survey-service";
 import { getErrorMessage } from "@/lib/api-error";
 
 async function requireAdmin() {
@@ -178,6 +178,7 @@ export async function PUT(
                     },
                     update: {
                         value: entry.value,
+                        adminValue: entry.value,
                         convertedScore: toIndicatorScore(entry.value),
                         notes: entry.notes ?? null,
                         assessedBy: session.user.id,
@@ -187,6 +188,7 @@ export async function PUT(
                         destinationId: id,
                         indicatorId: entry.indicatorId,
                         value: entry.value,
+                        adminValue: entry.value,
                         convertedScore: toIndicatorScore(entry.value),
                         notes: entry.notes ?? null,
                         assessedBy: session.user.id,
@@ -196,11 +198,7 @@ export async function PUT(
             ),
         );
 
-        const snapshot = await calculateAndSaveAssessment(
-            id,
-            session.user.id,
-            "Pembaruan skor indikator",
-        );
+        const snapshot = await recalculateCumulativeAcesh(id);
 
         return NextResponse.json(
             { data: { assessment: serializeAssessment(snapshot) } },

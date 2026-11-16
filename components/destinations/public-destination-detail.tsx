@@ -22,6 +22,11 @@ import { HeroGallery } from "@/fitur/destinasi/components/hero-gallery";
 import { FacilitiesSection } from "@/fitur/destinasi/components/facilities-section";
 import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
 import { SurveyDialog } from "@/fitur/destinasi/components/survey-dialog";
+import { SurveyComments } from "@/fitur/destinasi/components/survey-comments";
+import {
+    getSurveyStructure,
+    type PublicSurveyComment,
+} from "@/lib/api/survey";
 import { HalalBadge } from "@/components/ui/halal-badge";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { PhotoAttribution } from "@/components/ui/photo-attribution";
@@ -53,9 +58,19 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
     const [shareCopied, setShareCopied] = useState(false);
+    const [surveyComments, setSurveyComments] = useState<PublicSurveyComment[]>([]);
     const lightbox = useImageLightbox();
     const { data: session, isPending: sessionPending } =
         authClient.useSession();
+
+    const refreshSurveyComments = useCallback(async () => {
+        try {
+            const data = await getSurveyStructure(id);
+            setSurveyComments(data.comments);
+        } catch {
+            setSurveyComments([]);
+        }
+    }, [id]);
 
     useEffect(() => {
         async function fetchData() {
@@ -69,8 +84,9 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             } finally {
                 setLoading(false);
             }
+            await refreshSurveyComments();
         }
-        fetchData();
+        void fetchData();
 
         fetch(`/api/destinations/${id}/acesh`)
             .then((res) => (res.ok ? res.json() : null))
@@ -82,7 +98,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             .catch(() => {
                 // score badge is optional — detail still works without it
             });
-    }, [id]);
+    }, [id, refreshSurveyComments]);
 
     useEffect(() => {
         api.post(`/destinations/${id}/interactions`, {
@@ -363,8 +379,10 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                     destinationId={id}
                                     session={session}
                                     sessionPending={sessionPending}
+                                    onSubmitted={refreshSurveyComments}
                                 />
                             </div>
+                            <SurveyComments comments={surveyComments} />
                         </section>
                     </div>
 

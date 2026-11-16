@@ -12,6 +12,15 @@ export interface SurveyIndicator {
 export interface SurveyStructure {
     indicators: SurveyIndicator[];
     summary: { count: number; average: number | null };
+    comments: PublicSurveyComment[];
+}
+
+export interface PublicSurveyComment {
+    id: string;
+    comment: string | null;
+    overallScore: number | null;
+    createdAt: string;
+    user: { name: string; image: string | null } | null;
 }
 
 export interface SurveySubmitPayload {
@@ -30,8 +39,19 @@ export interface AdminSurveyItem {
         indicators: Record<string, number>;
         evidence: Record<string, number>;
     };
+    scoreBreakdown: Array<{
+        id: string;
+        code: string;
+        name: string;
+        group: string;
+        value: number;
+    }>;
     overallScore: number | null;
     comment: string | null;
+    scoreHiddenAt: string | null;
+    scoreHiddenBy: string | null;
+    commentHiddenAt: string | null;
+    commentHiddenBy: string | null;
     createdAt: string;
     user: { id: string; name: string; image: string | null } | null;
     destination: { id: string; name: string; slug: string } | null;
@@ -72,5 +92,21 @@ export async function deleteSurvey(id: string) {
     const res = await axios.delete<{ data: { id: string } }>(
         `/admin/surveys/${id}`,
     );
+    return res.data.data;
+}
+
+export type SurveyModerationAction =
+    | "HIDE_SCORE"
+    | "SHOW_SCORE"
+    | "HIDE_COMMENT"
+    | "SHOW_COMMENT";
+
+export async function moderateSurvey(
+    id: string,
+    action: SurveyModerationAction,
+) {
+    const res = await axios.patch<{
+        data: { id: string; destinationId: string; action: SurveyModerationAction };
+    }>(`/admin/surveys/${id}`, { action });
     return res.data.data;
 }

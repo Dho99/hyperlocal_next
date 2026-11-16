@@ -8,8 +8,8 @@ export default function PenilaianPage() {
                     Penilaian Destinasi
                 </h1>
                 <p className="text-muted-foreground">
-                    Tinjau dan hapus komentar penilaian survey ACES-H dari
-                    traveller.
+                    Tinjau nilai ACES-H, atur skor, dan moderasi komentar
+                    penilaian survey dari traveller.
                 </p>
             </div>
             <PenilaianList />

@@ -105,6 +105,7 @@ async function main() {
         destinationId,
         indicatorId: ind.id,
         value: 4,
+        adminValue: 4,
         convertedScore: toIndicatorScore(4),
         notes: "Perfect 100 - Masjid Agung Kota Tasik",
     }));

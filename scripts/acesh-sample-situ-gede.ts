@@ -68,6 +68,7 @@ async function main() {
         destinationId: string;
         indicatorId: string;
         value: number;
+        adminValue: number;
         convertedScore: number;
         notes: string;
     }> = [];
@@ -82,6 +83,7 @@ async function main() {
             destinationId: DESTINATION_ID,
             indicatorId: indicator.id,
             value,
+            adminValue: value,
             convertedScore: toIndicatorScore(value),
             notes: "Sample simulasi ACES-H Situ Gede (skenario resmi).",
         });
