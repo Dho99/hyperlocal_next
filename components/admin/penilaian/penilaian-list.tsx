@@ -208,50 +208,58 @@ export function PenilaianList() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge
-                                                className={scoreBadgeClass(
-                                                    item.overallScore,
-                                                )}
-                                            >
-                                                <Star className="mr-1 h-3 w-3" />
-                                                {item.overallScore != null
-                                                    ? item.overallScore.toFixed(1)
-                                                    : "—"}
-                                            </Badge>
-                                            {classification && (
-                                                <p className="mt-1 text-[10px] text-muted-foreground">
-                                                    {classification}
-                                                </p>
-                                            )}
-                                            <div className="mt-1 flex flex-wrap items-center gap-1">
+                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                                                 <Badge
-                                                    variant="outline"
-                                                    className={
-                                                        item.scoreHiddenAt
-                                                            ? "border-amber-200 bg-amber-50 px-1.5 py-0 text-[10px] text-amber-700"
-                                                            : "border-emerald-200 bg-emerald-50 px-1.5 py-0 text-[10px] text-emerald-700"
-                                                    }
+                                                    className={scoreBadgeClass(
+                                                        item.overallScore,
+                                                    )}
                                                 >
+                                                    <Star className="mr-1 h-3 w-3" />
+                                                    {item.overallScore != null
+                                                        ? item.overallScore.toFixed(1)
+                                                        : "—"}
+                                                </Badge>
+                                                {classification && (
+                                                    <span className="text-[10px] leading-none text-muted-foreground">
+                                                        {classification}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] leading-none">
+                                                <span
+                                                    className={`inline-flex items-center gap-1 font-medium ${
+                                                        item.scoreHiddenAt
+                                                            ? "text-amber-700"
+                                                            : "text-emerald-700"
+                                                    }`}
+                                                >
+                                                    <span
+                                                        className={`size-1.5 rounded-full ${
+                                                            item.scoreHiddenAt
+                                                                ? "bg-amber-500"
+                                                                : "bg-emerald-500"
+                                                        }`}
+                                                    />
                                                     {item.scoreHiddenAt
                                                         ? "Skor disembunyikan"
                                                         : "Skor aktif"}
-                                                </Badge>
+                                                </span>
                                                 {item.commentHiddenAt && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="border-slate-200 bg-slate-50 px-1.5 py-0 text-[10px] text-slate-600"
-                                                    >
+                                                    <span className="inline-flex items-center gap-1 font-medium text-slate-500">
+                                                        <span className="size-1.5 rounded-full bg-slate-400" />
                                                         Komentar disembunyikan
-                                                    </Badge>
+                                                    </span>
                                                 )}
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedScore(item)
+                                                    }
+                                                    className="font-semibold text-primary hover:underline"
+                                                >
+                                                    Lihat nilai ACES-H
+                                                </button>
                                             </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => setSelectedScore(item)}
-                                                className="mt-1 block text-[10px] font-semibold text-primary hover:underline"
-                                            >
-                                                Lihat nilai ACES-H
-                                            </button>
                                         </TableCell>
                                         <TableCell className="max-w-[240px]">
                                             {item.comment ? (
