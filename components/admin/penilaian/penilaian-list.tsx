@@ -166,7 +166,9 @@ export function PenilaianList() {
                         <TableRow>
                             <TableHead>Destinasi</TableHead>
                             <TableHead>Pengguna</TableHead>
-                            <TableHead>Skor</TableHead>
+                            <TableHead className="min-w-[170px]">
+                                Skor
+                            </TableHead>
                             <TableHead className="min-w-[220px]">
                                 Komentar
                             </TableHead>
@@ -220,14 +222,14 @@ export function PenilaianList() {
                                                         : "—"}
                                                 </Badge>
                                                 {classification && (
-                                                    <span className="text-[10px] leading-none text-muted-foreground">
+                                                    <span className="whitespace-nowrap text-[10px] leading-none text-muted-foreground">
                                                         {classification}
                                                     </span>
                                                 )}
                                             </div>
                                             <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] leading-none">
                                                 <span
-                                                    className={`inline-flex items-center gap-1 font-medium ${
+                                                    className={`inline-flex items-center gap-1 whitespace-nowrap font-medium ${
                                                         item.scoreHiddenAt
                                                             ? "text-amber-700"
                                                             : "text-emerald-700"
@@ -245,7 +247,7 @@ export function PenilaianList() {
                                                         : "Skor aktif"}
                                                 </span>
                                                 {item.commentHiddenAt && (
-                                                    <span className="inline-flex items-center gap-1 font-medium text-slate-500">
+                                                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-slate-500">
                                                         <span className="size-1.5 rounded-full bg-slate-400" />
                                                         Komentar disembunyikan
                                                     </span>
@@ -255,7 +257,7 @@ export function PenilaianList() {
                                                     onClick={() =>
                                                         setSelectedScore(item)
                                                     }
-                                                    className="font-semibold text-primary hover:underline"
+                                                    className="whitespace-nowrap font-semibold text-primary hover:underline"
                                                 >
                                                     Lihat nilai ACES-H
                                                 </button>
