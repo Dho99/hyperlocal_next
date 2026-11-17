@@ -34,7 +34,7 @@ export default async function ValidasiUmkmDetailPage({ params }: PageProps) {
             category: true,
             destination: true,
             images: { orderBy: { isPrimary: "desc" }, take: 1 },
-            certifications: { orderBy: { createdAt: "desc" } },
+            certifications: { orderBy: { createdAt: "asc" } },
             umkmHalalFacilities: {
                 include: { facility: true },
             },
@@ -180,39 +180,123 @@ export default async function ValidasiUmkmDetailPage({ params }: PageProps) {
                         </div>
                     )}
 
-                    {/* Certifications */}
-                    {umkm.certifications.length > 0 && (
-                        <div className="border border-stone-200 bg-white p-5">
-                            <h3 className="text-sm font-semibold text-stone-900 mb-3">
-                                Klaim Sertifikasi Halal
-                            </h3>
+                    {/* Halal certification */}
+                    <div className="border border-stone-200 bg-white p-5">
+                        <h3 className="flex items-center gap-2 text-sm font-semibold text-stone-900 mb-3">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                            Sertifikasi Halal
+                        </h3>
+                        {umkm.certifications[0] ? (
                             <div className="space-y-3">
-                                {umkm.certifications.map((cert) => (
-                                    <div
-                                        key={cert.id}
-                                        className="flex items-center justify-between py-2 border-b border-stone-100 last:border-0"
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                    <span
+                                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                                            umkm.certifications[0].status ===
+                                            "VALID"
+                                                ? "bg-emerald-50 text-emerald-700"
+                                                : umkm.certifications[0]
+                                                        .status === "PENDING"
+                                                  ? "bg-amber-50 text-amber-700"
+                                                  : "bg-red-50 text-red-700"
+                                        }`}
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                                            <span className="text-sm text-stone-700">
-                                                {cert.certificateNo ||
-                                                    "No. Sertifikat tidak tersedia"}
-                                            </span>
-                                        </div>
-                                        <span
-                                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                                                cert.status === "VALID"
-                                                    ? "bg-emerald-50 text-emerald-700"
-                                                    : "bg-red-50 text-red-700"
-                                            }`}
+                                        {umkm.certifications[0].status ===
+                                        "VALID"
+                                            ? "Sudah Ada (Tervalidasi)"
+                                            : umkm.certifications[0].status ===
+                                                "PENDING"
+                                              ? "Dalam Proses"
+                                              : umkm.certifications[0]
+                                                      .status === "EXPIRED"
+                                                ? "Kedaluwarsa"
+                                                : "Dicabut"}
+                                    </span>
+                                    {umkm.certifications[0].documentUrl && (
+                                        <a
+                                            href={
+                                                umkm.certifications[0]
+                                                    .documentUrl
+                                            }
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-xs font-medium text-emerald-700 hover:underline"
                                         >
-                                            {cert.status}
-                                        </span>
+                                            Lihat bukti sertifikat
+                                        </a>
+                                    )}
+                                </div>
+
+                                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                                    <div>
+                                        <dt className="text-xs text-stone-400 uppercase tracking-wide">
+                                            Nomor
+                                        </dt>
+                                        <dd className="text-stone-700">
+                                            {umkm.certifications[0]
+                                                .certificateNo ||
+                                                "Tidak tersedia"}
+                                        </dd>
                                     </div>
-                                ))}
+                                    <div>
+                                        <dt className="text-xs text-stone-400 uppercase tracking-wide">
+                                            Penerbit
+                                        </dt>
+                                        <dd className="text-stone-700">
+                                            {umkm.certifications[0].issuer ||
+                                                "Tidak tersedia"}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-2">
+                                        <dt className="text-xs text-stone-400 uppercase tracking-wide">
+                                            Masa Berlaku
+                                        </dt>
+                                        <dd className="text-stone-700">
+                                            {umkm.certifications[0].issuedAt
+                                                ? new Date(
+                                                      umkm.certifications[0]
+                                                          .issuedAt,
+                                                  ).toLocaleDateString(
+                                                      "id-ID",
+                                                      {
+                                                          year: "numeric",
+                                                          month: "long",
+                                                          day: "numeric",
+                                                      },
+                                                  )
+                                                : "Tidak diketahui"}
+                                            {umkm.certifications[0].expiredAt
+                                                ? ` – ${new Date(
+                                                      umkm.certifications[0]
+                                                          .expiredAt,
+                                                  ).toLocaleDateString(
+                                                      "id-ID",
+                                                      {
+                                                          year: "numeric",
+                                                          month: "long",
+                                                          day: "numeric",
+                                                      },
+                                                  )}`
+                                                : " – tidak ada masa berlaku"}
+                                        </dd>
+                                    </div>
+                                </dl>
+
+                                {umkm.certifications[0].notes && (
+                                    <p className="rounded-md bg-stone-50 p-2.5 text-xs text-stone-600">
+                                        {umkm.certifications[0].notes}
+                                    </p>
+                                )}
                             </div>
-                        </div>
-                    )}
+                        ) : (
+                            <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3">
+                                <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                <p className="text-xs text-amber-700">
+                                    Belum ada sertifikat halal. Lengkapi status
+                                    sertifikasi pada formulir di samping.
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Right: Form */}
@@ -221,6 +305,7 @@ export default async function ValidasiUmkmDetailPage({ params }: PageProps) {
                         umkmId={umkm.id}
                         currentStatus={umkm.validationStatus}
                         currentNotes={umkm.surveyorNote}
+                        initialCertification={umkm.certifications[0] ?? null}
                     />
                 </div>
             </div>

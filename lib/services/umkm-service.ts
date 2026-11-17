@@ -52,6 +52,45 @@ function buildCertificationData(input: UmkmCertificationValues) {
     };
 }
 
+/**
+ * Creates, updates, or removes the UMKM's primary halal certification. The
+ * oldest row is treated as the record managed by admin/surveyor, so repeated
+ * saves never pile up duplicate certifications.
+ */
+export async function syncUmkmCertification(
+    tx: Prisma.TransactionClient,
+    umkmId: string,
+    certification: UmkmCertificationValues,
+) {
+    const existing = await tx.halalCertification.findFirst({
+        where: { umkmId },
+        orderBy: { createdAt: "asc" },
+        select: { id: true },
+    });
+
+    if (!certification.hasCertification) {
+        if (existing) {
+            await tx.halalCertification.delete({ where: { id: existing.id } });
+        }
+        return;
+    }
+
+    if (existing) {
+        await tx.halalCertification.update({
+            where: { id: existing.id },
+            data: buildCertificationData(certification),
+        });
+        return;
+    }
+
+    await tx.halalCertification.create({
+        data: {
+            umkmId,
+            ...buildCertificationData(certification),
+        },
+    });
+}
+
 function serializeUmkm(raw: unknown): Umkm {
     const umkm = raw as Umkm & {
         latitude: unknown | null;
@@ -318,31 +357,7 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
         }
 
         if (certification) {
-            const existing = await tx.halalCertification.findFirst({
-                where: { umkmId: id },
-                orderBy: { createdAt: "asc" },
-                select: { id: true },
-            });
-
-            if (!certification.hasCertification) {
-                if (existing) {
-                    await tx.halalCertification.delete({
-                        where: { id: existing.id },
-                    });
-                }
-            } else if (existing) {
-                await tx.halalCertification.update({
-                    where: { id: existing.id },
-                    data: buildCertificationData(certification),
-                });
-            } else {
-                await tx.halalCertification.create({
-                    data: {
-                        umkmId: id,
-                        ...buildCertificationData(certification),
-                    },
-                });
-            }
+            await syncUmkmCertification(tx, id, certification);
         }
 
         return await tx.umkm.update({
