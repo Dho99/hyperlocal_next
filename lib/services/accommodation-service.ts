@@ -6,6 +6,7 @@ import {
     withCursorPagination,
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
+import { deleteReportsForTarget } from "@/lib/services/report-service";
 
 function serializeAccommodation(raw: unknown): Accommodation {
     const a = raw as Accommodation & {
@@ -212,7 +213,18 @@ export async function updateAccommodation(
 }
 
 export async function deleteAccommodation(id: string) {
-    return prisma.accommodation.delete({ where: { id } });
+    const accommodation = await prisma.accommodation.findUnique({
+        where: { id },
+        select: { slug: true },
+    });
+
+    return prisma.$transaction(async (tx) => {
+        await deleteReportsForTarget(tx, "ACCOMMODATION", [
+            id,
+            accommodation?.slug ?? "",
+        ]);
+        return tx.accommodation.delete({ where: { id } });
+    });
 }
 
 export async function getPublicAccommodations() {

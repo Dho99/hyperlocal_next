@@ -15,7 +15,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, ExternalLink, Clock } from "lucide-react";
+import {
+    AlertTriangle,
+    Clock,
+    ExternalLink,
+    Eye,
+    MapPin,
+    Trash2,
+} from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
 import {
@@ -26,6 +33,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -38,10 +56,25 @@ import {
 import Link from "next/link";
 import { Report } from "@/types/report";
 
+function getTargetHref(report: Report) {
+    if (!report.target) return null;
+    switch (report.targetType) {
+        case "DESTINATION":
+            return `/destinasi/${report.target.slug}`;
+        case "UMKM":
+            return `/umkm/${report.target.slug}`;
+        case "ACCOMMODATION":
+            return `/penginapan/${report.target.slug}`;
+        default:
+            return null;
+    }
+}
+
 export function ReportListClient() {
     const [selectedReport, setSelectedReport] = useState<Report | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [adminNotes, setAdminNotes] = useState("");
     const [status, setStatus] = useState<Report["status"]>("PENDING");
 
@@ -64,10 +97,25 @@ export function ReportListClient() {
             refresh();
             toast.success("Status laporan berhasil diperbarui");
             setIsDetailsOpen(false);
-        } catch (error) {
+        } catch {
             toast.error("Gagal memperbarui status laporan");
         } finally {
             setIsUpdating(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedReport) return;
+        setIsDeleting(true);
+        try {
+            await api.delete(`/admin/reports/${selectedReport.id}`);
+            refresh();
+            toast.success("Laporan berhasil dihapus");
+            setIsDetailsOpen(false);
+        } catch {
+            toast.error("Gagal menghapus laporan");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -114,22 +162,6 @@ export function ReportListClient() {
         }
     };
 
-    const getTargetLink = (
-        targetId: string,
-        targetType: Report["targetType"],
-    ) => {
-        switch (targetType) {
-            case "DESTINATION":
-                return `/destinasi/${targetId}`; // Assuming ID works or I should use slug
-            case "UMKM":
-                return `/umkm/${targetId}`;
-            case "ACCOMMODATION":
-                return `/penginapan/${targetId}`;
-            default:
-                return "#";
-        }
-    };
-
     const openDetails = (report: Report) => {
         setSelectedReport(report);
         setStatus(report.status);
@@ -137,13 +169,17 @@ export function ReportListClient() {
         setIsDetailsOpen(true);
     };
 
+    const selectedHref = selectedReport ? getTargetHref(selectedReport) : null;
+
     return (
         <div className="rounded-md border bg-card shadow-sm overflow-hidden">
             <Table>
                 <TableHeader className="bg-muted/50">
                     <TableRow>
                         <TableHead>Tanggal</TableHead>
-                        <TableHead>Tipe</TableHead>
+                        <TableHead className="min-w-[240px]">
+                            Data Dilaporkan
+                        </TableHead>
                         <TableHead>Alasan</TableHead>
                         <TableHead>Pelapor</TableHead>
                         <TableHead>Status</TableHead>
@@ -161,78 +197,133 @@ export function ReportListClient() {
                             </TableCell>
                         </TableRow>
                     ) : (
-                        reports.map((report) => (
-                            <TableRow
-                                key={report.id}
-                                className="hover:bg-stone-50/50 transition-colors"
-                            >
-                                <TableCell className="font-medium">
-                                    {format(
-                                        new Date(report.createdAt),
-                                        "dd MMM yyyy, HH:mm",
-                                        { locale: localeId },
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <Badge
-                                        variant="secondary"
-                                        className="font-normal uppercase text-[10px] tracking-wider"
-                                    >
-                                        {report.targetType}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="max-w-[200px] truncate">
-                                    {report.reason}
-                                </TableCell>
-                                <TableCell>
-                                    {report.reporter ? (
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium">
-                                                {report.reporter.name}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground truncate max-w-[150px] block">
-                                                {report.reporter.email}
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <span className="text-muted-foreground italic text-sm">
-                                            Anonim
-                                        </span>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    {getStatusBadge(report.status)}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex justify-end gap-1">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon-sm"
-                                            onClick={() => openDetails(report)}
-                                            title="Detail Laporan"
-                                        >
-                                            <Eye className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon-sm"
-                                            asChild
-                                            title="Lihat Target"
-                                        >
-                                            <Link
-                                                href={getTargetLink(
-                                                    report.targetId,
-                                                    report.targetType,
+                        reports.map((report) => {
+                            const href = getTargetHref(report);
+                            return (
+                                <TableRow
+                                    key={report.id}
+                                    className="hover:bg-stone-50/50 transition-colors"
+                                >
+                                    <TableCell className="font-medium whitespace-nowrap">
+                                        {format(
+                                            new Date(report.createdAt),
+                                            "dd MMM yyyy, HH:mm",
+                                            { locale: localeId },
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="max-w-[280px] space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="shrink-0 font-normal uppercase text-[10px] tracking-wider"
+                                                >
+                                                    {report.targetType}
+                                                </Badge>
+                                                {report.target ? (
+                                                    <span
+                                                        className="truncate text-sm font-medium"
+                                                        title={
+                                                            report.target.name
+                                                        }
+                                                    >
+                                                        {report.target.name}
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex shrink-0 items-center gap-1 rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                                                        <AlertTriangle className="h-3 w-3" />
+                                                        Data tidak ditemukan
+                                                    </span>
                                                 )}
-                                                target="_blank"
+                                            </div>
+                                            {report.target ? (
+                                                <p
+                                                    className="flex items-start gap-1 text-xs text-muted-foreground"
+                                                    title={
+                                                        report.target.address ??
+                                                        undefined
+                                                    }
+                                                >
+                                                    <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
+                                                    <span className="truncate">
+                                                        {report.target
+                                                            .parentName
+                                                            ? `${report.target.parentName} · `
+                                                            : ""}
+                                                        {report.target.address ??
+                                                            "Alamat belum tersedia"}
+                                                    </span>
+                                                </p>
+                                            ) : (
+                                                <p className="truncate font-mono text-[10px] text-muted-foreground">
+                                                    Ref: {report.targetId}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="max-w-[180px] truncate">
+                                        {report.reason}
+                                    </TableCell>
+                                    <TableCell>
+                                        {report.reporter ? (
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium">
+                                                    {report.reporter.name}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground truncate max-w-[150px] block">
+                                                    {report.reporter.email}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-muted-foreground italic text-sm">
+                                                Anonim
+                                            </span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {getStatusBadge(report.status)}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex justify-end gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon-sm"
+                                                onClick={() =>
+                                                    openDetails(report)
+                                                }
+                                                title="Detail Laporan"
                                             >
-                                                <ExternalLink className="h-4 w-4" />
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))
+                                                <Eye className="h-4 w-4" />
+                                            </Button>
+                                            {href ? (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    asChild
+                                                    title="Lihat Target"
+                                                >
+                                                    <Link
+                                                        href={href}
+                                                        target="_blank"
+                                                    >
+                                                        <ExternalLink className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    disabled
+                                                    title="Data target sudah dihapus"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
                     )}
                 </TableBody>
             </Table>
@@ -243,7 +334,7 @@ export function ReportListClient() {
             />
 
             <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-                <DialogContent className="sm:max-w-[500px]">
+                <DialogContent className="sm:max-w-[540px]">
                     <DialogHeader>
                         <DialogTitle>Detail Laporan</DialogTitle>
                         <DialogDescription>
@@ -254,23 +345,68 @@ export function ReportListClient() {
 
                     {selectedReport && (
                         <div className="grid gap-6 py-4">
+                            <div className="space-y-2">
+                                <Label className="text-muted-foreground">
+                                    Data yang Dilaporkan
+                                </Label>
+                                <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Badge
+                                                variant="secondary"
+                                                className="font-normal uppercase text-[10px] tracking-wider"
+                                            >
+                                                {selectedReport.targetType}
+                                            </Badge>
+                                            <span className="text-sm font-semibold">
+                                                {selectedReport.target?.name ??
+                                                    "Data tidak ditemukan"}
+                                            </span>
+                                        </div>
+                                        {selectedHref && (
+                                            <Link
+                                                href={selectedHref}
+                                                target="_blank"
+                                                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                                            >
+                                                Buka halaman
+                                                <ExternalLink className="h-3 w-3" />
+                                            </Link>
+                                        )}
+                                    </div>
+
+                                    {selectedReport.target?.parentName && (
+                                        <p className="text-xs text-muted-foreground">
+                                            Destinasi:{" "}
+                                            {selectedReport.target.parentName}
+                                        </p>
+                                    )}
+
+                                    {selectedReport.target?.address && (
+                                        <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                            <span>
+                                                {selectedReport.target.address}
+                                            </span>
+                                        </p>
+                                    )}
+
+                                    {!selectedReport.target && (
+                                        <p className="flex items-start gap-1.5 text-xs text-amber-700">
+                                            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                            Data ini sudah dihapus atau
+                                            diubah, sehingga halaman targetnya
+                                            tidak bisa dibuka lagi.
+                                        </p>
+                                    )}
+
+                                    <p className="font-mono text-[10px] text-muted-foreground">
+                                        Ref: {selectedReport.targetId}
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-                                <div className="space-y-1">
-                                    <Label className="text-muted-foreground">
-                                        Tipe Target
-                                    </Label>
-                                    <p className="font-medium uppercase tracking-tight">
-                                        {selectedReport.targetType}
-                                    </p>
-                                </div>
-                                <div className="space-y-1">
-                                    <Label className="text-muted-foreground">
-                                        ID Target
-                                    </Label>
-                                    <p className="font-mono text-xs">
-                                        {selectedReport.targetId}
-                                    </p>
-                                </div>
                                 <div className="space-y-1">
                                     <Label className="text-muted-foreground">
                                         Alasan
@@ -285,7 +421,9 @@ export function ReportListClient() {
                                     </Label>
                                     <p className="font-medium">
                                         {format(
-                                            new Date(selectedReport.createdAt),
+                                            new Date(
+                                                selectedReport.createdAt,
+                                            ),
                                             "dd MMMM yyyy, HH:mm",
                                             { locale: localeId },
                                         )}
@@ -352,22 +490,59 @@ export function ReportListClient() {
                         </div>
                     )}
 
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsDetailsOpen(false)}
-                        >
-                            Batal
-                        </Button>
-                        <Button
-                            onClick={handleUpdateStatus}
-                            disabled={isUpdating}
-                        >
-                            {isUpdating && (
-                                <Clock className="mr-2 h-4 w-4 animate-spin" />
-                            )}
-                            Simpan Perubahan
-                        </Button>
+                    <DialogFooter className="sm:justify-between">
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    className="text-destructive hover:text-destructive"
+                                    disabled={isDeleting}
+                                >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Hapus Laporan
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Hapus laporan ini?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Laporan akan dihapus permanen dan tidak
+                                        bisa dikembalikan.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Batal
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() => void handleDelete()}
+                                        className="bg-destructive text-white hover:bg-destructive/90"
+                                    >
+                                        Hapus
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsDetailsOpen(false)}
+                            >
+                                Batal
+                            </Button>
+                            <Button
+                                onClick={handleUpdateStatus}
+                                disabled={isUpdating}
+                            >
+                                {isUpdating && (
+                                    <Clock className="mr-2 h-4 w-4 animate-spin" />
+                                )}
+                                Simpan Perubahan
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

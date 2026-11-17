@@ -5,6 +5,7 @@ import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
 import type { UmkmCertificationValues } from "@/lib/validations/umkm.schema";
 import type { PublicReview } from "@/types/review";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
+import { deleteReportsForTarget } from "@/lib/services/report-service";
 import {
     withCursorPagination,
     CursorPaginationParams,
@@ -389,8 +390,16 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
     return serializeUmkm(umkm);
 }
 export async function deleteUmkm(id: string) {
-    return await prisma.umkm.delete({
+    const umkm = await prisma.umkm.findUnique({
         where: { id },
+        select: { slug: true },
+    });
+
+    return await prisma.$transaction(async (tx) => {
+        await deleteReportsForTarget(tx, "UMKM", [id, umkm?.slug ?? ""]);
+        return tx.umkm.delete({
+            where: { id },
+        });
     });
 }
 

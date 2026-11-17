@@ -10,6 +10,7 @@ import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-scor
 import { haversineDistance } from "@/lib/utils/haversine-distance";
 import { estimateTravelTime } from "@/lib/services/acesh/travel-time-service";
 import { calculateAndSaveAssessment } from "@/lib/services/acesh/assessment-recalculation-service";
+import { deleteReportsForTarget } from "@/lib/services/report-service";
 import { parseCoordinate } from "@/lib/maps/geo-utils";
 import { defaultTravelModeForType } from "@/lib/services/acesh/constants";
 import {
@@ -676,7 +677,18 @@ export async function updateDestination(
 }
 
 export async function deleteDestination(id: string) {
-    return await prisma.destination.delete({
+    const destination = await prisma.destination.findUnique({
         where: { id },
+        select: { slug: true },
+    });
+
+    return await prisma.$transaction(async (tx) => {
+        await deleteReportsForTarget(tx, "DESTINATION", [
+            id,
+            destination?.slug ?? "",
+        ]);
+        return tx.destination.delete({
+            where: { id },
+        });
     });
 }
