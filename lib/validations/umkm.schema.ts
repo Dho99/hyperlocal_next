@@ -70,6 +70,7 @@ export const umkmSchema = z.object({
     latitude: z.number().optional().nullable(),
     longitude: z.number().optional().nullable(),
     images: z.array(z.object({ imageUrl: z.string() })).optional(),
+    facilityIds: z.array(z.string().uuid()).optional(),
     certification: umkmCertificationSchema.optional().nullable(),
 });
 

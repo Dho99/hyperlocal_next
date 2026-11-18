@@ -28,6 +28,9 @@ import { toast } from "sonner";
 import { MapPicker } from "@/components/maps";
 import { DEFAULT_CENTER } from "@/lib/maps/geo-utils";
 import { ImageDropzone } from "@/components/upload/image-dropzone";
+import { getFacilities } from "@/lib/api/facility";
+import type { Facility } from "@/types/fasilitas";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CoverageAreaOption {
     id: string;
@@ -60,6 +63,7 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
     const [isPending, startTransition] = useTransition();
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [coverageAreas, setCoverageAreas] = useState<CoverageAreaOption[]>([]);
+    const [masterFacilities, setMasterFacilities] = useState<Facility[]>([]);
     const router = useRouter();
 
     const existingCertification = initialData?.certifications?.[0];
@@ -89,6 +93,8 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                 initialData?.images?.map((img) => ({
                     imageUrl: img.imageUrl,
                 })) || [],
+            facilityIds:
+                initialData?.facilities?.map((f) => f.facilityId) || [],
             certification: existingCertification
                 ? {
                       hasCertification: true,
@@ -127,6 +133,12 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
             } catch { /* ignore */ }
         }
         fetchCoverageAreas();
+    }, []);
+
+    useEffect(() => {
+        getFacilities()
+            .then(setMasterFacilities)
+            .catch(() => toast.error("Gagal memuat data fasilitas"));
     }, []);
 
     async function onSubmit(values: UmkmFormValues) {
@@ -174,6 +186,7 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
 
     const hasCertification = form.watch("certification.hasCertification");
     const certificationDocumentUrl = form.watch("certification.documentUrl");
+    const selectedFacilityIds = form.watch("facilityIds") || [];
 
     // const onError = (errors: any) => {
     //     console.log("Validation errors:", errors);
@@ -579,6 +592,68 @@ export function UmkmForm({ initialData, categories }: UmkmFormProps) {
                                     </div>
                                 </>
                             )}
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-none shadow-sm ring-1 ring-border/50">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg font-heading">
+                                <BadgeCheck className="h-5 w-5 text-primary" />
+                                Fasilitas Halal
+                            </CardTitle>
+                            <CardDescription>
+                                Centang fasilitas halal yang tersedia di UMKM.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3">
+                                {masterFacilities.map((facility) => (
+                                    <label
+                                        key={facility.id}
+                                        className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
+                                            selectedFacilityIds.includes(
+                                                facility.id,
+                                            )
+                                                ? "border-emerald-300 bg-emerald-50"
+                                                : "border-stone-200 bg-white hover:border-stone-300"
+                                        }`}
+                                    >
+                                        <Checkbox
+                                            checked={selectedFacilityIds.includes(
+                                                facility.id,
+                                            )}
+                                            onCheckedChange={(checked) => {
+                                                if (checked) {
+                                                    form.setValue(
+                                                        "facilityIds",
+                                                        [
+                                                            ...selectedFacilityIds,
+                                                            facility.id,
+                                                        ],
+                                                    );
+                                                } else {
+                                                    form.setValue(
+                                                        "facilityIds",
+                                                        selectedFacilityIds.filter(
+                                                            (id) =>
+                                                                id !==
+                                                                facility.id,
+                                                        ),
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm font-medium text-stone-700">
+                                            {facility.name}
+                                        </span>
+                                    </label>
+                                ))}
+                                {masterFacilities.length === 0 && (
+                                    <p className="col-span-full text-sm text-stone-500">
+                                        Memuat fasilitas...
+                                    </p>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
 

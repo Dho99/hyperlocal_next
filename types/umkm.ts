@@ -54,6 +54,18 @@ export interface HalalCertification {
     validations?: HalalValidation[];
 }
 
+export interface UmkmHalalFacility {
+    id: string;
+    umkmId: string;
+    facilityId: string;
+    name: string | null;
+    facility?: {
+        id: string;
+        name: string;
+        facilityType?: string | null;
+    } | null;
+}
+
 export interface Umkm {
     id: string;
     owner: string | null;
@@ -81,6 +93,7 @@ export interface Umkm {
     destination?: Destination | null;
     images?: UmkmImage[];
     certifications?: HalalCertification[];
+    facilities?: UmkmHalalFacility[];
 }
 
 export type CreateUmkmInput = Omit<

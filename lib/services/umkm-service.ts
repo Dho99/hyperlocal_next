@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/lib/generated/prisma";
 import type { Destination } from "@/types/destination";
-import type { HalalCertification, Umkm, UmkmFormValues } from "@/types/umkm";
+import type {
+    HalalCertification,
+    Umkm,
+    UmkmFormValues,
+    UmkmHalalFacility,
+} from "@/types/umkm";
 import type { UmkmCertificationValues } from "@/lib/validations/umkm.schema";
 import type { PublicReview } from "@/types/review";
 import { calculateHalalScoreFromWeights } from "@/lib/utils/calculate-halal-score";
@@ -103,6 +108,7 @@ function serializeUmkm(raw: unknown): Umkm {
               })
             | null;
         certifications?: Array<Record<string, unknown>>;
+        umkmHalalFacilities?: UmkmHalalFacility[];
     };
     return {
         ...umkm,
@@ -110,6 +116,7 @@ function serializeUmkm(raw: unknown): Umkm {
         longitude: umkm.longitude ? Number(umkm.longitude) : null,
         createdAt: umkm.createdAt,
         updatedAt: umkm.updatedAt,
+        facilities: umkm.umkmHalalFacilities ?? [],
         destination: umkm.destination
             ? {
                   ...umkm.destination,
@@ -263,6 +270,9 @@ export async function getUmkm(id: string, scope?: "admin" | "public") {
             category: true,
             destination: true,
             images: true,
+            umkmHalalFacilities: {
+                include: { facility: true },
+            },
             certifications: {
                 orderBy: { createdAt: "asc" },
                 include: {
@@ -279,11 +289,8 @@ export async function getUmkm(id: string, scope?: "admin" | "public") {
     return umkm ? serializeUmkm(umkm) : null;
 }
 
-export async function createUmkm(
-    values: UmkmFormValues,
-    facilityIds?: string[],
-) {
-    const { images, certification, ...data } = values;
+export async function createUmkm(values: UmkmFormValues) {
+    const { images, certification, facilityIds, ...data } = values;
     await validateUmkmCategory(data.categoryId);
 
     let halalScore = 0;
@@ -334,7 +341,9 @@ export async function createUmkm(
             category: true,
             destination: true,
             images: true,
-            umkmHalalFacilities: true,
+            umkmHalalFacilities: {
+                include: { facility: true },
+            },
             certifications: {
                 orderBy: { createdAt: "asc" },
                 include: { validations: true },
@@ -346,7 +355,7 @@ export async function createUmkm(
 }
 
 export async function updateUmkm(id: string, values: UmkmFormValues) {
-    const { images, certification, ...data } = values;
+    const { images, certification, facilityIds, ...data } = values;
     await validateUmkmCategory(data.categoryId);
 
     const umkm = await prisma.$transaction(async (tx) => {
@@ -359,6 +368,28 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
 
         if (certification) {
             await syncUmkmCertification(tx, id, certification);
+        }
+
+        if (facilityIds !== undefined) {
+            await tx.umkmHalalFacility.deleteMany({
+                where: { umkmId: id, facilityId: { notIn: facilityIds } },
+            });
+
+            const existing = await tx.umkmHalalFacility.findMany({
+                where: { umkmId: id },
+                select: { facilityId: true },
+            });
+            const existingIds = new Set(existing.map((f) => f.facilityId));
+            const missing = facilityIds.filter((fid) => !existingIds.has(fid));
+
+            if (missing.length > 0) {
+                await tx.umkmHalalFacility.createMany({
+                    data: missing.map((facilityId) => ({
+                        umkmId: id,
+                        facilityId,
+                    })),
+                });
+            }
         }
 
         return await tx.umkm.update({
@@ -379,6 +410,9 @@ export async function updateUmkm(id: string, values: UmkmFormValues) {
                 category: true,
                 destination: true,
                 images: true,
+                umkmHalalFacilities: {
+                    include: { facility: true },
+                },
                 certifications: {
                     orderBy: { createdAt: "asc" },
                     include: { validations: true },
