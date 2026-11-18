@@ -12,15 +12,29 @@ export interface SurveyIndicator {
 export interface SurveyStructure {
     indicators: SurveyIndicator[];
     summary: { count: number; average: number | null };
-    comments: PublicSurveyComment[];
+    entries: PublicSurveyEntry[];
+    myResponse: MySurveyResponse | null;
 }
 
-export interface PublicSurveyComment {
+export interface PublicSurveyEntry {
     id: string;
     comment: string | null;
     overallScore: number | null;
     createdAt: string;
     user: { name: string; image: string | null } | null;
+}
+
+export interface MySurveyResponse {
+    id: string;
+    scores: {
+        indicators?: Record<string, number>;
+        evidence?: Record<string, number>;
+    } | null;
+    overallScore: number | null;
+    comment: string | null;
+    createdAt: string;
+    scoreHiddenAt: string | null;
+    commentHiddenAt: string | null;
 }
 
 export interface SurveySubmitPayload {

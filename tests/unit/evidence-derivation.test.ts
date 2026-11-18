@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+    averageCommunityEvidence,
+    deriveCommunityEvidence,
     deriveEvidenceConfidence,
+    mergeEvidenceConfidence,
     shouldMarkVerified,
     MIN_VERIFIED_CONFIDENCE,
     MIN_VERIFIED_RECORDS,
@@ -88,5 +91,94 @@ describe("evidence derivation", () => {
         expect(shouldMarkVerified(MIN_VERIFIED_CONFIDENCE, MIN_VERIFIED_RECORDS)).toBe(true);
         expect(shouldMarkVerified(MIN_VERIFIED_CONFIDENCE - 0.1, MIN_VERIFIED_RECORDS)).toBe(false);
         expect(shouldMarkVerified(MIN_VERIFIED_CONFIDENCE, MIN_VERIFIED_RECORDS - 1)).toBe(false);
+    });
+});
+
+describe("community evidence from surveys", () => {
+    const perfect = {
+        scores: {
+            evidence: {
+                sourceReliability: 100,
+                documentEvidence: 100,
+                photoGeolocation: 100,
+                managementConfirmation: 100,
+                fieldValidation: 100,
+                dataFreshness: 100,
+            },
+        },
+    };
+
+    it("ignores responses whose evidence components are all zero", () => {
+        const zero = {
+            scores: {
+                evidence: {
+                    sourceReliability: 0,
+                    documentEvidence: 0,
+                    photoGeolocation: 0,
+                    managementConfirmation: 0,
+                    fieldValidation: 0,
+                    dataFreshness: 0,
+                },
+            },
+        };
+
+        expect(deriveCommunityEvidence([zero])).toBeNull();
+        expect(deriveCommunityEvidence([])).toBeNull();
+    });
+
+    it("averages only the components visitors actually filled", () => {
+        const community = deriveCommunityEvidence([
+            perfect,
+            {
+                scores: {
+                    evidence: {
+                        sourceReliability: 50,
+                        documentEvidence: 0,
+                        photoGeolocation: 80,
+                        managementConfirmation: 0,
+                        fieldValidation: 100,
+                        dataFreshness: 0,
+                    },
+                },
+            },
+        ]);
+
+        expect(community?.responseCount).toBe(2);
+        expect(community?.components.sourceReliability).toBe(75);
+        expect(community?.components.documentEvidence).toBe(100);
+        expect(community?.components.photoGeolocation).toBe(90);
+        expect(community?.components.managementConfirmation).toBe(100);
+        expect(community?.components.fieldValidation).toBe(100);
+        expect(community?.components.dataFreshness).toBe(100);
+        expect(community ? averageCommunityEvidence(community) : null).toBe(94.2);
+    });
+
+    it("uses community evidence fully when there are no official records", () => {
+        const community = deriveCommunityEvidence([perfect]);
+        const official = deriveEvidenceConfidence([]);
+        const merged = mergeEvidenceConfidence(official, 0, community);
+
+        expect(merged.source).toBe("COMMUNITY");
+        expect(merged.communityWeight).toBe(1);
+        expect(merged.input.sourceReliability).toBe(100);
+    });
+
+    it("caps community influence at 50% when official evidence exists", () => {
+        const community = deriveCommunityEvidence([perfect]);
+        const official = {
+            sourceReliability: 70,
+            documentEvidence: 75,
+            photoGeolocation: 70,
+            managementConfirmation: 65,
+            fieldValidation: 70,
+            dataFreshness: 60,
+        };
+
+        const merged = mergeEvidenceConfidence(official, 20, community);
+
+        expect(merged.source).toBe("BLENDED");
+        expect(merged.communityWeight).toBeLessThanOrEqual(0.5);
+        expect(merged.input.sourceReliability).toBeGreaterThan(official.sourceReliability);
+        expect(merged.input.sourceReliability).toBeLessThanOrEqual(85);
     });
 });

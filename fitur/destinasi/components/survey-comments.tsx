@@ -2,15 +2,15 @@
 
 import { MessageSquareText, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { PublicSurveyComment } from "@/lib/api/survey";
+import type { PublicSurveyEntry } from "@/lib/api/survey";
 
-export function SurveyComments({ comments }: { comments: PublicSurveyComment[] }) {
-    if (comments.length === 0) {
+export function SurveyComments({ entries }: { entries: PublicSurveyEntry[] }) {
+    if (entries.length === 0) {
         return (
             <div className="mt-5 rounded-xl border border-dashed border-border p-6 text-center">
                 <MessageSquareText className="mx-auto h-7 w-7 text-muted-foreground/50" />
                 <p className="mt-2 text-sm text-muted-foreground">
-                    Belum ada komentar penilaian yang ditampilkan.
+                    Belum ada penilaian pengunjung yang ditampilkan.
                 </p>
             </div>
         );
@@ -18,7 +18,7 @@ export function SurveyComments({ comments }: { comments: PublicSurveyComment[] }
 
     return (
         <div className="mt-5 space-y-3">
-            {comments.map((item) => {
+            {entries.map((item) => {
                 const name = item.user?.name ?? "Pengunjung";
                 return (
                     <article key={item.id} className="rounded-xl border border-border/60 bg-card p-4">
@@ -48,9 +48,11 @@ export function SurveyComments({ comments }: { comments: PublicSurveyComment[] }
                                         </span>
                                     )}
                                 </div>
-                                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                                    &ldquo;{item.comment}&rdquo;
-                                </p>
+                                {item.comment && (
+                                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                                        &ldquo;{item.comment}&rdquo;
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </article>

@@ -31,7 +31,7 @@ npm run coverage      # coverage dengan vitest + @vitest/coverage-v8 (jika ada)
 | `evidence-confidence-service.test.ts` | confidence 69, factor 0,907, batas 0,70–1,00, tolak NaN/out-of-range |
 | `acesh-classification-service.test.ts` | seluruh batas: 39,9 / 40 / 54,9 / 55 / 69,9 / 70 / 84,9 / 85 / 100 |
 | `acesh-scoring-service.test.ts` | simulasi resmi 58,2 end-to-end + pembulatan base |
-| `evidence-derivation.test.ts` | 6 komponen dari 20 rekaman engineered (70/75/70/65/70/60), threshold verifikasi |
+| `evidence-derivation.test.ts` | 6 komponen dari 20 rekaman engineered (70/75/70/65/70/60), threshold verifikasi, bukti komunitas (abaikan all-zero, rata-rata komponen, cap bobot 50%) |
 | `reachability-config-service.test.ts` | checkReachability, normalisasi tipe |
 | `travel-time-service.test.ts` | fallback ESTIMATION, ROUTING via OSRM mock, timeout/failure fallback |
 

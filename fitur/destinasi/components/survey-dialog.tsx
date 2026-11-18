@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ import {
 import {
     getSurveyStructure,
     submitSurvey,
+    type MySurveyResponse,
     type SurveyIndicator,
 } from "@/lib/api/survey";
 import { getApiErrorMessage } from "@/lib/api-error";
@@ -30,22 +31,15 @@ interface SurveyDialogProps {
     destinationId: string;
     session: { user: { name: string; image?: string | null } } | null;
     sessionPending: boolean;
+    initialMyResponse?: MySurveyResponse | null;
     onSubmitted?: () => void;
 }
-
-const DEFAULT_EVIDENCE: EvidenceComponentValues = {
-    sourceReliability: 0,
-    documentEvidence: 0,
-    photoGeolocation: 0,
-    managementConfirmation: 0,
-    fieldValidation: 0,
-    dataFreshness: 0,
-};
 
 export function SurveyDialog({
     destinationId,
     session,
     sessionPending,
+    initialMyResponse = null,
     onSubmitted,
 }: SurveyDialogProps) {
     const router = useRouter();
@@ -54,7 +48,37 @@ export function SurveyDialog({
     const [submitting, setSubmitting] = useState(false);
     const [showDetail, setShowDetail] = useState(true);
     const [indicators, setIndicators] = useState<SurveyIndicator[]>([]);
-    const [comment, setComment] = useState("");
+    const [comment, setComment] = useState(initialMyResponse?.comment ?? "");
+    const [submittedResponse, setSubmittedResponse] =
+        useState<MySurveyResponse | null>(null);
+
+    const myResponse = submittedResponse ?? initialMyResponse;
+    const hasSubmitted = myResponse != null;
+
+    const formIndicators = useMemo(() => {
+        const saved = myResponse?.scores?.indicators ?? {};
+        return indicators.map((indicator) => ({
+            id: indicator.id,
+            code: indicator.code,
+            name: indicator.name,
+            description: indicator.description,
+            weight: indicator.weight,
+            group: indicator.group,
+            value: saved[indicator.id] ?? 0,
+        }));
+    }, [indicators, myResponse]);
+
+    const formEvidence = useMemo<EvidenceComponentValues>(() => {
+        const saved = myResponse?.scores?.evidence ?? {};
+        return {
+            sourceReliability: saved.sourceReliability ?? 0,
+            documentEvidence: saved.documentEvidence ?? 0,
+            photoGeolocation: saved.photoGeolocation ?? 0,
+            managementConfirmation: saved.managementConfirmation ?? 0,
+            fieldValidation: saved.fieldValidation ?? 0,
+            dataFreshness: saved.dataFreshness ?? 0,
+        };
+    }, [myResponse]);
 
     const handleOpenChange = useCallback(
         async (next: boolean) => {
@@ -64,6 +88,8 @@ export function SurveyDialog({
                 try {
                     const structure = await getSurveyStructure(destinationId);
                     setIndicators(structure.indicators);
+                    setSubmittedResponse(structure.myResponse);
+                    setComment(structure.myResponse?.comment ?? "");
                 } catch (err) {
                     toast.error(getApiErrorMessage(err));
                 } finally {
@@ -85,7 +111,7 @@ export function SurveyDialog({
     }) => {
         setSubmitting(true);
         try {
-            await submitSurvey(destinationId, {
+            const created = await submitSurvey(destinationId, {
                 scores: {
                     indicators: Object.fromEntries(
                         payload.scores.map((s) => [s.indicatorId, s.value]),
@@ -97,9 +123,17 @@ export function SurveyDialog({
                 },
                 comment: comment || null,
             });
+            setSubmittedResponse({
+                id: created.id,
+                scores: created.scores,
+                overallScore: created.overallScore,
+                comment: created.comment,
+                createdAt: created.createdAt,
+                scoreHiddenAt: created.scoreHiddenAt,
+                commentHiddenAt: created.commentHiddenAt,
+            });
             toast.success("Terima kasih! Penilaian Anda tersimpan.");
             setOpen(false);
-            setComment("");
             onSubmitted?.();
         } catch (err) {
             toast.error(getApiErrorMessage(err));
@@ -116,17 +150,18 @@ export function SurveyDialog({
                     className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold tracking-wider text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
                 >
                     <Star className="size-4" />
-                    Beri Penilaian
+                    {hasSubmitted ? "Lihat Penilaian Saya" : "Beri Penilaian"}
                 </button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="font-heading">
-                        Penilaian Destinasi
+                        {hasSubmitted ? "Penilaian Anda" : "Penilaian Destinasi"}
                     </DialogTitle>
                     <DialogDescription>
-                        Nilai setiap item pada model SAFAR ACES-H. Skor
-                        kesiapan dihitung otomatis dari jawaban Anda.
+                        {hasSubmitted
+                            ? "Satu penilaian per destinasi. Nilai yang tersimpan ditampilkan di bawah dan dihitung pada skor publik."
+                            : "Nilai setiap item pada model SAFAR ACES-H. Skor kesiapan dihitung otomatis dari jawaban Anda."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -158,18 +193,17 @@ export function SurveyDialog({
                                 onCheckedChange={setShowDetail}
                             />
                         </label>
+                        <p className="text-xs text-muted-foreground">
+                            Nilai Lapis 3 (keyakinan bukti) ikut dihitung sebagai
+                            kontribusi pengunjung. Bukti resmi dari pengelola
+                            tetap diperlukan untuk status terverifikasi.
+                        </p>
                         <AceshLayerForm
-                            indicators={indicators.map((i) => ({
-                                id: i.id,
-                                code: i.code,
-                                name: i.name,
-                                description: i.description,
-                                weight: i.weight,
-                                group: i.group,
-                                value: 0,
-                            }))}
-                            evidence={DEFAULT_EVIDENCE}
+                            indicators={formIndicators}
+                            evidence={formEvidence}
                             showDetail={showDetail}
+                            layout="stacked"
+                            readOnly={hasSubmitted}
                             saving={submitting}
                             submitLabel="Kirim Penilaian"
                             beforeSubmit={
@@ -184,8 +218,15 @@ export function SurveyDialog({
                                         }
                                         rows={3}
                                         maxLength={1000}
+                                        readOnly={hasSubmitted}
                                         placeholder="Bagikan catatan tambahan..."
                                     />
+                                    {hasSubmitted && (
+                                        <p className="text-xs text-muted-foreground">
+                                            Penilaian dan komentar hanya dapat
+                                            dikirim satu kali per destinasi.
+                                        </p>
+                                    )}
                                 </div>
                             }
                             onSubmit={handleSubmit}

@@ -47,6 +47,8 @@ interface AceshLayerFormProps {
     indicators: LayerIndicator[];
     evidence: EvidenceComponentValues;
     showDetail: boolean;
+    /** "stacked" puts every layer on its own full-width row. */
+    layout?: "stacked" | "grid";
     readOnly?: boolean;
     saving?: boolean;
     submitLabel?: string;
@@ -124,6 +126,7 @@ export function AceshLayerForm({
     indicators,
     evidence,
     showDetail,
+    layout = "stacked",
     readOnly = false,
     saving = false,
     submitLabel = "Simpan Penilaian",
@@ -284,7 +287,12 @@ export function AceshLayerForm({
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 items-start">
+            <div
+                className={cn(
+                    "grid grid-cols-1 gap-4 items-start",
+                    layout === "grid" && "md:grid-cols-2 xl:grid-cols-3",
+                )}
+            >
                 <LayerCard
                     title={LAYER_LABELS.aces}
                     subtitle="Kerangka GMTI"
@@ -309,7 +317,10 @@ export function AceshLayerForm({
                     subtitle="Keyakinan atas bukti"
                     icon={<ShieldCheck className="h-4 w-4 text-amber-800" />}
                     score={evidenceScore != null ? `EVC: ${evidenceScore}/100` : undefined}
-                    className="bg-amber-50/50 border-amber-700/40 md:col-span-2 xl:col-span-1"
+                    className={cn(
+                        "bg-amber-50/50 border-amber-700/40",
+                        layout === "grid" && "md:col-span-2 xl:col-span-1",
+                    )}
                 >
                     <div className="space-y-2">
                         {EVIDENCE_COMPONENT_KEYS.map((key) => (

@@ -355,6 +355,7 @@ export function AceshAssessmentTabs({
                     indicators={layerIndicators}
                     evidence={evidenceValues}
                     showDetail={showDetail}
+                    layout="grid"
                     saving={saving}
                     onSubmit={handleSaveLayer}
                 />

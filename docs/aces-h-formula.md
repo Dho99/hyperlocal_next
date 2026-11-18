@@ -51,6 +51,24 @@ Derivasi komponen dari rekaman evidence: `evidence-derivation.ts`
 (`deriveEvidenceConfidence`). Referensi umur data:
 `validatedAt ?? dataDate ?? createdAt`.
 
+## Bukti komunitas dari survey
+
+Nilai Lapis 3 yang diisi pengunjung lewat form survey ikut dihitung, tetapi
+tidak pernah menjadi evidence record resmi:
+
+```
+deriveCommunityEvidence(surveys)   → rata-rata komponen yang diisi (>0)
+mergeEvidenceConfidence(official, officialCount, community)
+```
+
+- Response dengan semua komponen evidence 0 diabaikan (nilai default form).
+- Tanpa evidence resmi → komponen komunitas dipakai penuh.
+- Ada evidence resmi → bobot komunitas
+  `min(0.5, communityCount / (officialCount + communityCount))`;
+  evidence resmi selalu mempertahankan minimal 50%.
+- `shouldMarkVerified()` tetap hanya menghitung `AceshEvidenceRecord` resmi.
+  Komunitas saja tidak pernah menghasilkan status `VERIFIED`.
+
 ## Pipeline Pusat
 
 `acesh-scoring-service.ts` — `calculateAceshScores(input)`:

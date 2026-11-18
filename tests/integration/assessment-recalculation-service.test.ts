@@ -27,6 +27,7 @@ describe("assessment recalculation service (mocked Prisma)", () => {
         prismaMock.aceshIndicator.findMany.mockResolvedValue(
             buildIndicatorFixtures(),
         );
+        prismaMock.destinationSurveyResponse.findMany.mockResolvedValue([]);
     });
 
     it("reproduces the official simulation snapshot (58.2 → VERIFIED / BERKEMBANG)", async () => {
@@ -133,5 +134,37 @@ describe("assessment recalculation service (mocked Prisma)", () => {
 
         expect(prismaMock.aceshAssessment.upsert).toHaveBeenCalledTimes(2);
         expect(prismaMock.aceshAssessmentHistory.create).toHaveBeenCalledTimes(2);
+    });
+
+    it("counts perfect survey evidence as community confidence but stays PENDING", async () => {
+        prismaMock.aceshIndicatorScore.findMany.mockResolvedValue(
+            buildOfficialScores(DESTINATION_ID),
+        );
+        prismaMock.aceshEvidenceRecord.findMany.mockResolvedValue([]);
+        prismaMock.destinationSurveyResponse.findMany.mockResolvedValue([
+            {
+                scores: {
+                    evidence: {
+                        sourceReliability: 100,
+                        documentEvidence: 100,
+                        photoGeolocation: 100,
+                        managementConfirmation: 100,
+                        fieldValidation: 100,
+                        dataFreshness: 100,
+                    },
+                },
+            },
+        ]);
+
+        const snapshot = await calculateAssessmentSnapshot(DESTINATION_ID, FIXED_NOW);
+
+        expect(snapshot.evidenceConfidenceScore).toBe(100);
+        expect(snapshot.evidenceFactor).toBe(1);
+        expect(snapshot.evidenceSource).toBe("COMMUNITY");
+        expect(snapshot.officialEvidenceCount).toBe(0);
+        expect(snapshot.communityEvidenceCount).toBe(1);
+        expect(snapshot.communityEvidenceScore).toBe(100);
+        expect(snapshot.verificationStatus).toBe("PENDING");
+        expect(snapshot.verifiedScore).toBeNull();
     });
 });

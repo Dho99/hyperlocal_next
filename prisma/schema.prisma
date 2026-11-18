@@ -536,6 +536,7 @@ model DestinationSurveyResponse {
   @@index([destinationId])
   @@index([userId])
   @@index([scoreHiddenAt])
+  @@unique([destinationId, userId])
   @@map("destination_survey_responses")
 }
 
@@ -850,6 +851,10 @@ model AceshAssessment {
   baseScore               Float                   @map("base_score")
   evidenceConfidenceScore Float                   @map("evidence_confidence_score")
   evidenceFactor          Float                   @map("evidence_factor")
+  officialEvidenceCount   Int                     @default(0) @map("official_evidence_count")
+  communityEvidenceCount  Int                     @default(0) @map("community_evidence_count")
+  communityEvidenceScore  Float?                  @map("community_evidence_score")
+  evidenceSource          String?                 @map("evidence_source")
   verifiedScore           Float?                  @map("verified_score")
   classification          String?
   verificationStatus      AceshVerificationStatus @default(PENDING) @map("verification_status")
@@ -872,6 +877,10 @@ model AceshAssessmentHistory {
   baseScore               Float                   @map("base_score")
   evidenceConfidenceScore Float                   @map("evidence_confidence_score")
   evidenceFactor          Float                   @map("evidence_factor")
+  officialEvidenceCount   Int                     @default(0) @map("official_evidence_count")
+  communityEvidenceCount  Int                     @default(0) @map("community_evidence_count")
+  communityEvidenceScore  Float?                  @map("community_evidence_score")
+  evidenceSource          String?                 @map("evidence_source")
   verifiedScore           Float?                  @map("verified_score")
   classification          String?
   verificationStatus      AceshVerificationStatus @map("verification_status")

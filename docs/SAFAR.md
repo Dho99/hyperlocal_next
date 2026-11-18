@@ -113,6 +113,8 @@ docs/ (aces-h-*.md)
 
 **ACES-H (§6 detail):** `AceshIndicator {code@unique, name, group AceshIndicatorGroup (9), weight Float 1.0, isActive}`, `AceshIndicatorScore {destinationId+indicatorId @@unique, value Int 0-4, convertedScore Float value*25, notes, assessedBy/At}`, `AceshEvidenceRecord {destinationId, evidenceType, source/sourceReliabilityScore 0-100, documentUrl/photoUrl, lat/lng, managementConfirmed, fieldValidated, dataDate/validatedAt/validatorId? (SetNull)}`, `AceshAssessment {destinationId@unique, acesScore/hyperlocalScore/baseScore/evidenceConfidenceScore/evidenceFactor, verifiedScore? (null saat PENDING), classification?, verificationStatus PENDING/VERIFIED, calculationVersion, calculatedAt}`, `AceshAssessmentHistory` (append-only + `calculatedBy/notes` + `weightsSnapshot` JSON bobot 3 lapisan), `AceshScoringConfig {id="default", version "ACES-H-1.0", 18 bobot Float 0-100 — lihat §6}`, `ReachabilityConfig {facilityType@unique, label?, maxDistanceMeters?, maxTravelMinutes?, travelMode WALKING|DRIVING|CYCLING, isActive}`, `RecommendationAction {destinationId, indicatorId? (SetNull), ruleId?, actionType, timeline, title, description?, priorityScore, ris/gap, reason Json, beforeAfter Json, prerequisite Json, status OPEN default, completedAt/verifiedBy/At}`.
 
+**Penilaian pengunjung:** `DestinationSurveyResponse {destinationId, userId?, scores Json, overallScore 0-100, comment≤1000, scoreHiddenAt/By, commentHiddenAt/By, createdAt} @@unique([destinationId,userId])` — satu response per user per destinasi (POST kedua 409). Agregat publik ditulis ke `Destination.rating` (avg/20) + `reviewCount`; `GET /api/destinations/[id]/survey` mengembalikan `summary`, `entries` (semua rating non-hidden, komentar opsional), dan `myResponse` untuk user login. Nilai `scores.evidence` ikut membentuk Lapis 3 lewat `deriveCommunityEvidence` + `mergeEvidenceConfidence` (komunitas penuh bila belum ada evidence resmi, cap 50% bila ada; verifikasi tetap resmi-only).
+
 ## 6. ACES-H Scoring — Formula Mendalam
 
 **Spesifikasi:** `docs/aces-h-specification.md` v1.0 — 9 grup, 27 indikator, 6 komponen evidence, `factor=0.70+0.30*confidence` (dok: `docs/aces-h-formula.md`, `docs/aces-h-data-model.md`, `docs/aces-h-api.md`).
@@ -296,6 +298,7 @@ npx prisma migrate deploy   # 18 migrasi; Neon: env DATABASE_URL
 npm run dev                 # :3000 — admin login via /halal → /dashboard
 npm run seed:dev            # seed generated; atau npm run seed:tourism / npm run import:data (archives/*.xlsx)
 npm run acesh:sample        # Situ Gede demo 58.2 BERKEMBANG
+npm run recalc:acesh        # hitung ulang ACES-H destinasi dengan survey (bukti komunitas)
 npm run seed:acesh-config   # default 3 lapisan ACES-H (create-if-missing)
 npm test                    # vitest; test:acesh / test:integration / coverage
 npm run sync:images:dry -- --limit=3 --dry-run  # cek Cloudinary tanpa tulis

@@ -32,15 +32,19 @@ koordinat, `managementConfirmed`, `fieldValidated`, `dataDate`, `validatedAt`,
 ### `AceshAssessment` → `acesh_assessments`
 
 Hasil perhitungan akhir per destinasi: semua komponen skor +
-`verificationStatus`, `classification`, `calculationVersion`, `calculatedAt`.
+`verificationStatus`, `classification`, `calculationVersion`, `calculatedAt`,
+serta metadata sumber bukti: `officialEvidenceCount`,
+`communityEvidenceCount`, `communityEvidenceScore`, `evidenceSource`
+(`OFFICIAL | COMMUNITY | BLENDED | NONE`).
 **Anti-duplikasi:** `@@unique([destinationId])` (satu assessment per destinasi,
 diperbarui dengan `upsert`).
 
 ### `AceshAssessmentHistory` → `acesh_assessment_history`
 
 Snapshot setiap perhitungan (audit trail): komponen skor + `calculatedBy`,
-`notes`, `weightsSnapshot` (JSON bobot 3 lapisan yang dipakai), `calculatedAt`.
-Satu baris baru setiap kali `calculateAndSaveAssessment` dipanggil.
+`notes`, `weightsSnapshot` (JSON bobot 3 lapisan yang dipakai), metadata
+bukti resmi/komunitas, `calculatedAt`. Satu baris baru setiap kali
+`calculateAndSaveAssessment` dipanggil.
 
 ### `AceshScoringConfig` → `acesh_scoring_configs`
 

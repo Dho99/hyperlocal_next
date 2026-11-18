@@ -14,7 +14,13 @@ import { calculateHyperlocalScore } from "./hyperlocal-scoring-service";
 import {
     calculateEvidenceConfidenceScore,
 } from "./evidence-confidence-service";
-import { deriveEvidenceConfidence, shouldMarkVerified } from "./evidence-derivation";
+import {
+    averageCommunityEvidence,
+    deriveCommunityEvidence,
+    deriveEvidenceConfidence,
+    mergeEvidenceConfidence,
+    shouldMarkVerified,
+} from "./evidence-derivation";
 import { calculateAceshScores, type AceshScoringResult } from "./acesh-scoring-service";
 import { classifyScore } from "./acesh-classification-service";
 import type { GroupScoreInput } from "./indicator";
@@ -28,6 +34,10 @@ export interface AceshAssessmentSnapshot extends Omit<AceshScoringResult, "verif
     verificationStatus: AceshVerificationStatus;
     calculationVersion: string;
     weightsSnapshot: AceshScoringConfigValues;
+    officialEvidenceCount: number;
+    communityEvidenceCount: number;
+    communityEvidenceScore: number | null;
+    evidenceSource: string;
     calculatedAt: Date;
 }
 
@@ -59,6 +69,10 @@ export async function calculateAndSaveAssessment(
                 baseScore: snapshot.baseScore,
                 evidenceConfidenceScore: snapshot.evidenceConfidenceScore,
                 evidenceFactor: snapshot.evidenceFactor,
+                officialEvidenceCount: snapshot.officialEvidenceCount,
+                communityEvidenceCount: snapshot.communityEvidenceCount,
+                communityEvidenceScore: snapshot.communityEvidenceScore,
+                evidenceSource: snapshot.evidenceSource,
                 verifiedScore: snapshot.verifiedScore,
                 classification: snapshot.classification,
                 verificationStatus: snapshot.verificationStatus,
@@ -72,6 +86,10 @@ export async function calculateAndSaveAssessment(
                 baseScore: snapshot.baseScore,
                 evidenceConfidenceScore: snapshot.evidenceConfidenceScore,
                 evidenceFactor: snapshot.evidenceFactor,
+                officialEvidenceCount: snapshot.officialEvidenceCount,
+                communityEvidenceCount: snapshot.communityEvidenceCount,
+                communityEvidenceScore: snapshot.communityEvidenceScore,
+                evidenceSource: snapshot.evidenceSource,
                 verifiedScore: snapshot.verifiedScore,
                 classification: snapshot.classification,
                 verificationStatus: snapshot.verificationStatus,
@@ -87,6 +105,10 @@ export async function calculateAndSaveAssessment(
                 baseScore: snapshot.baseScore,
                 evidenceConfidenceScore: snapshot.evidenceConfidenceScore,
                 evidenceFactor: snapshot.evidenceFactor,
+                officialEvidenceCount: snapshot.officialEvidenceCount,
+                communityEvidenceCount: snapshot.communityEvidenceCount,
+                communityEvidenceScore: snapshot.communityEvidenceScore,
+                evidenceSource: snapshot.evidenceSource,
                 verifiedScore: snapshot.verifiedScore,
                 classification: snapshot.classification,
                 verificationStatus: snapshot.verificationStatus,
@@ -107,10 +129,14 @@ export async function calculateAssessmentSnapshot(
     destinationId: string,
     now: Date = new Date(),
 ): Promise<Omit<AceshAssessmentSnapshot, "calculatedAt"> & { calculatedAt: Date }> {
-    const [indicators, scores, evidenceRecords, activeScoring] = await Promise.all([
+    const [indicators, scores, evidenceRecords, surveys, activeScoring] = await Promise.all([
         prisma.aceshIndicator.findMany({ where: { isActive: true }, orderBy: { code: "asc" } }),
         prisma.aceshIndicatorScore.findMany({ where: { destinationId } }),
         prisma.aceshEvidenceRecord.findMany({ where: { destinationId } }),
+        prisma.destinationSurveyResponse.findMany({
+            where: { destinationId, scoreHiddenAt: null },
+            select: { scores: true },
+        }),
         getActiveScoringConfig(),
     ]);
     const scoringWeights = activeScoring.weights;
@@ -131,12 +157,19 @@ export async function calculateAssessmentSnapshot(
         scoringWeights.hyperlocal,
     );
 
-    const derived = deriveEvidenceConfidence(evidenceRecords, now);
+    const officialDerived = deriveEvidenceConfidence(evidenceRecords, now);
+    const community = deriveCommunityEvidence(surveys ?? []);
+    const mergedEvidence = mergeEvidenceConfidence(
+        officialDerived,
+        evidenceRecords.length,
+        community,
+    );
     const evidenceConfidenceScore = calculateEvidenceConfidenceScore(
-        derived,
+        mergedEvidence.input,
         scoringWeights.evidence,
     );
     const recordCount = evidenceRecords.length;
+    const communityEvidenceScore = community ? averageCommunityEvidence(community) : null;
 
     const result = calculateAceshScores(
         { acesScore, hyperlocalScore, evidenceConfidenceScore },
@@ -173,6 +206,10 @@ export async function calculateAssessmentSnapshot(
         verificationStatus,
         calculationVersion: scoringWeights.version || ACESH_CALCULATION_VERSION,
         weightsSnapshot: activeScoring.config,
+        officialEvidenceCount: evidenceRecords.length,
+        communityEvidenceCount: community?.responseCount ?? 0,
+        communityEvidenceScore,
+        evidenceSource: mergedEvidence.source,
         calculatedAt: now,
     };
 }

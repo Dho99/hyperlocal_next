@@ -19,6 +19,23 @@ export interface CreateSurveyInput {
     comment?: string | null;
 }
 
+/** Thrown when a signed-in user already rated this destination. */
+export class SurveyAlreadySubmittedError extends Error {
+    constructor() {
+        super("Anda sudah menilai destinasi ini");
+        this.name = "SurveyAlreadySubmittedError";
+    }
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+    return (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error as { code?: string }).code === "P2002"
+    );
+}
+
 /** Overall score (0–100) derived from the average of indicator values (0–4). */
 export function computeOverallScore(scores: SurveyScoresPayload): number | null {
     const values = Object.values(scores?.indicators ?? {}).filter(
@@ -34,7 +51,11 @@ async function recalcDestinationRating(
     destinationId: string,
 ) {
     const aggregate = await tx.destinationSurveyResponse.aggregate({
-        where: { destinationId, scoreHiddenAt: null },
+        where: {
+            destinationId,
+            scoreHiddenAt: null,
+            overallScore: { not: null },
+        },
         _avg: { overallScore: true },
         _count: { _all: true },
     });
@@ -57,24 +78,44 @@ export async function createSurveyResponse(input: CreateSurveyInput) {
 
     const overallScore = computeOverallScore(input.scores);
 
-    const survey = await prisma.$transaction(async (tx) => {
-        const survey = await tx.destinationSurveyResponse.create({
-            data: {
-                destinationId: input.destinationId,
-                userId: input.userId ?? null,
-                scores: input.scores as unknown as Prisma.InputJsonValue,
-                overallScore,
-                comment: input.comment || null,
-            },
-            include: {
-                user: { select: { id: true, name: true, image: true } },
-                destination: { select: { id: true, name: true, slug: true } },
-            },
-        });
+    let survey;
+    try {
+        survey = await prisma.$transaction(async (tx) => {
+            if (input.userId) {
+                const existing = await tx.destinationSurveyResponse.findUnique({
+                    where: {
+                        destinationId_userId: {
+                            destinationId: input.destinationId,
+                            userId: input.userId,
+                        },
+                    },
+                    select: { id: true },
+                });
+                if (existing) throw new SurveyAlreadySubmittedError();
+            }
 
-        await recalcDestinationRating(tx, input.destinationId);
-        return survey;
-    });
+            const created = await tx.destinationSurveyResponse.create({
+                data: {
+                    destinationId: input.destinationId,
+                    userId: input.userId ?? null,
+                    scores: input.scores as unknown as Prisma.InputJsonValue,
+                    overallScore,
+                    comment: input.comment || null,
+                },
+                include: {
+                    user: { select: { id: true, name: true, image: true } },
+                    destination: { select: { id: true, name: true, slug: true } },
+                },
+            });
+
+            await recalcDestinationRating(tx, input.destinationId);
+            return created;
+        });
+    } catch (error) {
+        if (error instanceof SurveyAlreadySubmittedError) throw error;
+        if (isUniqueConstraintError(error)) throw new SurveyAlreadySubmittedError();
+        throw error;
+    }
 
     await recalculateCumulativeAcesh(input.destinationId);
     return survey;
@@ -326,33 +367,59 @@ export async function getPaginatedSurveyResponses(
     );
 }
 
-export async function getPublicSurveyComments(destinationId: string) {
+export async function getPublicSurveyEntries(destinationId: string) {
     const surveys = await prisma.destinationSurveyResponse.findMany({
         where: {
             destinationId,
-            comment: { not: null },
-            commentHiddenAt: null,
+            OR: [
+                { scoreHiddenAt: null },
+                { comment: { not: null }, commentHiddenAt: null },
+            ],
         },
         select: {
             id: true,
             comment: true,
             overallScore: true,
             scoreHiddenAt: true,
+            commentHiddenAt: true,
             createdAt: true,
             user: { select: { name: true, image: true } },
         },
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        take: 20,
+        take: 50,
     });
-    return surveys.map(({ scoreHiddenAt, ...survey }) => ({
+    return surveys.map(({ scoreHiddenAt, commentHiddenAt, ...survey }) => ({
         ...survey,
+        comment: commentHiddenAt ? null : survey.comment,
         overallScore: scoreHiddenAt ? null : survey.overallScore,
     }));
 }
 
+/** Returns the signed-in user's own response for a destination, if any. */
+export async function getUserSurveyResponse(destinationId: string, userId: string) {
+    return prisma.destinationSurveyResponse.findUnique({
+        where: {
+            destinationId_userId: { destinationId, userId },
+        },
+        select: {
+            id: true,
+            scores: true,
+            overallScore: true,
+            comment: true,
+            createdAt: true,
+            scoreHiddenAt: true,
+            commentHiddenAt: true,
+        },
+    });
+}
+
 export async function getSurveySummary(destinationId: string) {
     const aggregate = await prisma.destinationSurveyResponse.aggregate({
-        where: { destinationId, scoreHiddenAt: null },
+        where: {
+            destinationId,
+            scoreHiddenAt: null,
+            overallScore: { not: null },
+        },
         _avg: { overallScore: true },
         _count: { _all: true },
     });

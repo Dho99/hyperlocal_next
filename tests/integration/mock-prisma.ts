@@ -42,6 +42,14 @@ export function buildPrismaMock() {
             createMany: vi.fn(),
             upsert: vi.fn(),
         },
+        destinationSurveyResponse: {
+            findUnique: vi.fn(),
+            findMany: vi.fn(),
+            create: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
+            aggregate: vi.fn(),
+        },
         reachabilityConfig: {
             findUnique: vi.fn(),
             findMany: vi.fn(),
@@ -52,10 +60,11 @@ export function buildPrismaMock() {
             findUnique: vi.fn(),
             findMany: vi.fn(),
             count: vi.fn(),
+            update: vi.fn(),
         },
         halalFacility: { findMany: vi.fn() },
         destinationHalalFacility: { findMany: vi.fn() },
-        $transaction: vi.fn(async (args: unknown[]) => args),
+        $transaction: vi.fn(async (arg: unknown) => arg),
         $disconnect: vi.fn(),
     };
 }

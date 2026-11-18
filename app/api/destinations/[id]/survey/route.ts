@@ -6,8 +6,10 @@ import { getErrorMessage } from "@/lib/api-error";
 import { createSurveySchema } from "@/lib/validations/survey.schema";
 import {
     createSurveyResponse,
-    getPublicSurveyComments,
+    getPublicSurveyEntries,
     getSurveySummary,
+    getUserSurveyResponse,
+    SurveyAlreadySubmittedError,
 } from "@/lib/services/survey-service";
 
 const UUID_RE =
@@ -26,6 +28,15 @@ async function resolveDestinationId(
     return destination?.id ?? null;
 }
 
+/** Session is optional for public reads; auth failures must not break the page. */
+async function getSessionOrNull() {
+    try {
+        return await auth.api.getSession({ headers: await headers() });
+    } catch {
+        return null;
+    }
+}
+
 export async function GET(
     _request: Request,
     { params }: { params: Promise<{ id: string }> },
@@ -41,7 +52,7 @@ export async function GET(
             );
         }
 
-        const [indicators, summary, comments] = await Promise.all([
+        const [indicators, summary, entries, myResponse] = await Promise.all([
             prisma.aceshIndicator.findMany({
                 where: { isActive: true },
                 orderBy: [{ group: "asc" }, { code: "asc" }],
@@ -55,10 +66,15 @@ export async function GET(
                 },
             }),
             getSurveySummary(destinationId),
-            getPublicSurveyComments(destinationId),
+            getPublicSurveyEntries(destinationId),
+            getSessionOrNull().then((session) =>
+                session
+                    ? getUserSurveyResponse(destinationId, session.user.id)
+                    : null,
+            ),
         ]);
 
-        return NextResponse.json({ data: { indicators, summary, comments } });
+        return NextResponse.json({ data: { indicators, summary, entries, myResponse } });
     } catch (error: unknown) {
         return NextResponse.json(
             { error: getErrorMessage(error) },
@@ -113,6 +129,9 @@ export async function POST(
 
         return NextResponse.json({ data: survey }, { status: 201 });
     } catch (error: unknown) {
+        if (error instanceof SurveyAlreadySubmittedError) {
+            return NextResponse.json({ error: error.message }, { status: 409 });
+        }
         return NextResponse.json(
             { error: getErrorMessage(error) },
             { status: 500 },

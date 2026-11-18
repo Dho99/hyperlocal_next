@@ -23,9 +23,11 @@ import { FacilitiesSection } from "@/fitur/destinasi/components/facilities-secti
 import { UmkmSection } from "@/fitur/destinasi/components/umkm-section";
 import { SurveyDialog } from "@/fitur/destinasi/components/survey-dialog";
 import { SurveyComments } from "@/fitur/destinasi/components/survey-comments";
+import { AceshLayersSection } from "@/fitur/destinasi/components/acesh-layers-section";
 import {
     getSurveyStructure,
-    type PublicSurveyComment,
+    type MySurveyResponse,
+    type PublicSurveyEntry,
 } from "@/lib/api/survey";
 import { HalalBadge } from "@/components/ui/halal-badge";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
@@ -44,6 +46,14 @@ interface PublicDestinationDetailProps {
 interface PublicAceshAssessment {
     verifiedScore: number | null;
     baseScore: number | null;
+    acesScore: number | null;
+    hyperlocalScore: number | null;
+    evidenceConfidenceScore: number | null;
+    evidenceFactor: number | null;
+    officialEvidenceCount: number | null;
+    communityEvidenceCount: number | null;
+    communityEvidenceScore: number | null;
+    evidenceSource: string | null;
     classification: string | null;
     verificationStatus: "PENDING" | "VERIFIED" | null;
     calculatedAt: string | null;
@@ -58,19 +68,40 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
     const [error, setError] = useState<string | null>(null);
     const [heroLoaded, setHeroLoaded] = useState(false);
     const [shareCopied, setShareCopied] = useState(false);
-    const [surveyComments, setSurveyComments] = useState<PublicSurveyComment[]>([]);
+    const [surveyEntries, setSurveyEntries] = useState<PublicSurveyEntry[]>([]);
+    const [surveySummary, setSurveySummary] = useState<{
+        count: number;
+        average: number | null;
+    }>({ count: 0, average: null });
+    const [myResponse, setMyResponse] = useState<MySurveyResponse | null>(null);
     const lightbox = useImageLightbox();
     const { data: session, isPending: sessionPending } =
         authClient.useSession();
 
-    const refreshSurveyComments = useCallback(async () => {
+    const refreshSurvey = useCallback(async () => {
         try {
             const data = await getSurveyStructure(id);
-            setSurveyComments(data.comments);
+            setSurveyEntries(data.entries);
+            setSurveySummary(data.summary);
+            setMyResponse(data.myResponse);
         } catch {
-            setSurveyComments([]);
+            setSurveyEntries([]);
         }
     }, [id]);
+
+    const refreshDestination = useCallback(async () => {
+        try {
+            const dest = await getDestination(id);
+            setDestination(dest);
+        } catch {
+            // Keep the current view; the rating refreshes on the next visit.
+        }
+    }, [id]);
+
+    const handleSurveySubmitted = useCallback(() => {
+        void refreshSurvey();
+        void refreshDestination();
+    }, [refreshDestination, refreshSurvey]);
 
     useEffect(() => {
         async function fetchData() {
@@ -84,7 +115,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             } finally {
                 setLoading(false);
             }
-            await refreshSurveyComments();
+            await refreshSurvey();
         }
         void fetchData();
 
@@ -98,7 +129,7 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
             .catch(() => {
                 // score badge is optional — detail still works without it
             });
-    }, [id, refreshSurveyComments]);
+    }, [id, refreshSurvey]);
 
     useEffect(() => {
         api.post(`/destinations/${id}/interactions`, {
@@ -334,21 +365,13 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                 />
 
                 {acesh && acesh.baseScore != null && (
-                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                    <div className="space-y-3">
                         {halalScore != null && (
-                            <HalalBadge score={halalScore} inline />
+                            <div className="flex justify-end">
+                                <HalalBadge score={halalScore} inline />
+                            </div>
                         )}
-                        <div>
-                            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                                Skor ACES-H
-                            </p>
-                            <p className="text-3xl font-bold text-foreground">
-                                {acesh.verificationStatus === "VERIFIED" &&
-                                acesh.verifiedScore != null
-                                    ? acesh.verifiedScore.toFixed(1)
-                                    : acesh.baseScore.toFixed(1)}
-                            </p>
-                        </div>
+                        <AceshLayersSection assessment={acesh} />
                     </div>
                 )}
 
@@ -373,16 +396,27 @@ export function PublicDestinationDetail({ id }: PublicDestinationDetailProps) {
                                     <p className="mt-1 text-sm text-muted-foreground">
                                         Nilai setiap item model SAFAR ACES-H
                                         untuk membantu traveller lain.
+                                        {surveySummary.count > 0 && (
+                                            <>
+                                                {" "}
+                                                <span className="font-medium text-foreground">
+                                                    {surveySummary.count} penilaian
+                                                </span>
+                                                {surveySummary.average != null &&
+                                                    ` · rata-rata ${surveySummary.average.toFixed(1)}/100`}
+                                            </>
+                                        )}
                                     </p>
                                 </div>
                                 <SurveyDialog
                                     destinationId={id}
                                     session={session}
                                     sessionPending={sessionPending}
-                                    onSubmitted={refreshSurveyComments}
+                                    initialMyResponse={myResponse}
+                                    onSubmitted={handleSurveySubmitted}
                                 />
                             </div>
-                            <SurveyComments comments={surveyComments} />
+                            <SurveyComments entries={surveyEntries} />
                         </section>
                     </div>
 
