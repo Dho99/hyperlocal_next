@@ -2,10 +2,11 @@ import { prisma } from '../../lib/prisma';
 import { slugify } from './utils/slugify';
 import { parseDecimal } from './utils/parseDecimal';
 import { resolveCategory } from './categoryMapper';
+import { CategoryType } from '../../lib/generated/prisma/client';
 import { upsertExternalSource } from './externalSourceSeeder';
 
 export async function processUmkm(row: any, db: any = prisma) {
-  const categoryId = await resolveCategory(row.CATEGORY);
+  const categoryId = await resolveCategory(row.CATEGORY, CategoryType.UMKM);
   const slug = slugify(row.NAME);
 
   const umkm = await db.umkm.upsert({

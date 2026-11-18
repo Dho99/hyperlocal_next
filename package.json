@@ -23,7 +23,9 @@
         "photos:backfill:collect": "tsx scripts/backfill-destination-images.ts --kind=destinations",
         "photos:backfill:collect:all": "tsx scripts/backfill-destination-images.ts --kind=all",
         "photos:backfill:apply": "tsx scripts/backfill-destination-images.ts --kind=destinations --apply --plan=scripts/output/image-backfill/destinations.json",
-        "photos:backfill:fallback": "tsx scripts/backfill-destination-images.ts --kind=all --fallback --apply"
+        "photos:backfill:fallback": "tsx scripts/backfill-destination-images.ts --kind=all --fallback --apply",
+        "photos:google:preview": "tsx scripts/import-google-place-photos.ts --limit=5",
+        "photos:google:apply": "tsx scripts/import-google-place-photos.ts --apply"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"

@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { slugify } from "./utils/slugify";
+import { CategoryType } from "../../lib/generated/prisma/client";
 
 const CATEGORY_MAP: Record<string, { name: string; slug: string }> = {
     tourist_attraction: { name: "Wisata", slug: "wisata" },
@@ -46,26 +47,36 @@ export function getEntityType(rawCategory: string): "destination" | "umkm" {
 
 const categoryCache: Record<string, string> = {};
 
-export async function resolveCategory(rawCategory: string): Promise<string> {
+export async function resolveCategory(
+    rawCategory: string,
+    type: CategoryType = CategoryType.DESTINATION,
+): Promise<string> {
     const normalized = rawCategory.toLowerCase().trim();
     const mapping = CATEGORY_MAP[normalized] || {
         name: rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1),
         slug: slugify(rawCategory),
     };
 
-    if (categoryCache[mapping.slug]) {
-        return categoryCache[mapping.slug];
+    const cacheKey = `${mapping.slug}:${type}`;
+    if (categoryCache[cacheKey]) {
+        return categoryCache[cacheKey];
     }
 
     const category = await prisma.category.upsert({
-        where: { slug: mapping.slug },
+        where: {
+            slug_type: {
+                slug: mapping.slug,
+                type,
+            },
+        },
         update: {},
         create: {
             name: mapping.name,
             slug: mapping.slug,
+            type,
         },
     });
 
-    categoryCache[mapping.slug] = category.id;
+    categoryCache[cacheKey] = category.id;
     return category.id;
 }
