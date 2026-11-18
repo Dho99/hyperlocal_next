@@ -7,17 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-export const DEFAULT_SCORING_CONFIG = {
-    version: "ACES-H-1.0", accessWeight: 20, communicationWeight: 15,
-    environmentWeight: 20, servicesWeight: 45, spatialAccessibilityWeight: 30,
-    functionalAvailabilityWeight: 25, halalAssuranceWeight: 20,
-    ecosystemConnectivityWeight: 15, embeddednessContinuityWeight: 10,
-    sourceReliabilityWeight: 15, documentEvidenceWeight: 20,
-    photoGeolocationWeight: 15, managementConfirmationWeight: 10,
-    fieldValidationWeight: 25, dataFreshnessWeight: 15, baseAcesWeight: 65,
-    baseHyperlocalWeight: 35, evidenceFactorBase: 70, evidenceFactorRange: 30,
-};
+import { DEFAULT_SCORING_CONFIG } from "@/lib/services/acesh/scoring-defaults";
 
 export type ScoringConfigFormValue = typeof DEFAULT_SCORING_CONFIG;
 type Config = ScoringConfigFormValue;

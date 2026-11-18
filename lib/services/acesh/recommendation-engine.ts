@@ -1,5 +1,4 @@
 import type { AceshIndicatorGroup } from "@/lib/generated/prisma";
-import { ACES_DIMENSION_WEIGHTS, HYPERLOCAL_DIMENSION_WEIGHTS } from "./constants";
 import type { DestinationProfile, Recommendation, DestinationType } from "./recommendation-types";
 import { DESTINATION_MULTIPLIERS, resolveDestinationType } from "./recommendation-types";
 import { findRule } from "./recommendation-rules";

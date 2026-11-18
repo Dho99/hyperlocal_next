@@ -9,6 +9,7 @@
         "lint": "eslint",
         "seed:tourism": "tsx prisma/seed/seed.ts",
         "seed:dev": "tsx prisma/seed.ts",
+        "seed:acesh-config": "tsx scripts/seed-acesh-config.ts",
         "sync:images": "tsx scripts/sync-images-to-cloudinary.ts --all",
         "sync:images:dry": "tsx scripts/sync-images-to-cloudinary.ts --limit=3 --dry-run",
         "acesh:sample": "tsx scripts/acesh-sample-situ-gede.ts",

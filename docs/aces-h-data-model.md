@@ -39,8 +39,25 @@ diperbarui dengan `upsert`).
 ### `AceshAssessmentHistory` → `acesh_assessment_history`
 
 Snapshot setiap perhitungan (audit trail): komponen skor + `calculatedBy`,
-`notes`, `calculatedAt`. Satu baris baru setiap kali
-`calculateAndSaveAssessment` dipanggil.
+`notes`, `weightsSnapshot` (JSON bobot 3 lapisan yang dipakai), `calculatedAt`.
+Satu baris baru setiap kali `calculateAndSaveAssessment` dipanggil.
+
+### `AceshScoringConfig` → `acesh_scoring_configs`
+
+Singleton (`id = 'default'`) berisi parameter 3 lapisan sekaligus:
+
+| Lapisan | Field | Total wajib |
+|---|---|---|
+| 1. ACES Readiness | `accessWeight` … `servicesWeight` | 100% |
+| 2. Hyperlocal | `spatialAccessibilityWeight` … `embeddednessContinuityWeight` | 100% |
+| 3. Evidence Confidence | `sourceReliabilityWeight` … `dataFreshnessWeight` | 100% |
+| Komposisi base | `baseAcesWeight`, `baseHyperlocalWeight` | 100% |
+| Evidence factor | `evidenceFactorBase`, `evidenceFactorRange` | 100% |
+
+Default resmi (`DEFAULT_SCORING_CONFIG`, `lib/services/acesh/scoring-defaults.ts`)
+dibuat oleh migrasi `20261118091000_seed_acesh_scoring_defaults` dan oleh
+`seedAceshScoringConfig()` dengan pola *create-if-missing* — bobot yang sudah
+diedit admin tidak ditimpa.
 
 ### `ReachabilityConfig` → `reachability_configs`
 
@@ -64,6 +81,15 @@ waktu tempuh maks, mode, aktif.
 - Sudah diaplikasikan ke database lokal (`npx prisma migrate deploy`).
 - Untuk deploy Neon: jalankan `npx prisma migrate deploy` dengan
   `DATABASE_URL` menunjuk ke Neon (aktifkan URL Neon di `.env`).
+
+Migrasi lanjutan:
+
+- `20260819090000_acesh_dynamic_scoring_config` — tabel singleton
+  `acesh_scoring_configs` + insert baris `default`.
+- `20261118090000_add_acesh_weights_snapshot` — kolom
+  `acesh_assessment_history.weights_snapshot` (JSONB) untuk reproduksi skor.
+- `20261118091000_seed_acesh_scoring_defaults` — backfill baris `default`
+  lengkap (3 lapisan) bila belum ada; idempoten dan tidak menimpa editan admin.
 
 ## Hubungan (Ringkas)
 

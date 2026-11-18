@@ -88,12 +88,15 @@ export function buildAnnotatedTree(params: {
         byGroup.get(ind.group)!.push(ind);
     }
 
+    const dimensionWeightFor = (group: string, fallback: number) =>
+        groupBreakdown.find((item) => item.group === group)?.dimensionWeight ?? fallback;
+
     const acesMap: Record<string, AnnotatedDomain> = {};
     const acesGroups = [
-        { key: "ACCESS", label: GROUP_LABELS_ID.ACCESS, weight: ACES_DIMENSION_WEIGHTS.ACCESS },
-        { key: "COMMUNICATION", label: GROUP_LABELS_ID.COMMUNICATION, weight: ACES_DIMENSION_WEIGHTS.COMMUNICATION },
-        { key: "ENVIRONMENT", label: GROUP_LABELS_ID.ENVIRONMENT, weight: ACES_DIMENSION_WEIGHTS.ENVIRONMENT },
-        { key: "SERVICES", label: GROUP_LABELS_ID.SERVICES, weight: ACES_DIMENSION_WEIGHTS.SERVICES },
+        { key: "ACCESS", label: GROUP_LABELS_ID.ACCESS, weight: dimensionWeightFor("ACCESS", ACES_DIMENSION_WEIGHTS.ACCESS) },
+        { key: "COMMUNICATION", label: GROUP_LABELS_ID.COMMUNICATION, weight: dimensionWeightFor("COMMUNICATION", ACES_DIMENSION_WEIGHTS.COMMUNICATION) },
+        { key: "ENVIRONMENT", label: GROUP_LABELS_ID.ENVIRONMENT, weight: dimensionWeightFor("ENVIRONMENT", ACES_DIMENSION_WEIGHTS.ENVIRONMENT) },
+        { key: "SERVICES", label: GROUP_LABELS_ID.SERVICES, weight: dimensionWeightFor("SERVICES", ACES_DIMENSION_WEIGHTS.SERVICES) },
     ];
     for (const g of acesGroups) {
         const gb = groupBreakdown.find((x) => x.group === g.key);
@@ -181,11 +184,11 @@ export function buildAnnotatedTree(params: {
     }
 
     const hyperGroups = [
-        { key: "SPATIAL_ACCESSIBILITY", label: GROUP_LABELS_ID.SPATIAL_ACCESSIBILITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.SPATIAL_ACCESSIBILITY },
-        { key: "FUNCTIONAL_AVAILABILITY", label: GROUP_LABELS_ID.FUNCTIONAL_AVAILABILITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.FUNCTIONAL_AVAILABILITY },
-        { key: "HALAL_ASSURANCE", label: GROUP_LABELS_ID.HALAL_ASSURANCE, weight: HYPERLOCAL_DIMENSION_WEIGHTS.HALAL_ASSURANCE },
-        { key: "ECOSYSTEM_CONNECTIVITY", label: GROUP_LABELS_ID.ECOSYSTEM_CONNECTIVITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.ECOSYSTEM_CONNECTIVITY },
-        { key: "EMBEDDEDNESS_CONTINUITY", label: GROUP_LABELS_ID.EMBEDDEDNESS_CONTINUITY, weight: HYPERLOCAL_DIMENSION_WEIGHTS.EMBEDDEDNESS_CONTINUITY },
+        { key: "SPATIAL_ACCESSIBILITY", label: GROUP_LABELS_ID.SPATIAL_ACCESSIBILITY, weight: dimensionWeightFor("SPATIAL_ACCESSIBILITY", HYPERLOCAL_DIMENSION_WEIGHTS.SPATIAL_ACCESSIBILITY) },
+        { key: "FUNCTIONAL_AVAILABILITY", label: GROUP_LABELS_ID.FUNCTIONAL_AVAILABILITY, weight: dimensionWeightFor("FUNCTIONAL_AVAILABILITY", HYPERLOCAL_DIMENSION_WEIGHTS.FUNCTIONAL_AVAILABILITY) },
+        { key: "HALAL_ASSURANCE", label: GROUP_LABELS_ID.HALAL_ASSURANCE, weight: dimensionWeightFor("HALAL_ASSURANCE", HYPERLOCAL_DIMENSION_WEIGHTS.HALAL_ASSURANCE) },
+        { key: "ECOSYSTEM_CONNECTIVITY", label: GROUP_LABELS_ID.ECOSYSTEM_CONNECTIVITY, weight: dimensionWeightFor("ECOSYSTEM_CONNECTIVITY", HYPERLOCAL_DIMENSION_WEIGHTS.ECOSYSTEM_CONNECTIVITY) },
+        { key: "EMBEDDEDNESS_CONTINUITY", label: GROUP_LABELS_ID.EMBEDDEDNESS_CONTINUITY, weight: dimensionWeightFor("EMBEDDEDNESS_CONTINUITY", HYPERLOCAL_DIMENSION_WEIGHTS.EMBEDDEDNESS_CONTINUITY) },
     ];
     const hyperMap: Record<string, AnnotatedDomain> = {};
     for (const g of hyperGroups) {

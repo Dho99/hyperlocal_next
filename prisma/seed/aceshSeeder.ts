@@ -2,6 +2,7 @@ import { prisma } from "../../lib/prisma";
 import { logger } from "./utils/logger";
 import { toIndicatorScore } from "../../lib/services/acesh/indicator";
 import { calculateAndSaveAssessment } from "../../lib/services/acesh/assessment-recalculation-service";
+import { seedAceshScoringConfig } from "./aceshConfigSeeder";
 
 interface IndicatorSeed {
     code: string;
@@ -149,7 +150,9 @@ export function buildEvidenceRecords(destinationId: string) {
  * destination sample without touching demo assessments.
  */
 export async function seedAceshCatalog() {
-    logger.info("Seeding ACES-H indicators and reachability...");
+    logger.info("Seeding ACES-H indicators, scoring config, and reachability...");
+
+    await seedAceshScoringConfig();
 
     for (const indicator of ACESH_INDICATOR_SEEDS) {
         await prisma.aceshIndicator.upsert({

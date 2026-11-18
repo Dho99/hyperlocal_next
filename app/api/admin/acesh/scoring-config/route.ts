@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
 import { aceshScoringConfigSchema } from "@/lib/validations/acesh.schema";
+import { DEFAULT_SCORING_CONFIG } from "@/lib/services/acesh/scoring-defaults";
 
 async function requireAdmin() {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -19,7 +20,7 @@ export async function GET() {
         const config = await prisma.aceshScoringConfig.upsert({
             where: { id: "default" },
             update: {},
-            create: { id: "default" },
+            create: { id: "default", ...DEFAULT_SCORING_CONFIG },
         });
         return NextResponse.json({ data: config });
     } catch (error: unknown) {

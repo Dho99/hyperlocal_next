@@ -6,13 +6,12 @@ import { aceshIndicatorScoreBatchSchema } from "@/lib/validations/acesh.schema";
 import { toIndicatorScore } from "@/lib/services/acesh/indicator";
 import { calculateGroupScore } from "@/lib/services/acesh/indicator";
 import {
-    ACES_DIMENSION_WEIGHTS,
-    HYPERLOCAL_DIMENSION_WEIGHTS,
     GROUP_LABELS,
 } from "@/lib/services/acesh/constants";
 import {
     calculateAssessmentSnapshot,
 } from "@/lib/services/acesh/assessment-recalculation-service";
+import { getActiveScoringWeights } from "@/lib/services/acesh/scoring-config-service";
 import { recalculateCumulativeAcesh } from "@/lib/services/survey-service";
 import { getErrorMessage } from "@/lib/api-error";
 
@@ -60,7 +59,7 @@ export async function GET(
             );
         }
 
-        const [snapshot, indicators, indicatorScores, evidenceRecords, history] =
+        const [snapshot, indicators, indicatorScores, evidenceRecords, history, scoringWeights] =
             await Promise.all([
                 calculateAssessmentSnapshot(id),
                 prisma.aceshIndicator.findMany({
@@ -78,6 +77,7 @@ export async function GET(
                     orderBy: { calculatedAt: "desc" },
                     take: 20,
                 }),
+                getActiveScoringWeights(),
             ]);
 
         const scoreByIndicator = new Map(
@@ -86,9 +86,9 @@ export async function GET(
 
         // Group breakdown computed server-side so the client never runs formulas.
         const allGroups = [
-            ...Object.keys(ACES_DIMENSION_WEIGHTS),
-            ...Object.keys(HYPERLOCAL_DIMENSION_WEIGHTS),
-        ] as const;
+            ...Object.keys(scoringWeights.aces),
+            ...Object.keys(scoringWeights.hyperlocal),
+        ];
         const groupBreakdown = allGroups.map((group) => {
             const groupIndicators = indicators.filter((i) => i.group === group);
             const inputs = groupIndicators
@@ -98,10 +98,9 @@ export async function GET(
                 })
                 .filter((x): x is { value: number; weight: number } => x !== null);
             const groupScore = calculateGroupScore(inputs);
-            const dimensionWeight =
-                ACES_DIMENSION_WEIGHTS[group as keyof typeof ACES_DIMENSION_WEIGHTS] ??
-                HYPERLOCAL_DIMENSION_WEIGHTS[group as keyof typeof HYPERLOCAL_DIMENSION_WEIGHTS] ??
-                null;
+            const acesWeights = scoringWeights.aces as Record<string, number>;
+            const hyperlocalWeights = scoringWeights.hyperlocal as Record<string, number>;
+            const dimensionWeight = acesWeights[group] ?? hyperlocalWeights[group] ?? null;
             return {
                 group,
                 label: GROUP_LABELS[group as keyof typeof GROUP_LABELS],

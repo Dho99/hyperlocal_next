@@ -39,9 +39,15 @@ npm run coverage      # coverage dengan vitest + @vitest/coverage-v8 (jika ada)
 
 | File | Pokok bahasan |
 |---|---|
-| `assessment-recalculation-service.test.ts` | snapshot resmi 58,2 → VERIFIED; anti-duplikasi upsert; PENDING → verifiedScore null; recalc saat evidence berubah; riwayat per penyimpanan |
+| `assessment-recalculation-service.test.ts` | snapshot resmi 58,2 → VERIFIED; anti-duplikasi upsert; PENDING → verifiedScore null; recalc saat evidence berubah; riwayat per penyimpanan + `weightsSnapshot` |
 | `public-score-service.test.ts` | traveller tidak pernah melihat verifiedScore saat PENDING; fallback legacy |
 | `public-acesh-api.test.ts` | GET publik: VERIFIED vs PENDING, tidak ada evidence internal, 404 |
+
+### Unit tambahan
+
+| File | Pokok bahasan |
+|---|---|
+| `scoring-defaults.test.ts` | total 100% per lapisan (ACES/Hyperlocal/Evidence/base/factor), persen turunan cocok dengan konstanta, simulasi 58,2 tetap, validasi grup salah ditolak |
 
 ## Simulasi Resmi yang Dijaga
 
@@ -53,4 +59,6 @@ Factor 0,907 · Verified 58,2 · BERKEMBANG
 ```
 
 Seed (`prisma/seed/aceshSeeder.ts`) membuat data yang menghasilkan
-simulasi ini dan mencetaknya saat dijalankan.
+simulasi ini dan mencetaknya saat dijalankan. Seeder juga memastikan
+konfigurasi 3 lapisan tersedia lewat `seedAceshScoringConfig()`
+(create-if-missing).

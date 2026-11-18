@@ -17,11 +17,27 @@ npx prisma migrate deploy
 npx prisma generate
 
 # 4. Seed katalog + konfigurasi + demo assessment (opsional)
-npm run seed:dev   # atau npx tsx prisma/seed.ts
+npm run seed:tourism        # CSV + katalog + config + demo ACES-H + akomodasi
+npm run seed:acesh-config   # hanya konfigurasi 3 lapisan (create-if-missing)
 ```
 
 Catatan: `npx prisma migrate dev` tidak dapat berjalan non-interaktif di
 shell ini; gunakan `migrate deploy`.
+
+## Konfigurasi ACES-H (3 lapisan)
+
+Default resmi dibuat otomatis oleh:
+
+1. Migrasi `20261118091000_seed_acesh_scoring_defaults` — berlaku untuk semua
+   environment yang menjalankan `migrate deploy` (termasuk Neon).
+2. `seedAceshScoringConfig()` — dipanggil dari `seedAceshCatalog()`
+   (`seed:tourism` / `acesh:sample`), atau langsung via
+   `npm run seed:acesh-config`.
+
+Keduanya *create-if-missing*: baris `acesh_scoring_configs` yang sudah ada
+tidak ditimpa, sehingga perubahan bobot dari halaman admin aman saat re-seed.
+Setiap perhitungan menyimpan `weights_snapshot` di
+`acesh_assessment_history` agar skor lama tetap reproducible.
 
 ## Deploy ke Neon (cloud)
 
@@ -30,9 +46,10 @@ shell ini; gunakan `migrate deploy`.
    ```bash
    npx prisma migrate deploy
    ```
-3. Jalankan seed (opsional, data demo):
+3. Konfigurasi ACES-H sudah terisi oleh migrasi; untuk seed demo lengkap
+   (opsional):
    ```bash
-   npm run seed:dev
+   npm run seed:tourism
    ```
 4. Pastikan `OSRM_BASE_URL` dikosongkan bila tidak tersedia — sistem
    otomatis memakai estimasi haversine.

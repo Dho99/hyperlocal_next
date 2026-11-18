@@ -36,6 +36,12 @@ export function buildPrismaMock() {
             findMany: vi.fn(),
             deleteMany: vi.fn(),
         },
+        aceshScoringConfig: {
+            findUnique: vi.fn(),
+            findUniqueOrThrow: vi.fn(),
+            createMany: vi.fn(),
+            upsert: vi.fn(),
+        },
         reachabilityConfig: {
             findUnique: vi.fn(),
             findMany: vi.fn(),

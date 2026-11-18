@@ -71,11 +71,17 @@ Klasifikasi: `acesh-classification-service.ts` — `classifyScore(verified)`.
 `assessment-recalculation-service.ts`:
 
 - `calculateAssessmentSnapshot(destinationId)` — ambil indikator aktif,
-  skor destinasi, evidence; hitung semua komponen; tentukan status
+  skor destinasi, evidence, dan konfigurasi aktif
+  (`getActiveScoringConfig()`); hitung semua komponen; tentukan status
   `VERIFIED`/`PENDING` via `shouldMarkVerified(confidence, recordCount)`.
 - `verifiedScore` **null saat PENDING**; klasifikasi fallback ke base score.
 - `calculateAndSaveAssessment(...)` — `upsert` assessment (anti-duplikasi
   via `@@unique([destinationId])`) + `create` baris riwayat, satu transaksi.
+  Baris riwayat menyimpan `weightsSnapshot` (bobot persen 3 lapisan +
+  `version`) agar skor lama dapat direproduksi setelah konfigurasi berubah.
+- Default resmi ada di `scoring-defaults.ts` (`DEFAULT_SCORING_CONFIG`);
+  `DEFAULT_SCORING_WEIGHTS` diturunkan darinya sehingga seed, fallback DB,
+  dan tombol reset admin memakai angka yang sama.
 
 ## Skor Publik Traveller
 

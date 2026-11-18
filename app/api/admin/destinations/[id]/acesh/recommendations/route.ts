@@ -17,11 +17,9 @@ import {
   simulateEvidenceImprovement,
 } from "@/lib/services/acesh/recommendation-simulator";
 import {
-  ACES_DIMENSION_WEIGHTS,
-  HYPERLOCAL_DIMENSION_WEIGHTS,
   ACES_GROUPS,
-  HYPERLOCAL_GROUPS,
 } from "@/lib/services/acesh/constants";
+import { getActiveScoringWeights } from "@/lib/services/acesh/scoring-config-service";
 import type { AceshIndicatorGroup } from "@/lib/generated/prisma";
 
 export async function GET(
@@ -67,9 +65,10 @@ export async function GET(
     });
 
     // Build gaps per indicator
+    const scoringWeights = await getActiveScoringWeights();
     const dimensionWeights = {
-      ...ACES_DIMENSION_WEIGHTS,
-      ...HYPERLOCAL_DIMENSION_WEIGHTS,
+      ...scoringWeights.aces,
+      ...scoringWeights.hyperlocal,
     } as Record<string, number>;
     const sumWeightsByGroup: Record<string, number> = {};
     for (const ind of indicators) {
@@ -93,7 +92,7 @@ export async function GET(
       const gap = 100 - score;
       if (gap < 20 && evc >= 60) continue; // skip good
       const dimW = (dimensionWeights as Record<string, number>)[ind.group] ?? 0;
-      const baseW = isAcesGroup(ind.group) ? 0.65 : 0.35;
+      const baseW = isAcesGroup(ind.group) ? scoringWeights.baseAces : scoringWeights.baseHyperlocal;
       const {
         ris,
         priority,

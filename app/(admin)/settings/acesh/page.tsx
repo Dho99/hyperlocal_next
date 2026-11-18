@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import {
     AceshScoringSettingsForm,
-    DEFAULT_SCORING_CONFIG,
     type ScoringConfigFormValue,
 } from "@/components/admin/settings/acesh-scoring-settings-form";
+import { DEFAULT_SCORING_CONFIG } from "@/lib/services/acesh/scoring-defaults";
 
 export default async function AceshSettingsPage() {
     let initialConfig: ScoringConfigFormValue = DEFAULT_SCORING_CONFIG;
@@ -12,7 +12,7 @@ export default async function AceshSettingsPage() {
         if (stored) {
             initialConfig = Object.fromEntries(
                 Object.keys(DEFAULT_SCORING_CONFIG).map((key) => [key, stored[key as keyof typeof stored]]),
-            ) as ScoringConfigFormValue;
+            ) as unknown as ScoringConfigFormValue;
         }
     } catch {
         // The defaults keep this page usable while the new migration is being deployed.

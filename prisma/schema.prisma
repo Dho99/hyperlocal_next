@@ -878,6 +878,7 @@ model AceshAssessmentHistory {
   calculationVersion      String                  @map("calculation_version")
   calculatedBy            String?                 @map("calculated_by")
   notes                   String?
+  weightsSnapshot         Json?                   @map("weights_snapshot")
   calculatedAt            DateTime                @map("calculated_at")
 
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)

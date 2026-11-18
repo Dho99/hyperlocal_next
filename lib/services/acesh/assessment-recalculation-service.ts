@@ -18,13 +18,16 @@ import { deriveEvidenceConfidence, shouldMarkVerified } from "./evidence-derivat
 import { calculateAceshScores, type AceshScoringResult } from "./acesh-scoring-service";
 import { classifyScore } from "./acesh-classification-service";
 import type { GroupScoreInput } from "./indicator";
-import { getActiveScoringWeights } from "./scoring-config-service";
+import { getActiveScoringConfig } from "./scoring-config-service";
+import type { AceshScoringConfigValues } from "./scoring-defaults";
+import type { Prisma } from "@/lib/generated/prisma";
 
 export interface AceshAssessmentSnapshot extends Omit<AceshScoringResult, "verifiedScore"> {
     destinationId: string;
     verifiedScore: number | null;
     verificationStatus: AceshVerificationStatus;
     calculationVersion: string;
+    weightsSnapshot: AceshScoringConfigValues;
     calculatedAt: Date;
 }
 
@@ -88,6 +91,7 @@ export async function calculateAndSaveAssessment(
                 classification: snapshot.classification,
                 verificationStatus: snapshot.verificationStatus,
                 calculationVersion: snapshot.calculationVersion,
+                weightsSnapshot: snapshot.weightsSnapshot as unknown as Prisma.InputJsonValue,
                 calculatedBy,
                 notes,
                 calculatedAt,
@@ -103,12 +107,13 @@ export async function calculateAssessmentSnapshot(
     destinationId: string,
     now: Date = new Date(),
 ): Promise<Omit<AceshAssessmentSnapshot, "calculatedAt"> & { calculatedAt: Date }> {
-    const [indicators, scores, evidenceRecords, scoringWeights] = await Promise.all([
+    const [indicators, scores, evidenceRecords, activeScoring] = await Promise.all([
         prisma.aceshIndicator.findMany({ where: { isActive: true }, orderBy: { code: "asc" } }),
         prisma.aceshIndicatorScore.findMany({ where: { destinationId } }),
         prisma.aceshEvidenceRecord.findMany({ where: { destinationId } }),
-        getActiveScoringWeights(),
+        getActiveScoringConfig(),
     ]);
+    const scoringWeights = activeScoring.weights;
 
     const scoreByIndicator = new Map(scores.map((s) => [s.indicatorId, s]));
 
@@ -167,6 +172,7 @@ export async function calculateAssessmentSnapshot(
                 : classifyScore(result.baseScore).label,
         verificationStatus,
         calculationVersion: scoringWeights.version || ACESH_CALCULATION_VERSION,
+        weightsSnapshot: activeScoring.config,
         calculatedAt: now,
     };
 }

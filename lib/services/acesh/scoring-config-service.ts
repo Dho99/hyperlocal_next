@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import {
     ACES_DIMENSION_WEIGHTS,
-    BASE_ACES_WEIGHT,
-    BASE_HYPERLOCAL_WEIGHT,
     EVIDENCE_CONFIDENCE_WEIGHTS,
-    EVIDENCE_FACTOR_BASE,
-    EVIDENCE_FACTOR_RANGE,
     HYPERLOCAL_DIMENSION_WEIGHTS,
 } from "./constants";
+import {
+    DEFAULT_SCORING_CONFIG,
+    type AceshScoringConfigValues,
+} from "./scoring-defaults";
 
 export interface AceshScoringWeights {
     version: string;
@@ -19,17 +19,6 @@ export interface AceshScoringWeights {
     evidenceFactorBase: number;
     evidenceFactorRange: number;
 }
-
-export const DEFAULT_SCORING_WEIGHTS: AceshScoringWeights = {
-    version: "ACES-H-1.0",
-    aces: { ...ACES_DIMENSION_WEIGHTS },
-    hyperlocal: { ...HYPERLOCAL_DIMENSION_WEIGHTS },
-    evidence: { ...EVIDENCE_CONFIDENCE_WEIGHTS },
-    baseAces: BASE_ACES_WEIGHT,
-    baseHyperlocal: BASE_HYPERLOCAL_WEIGHT,
-    evidenceFactorBase: EVIDENCE_FACTOR_BASE,
-    evidenceFactorRange: EVIDENCE_FACTOR_RANGE,
-};
 
 type StoredConfig = {
     version: string;
@@ -87,12 +76,64 @@ export function storedConfigToWeights(config: StoredConfig): AceshScoringWeights
     };
 }
 
-/** Returns the active database configuration, or the official defaults before migration. */
-export async function getActiveScoringWeights(): Promise<AceshScoringWeights> {
+export function storedConfigToConfigValues(config: StoredConfig): AceshScoringConfigValues {
+    return {
+        version: config.version,
+        accessWeight: config.accessWeight,
+        communicationWeight: config.communicationWeight,
+        environmentWeight: config.environmentWeight,
+        servicesWeight: config.servicesWeight,
+        spatialAccessibilityWeight: config.spatialAccessibilityWeight,
+        functionalAvailabilityWeight: config.functionalAvailabilityWeight,
+        halalAssuranceWeight: config.halalAssuranceWeight,
+        ecosystemConnectivityWeight: config.ecosystemConnectivityWeight,
+        embeddednessContinuityWeight: config.embeddednessContinuityWeight,
+        sourceReliabilityWeight: config.sourceReliabilityWeight,
+        documentEvidenceWeight: config.documentEvidenceWeight,
+        photoGeolocationWeight: config.photoGeolocationWeight,
+        managementConfirmationWeight: config.managementConfirmationWeight,
+        fieldValidationWeight: config.fieldValidationWeight,
+        dataFreshnessWeight: config.dataFreshnessWeight,
+        baseAcesWeight: config.baseAcesWeight,
+        baseHyperlocalWeight: config.baseHyperlocalWeight,
+        evidenceFactorBase: config.evidenceFactorBase,
+        evidenceFactorRange: config.evidenceFactorRange,
+    };
+}
+
+export const DEFAULT_SCORING_WEIGHTS: AceshScoringWeights =
+    storedConfigToWeights(DEFAULT_SCORING_CONFIG);
+
+export interface ActiveScoringConfig {
+    config: AceshScoringConfigValues;
+    weights: AceshScoringWeights;
+}
+
+/**
+ * Returns the active database configuration plus its ratio weights, or the
+ * official defaults before migration.
+ */
+export async function getActiveScoringConfig(): Promise<ActiveScoringConfig> {
     try {
-        const config = await prisma.aceshScoringConfig.findUnique({ where: { id: "default" } });
-        return config ? storedConfigToWeights(config) : DEFAULT_SCORING_WEIGHTS;
+        const stored = await prisma.aceshScoringConfig.findUnique({ where: { id: "default" } });
+        if (!stored) return fallbackScoringConfig();
+        return {
+            config: storedConfigToConfigValues(stored),
+            weights: storedConfigToWeights(stored),
+        };
     } catch {
-        return DEFAULT_SCORING_WEIGHTS;
+        return fallbackScoringConfig();
     }
+}
+
+/** Returns the active ratio weights, falling back to the official defaults. */
+export async function getActiveScoringWeights(): Promise<AceshScoringWeights> {
+    return (await getActiveScoringConfig()).weights;
+}
+
+function fallbackScoringConfig(): ActiveScoringConfig {
+    return {
+        config: { ...DEFAULT_SCORING_CONFIG },
+        weights: DEFAULT_SCORING_WEIGHTS,
+    };
 }

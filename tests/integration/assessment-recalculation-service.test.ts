@@ -47,6 +47,9 @@ describe("assessment recalculation service (mocked Prisma)", () => {
         expect(snapshot.verifiedScore).toBe(58.2);
         expect(snapshot.verificationStatus).toBe("VERIFIED");
         expect(snapshot.classification).toBe("BERKEMBANG");
+        expect(snapshot.weightsSnapshot.version).toBe("ACES-H-1.0");
+        expect(snapshot.weightsSnapshot.accessWeight).toBe(20);
+        expect(snapshot.weightsSnapshot.sourceReliabilityWeight).toBe(15);
     });
 
     it("stores exactly one assessment per destination (anti-duplication via upsert on destinationId)", async () => {
@@ -64,6 +67,11 @@ describe("assessment recalculation service (mocked Prisma)", () => {
         expect(upsertCall.where).toEqual({ destinationId: DESTINATION_ID });
 
         expect(prismaMock.aceshAssessmentHistory.create).toHaveBeenCalledTimes(1);
+        const historyCall = prismaMock.aceshAssessmentHistory.create.mock.calls[0][0] as {
+            data: { weightsSnapshot: { version: string; accessWeight: number } };
+        };
+        expect(historyCall.data.weightsSnapshot.version).toBe("ACES-H-1.0");
+        expect(historyCall.data.weightsSnapshot.accessWeight).toBe(20);
     });
 
     it("marks PENDING with a null verifiedScore when evidence confidence is insufficient", async () => {
