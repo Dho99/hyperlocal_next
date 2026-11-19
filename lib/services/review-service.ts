@@ -18,7 +18,13 @@ export async function getPaginatedReviews(
           ...(params.userId && { userId: params.userId }),
         },
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
           destination: true,
           umkm: true,
           accommodation: true,
@@ -43,7 +49,13 @@ export async function createReview(userId: string, input: CreateReviewInput) {
         comment: input.comment || null,
       },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
         destination: true,
         umkm: true,
         accommodation: true,
