@@ -410,6 +410,53 @@ function formatFacilityDistance(distanceMeters: number): string {
         : `${distanceMeters} m`;
 }
 
+function normalizeSearchText(value: string): string {
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+async function findFacilityCheckTarget(query: string): Promise<{
+    slug: string;
+    facility: string;
+} | null> {
+    if (!/(ada|tersedia|cek|check|fasilitas|masjid|musala|mushola|toilet|wudu|wudhu|parkir)/i.test(query)) {
+        return null;
+    }
+
+    const normalizedQuery = normalizeSearchText(query);
+    const destinations = await prisma.destination.findMany({
+        where: { status: "APPROVED" },
+        select: { name: true, slug: true },
+    });
+    const destination = destinations
+        .filter((item) => normalizedQuery.includes(normalizeSearchText(item.name)))
+        .sort((a, b) => b.name.length - a.name.length)[0];
+    if (!destination) return null;
+
+    const facilities = await prisma.halalFacility.findMany({
+        select: { name: true },
+        distinct: ["name"],
+    });
+    const facility = facilities
+        .map((item) => item.name)
+        .filter((name): name is string => Boolean(name))
+        .map((name) => {
+            const normalizedName = normalizeSearchText(name);
+            const tokens = normalizedName.split(" ").filter((token) => token.length >= 4);
+            const exact = normalizedQuery.includes(normalizedName) ? 100 : 0;
+            const overlap = tokens.filter((token) => normalizedQuery.includes(token)).length;
+            return { name, score: exact + overlap };
+        })
+        .sort((a, b) => b.score - a.score)[0];
+
+    return facility && facility.score > 0
+        ? { slug: destination.slug, facility: facility.name }
+        : null;
+}
+
 export async function POST(request: Request) {
     const rl = rateLimit(getClientKey(request, "route-finder"), 30, 60_000);
     if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
@@ -425,6 +472,15 @@ export async function POST(request: Request) {
         }
 
         const { query } = parsed.data;
+
+        const facilityTarget = await findFacilityCheckTarget(query);
+        if (facilityTarget) {
+            return NextResponse.json<RouteFinderResponse>({
+                intent: "FACILITY_CHECK",
+                redirectTo: `/facility-check?slug=${encodeURIComponent(facilityTarget.slug)}&facility=${encodeURIComponent(facilityTarget.facility)}`,
+                payload: null,
+            });
+        }
 
         const knownLocations = await getLocationNames();
         const matchedLocation = extractCityFromQuery(query, knownLocations);
