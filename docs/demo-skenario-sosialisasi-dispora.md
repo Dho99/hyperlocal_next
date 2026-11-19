@@ -76,6 +76,7 @@ Minimal 2 orang bila tim kecil: narator sekaligus driver pengunjung, satu operat
 - [ ] Aplikasi berjalan di environment yang disepakati (disarankan **staging**, bukan data produksi sensitif).
 - [ ] Dua browser profile terpisah: **Profil A = pengunjung**, **Profil B = admin** (agar sesi tidak saling menimpa).
 - [ ] Kedua profil sudah login sebelum acara dimulai.
+- [ ] Akun demo pengunjung **belum pernah menilai** destinasi yang akan dipakai di segmen A3 (aturan satu akun satu destinasi satu kali).
 - [ ] Koneksi internet stabil + hotspot cadangan.
 - [ ] Zoom browser 100%, resolusi layar proyektor diuji (minimal 1366×768).
 - [ ] Notifikasi desktop & tab pribadi ditutup.
@@ -93,7 +94,7 @@ Minimal 2 orang bila tim kecil: narator sekaligus driver pengunjung, satu operat
 | Laporan pengunjung berstatus `PENDING` | 1–2 | Demo penanganan laporan |
 | Penginapan | 2–3 | Sekilas master data |
 
-Syarat penting: **destinasi yang dipakai untuk rekomendasi AI harus sudah tayang** dan punya nama/kategori yang mudah dikenali agar hasil AI terasa relevan.
+Syarat penting: **destinasi yang dipakai untuk rekomendasi AI harus sudah tayang** dan punya nama/kategori yang mudah dikenali agar hasil AI terasa relevan. Destinasi untuk segmen A3 juga harus **belum dinilai oleh akun demo**.
 
 ## 6. Klasifikasi fitur: nyata, berbasis aturan, atau simulasi
 
@@ -103,9 +104,10 @@ Bagian ini wajib dipahami tim agar tidak salah klaim di depan dinas.
 | --- | --- | --- |
 | Rekomendasi AI pencarian | LLM (Groq) memahami intent → mengarahkan ke hasil pencarian/itinerary. **Ada fallback deterministik** bila LLM gagal, jadi demo tetap jalan | "Rekomendasi berbasis AI, dengan cadangan aturan" |
 | Itinerary otomatis | Disusun dari kandidat destinasi + intent AI, divalidasi terhadap data nyata | "Rekomendasi AI yang dibatasi data resmi" |
-| Penilaian pengunjung (survey) | Skor per indikator ACES-H, digabung dua arah dengan nilai resmi dinas | "Penilaian masyarakat, bukan menggantikan nilai dinas" |
+| Penilaian pengunjung (survey) | Skor per indikator ACES-H; **satu akun hanya bisa menilai satu destinasi sekali**. Rating publik terlihat tanpa login | "Penilaian masyarakat, bukan menggantikan nilai dinas" |
 | Laporan pengunjung | Masuk antrean admin, status `PENDING → INVESTIGATING → RESOLVED/REJECTED` | "Kanal pengaduan data" |
 | Skor ACES-H dua arah | `round(rata-rata(nilai admin + seluruh nilai pengunjung yang tidak disembunyikan))` per indikator | "Nilai resmi + suara publik, dirata-rata" |
+| Lapis keyakinan bukti (Lapis 3) | Bukti dari penilaian pengunjung ikut menaikkan keyakinan; **dibatasi 50%** bila sudah ada bukti resmi. Verifikasi tetap hanya lewat bukti resmi | "Kontribusi komunitas dibatasi, verifikasi tetap resmi" |
 | Validasi awal dinas | Admin memeriksa bukti, memberi skor resmi, menyetujui/menolak | "Validasi berbasis bukti" |
 | Rekomendasi tindakan admin | **Rule-based**, bukan AI generatif: memicu dari gap indikator, bukti kurang, data belum lengkap | "Rekomendasi berbasis aturan" |
 | Export laporan | CSV, Excel (xlsx), PDF dibuat di sisi klien | "Export siap pakai" |
@@ -154,7 +156,7 @@ Jika waktu molor: potong **validasi UMKM** dan **master data penginapan**. Janga
 
 **Aksi:**
 1. Klik satu destinasi dari hasil.
-2. Tunjukkan bagian: foto, fasilitas halal, skor ACES-H, UMKM sekitar, peta.
+2. Tunjukkan bagian: foto, fasilitas halal, skor ACES-H (tiga lapis penilaian), UMKM sekitar, peta.
 3. Sorot skor ACES-H dan jelaskan artinya secara singkat.
 
 **Narasi:**
@@ -165,12 +167,15 @@ Jika waktu molor: potong **validasi UMKM** dan **master data penginapan**. Janga
 **Aksi:**
 1. Klik tombol survey/penilaian pada halaman destinasi.
 2. Isi nilai beberapa indikator + komentar singkat.
-3. Kirim, tunjukkan notifikasi berhasil.
+3. Kirim, tunjukkan notifikasi berhasil dan rating langsung tampil di halaman.
 
 **Narasi:**
 > "Pengunjung yang sudah mengalami langsung bisa menilai. Nilai mereka **tidak menimpa** nilai resmi dinas — keduanya dirata-rata per indikator. Nilai dinas tetap menjadi acuan utama."
 
-**Prasyarat:** survey memerlukan **login pengunjung**. Pastikan Profil A sudah login sebelum naik ke panggung.
+**Prasyarat penting:**
+- Survey memerlukan **login pengunjung**. Pastikan Profil A sudah login sebelum naik ke panggung.
+- **Satu akun hanya bisa menilai satu destinasi satu kali.** Jika akun demo sudah pernah menilai destinasi itu (mis. saat gladi), tombol berubah menjadi status "sudah dinilai" dan pengiriman ulang ditolak. Siapkan akun demo baru atau pilih destinasi yang belum dinilai akun tersebut.
+- Rating publik dapat dilihat tanpa login, jadi ini juga bisa ditunjukkan dari profil admin bila waktu sempit.
 
 ### A4. Mengirim laporan (1,5 menit)
 
@@ -288,6 +293,7 @@ Lalu **`/reports`** (Kelola Laporan):
 | --- | --- | --- | --- |
 | Internet putus | Halaman gagal memuat | Beralih ke hotspot; jika tetap gagal, jalankan mode offline/rekaman | Rekaman layar 5 menit |
 | AI lambat/gagal | Loading lama / hasil generik | Jelaskan fallback yang aktif, lanjut ke hasil pencarian | Tangkapan layar hasil ideal |
+| Survey ditolak | Muncul pesan sudah pernah menilai | Ganti dengan akun demo cadangan, atau tunjukkan rating publik yang sudah ada sebagai bukti | Rekaman alur survey |
 | Login bermasalah | Survey tidak bisa dibuka | Gunakan profil yang sudah login; jika gagal, lewati A3 dan kembali di akhir | Rekaman alur survey |
 | Data demo berubah | Daftar kosong / status aneh | Jangan memperbaiki di panggung; lanjut ke segmen berikut | Dump data & screenshot |
 | Export gagal | File tidak terunduh | Tunjukkan file hasil export yang disiapkan | Folder `demo-assets/` |
@@ -331,6 +337,7 @@ Prinsip: **jangan debug di panggung.** Jika satu segmen gagal lebih dari 30 deti
 - [ ] Notifikasi dimatikan.
 - [ ] Hotspot cadangan aktif.
 - [ ] Kirim 1 laporan uji, pastikan muncul di `/reports`.
+- [ ] Cek status penilaian akun demo: destinasi segmen A3 belum dinilai akun tersebut.
 - [ ] Buka tab yang akan dipakai sesuai urutan rundown (jangan membuka tab baru di panggung).
 - [ ] Timekeeper mengaktifkan timer.
 
@@ -391,6 +398,7 @@ Sebutkan perbedaan ini **sebelum** membuka salah satunya, agar audiens tidak bin
 | ACES-H | Rangkaian indikator penilaian kesiapan halal sebuah destinasi |
 | Skor dua arah | Nilai resmi dinas dirata-rata dengan nilai pengunjung per indikator |
 | Evidence confidence | Tingkat keyakinan bukti yang diunggah |
+| Lapis 3 (bukti komunitas) | Kontribusi bukti dari penilaian pengunjung; dibatasi 50% bila bukti resmi sudah ada |
 | Rule-based recommendation | Saran tindakan yang muncul dari aturan indikator, bukan tebakan AI |
 | Validasi awal | Pemeriksaan dan pemberian nilai resmi oleh dinas sebelum data tayang |
 
@@ -400,7 +408,7 @@ Sebutkan perbedaan ini **sebelum** membuka salah satunya, agar audiens tidak bin
 2. **"Bisakah satu destinasi punya banyak foto?"** Ya, dan bukti divalidasi lokasi/waktu unggah.
 3. **"Apakah pengunjung harus daftar?"** Untuk menilai ya; untuk melapor tidak.
 4. **"Siapa yang boleh mengubah skor resmi?"** Hanya admin/dinas.
-5. **"Apakah skor pengunjung bisa disalahgunakan?"** Ada moderasi; nilai yang disembunyikan tidak dihitung.
+5. **"Apakah skor pengunjung bisa disalahgunakan?"** Satu akun hanya bisa menilai satu destinasi satu kali; ada moderasi, dan nilai yang disembunyikan tidak dihitung.
 6. **"Apakah bisa diakses lewat HP?"** Ya, antarmuka responsif dan mendukung mode PWA.
 7. **"Bagaimana biaya operasionalnya?"** Jelaskan komponen hosting, database, dan AI; sampaikan sebagai bahan studi lanjut, bukan angka final.
 8. **"Kapan bisa mulai dipakai?"** Bergantung kesepakatan pilot, ketersediaan data, dan penunjukan operator.
