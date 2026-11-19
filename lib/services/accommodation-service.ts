@@ -7,6 +7,7 @@ import {
     CursorPaginationParams,
 } from "@/lib/pagination/cursorPagination";
 import { deleteReportsForTarget } from "@/lib/services/report-service";
+import { displayRatingMetrics } from "@/lib/utils/rating-display";
 
 function serializeAccommodation(raw: unknown): Accommodation {
     const a = raw as Accommodation & {
@@ -15,6 +16,7 @@ function serializeAccommodation(raw: unknown): Accommodation {
     };
     return {
         ...a,
+        ...displayRatingMetrics(a),
         latitude: a.latitude ? Number(a.latitude) : null,
         longitude: a.longitude ? Number(a.longitude) : null,
         createdAt: a.createdAt,

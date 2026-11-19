@@ -16,3 +16,10 @@ export interface PublicReview {
     user: PublicUser;
     sentiment: ReviewSentiment | null;
 }
+
+/** Rating aggregates are local platform data; external metrics are separate. */
+export interface ExternalRatingMetrics {
+    externalRating?: number | null;
+    externalReviewCount?: number | null;
+    externalRatingSource?: string | null;
+}

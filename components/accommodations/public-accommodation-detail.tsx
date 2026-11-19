@@ -134,12 +134,13 @@ export function PublicAccommodationDetail({ identifier }: PublicAccommodationDet
             </div>
             <ReportDialog targetId={accommodation.id} targetType="ACCOMMODATION" />
           </div>
-          {accommodation.rating != null && accommodation.rating > 0 && (
+          {(accommodation.rating != null && accommodation.rating > 0 || accommodation.externalRating != null && accommodation.externalRating > 0) && (
             <div className="inline-flex items-center gap-1.5 bg-muted border border-border rounded-lg px-3 py-2">
               <Star className="size-5 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-foreground">{accommodation.rating.toFixed(1)}</span>
-              {accommodation.reviewCount != null && (
-                <span className="text-sm text-muted-foreground">({accommodation.reviewCount})</span>
+              <span className="font-bold text-foreground">{(accommodation.rating ?? accommodation.externalRating)!.toFixed(1)}</span>
+              <span className="text-[10px] font-medium text-muted-foreground">{accommodation.ratingSource === "external" ? "Google" : "SAFAR"}</span>
+              {(accommodation.reviewCount ?? accommodation.externalReviewCount) != null && (
+                <span className="text-sm text-muted-foreground">({(accommodation.reviewCount ?? accommodation.externalReviewCount)!.toLocaleString("id-ID")} {accommodation.ratingSource === "local" ? "ulasan" : "Google"})</span>
               )}
             </div>
           )}

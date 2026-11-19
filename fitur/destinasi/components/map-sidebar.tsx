@@ -138,6 +138,9 @@ export function MapSidebar({
                                 <span className="inline-flex items-center gap-1 font-semibold text-foreground">
                                     <Star className="size-3.5 fill-[#e7c365] text-[#e7c365]" />
                                     {destination.rating.toFixed(1)}
+                                    <span className="text-[9px] opacity-75">
+                                        {destination.ratingSource === "external" ? "Google" : "SAFAR"}
+                                    </span>
                                 </span>
                             </div>
                         )}

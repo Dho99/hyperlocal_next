@@ -74,6 +74,10 @@ export interface Destination {
     status: "PENDING" | "APPROVED" | "REJECTED";
     rating: number | null;
     reviewCount: number | null;
+    externalRating?: number | null;
+    externalReviewCount?: number | null;
+    externalRatingSource?: string | null;
+    ratingSource?: "local" | "external" | null;
     openingHours: JsonValue | null;
     halalScore: number | null;
     validatedScore: number | null;

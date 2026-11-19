@@ -30,6 +30,7 @@ export interface NearbyUmkm {
     longitude: number | null;
     rating: number | null;
     reviewCount: number | null;
+    ratingSource?: "local" | "external" | null;
     distance: number | null;
     primaryImage: string | null;
     validCertification: boolean;

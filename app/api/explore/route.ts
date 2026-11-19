@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { displayRatingMetrics } from "@/lib/utils/rating-display";
 import { getErrorMessage } from "@/lib/api-error";
 import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 import { z } from "zod";
@@ -191,7 +192,7 @@ function toExploreDestination(
         aceshScore: score ? publicDisplayScore(score, d.halalScore) : null,
         aceshClassification: score?.classification ?? null,
         aceshVerificationStatus: score?.verificationStatus ?? null,
-        rating: d.rating,
+        rating: displayRatingMetrics(d).rating,
         imageUrl: d.images?.[0]?.imageUrl ?? null,
         categoryName: d.category?.name ?? null,
         facilities: (d.destinationHalalFacilities ?? [])

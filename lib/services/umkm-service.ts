@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { displayRatingMetrics } from "@/lib/utils/rating-display";
 import type { Prisma } from "@/lib/generated/prisma";
 import type { Destination } from "@/types/destination";
 import type {
@@ -112,14 +113,16 @@ function serializeUmkm(raw: unknown): Umkm {
     };
     return {
         ...umkm,
+        ...displayRatingMetrics(umkm),
         latitude: umkm.latitude ? Number(umkm.latitude) : null,
         longitude: umkm.longitude ? Number(umkm.longitude) : null,
         createdAt: umkm.createdAt,
         updatedAt: umkm.updatedAt,
         facilities: umkm.umkmHalalFacilities ?? [],
         destination: umkm.destination
-            ? {
+              ? {
                   ...umkm.destination,
+                  ...displayRatingMetrics(umkm.destination),
                   latitude: umkm.destination.latitude
                       ? Number(umkm.destination.latitude)
                       : null,

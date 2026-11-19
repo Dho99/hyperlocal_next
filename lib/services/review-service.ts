@@ -56,12 +56,22 @@ export async function createReview(userId: string, input: CreateReviewInput) {
         _avg: { rating: true },
         _count: { _all: true },
       });
+      const surveys = tx.destinationSurveyResponse
+        ? await tx.destinationSurveyResponse.aggregate({
+            where: { destinationId: input.destinationId, scoreHiddenAt: null, overallScore: { not: null } },
+            _avg: { overallScore: true },
+            _count: { _all: true },
+          })
+        : { _avg: { overallScore: null }, _count: { _all: 0 } };
+      const reviewCount = aggregate._count._all;
+      const surveyCount = surveys._count._all;
+      const totalCount = reviewCount + surveyCount;
 
       await tx.destination.update({
         where: { id: input.destinationId },
         data: {
-          rating: aggregate._avg.rating ?? 0,
-          reviewCount: aggregate._count._all,
+          rating: totalCount === 0 ? 0 : ((aggregate._avg.rating ?? 0) * reviewCount + ((surveys._avg.overallScore ?? 0) / 20) * surveyCount) / totalCount,
+          reviewCount: totalCount,
         },
       });
     }

@@ -32,6 +32,10 @@ export interface Accommodation {
     estimatedCost: number | null;
     rating: number | null;
     reviewCount: number | null;
+    externalRating?: number | null;
+    externalReviewCount?: number | null;
+    externalRatingSource?: string | null;
+    ratingSource?: "local" | "external" | null;
     validationStatus: string;
     surveyorNote: string | null;
     validatedScore: number | null;

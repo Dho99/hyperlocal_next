@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { displayRatingMetrics } from "@/lib/utils/rating-display";
 import type { DestinationFormValues } from "@/types/destination";
 import type { Destination } from "@/types/destination";
 import type { Prisma } from "@/lib/generated/prisma";
@@ -206,8 +207,10 @@ type DestinationWithIncludes = Prisma.DestinationGetPayload<{
 }>;
 
 function serializeDestination(raw: DestinationWithIncludes): Destination {
+    const rating = displayRatingMetrics(raw);
     return {
         ...raw,
+        ...rating,
         latitude: raw.latitude != null ? Number(raw.latitude) : null,
         longitude: raw.longitude != null ? Number(raw.longitude) : null,
         createdAt: raw.createdAt,
@@ -219,6 +222,7 @@ function serializeDestination(raw: DestinationWithIncludes): Destination {
         })),
         umkms: raw.umkms?.map((umkm) => ({
             ...umkm,
+            ...displayRatingMetrics(umkm),
             latitude: umkm.latitude != null ? Number(umkm.latitude) : null,
             longitude: umkm.longitude != null ? Number(umkm.longitude) : null,
         })),

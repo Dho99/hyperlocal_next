@@ -276,6 +276,9 @@ function UmkmTabsContent() {
                                                         {getRatingDisplay(
                                                             umkm,
                                                         ).toFixed(1)}
+                                                        <span className="text-[9px] opacity-75">
+                                                            {umkm.ratingSource === "external" ? "Google" : "SAFAR"}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <p className="mb-3 flex items-center gap-1 text-sm text-muted-foreground">

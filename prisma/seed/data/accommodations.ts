@@ -99,8 +99,8 @@ export async function seedAccommodations() {
                 phone: data.phone,
                 description: data.description,
                 validationStatus: data.validationStatus,
-                rating: Math.floor(Math.random() * 20 + 30) / 10,
-                reviewCount: Math.floor(Math.random() * 50 + 5),
+                rating: 0,
+                reviewCount: 0,
             },
         });
 

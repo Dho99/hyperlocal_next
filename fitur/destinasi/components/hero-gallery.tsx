@@ -137,10 +137,13 @@ export function HeroGallery({
                                 <Star className="size-4 fill-amber-400 text-amber-400" />
                                 <span className="font-bold text-white">
                                     {destination.rating.toFixed(1)}
+                                    <span className="text-[9px] font-medium opacity-75">
+                                        {destination.ratingSource === "external" ? "Google" : "SAFAR"}
+                                    </span>
                                 </span>
                                 {destination.reviewCount != null && (
                                     <span className="text-stone-300 font-normal">
-                                        ({destination.reviewCount.toLocaleString("id-ID")} Ulasan)
+                                        ({destination.reviewCount.toLocaleString("id-ID")} {destination.ratingSource === "external" ? "Google" : "Ulasan SAFAR"})
                                     </span>
                                 )}
                             </div>
@@ -202,4 +205,3 @@ export function HeroGallery({
         </section>
     );
 }
-

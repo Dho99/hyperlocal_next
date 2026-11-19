@@ -48,6 +48,9 @@ function AccommodationCard({ item }: { item: Accommodation }) {
                         <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur-md">
                             <Star className="size-3.5 fill-amber-400 text-amber-400" />
                             {item.rating.toFixed(1)}
+                            <span className="text-[9px] font-medium opacity-75">
+                                {item.ratingSource === "external" ? "Google" : "SAFAR"}
+                            </span>
                         </div>
                     )}
                 </div>

@@ -54,6 +54,9 @@ export function UmkmSection({ umkms }: UmkmSectionProps) {
                                     <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-foreground">
                                         <Star className="size-3 fill-[#e7c365] text-[#e7c365]" />
                                         {umkm.rating.toFixed(1)}
+                                        <span className="text-[9px] opacity-75">
+                                            {umkm.ratingSource === "external" ? "Google" : "SAFAR"}
+                                        </span>
                                         {umkm.reviewCount != null && (
                                             <span className="font-normal text-muted-foreground">
                                                 ({umkm.reviewCount})

@@ -82,6 +82,10 @@ export interface Umkm {
     longitude: number | null;
     rating?: number | null;
     reviewCount?: number | null;
+    externalRating?: number | null;
+    externalReviewCount?: number | null;
+    externalRatingSource?: string | null;
+    ratingSource?: "local" | "external" | null;
     openingHours?: Record<string, { open: string; close: string }> | { open: string; close: string } | null;
     validationStatus?: string;
     surveyorNote?: string | null;

@@ -67,14 +67,16 @@ export function HeroSection({ umkm }: HeroSectionProps) {
     const hasCertification =
         umkm.certifications?.some((c) => c.status === "VALID") ||
         (umkm as { validationStatus?: string }).validationStatus === "APPROVED";
+    const hasLocalRating = umkm.ratingSource === "local" || umkm.reviews.length > 0;
     const avgRating =
         umkm.reviews.length > 0
             ? (
                   umkm.reviews.reduce((sum, r) => sum + r.rating, 0) /
                   umkm.reviews.length
               ).toFixed(1)
-            : umkm.rating?.toFixed(1) || "0.0";
-    const reviewCount = umkm.reviews.length || umkm.reviewCount || 0;
+            : hasLocalRating ? umkm.rating?.toFixed(1) || "0.0" : umkm.externalRating?.toFixed(1) || "0.0";
+    const reviewCount = hasLocalRating ? umkm.reviews.length || umkm.reviewCount || 0 : umkm.externalReviewCount || 0;
+    const ratingSourceLabel = hasLocalRating ? "Ulasan" : "Google";
 
     const locationLabel = umkm.destination 
         ? [umkm.destination.city, umkm.destination.province].filter(Boolean).join(", ") 
@@ -172,7 +174,7 @@ export function HeroSection({ umkm }: HeroSectionProps) {
                                 {avgRating}
                             </span>
                             <span className="text-stone-300 font-normal">
-                                ({reviewCount.toLocaleString("id-ID")} Ulasan)
+                                ({reviewCount.toLocaleString("id-ID")} {ratingSourceLabel})
                             </span>
                         </div>
 

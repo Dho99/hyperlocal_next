@@ -12,6 +12,9 @@ interface HeaderInfoProps {
         | "province"
         | "rating"
         | "reviewCount"
+        | "externalRating"
+        | "externalReviewCount"
+        | "ratingSource"
         | "viewCount"
         | "category"
     >;
@@ -41,14 +44,17 @@ export function HeaderInfo({ destination }: HeaderInfoProps) {
                 <ReportDialog targetId={destination.id} targetType="DESTINATION" />
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                {destination.rating != null && (
+                {(destination.rating != null && destination.rating > 0 || destination.externalRating != null && destination.externalRating > 0) && (
                     <div className="flex items-center gap-1">
                         <Star className="size-4 fill-[#e7c365] text-[#e7c365]" />
                         <span className="font-bold text-foreground">
-                            {destination.rating.toFixed(1)}
+                            {(destination.rating || destination.externalRating)!.toFixed(1)}
                         </span>
-                        {destination.reviewCount != null && (
-                            <span>({destination.reviewCount} ulasan)</span>
+                        <span className="text-[10px] font-medium text-muted-foreground">
+                            {destination.ratingSource === "external" ? "Google" : "SAFAR"}
+                        </span>
+                        {(destination.reviewCount ?? destination.externalReviewCount) != null && (
+                            <span>({(destination.reviewCount || destination.externalReviewCount)!.toLocaleString("id-ID")} {destination.ratingSource === "local" ? "ulasan" : "Google"})</span>
                         )}
                     </div>
                 )}

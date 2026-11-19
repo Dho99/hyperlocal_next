@@ -59,12 +59,22 @@ async function recalcDestinationRating(
         _avg: { overallScore: true },
         _count: { _all: true },
     });
+    const reviews = tx.review
+        ? await tx.review.aggregate({
+              where: { destinationId },
+              _avg: { rating: true },
+              _count: { _all: true },
+          })
+        : { _avg: { rating: null }, _count: { _all: 0 } };
+    const surveyCount = aggregate._count._all;
+    const reviewCount = reviews._count._all;
+    const totalCount = surveyCount + reviewCount;
     const average = aggregate._avg.overallScore ?? 0;
     await tx.destination.update({
         where: { id: destinationId },
         data: {
-            rating: Math.round((average / 20) * 10) / 10,
-            reviewCount: aggregate._count._all,
+            rating: totalCount === 0 ? 0 : Math.round((((average / 20) * surveyCount + (reviews._avg.rating ?? 0) * reviewCount) / totalCount) * 10) / 10,
+            reviewCount: totalCount,
         },
     });
 }
