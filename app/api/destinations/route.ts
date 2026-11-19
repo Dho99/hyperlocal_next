@@ -14,6 +14,13 @@ import { PhotoValidationError } from "@/lib/services/photo-validation-service";
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
+        const scope = searchParams.get("scope") === "admin" ? "admin" : "public";
+        if (scope === "admin") {
+            const session = await auth.api.getSession({ headers: await headers() });
+            if (!session?.user || session.user.role !== "admin") {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+        }
         const limit = searchParams.get("limit")
             ? Number(searchParams.get("limit"))
             : undefined;
@@ -34,7 +41,7 @@ export async function GET(request: Request) {
             status: validationStatus,
             minScore,
             sort,
-            scope: searchParams.get("scope") === "admin" ? "admin" : "public",
+            scope,
         });
         return NextResponse.json(result, { status: 200 });
     } catch (error: unknown) {

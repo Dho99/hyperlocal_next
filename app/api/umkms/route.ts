@@ -19,6 +19,9 @@ export async function GET(request: Request) {
             searchParams.has("limit") ||
             searchParams.has("cursor") ||
             searchParams.has("category") ||
+            searchParams.has("categoryId") ||
+            searchParams.has("destinationId") ||
+            searchParams.has("areaId") ||
             searchParams.has("search") ||
             searchParams.has("scope") ||
             searchParams.has("validationStatus")
@@ -35,6 +38,12 @@ export async function GET(request: Request) {
             const search = searchParams.get("search") || undefined;
             const scope =
                 searchParams.get("scope") === "admin" ? "admin" : "public";
+            if (scope === "admin") {
+                const session = await auth.api.getSession({ headers: await headers() });
+                if (!session?.user || session.user.role !== "admin") {
+                    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+                }
+            }
             const validationStatus =
                 searchParams.get("validationStatus") || undefined;
 

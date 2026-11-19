@@ -49,7 +49,7 @@ export async function getPaginatedAccommodations(
         async (take, cursor, skip) => {
             const where: Prisma.AccommodationWhereInput = {
                 ...(isPublic && { validationStatus: "APPROVED" }),
-                ...(validationStatuses && {
+                ...(!isPublic && validationStatuses && {
                     validationStatus: { in: validationStatuses },
                 }),
                 ...(params.search && {

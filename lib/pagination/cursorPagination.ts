@@ -27,7 +27,10 @@ export async function withCursorPagination<T extends { id: string }>(
     params: CursorPaginationParams,
     message: string = "Data fetched successfully",
 ): Promise<PaginatedResponse<T>> {
-    const limit = Math.min(Number(params.limit) || DEFAULT_LIMIT, MAX_LIMIT);
+    const requestedLimit = Number(params.limit);
+    const limit = Number.isFinite(requestedLimit)
+        ? Math.min(Math.max(Math.trunc(requestedLimit), 1), MAX_LIMIT)
+        : DEFAULT_LIMIT;
     const cursor = params.cursor || undefined;
 
     // Take limit + 1 to check if there are more items

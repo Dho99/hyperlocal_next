@@ -8,13 +8,20 @@ import { getErrorMessage } from "@/lib/api-error";
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
+        const scope = searchParams.get("scope") === "admin" ? "admin" : "public";
+        if (scope === "admin") {
+            const session = await auth.api.getSession({ headers: await headers() });
+            if (!session?.user || session.user.role !== "admin") {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+        }
         const result = await getPaginatedAccommodations({
             limit: searchParams.get("limit")
                 ? Number(searchParams.get("limit"))
                 : undefined,
             cursor: searchParams.get("cursor") || undefined,
             search: searchParams.get("search") || undefined,
-            scope: searchParams.get("scope") === "admin" ? "admin" : "public",
+            scope,
             validationStatus: searchParams.get("validationStatus") || undefined,
         });
         return NextResponse.json(result, { status: 200 });
