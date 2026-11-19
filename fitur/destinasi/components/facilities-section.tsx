@@ -51,10 +51,21 @@ function PhotoValidityBadge({
 }
 
 export function FacilitiesSection({ facilities }: FacilitiesSectionProps) {
-    if (facilities.length === 0) return null;
+    if (facilities.length === 0) {
+        return (
+            <section id="fasilitas">
+                <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-4">
+                    Fasilitas Terdekat
+                </h2>
+                <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+                    Belum ada fasilitas yang terdata untuk destinasi ini.
+                </p>
+            </section>
+        );
+    }
 
     return (
-        <section>
+        <section id="fasilitas">
             <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground mb-4">
                 Fasilitas Terdekat
             </h2>

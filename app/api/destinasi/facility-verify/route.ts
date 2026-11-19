@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getErrorMessage } from "@/lib/api-error";
+import { matchesFacilityQuery } from "@/lib/utils/facility-match";
 
 interface DestinationInfo {
     id: string;
@@ -45,25 +46,53 @@ export async function GET(request: Request) {
             );
         }
 
-        const result = await prisma.destinationHalalFacility.findFirst({
-            where: {
-                destination: { slug },
-                facility: {
-                    name: { contains: facility, mode: "insensitive" },
-                },
-            },
-            include: {
-                destination: {
-                    select: { id: true, name: true, slug: true, city: true },
-                },
-                facility: {
-                    select: { id: true, name: true, facilityType: true },
-                },
-                evidences: {
-                    select: { id: true, imageUrl: true },
+        const destination = await prisma.destination.findUnique({
+            where: { slug },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                city: true,
+                destinationHalalFacilities: {
+                    include: {
+                        facility: true,
+                        evidences: {
+                            select: { id: true, imageUrl: true },
+                        },
+                    },
                 },
             },
         });
+
+        if (!destination) {
+            return NextResponse.json<FacilityVerifyResponse>(
+                {
+                    found: false,
+                    destination: null,
+                    facility: null,
+                    evidences: [],
+                },
+                { status: 200 },
+            );
+        }
+
+        const matches = destination.destinationHalalFacilities
+            .filter((row) =>
+                matchesFacilityQuery(
+                    {
+                        name: `${row.name ?? ""} ${row.facility.name}`,
+                        facilityType: row.facility.facilityType,
+                    },
+                    facility,
+                ),
+            )
+            .sort((a, b) => {
+                const distanceA = a.distanceMeters ?? Number.POSITIVE_INFINITY;
+                const distanceB = b.distanceMeters ?? Number.POSITIVE_INFINITY;
+                return distanceA - distanceB;
+            });
+
+        const result = matches[0];
 
         if (!result) {
             return NextResponse.json<FacilityVerifyResponse>(
@@ -80,8 +109,17 @@ export async function GET(request: Request) {
         return NextResponse.json<FacilityVerifyResponse>(
             {
                 found: true,
-                destination: result.destination,
-                facility: result.facility,
+                destination: {
+                    id: destination.id,
+                    name: destination.name,
+                    slug: destination.slug,
+                    city: destination.city,
+                },
+                facility: {
+                    id: result.facility.id,
+                    name: result.facility.name,
+                    facilityType: result.facility.facilityType,
+                },
                 evidences: result.evidences,
             },
             { status: 200 },

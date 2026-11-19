@@ -7,6 +7,8 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { DestinationFacilityTable } from "@/components/admin/facilities/destination-facility-table";
+import type { FacilityReachabilityRow } from "@/lib/facilities/facility-reachability";
 
 export interface ReachabilityConfigItem {
     id: string;
@@ -14,7 +16,7 @@ export interface ReachabilityConfigItem {
     maxDistanceMeters: number | null;
     maxTravelMinutes: number | null;
     travelMode: string | null;
-    description: string | null;
+    label: string | null;
 }
 
 export interface FacilityMetricItem {
@@ -33,11 +35,17 @@ const MODE_LABELS: Record<string, string> = {
 
 export function ReachabilityPanel({
     configs,
-    facilities,
+    facilityRows,
+    facilityRowsLoading,
+    facilityRowsError,
+    onRefreshFacilities,
     loading,
 }: {
     configs: ReachabilityConfigItem[];
-    facilities: FacilityMetricItem[];
+    facilityRows: FacilityReachabilityRow[];
+    facilityRowsLoading: boolean;
+    facilityRowsError: string | null;
+    onRefreshFacilities: () => void;
     loading: boolean;
 }) {
     if (loading) {
@@ -112,7 +120,7 @@ export function ReachabilityPanel({
                                                     : "-"}
                                             </td>
                                             <td className="py-2 text-xs text-muted-foreground">
-                                                {c.description}
+                                                {c.label}
                                             </td>
                                         </tr>
                                     ))}
@@ -123,71 +131,14 @@ export function ReachabilityPanel({
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg">
-                        Fasilitas Penunjang Destinasi Ini
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                        Jarak & waktu tempuh diperhitungkan dari koordinat destinasi ke
-                        fasilitas (estimasi haversine, atau OSRM jika tersedia).
-                    </p>
-                </CardHeader>
-                <CardContent>
-                    {facilities.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                            Belum ada fasilitas penunjang yang dikaitkan.
-                        </p>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b text-left text-muted-foreground">
-                                        <th className="py-2 pr-4 font-medium">
-                                            Fasilitas
-                                        </th>
-                                        <th className="py-2 pr-4 font-medium">Jarak</th>
-                                        <th className="py-2 pr-4 font-medium">
-                                            Waktu Tempuh
-                                        </th>
-                                        <th className="py-2 font-medium">Mode</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {facilities.map((f) => (
-                                        <tr key={f.id} className="border-b last:border-0">
-                                            <td className="py-2 pr-4">
-                                                {f.facility.name}
-                                                <span className="ml-2 font-mono text-xs text-muted-foreground">
-                                                    {f.facility.type}
-                                                </span>
-                                            </td>
-                                            <td className="py-2 pr-4">
-                                                {f.distanceMeters != null
-                                                    ? f.distanceMeters >= 1000
-                                                        ? `${(f.distanceMeters / 1000).toFixed(2)} km`
-                                                        : `${f.distanceMeters} m`
-                                                    : "-"}
-                                            </td>
-                                            <td className="py-2 pr-4">
-                                                {f.travelMinutes != null
-                                                    ? `${f.travelMinutes} menit`
-                                                    : "-"}
-                                            </td>
-                                            <td className="py-2">
-                                                {f.travelMode
-                                                    ? (MODE_LABELS[f.travelMode] ??
-                                                      f.travelMode)
-                                                    : "-"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+            <DestinationFacilityTable
+                rows={facilityRows}
+                loading={facilityRowsLoading}
+                error={facilityRowsError}
+                onRefresh={onRefreshFacilities}
+                title="Fasilitas Penunjang Destinasi Ini"
+                description="Jarak dan waktu tempuh dihitung ulang dari koordinat destinasi dan fasilitas saat ini."
+            />
         </div>
     );
 }

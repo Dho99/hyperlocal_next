@@ -36,6 +36,7 @@ import {
 } from "@/lib/config/halal-readiness";
 import { Destination } from "@/types/destination";
 import Image from "next/image";
+import { DynamicContextMap, ReadonlyMap } from "@/components/maps";
 
 interface FacilityEvidence {
     imageUrl: string;
@@ -92,6 +93,11 @@ interface Facility {
     name: string;
     weight: number;
     facilityType: string;
+    latitude: number | null;
+    longitude: number | null;
+    distanceMeters: number | null;
+    travelMinutes: number | null;
+    travelMode: string | null;
     evidences: FacilityEvidence[];
 }
 
@@ -112,6 +118,94 @@ interface DestinationValidationFormProps {
         | undefined;
     /** Content rendered between the facility review and the decision card. */
     children?: ReactNode;
+}
+
+const TRAVEL_MODE_LABELS: Record<string, string> = {
+    WALKING: "Jalan kaki",
+    DRIVING: "Berkendara",
+    CYCLING: "Bersepeda",
+};
+
+function formatDistance(meters: number | null): string {
+    if (meters == null) return "-";
+    return meters >= 1000 ? `${(meters / 1000).toFixed(2)} km` : `${meters} m`;
+}
+
+function formatTravelMode(mode: string | null): string {
+    return mode ? (TRAVEL_MODE_LABELS[mode] ?? mode) : "-";
+}
+
+function FacilityMiniMap({
+    destination,
+    facility,
+}: {
+    destination: Destination;
+    facility: Facility;
+}) {
+    const destinationLat =
+        destination.latitude != null ? Number(destination.latitude) : null;
+    const destinationLng =
+        destination.longitude != null ? Number(destination.longitude) : null;
+    const facilityLat = facility.latitude;
+    const facilityLng = facility.longitude;
+
+    if (facilityLat == null || facilityLng == null) {
+        return (
+            <div className="flex h-[180px] w-full items-center justify-center rounded-lg border border-dashed bg-muted/20 px-4 text-center text-xs text-muted-foreground">
+                Koordinat fasilitas belum diisi, peta tidak dapat ditampilkan.
+            </div>
+        );
+    }
+
+    if (destinationLat != null && destinationLng != null) {
+        return (
+            <div className="space-y-1">
+                <DynamicContextMap
+                    destination={{
+                        id: destination.id,
+                        name: destination.name,
+                        latitude: destinationLat,
+                        longitude: destinationLng,
+                        facilities: [
+                            {
+                                id: facility.id,
+                                name: facility.name,
+                                type: facility.facilityType,
+                                latitude: facilityLat,
+                                longitude: facilityLng,
+                            },
+                        ],
+                    }}
+                    className="h-[180px] w-full overflow-hidden rounded-lg border"
+                />
+                <p className="text-[10px] text-muted-foreground">
+                    Peta fasilitas {facility.name}. Marker destinasi dan fasilitas ditampilkan.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-1">
+            <ReadonlyMap
+                markers={[
+                    {
+                        id: facility.id,
+                        latitude: facilityLat,
+                        longitude: facilityLng,
+                        title: facility.name,
+                        subtitle: facility.facilityType,
+                    },
+                ]}
+                center={[facilityLat, facilityLng]}
+                zoom={16}
+                className="h-[180px] w-full overflow-hidden rounded-lg border"
+            />
+            <p className="text-[10px] text-muted-foreground">
+                Peta fasilitas {facility.name}. Koordinat destinasi belum diisi.
+            </p>
+        </div>
+    );
 }
 
 export function DestinationValidationForm({
@@ -149,6 +243,21 @@ export function DestinationValidationForm({
                 name: dhf?.facility?.name,
                 weight: 0,
                 facilityType: dhf?.facility?.facilityType ?? "GENERAL",
+                latitude:
+                    dhf?.latitude != null
+                        ? Number(dhf.latitude)
+                        : dhf?.facility?.latitude != null
+                          ? Number(dhf.facility.latitude)
+                          : null,
+                longitude:
+                    dhf?.longitude != null
+                        ? Number(dhf.longitude)
+                        : dhf?.facility?.longitude != null
+                          ? Number(dhf.facility.longitude)
+                          : null,
+                distanceMeters: dhf?.distanceMeters ?? null,
+                travelMinutes: dhf?.travelMinutes ?? null,
+                travelMode: dhf?.travelMode ?? null,
                 evidences:
                     dhf?.evidences?.map((e) => ({
                         imageUrl: e.imageUrl,
@@ -471,88 +580,106 @@ export function DestinationValidationForm({
                                                     return (
                                                     <div
                                                         key={f.id}
-                                                        className="flex items-center gap-3 rounded-md border bg-card px-3 py-2"
+                                                        className="space-y-3 rounded-lg border bg-card p-3"
                                                     >
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <p className="truncate text-xs font-medium">
-                                                                    {f.name}
-                                                                </p>
-                                                                {validity && (
-                                                                    <span
-                                                                        className={cn(
-                                                                            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                                                                            validity.className,
-                                                                        )}
-                                                                    >
-                                                                        {
-                                                                            validity.label
-                                                                        }
+                                                        <div className="flex flex-wrap items-start justify-between gap-2">
+                                                            <div className="min-w-0">
+                                                                <div className="flex flex-wrap items-center gap-1.5">
+                                                                    <p className="truncate text-sm font-medium">
+                                                                        {f.name}
+                                                                    </p>
+                                                                    {validity && (
+                                                                        <span
+                                                                            className={cn(
+                                                                                "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                                                                                validity.className,
+                                                                            )}
+                                                                        >
+                                                                            {
+                                                                                validity.label
+                                                                            }
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <p className="mt-0.5 text-[10px] text-muted-foreground">
+                                                                    <span className="font-mono">
+                                                                        {f.facilityType}
                                                                     </span>
-                                                                )}
+                                                                    {f.weight > 0 && ` · Weight ${f.weight}`}
+                                                                </p>
                                                             </div>
-                                                            {f.weight > 0 && (
-                                                                <span className="text-[10px] text-muted-foreground">
-                                                                    Weight{" "}
-                                                                    {f.weight}
+                                                            {f.evidences.length > 0 ? (
+                                                                <div className="flex shrink-0 gap-1.5">
+                                                                    {f.evidences.map(
+                                                                        (ev, idx) => (
+                                                                            <button
+                                                                                key={idx}
+                                                                                type="button"
+                                                                                onClick={() =>
+                                                                                    lightbox.openAt(
+                                                                                        evidenceIndexByKey.get(
+                                                                                            `${f.id}:${idx}`,
+                                                                                        ) ??
+                                                                                            0,
+                                                                                    )
+                                                                                }
+                                                                                className={cn(
+                                                                                    "h-12 w-12 overflow-hidden rounded border bg-muted transition-opacity hover:opacity-80",
+                                                                                    evidenceStatusClass(
+                                                                                        ev.validityStatus,
+                                                                                    ),
+                                                                                )}
+                                                                                title={
+                                                                                    ev.validityNotes ??
+                                                                                    undefined
+                                                                                }
+                                                                                aria-label={`Lihat bukti ${f.name}`}
+                                                                            >
+                                                                                <Image
+                                                                                    width={48}
+                                                                                    height={48}
+                                                                                    src={ev.imageUrl}
+                                                                                    alt={`Bukti ${f.name}`}
+                                                                                    className="h-full w-full object-cover"
+                                                                                />
+                                                                            </button>
+                                                                        ),
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="shrink-0 text-[10px] italic text-muted-foreground">
+                                                                    Tidak ada bukti
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        {f.evidences.length >
-                                                        0 ? (
-                                                            <div className="flex shrink-0 gap-1.5">
-                                                                {f.evidences.map(
-                                                                    (
-                                                                        ev,
-                                                                        idx,
-                                                                    ) => (
-                                                                        <button
-                                                                            key={
-                                                                                idx
-                                                                            }
-                                                                            type="button"
-                                                                            onClick={() =>
-                                                                                lightbox.openAt(
-                                                                                    evidenceIndexByKey.get(
-                                                                                        `${f.id}:${idx}`,
-                                                                                    ) ??
-                                                                                        0,
-                                                                                )
-                                                                            }
-                                                                            className={cn(
-                                                                                "h-12 w-12 overflow-hidden rounded border bg-muted transition-opacity hover:opacity-80",
-                                                                                evidenceStatusClass(
-                                                                                    ev.validityStatus,
-                                                                                ),
-                                                                            )}
-                                                                            title={
-                                                                                ev.validityNotes ??
-                                                                                undefined
-                                                                            }
-                                                                            aria-label={`Lihat bukti ${f.name}`}
-                                                                        >
-                                                                            <Image
-                                                                                width={
-                                                                                    48
-                                                                                }
-                                                                                height={
-                                                                                    48
-                                                                                }
-                                                                                src={
-                                                                                    ev.imageUrl
-                                                                                }
-                                                                                alt={`Bukti ${f.name}`}
-                                                                                className="h-full w-full object-cover"
-                                                                            />
-                                                                        </button>
-                                                                    ),
-                                                                )}
+
+                                                        <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+                                                            <div>
+                                                                <p className="text-[10px] uppercase text-muted-foreground">Koordinat</p>
+                                                                <p className="font-mono text-[11px]">
+                                                                    {f.latitude != null && f.longitude != null
+                                                                        ? `${f.latitude.toFixed(6)}, ${f.longitude.toFixed(6)}`
+                                                                        : "-"}
+                                                                </p>
                                                             </div>
-                                                        ) : (
-                                                            <span className="shrink-0 text-[10px] italic text-muted-foreground">
-                                                                Tidak ada bukti
-                                                            </span>
-                                                        )}
+                                                            <div>
+                                                                <p className="text-[10px] uppercase text-muted-foreground">Jarak</p>
+                                                                <p>{formatDistance(f.distanceMeters)}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-[10px] uppercase text-muted-foreground">Waktu</p>
+                                                                <p>{f.travelMinutes != null ? `${f.travelMinutes} menit` : "-"}</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-[10px] uppercase text-muted-foreground">Mode</p>
+                                                                <p>{formatTravelMode(f.travelMode)}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <FacilityMiniMap
+                                                            destination={destination}
+                                                            facility={f}
+                                                        />
                                                     </div>
                                                     );
                                                 })}

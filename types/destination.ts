@@ -13,6 +13,8 @@ export interface HalalFacility {
     name: string;
     facilityType: string | null;
     maxDistance: number;
+    latitude?: number | null;
+    longitude?: number | null;
 }
 
 export interface DestinationImage {

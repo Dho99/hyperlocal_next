@@ -11,7 +11,8 @@ import {
     isNameWithinLocation,
     isAddressWithinLocation,
 } from "@/lib/utils/ai-location";
-import { createGeminiModel } from "@/lib/utils/ai-gemini";
+import { createGeminiModel, getGeminiModelName } from "@/lib/utils/ai-gemini";
+import { logAiRequest } from "@/lib/services/ai-request-log-service";
 import { mapToCandidateData } from "@/lib/utils/ai-candidates";
 import type { AIRecommendation } from "@/types/ai";
 import { haversineDistance } from "@/lib/utils/haversine-distance";
@@ -293,6 +294,7 @@ function buildFallback(
 }
 
 export async function GET(request: Request) {
+    const requestStartedAt = Date.now();
     const rl = rateLimit(getClientKey(request, "explore"), 30, 60_000);
     if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
@@ -427,17 +429,40 @@ export async function GET(request: Request) {
 
         if (!apiKey) {
             const data = buildFallback(candidates, scores);
+            await logAiRequest({
+                feature: "EXPLORE",
+                userQuery: query,
+                intent: "EXPLORE_RECOMMENDATION",
+                provider: "none",
+                model: null,
+                status: "FALLBACK",
+                latencyMs: Date.now() - requestStartedAt,
+                attemptCount: 0,
+                errorMessage: "GEMINI_API_KEY not configured",
+            });
             return NextResponse.json<ExploreResponse>(
                 { query, data },
                 { status: 200 },
             );
         }
 
+        const aiStartedAt = Date.now();
         try {
             const candidateData = candidates.map(mapToCandidateData);
             const systemPrompt = buildSystemPrompt(JSON.stringify(candidateData), isNearby, matchedLocation);
             const model = createGeminiModel(systemPrompt);
             if (!model) {
+                await logAiRequest({
+                    feature: "EXPLORE",
+                    userQuery: query,
+                    intent: "EXPLORE_RECOMMENDATION",
+                    provider: "none",
+                    model: null,
+                    status: "FALLBACK",
+                    latencyMs: Date.now() - aiStartedAt,
+                    attemptCount: 0,
+                    errorMessage: "Gemini model could not be created",
+                });
                 const data = buildFallback(candidates, scores);
                 return NextResponse.json<ExploreResponse>({ query, data }, { status: 200 });
             }
@@ -451,6 +476,17 @@ export async function GET(request: Request) {
                     throw new Error("Response is not an array");
                 }
             } catch {
+                await logAiRequest({
+                    feature: "EXPLORE",
+                    userQuery: query,
+                    intent: "EXPLORE_RECOMMENDATION",
+                    provider: "gemini",
+                    model: getGeminiModelName(),
+                    status: "ERROR",
+                    latencyMs: Date.now() - aiStartedAt,
+                    attemptCount: 1,
+                    errorMessage: "Gemini response was not a valid JSON array",
+                });
                 const data = buildFallback(candidates, scores);
                 return NextResponse.json<ExploreResponse>(
                     { query, data },
@@ -513,12 +549,34 @@ export async function GET(request: Request) {
                     ? recommendations
                     : buildFallback(candidates, scores);
 
+            await logAiRequest({
+                feature: "EXPLORE",
+                userQuery: query,
+                intent: "EXPLORE_RECOMMENDATION",
+                provider: "gemini",
+                model: getGeminiModelName(),
+                status: "SUCCESS",
+                latencyMs: Date.now() - aiStartedAt,
+                attemptCount: 1,
+            });
+
             return NextResponse.json<ExploreResponse>(
                 { query, data },
                 { status: 200 },
             );
         } catch (error) {
             console.error("AI recommendation error:", getErrorMessage(error));
+            await logAiRequest({
+                feature: "EXPLORE",
+                userQuery: query,
+                intent: "EXPLORE_RECOMMENDATION",
+                provider: "gemini",
+                model: getGeminiModelName(),
+                status: "ERROR",
+                latencyMs: Date.now() - aiStartedAt,
+                attemptCount: 1,
+                errorMessage: getErrorMessage(error),
+            });
             const data = buildFallback(candidates, scores);
             return NextResponse.json<ExploreResponse>(
                 { query, data },

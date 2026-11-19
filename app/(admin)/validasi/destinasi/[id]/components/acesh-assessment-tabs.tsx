@@ -22,6 +22,10 @@ import {
     type ReachabilityConfigItem,
     type FacilityMetricItem,
 } from "./acesh-reachability-panel";
+import {
+    storedFacilityRows,
+    type FacilityReachabilityRow,
+} from "@/lib/facilities/facility-reachability";
 import type { EvidenceRecordItem } from "./acesh-evidence-panel";
 import { AceshModelDiagram } from "@/components/admin/acesh/acesh-model-diagram";
 import {
@@ -90,6 +94,28 @@ const DEFAULT_EVIDENCE: EvidenceComponentValues = {
     dataFreshness: 0,
 };
 
+function storedRowsFromFacilities(
+    facilities: FacilityMetricItem[],
+): FacilityReachabilityRow[] {
+    return storedFacilityRows(
+        facilities.map((facility) => ({
+            id: facility.id,
+            latitude: null,
+            longitude: null,
+            distanceMeters: facility.distanceMeters,
+            travelMinutes: facility.travelMinutes,
+            travelMode: facility.travelMode,
+            facility: {
+                name: facility.facility.name,
+                facilityType: facility.facility.type,
+                latitude: null,
+                longitude: null,
+            },
+            evidences: [],
+        })),
+    );
+}
+
 function deriveEvidence(records: EvidenceRecordItem[]): EvidenceComponentValues {
     const canonical = records.find((r) => r.notes?.startsWith(SELF_MARKER));
     if (canonical?.notes) {
@@ -136,6 +162,11 @@ export function AceshAssessmentTabs({
         ReachabilityConfigItem[]
     >([]);
     const [reachabilityLoading, setReachabilityLoading] = useState(true);
+    const [facilityRows, setFacilityRows] = useState<FacilityReachabilityRow[]>(
+        () => storedRowsFromFacilities(facilities),
+    );
+    const [facilityRowsLoading, setFacilityRowsLoading] = useState(true);
+    const [facilityRowsError, setFacilityRowsError] = useState<string | null>(null);
 
     const load = useCallback(async () => {
         try {
@@ -169,17 +200,38 @@ export function AceshAssessmentTabs({
         }
     }, []);
 
+    const loadFacilityRows = useCallback(async () => {
+        setFacilityRowsLoading(true);
+        setFacilityRowsError(null);
+        try {
+            const res = await fetch(
+                `/api/admin/destinations/${destinationId}/facility-reachability`,
+            );
+            const json = await res.json();
+            if (!res.ok) {
+                throw new Error(json.error ?? "Gagal memuat data fasilitas");
+            }
+            setFacilityRows((json.data ?? []) as FacilityReachabilityRow[]);
+        } catch (error: unknown) {
+            setFacilityRowsError(
+                error instanceof Error ? error.message : "Gagal memuat data fasilitas",
+            );
+        } finally {
+            setFacilityRowsLoading(false);
+        }
+    }, [destinationId]);
+
     useEffect(() => {
         let cancelled = false;
         void (async () => {
             await load();
             if (cancelled) return;
-            await loadReachability();
+            await Promise.all([loadReachability(), loadFacilityRows()]);
         })();
         return () => {
             cancelled = true;
         };
-    }, [load, loadReachability]);
+    }, [load, loadReachability, loadFacilityRows]);
 
     const handleSaveLayer = async (payload: {
         scores: Array<{ indicatorId: string; value: number }>;
@@ -364,7 +416,10 @@ export function AceshAssessmentTabs({
             <TabsContent value="reachability" className="space-y-4">
                 <ReachabilityPanel
                     configs={reachabilityConfigs}
-                    facilities={facilities}
+                    facilityRows={facilityRows}
+                    facilityRowsLoading={facilityRowsLoading}
+                    facilityRowsError={facilityRowsError}
+                    onRefreshFacilities={loadFacilityRows}
                     loading={reachabilityLoading}
                 />
             </TabsContent>

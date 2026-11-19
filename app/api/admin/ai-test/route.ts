@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { getErrorMessage } from "@/lib/api-error";
 import { requireAdmin } from "@/lib/auth-guard";
 import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
+import { logAiRequest } from "@/lib/services/ai-request-log-service";
 
 const TEST_CASES = [
     { query: "cari destinasi wisata di bandung", expected: "DESTINATION_SEARCH" },
@@ -56,13 +57,26 @@ Response HARUS JSON dalam format EXACT berikut:
 HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
 
         try {
-            const response = await aiClient.chat.completions.create({ model: "llama-3.1-8b-instant", response_format: { type: "json_object" }, max_tokens: 200, messages: [ { role: "system", content: systemPrompt }, { role: "user", content: tc.query } ] } as any);
+            const startedAt = Date.now();
+            const response = await aiClient.chat.completions.create({ model: "llama-3.1-8b-instant", response_format: { type: "json_object" }, max_tokens: 200, messages: [ { role: "system", content: systemPrompt }, { role: "user", content: tc.query } ] });
 
             const jsonString = response.choices[0]?.message?.content;
             if (!jsonString) throw new Error("AI returned empty response");
 
             const parsed = JSON.parse(jsonString);
             const actual: string | null = parsed?.intent ?? null;
+
+            await logAiRequest({
+                feature: "AI_TEST",
+                userQuery: tc.query,
+                intent: actual ?? "UNKNOWN",
+                provider: "groq",
+                model: "llama-3.1-8b-instant",
+                status: "SUCCESS",
+                latencyMs: Date.now() - startedAt,
+                attemptCount: 1,
+                isValid: actual === tc.expected,
+            });
 
             results.push({
                 query: tc.query,
@@ -72,6 +86,17 @@ HANYA output JSON, tanpa markdown, tanpa penjelasan.`;
                 rawResponse: jsonString.slice(0, 200),
             });
         } catch (err) {
+            await logAiRequest({
+                feature: "AI_TEST",
+                userQuery: tc.query,
+                intent: "UNKNOWN",
+                provider: "groq",
+                model: "llama-3.1-8b-instant",
+                status: "ERROR",
+                attemptCount: 1,
+                isValid: false,
+                errorMessage: getErrorMessage(err),
+            });
             results.push({
                 query: tc.query,
                 expected: tc.expected,

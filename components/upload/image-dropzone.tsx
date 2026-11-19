@@ -128,6 +128,7 @@ export function ImageDropzone({
                 const validity = response.data.data.validity;
                 const blocked =
                     validatePhoto &&
+                    response.data.data.validationEnabled !== false &&
                     validity &&
                     isBlockingPhotoStatus(validity.validityStatus);
                 if (blocked) {

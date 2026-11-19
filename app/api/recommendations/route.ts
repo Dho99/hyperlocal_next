@@ -7,9 +7,9 @@ import {
 } from "@/lib/services/acesh/public-score-service";
 import { getErrorMessage } from "@/lib/api-error";
 import { z } from "zod";
-import { createGeminiModel } from "@/lib/utils/ai-gemini";
+import { createGeminiModel, getGeminiModelName } from "@/lib/utils/ai-gemini";
+import { logAiRequest } from "@/lib/services/ai-request-log-service";
 import { mapToCandidateDestination } from "@/lib/utils/ai-candidates";
-import { isWithinLocation } from "@/lib/utils/ai-location";
 import type { CandidateDestination } from "@/lib/utils/ai-candidates";
 import type { AIRecommendation } from "@/types/ai";
 
@@ -17,14 +17,6 @@ const requestSchema = z.object({
     preferences: z.array(z.string()).default([]),
     limit: z.number().min(1).max(20).default(5),
 });
-
-interface RecommenderResponse {
-    data: Array<{
-        destinationId: string;
-        reason: string;
-        matchScore: number;
-    }>;
-}
 
 function buildSystemPrompt(candidates: CandidateDestination[], limit: number): string {
     return `Anda adalah kurator wisata halal. Pilih TOP ${limit} destinasi paling sesuai dari kandidat.
@@ -61,6 +53,7 @@ function buildFallback(
 }
 
 export async function POST(request: Request) {
+    const requestStartedAt = Date.now();
     const rl = rateLimit(getClientKey(request, "recommendations"), 30, 60_000);
     if (!rl.allowed) return NextResponse.json({ success: false, error: "Too Many Requests" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } });
     try {
@@ -75,6 +68,8 @@ export async function POST(request: Request) {
         }
 
         const { preferences, limit } = parsed.data;
+        const queryForLog =
+            preferences.join(", ").slice(0, 500) || "preferences kosong";
 
         const categoryIds = preferences.filter((p) =>
             /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
@@ -114,6 +109,17 @@ export async function POST(request: Request) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
+            await logAiRequest({
+                feature: "RECOMMENDATION",
+                userQuery: queryForLog,
+                intent: "RECOMMENDATION",
+                provider: "none",
+                model: null,
+                status: "FALLBACK",
+                latencyMs: Date.now() - requestStartedAt,
+                attemptCount: 0,
+                errorMessage: "GEMINI_API_KEY not configured",
+            });
             return NextResponse.json(
                 { data: buildFallback(candidates, scores, limit) },
                 { status: 200 },
@@ -121,12 +127,26 @@ export async function POST(request: Request) {
         }
 
         const candidateData = candidates.map(mapToCandidateDestination);
+        const aiStartedAt = Date.now();
 
         try {
             const systemPrompt = buildSystemPrompt(candidateData, limit);
             const model = createGeminiModel(systemPrompt);
-            if (!model) return NextResponse.json({ data: buildFallback(candidates, scores, limit) }, { status: 200 });
-            const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: JSON.stringify({ preferences: preferences.slice(0, 20).map((p) => p.slice(0, 100)), limit }) }] }] } as any);
+            if (!model) {
+                await logAiRequest({
+                    feature: "RECOMMENDATION",
+                    userQuery: queryForLog,
+                    intent: "RECOMMENDATION",
+                    provider: "none",
+                    model: null,
+                    status: "FALLBACK",
+                    latencyMs: Date.now() - aiStartedAt,
+                    attemptCount: 0,
+                    errorMessage: "Gemini model could not be created",
+                });
+                return NextResponse.json({ data: buildFallback(candidates, scores, limit) }, { status: 200 });
+            }
+            const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: JSON.stringify({ preferences: preferences.slice(0, 20).map((p) => p.slice(0, 100)), limit }) }] }] });
             const text = result.response.text();
 
             let aiResult: AIRecommendation[];
@@ -136,6 +156,17 @@ export async function POST(request: Request) {
                     throw new Error("Response is not an array");
                 }
             } catch {
+                await logAiRequest({
+                    feature: "RECOMMENDATION",
+                    userQuery: queryForLog,
+                    intent: "RECOMMENDATION",
+                    provider: "gemini",
+                    model: getGeminiModelName(),
+                    status: "ERROR",
+                    latencyMs: Date.now() - aiStartedAt,
+                    attemptCount: 1,
+                    errorMessage: "Gemini response was not a valid JSON array",
+                });
                 return NextResponse.json(
                     { data: buildFallback(candidates, scores, limit) },
                     { status: 200 },
@@ -169,11 +200,33 @@ export async function POST(request: Request) {
                 });
             }
 
+            await logAiRequest({
+                feature: "RECOMMENDATION",
+                userQuery: queryForLog,
+                intent: "RECOMMENDATION",
+                provider: "gemini",
+                model: getGeminiModelName(),
+                status: "SUCCESS",
+                latencyMs: Date.now() - aiStartedAt,
+                attemptCount: 1,
+            });
+
             return NextResponse.json(
                 { data: recommendations },
                 { status: 200 },
             );
-        } catch {
+        } catch (error) {
+            await logAiRequest({
+                feature: "RECOMMENDATION",
+                userQuery: queryForLog,
+                intent: "RECOMMENDATION",
+                provider: "gemini",
+                model: getGeminiModelName(),
+                status: "ERROR",
+                latencyMs: Date.now() - aiStartedAt,
+                attemptCount: 1,
+                errorMessage: getErrorMessage(error),
+            });
             return NextResponse.json(
                 { data: buildFallback(candidates, scores, limit) },
                 { status: 200 },

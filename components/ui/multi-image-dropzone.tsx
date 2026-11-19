@@ -131,6 +131,7 @@ export function MultiImageDropzone({
                 const validity = data.data.validity;
                 const blocked =
                     validatePhoto &&
+                    data.data.validationEnabled !== false &&
                     validity &&
                     isBlockingPhotoStatus(validity.validityStatus);
                 if (blocked) {

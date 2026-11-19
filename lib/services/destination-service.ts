@@ -24,6 +24,7 @@ import {
     DEFAULT_PHOTO_TOLERANCE_METERS,
     type PhotoValidityStatusValue,
 } from "@/lib/config/photo-validation";
+import { getExifValidationEnabled } from "@/lib/services/photo-validation-settings-service";
 import {
     filterDestinationsByCoverage,
     isCoordinateVisible,
@@ -219,6 +220,19 @@ function serializeDestination(raw: DestinationWithIncludes): Destination {
             ...dhf,
             latitude: dhf.latitude != null ? Number(dhf.latitude) : null,
             longitude: dhf.longitude != null ? Number(dhf.longitude) : null,
+            facility: dhf.facility
+                ? {
+                      ...dhf.facility,
+                      latitude:
+                          dhf.facility.latitude != null
+                              ? Number(dhf.facility.latitude)
+                              : null,
+                      longitude:
+                          dhf.facility.longitude != null
+                              ? Number(dhf.facility.longitude)
+                              : null,
+                  }
+                : dhf.facility,
         })),
         umkms: raw.umkms?.map((umkm) => ({
             ...umkm,
@@ -371,6 +385,7 @@ export async function getDestination(
 export async function createDestination(values: DestinationFormValues) {
     const { facilities, images, ...data } = values;
     await validateDestinationCategory(data.categoryId);
+    const isExifValidationEnabled = await getExifValidationEnabled();
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -383,13 +398,15 @@ export async function createDestination(values: DestinationFormValues) {
 
         const galleryUrls =
             images?.map((i: DestinationImageInput) => i.imageUrl) ?? [];
-        const galleryValidity = await buildPhotoValidity(
-            galleryUrls,
-            data.latitude ?? null,
-            data.longitude ?? null,
-            DEFAULT_PHOTO_TOLERANCE_METERS,
-            "destinasi",
-        );
+        const galleryValidity = isExifValidationEnabled
+            ? await buildPhotoValidity(
+                  galleryUrls,
+                  data.latitude ?? null,
+                  data.longitude ?? null,
+                  DEFAULT_PHOTO_TOLERANCE_METERS,
+                  "destinasi",
+              )
+            : new Map<string, PhotoValidityFields>();
         collectPhotoIssues(
             photoIssues,
             galleryValidity,
@@ -403,13 +420,15 @@ export async function createDestination(values: DestinationFormValues) {
             const tolerance =
                 mf?.photoToleranceMeters ?? DEFAULT_PHOTO_TOLERANCE_METERS;
             const label = mf?.name ?? f.name ?? "fasilitas";
-            const map = await buildPhotoValidity(
-                f.evidenceUrls ?? [],
-                f.latitude ?? data.latitude ?? null,
-                f.longitude ?? data.longitude ?? null,
-                tolerance,
-                label,
-            );
+            const map = isExifValidationEnabled
+                ? await buildPhotoValidity(
+                      f.evidenceUrls ?? [],
+                      f.latitude ?? data.latitude ?? null,
+                      f.longitude ?? data.longitude ?? null,
+                      tolerance,
+                      label,
+                  )
+                : new Map<string, PhotoValidityFields>();
             for (const [url, v] of map) {
                 evidenceValidity.set(url, v);
             }
@@ -523,6 +542,7 @@ export async function updateDestination(
 ) {
     const { facilities, images, ...data } = values;
     await validateDestinationCategory(data.categoryId);
+    const isExifValidationEnabled = await getExifValidationEnabled();
 
     const destination = await prisma.$transaction(async (tx) => {
         const facilityIds = facilities?.map((f) => f.facilityId) || [];
@@ -535,13 +555,15 @@ export async function updateDestination(
 
         const galleryUrls =
             images?.map((i: DestinationImageInput) => i.imageUrl) ?? [];
-        const galleryValidity = await buildPhotoValidity(
-            galleryUrls,
-            data.latitude ?? null,
-            data.longitude ?? null,
-            DEFAULT_PHOTO_TOLERANCE_METERS,
-            "destinasi",
-        );
+        const galleryValidity = isExifValidationEnabled
+            ? await buildPhotoValidity(
+                  galleryUrls,
+                  data.latitude ?? null,
+                  data.longitude ?? null,
+                  DEFAULT_PHOTO_TOLERANCE_METERS,
+                  "destinasi",
+              )
+            : new Map<string, PhotoValidityFields>();
         collectPhotoIssues(
             photoIssues,
             galleryValidity,
@@ -555,13 +577,15 @@ export async function updateDestination(
             const tolerance =
                 mf?.photoToleranceMeters ?? DEFAULT_PHOTO_TOLERANCE_METERS;
             const label = mf?.name ?? f.name ?? "fasilitas";
-            const map = await buildPhotoValidity(
-                f.evidenceUrls ?? [],
-                f.latitude ?? data.latitude ?? null,
-                f.longitude ?? data.longitude ?? null,
-                tolerance,
-                label,
-            );
+            const map = isExifValidationEnabled
+                ? await buildPhotoValidity(
+                      f.evidenceUrls ?? [],
+                      f.latitude ?? data.latitude ?? null,
+                      f.longitude ?? data.longitude ?? null,
+                      tolerance,
+                      label,
+                  )
+                : new Map<string, PhotoValidityFields>();
             for (const [url, v] of map) {
                 evidenceValidity.set(url, v);
             }

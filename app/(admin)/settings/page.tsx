@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { Calculator, UserRound } from "lucide-react";
+import { Calculator, ScrollText, UserRound } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ExifValidationSetting } from "@/components/admin/settings/exif-validation-setting";
+import { getExifValidationEnabled } from "@/lib/services/photo-validation-settings-service";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+    const isExifValidationEnabled = await getExifValidationEnabled();
     const settings = [
         { href: "/settings/profile", title: "Profil Admin", description: "Kelola nama, foto profil, dan kata sandi akun.", icon: UserRound },
         { href: "/settings/acesh", title: "Bobot Scoring ACES-H", description: "Atur bobot ACES, Hyperlocal, Evidence, dan komposisi skor akhir.", icon: Calculator },
+        { href: "/settings/ai-logs", title: "Log AI", description: "Lihat provider, model, status, dan latency setiap request AI.", icon: ScrollText },
     ];
 
     return (
@@ -20,6 +24,7 @@ export default function SettingsPage() {
                         </Card>
                     </Link>
                 ))}
+                <ExifValidationSetting initialEnabled={isExifValidationEnabled} />
             </div>
         </div>
     );

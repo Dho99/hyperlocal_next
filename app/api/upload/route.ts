@@ -10,6 +10,7 @@ import {
     recordPhotoMetadata,
     evaluatePhotoValidity,
 } from "@/lib/services/photo-validation-service";
+import { getExifValidationEnabled } from "@/lib/services/photo-validation-settings-service";
 
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -78,14 +79,16 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        // Extract EXIF (GPS + capture time) from the original file before
-        // optimization re-encodes it to WebP and strips metadata.
-        const exif = await extractExif(buffer);
+        const validationEnabled = await getExifValidationEnabled();
+        // EXIF must be read before optimization strips it. The global admin
+        // setting skips both extraction and persistence when validation is off.
+        const exif = validationEnabled
+            ? await extractExif(buffer)
+            : { latitude: null, longitude: null, capturedAt: null, raw: null };
         const optimizedBuffer = await optimizeImage(buffer);
 
-        // Server-side validity check (EXIF GPS + capture time) for every
-        // upload. Target coordinates are optional; when absent the result
-        // still flags missing GPS metadata or missing target coordinates.
+        // Target coordinates are optional; enabled validation reports missing
+        // GPS metadata or missing target coordinates to validating uploaders.
         const latParam = req.nextUrl.searchParams.get("lat");
         const lngParam = req.nextUrl.searchParams.get("lng");
         const toleranceParam = req.nextUrl.searchParams.get("tolerance");
@@ -104,17 +107,23 @@ export async function POST(req: NextRequest) {
                 ? Number(toleranceParam)
                 : undefined;
 
-        const validity = evaluatePhotoValidity({
-            photoLat: exif.latitude,
-            photoLng: exif.longitude,
-            targetLat,
-            targetLng,
-            toleranceMeters,
-            capturedAt: exif.capturedAt,
-            uploadedAt: new Date(),
-            hasMetadata: true,
-            targetLabel,
-        });
+        const validity = validationEnabled
+            ? evaluatePhotoValidity({
+                  photoLat: exif.latitude,
+                  photoLng: exif.longitude,
+                  targetLat,
+                  targetLng,
+                  toleranceMeters,
+                  capturedAt: exif.capturedAt,
+                  uploadedAt: new Date(),
+                  hasMetadata: true,
+                  targetLabel,
+              })
+            : {
+                  validityStatus: "PENDING" as const,
+                  distanceMeters: null,
+                  notes: "Validasi EXIF dinonaktifkan oleh pengaturan admin.",
+              };
 
         const cloudinaryFolder = FOLDER_MAPPING[folder] ?? `hyperlocal/${folder}`;
 
@@ -141,14 +150,16 @@ export async function POST(req: NextRequest) {
             uploadStream.end(optimizedBuffer);
         });
 
-        try {
-            await recordPhotoMetadata({
-                url: result.secure_url,
-                publicId: result.public_id,
-                exif,
-            });
-        } catch (metadataError) {
-            console.error("Failed to store photo metadata:", metadataError);
+        if (validationEnabled) {
+            try {
+                await recordPhotoMetadata({
+                    url: result.secure_url,
+                    publicId: result.public_id,
+                    exif,
+                });
+            } catch (metadataError) {
+                console.error("Failed to store photo metadata:", metadataError);
+            }
         }
 
         return NextResponse.json({
@@ -160,6 +171,7 @@ export async function POST(req: NextRequest) {
                 url: result.secure_url,
                 size: result.bytes,
                 mimeType: result.format,
+                validationEnabled,
                 metadata: {
                     latitude: exif.latitude,
                     longitude: exif.longitude,

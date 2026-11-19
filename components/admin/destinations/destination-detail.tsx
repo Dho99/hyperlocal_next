@@ -1,15 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getDestination } from "@/lib/api/destination";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { Destination } from "@/types/destination";
+import {
+  storedFacilityRows,
+  type FacilityReachabilityRow,
+} from "@/lib/facilities/facility-reachability";
+import { DestinationFacilityTable } from "@/components/admin/facilities/destination-facility-table";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -42,26 +46,86 @@ interface DestinationDetailProps {
   id: string;
 }
 
+interface AceshTreeData {
+  groupBreakdown: Array<{
+    group: string;
+    groupScore: number | null;
+    dimensionWeight: number;
+  }>;
+  indicators: Array<{
+    id: string;
+    code: string;
+    name: string;
+    group: string;
+    weight: number;
+    value: number;
+  }>;
+  evidenceRecords: Array<Record<string, unknown>>;
+}
+
+function toStoredFacilityInputs(destination: Destination) {
+  return (destination.destinationHalalFacilities ?? []).map((facility) => ({
+    id: facility.id,
+    latitude: facility.latitude ?? null,
+    longitude: facility.longitude ?? null,
+    distanceMeters: facility.distanceMeters ?? null,
+    travelMinutes: facility.travelMinutes ?? null,
+    travelMode: facility.travelMode ?? null,
+    facility: facility.facility
+      ? {
+          name: facility.facility.name,
+          facilityType: facility.facility.facilityType ?? null,
+          latitude: null,
+          longitude: null,
+        }
+      : null,
+    evidences: (facility.evidences ?? []).map((evidence) => ({
+      validityStatus: evidence.validityStatus ?? "PENDING",
+    })),
+  }));
+}
+
 export function DestinationDetail({ id }: DestinationDetailProps) {
   const [destination, setDestination] = useState<Destination | null>(null);
   const [aceshModel, setAceshModel] = useState<AceshModelDatum | null>(null);
-  const [aceshTree, setAceshTree] = useState<{
-    groupBreakdown: any[];
-    indicators: any[];
-    evidenceRecords: any[];
-  } | null>(null);
+  const [aceshTree, setAceshTree] = useState<AceshTreeData | null>(null);
   const [descOpen, setDescOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [facilityRows, setFacilityRows] = useState<FacilityReachabilityRow[]>([]);
+  const [facilitiesLoading, setFacilitiesLoading] = useState(true);
+  const [facilitiesError, setFacilitiesError] = useState<string | null>(null);
   const router = useRouter();
+
+  const loadFacilityRows = useCallback(async () => {
+    setFacilitiesLoading(true);
+    setFacilitiesError(null);
+    try {
+      const response = await fetch(
+        `/api/admin/destinations/${id}/facility-reachability`,
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error ?? "Gagal memuat data fasilitas.");
+      }
+      setFacilityRows(result.data as FacilityReachabilityRow[]);
+    } catch (cause: unknown) {
+      setFacilitiesError(
+        cause instanceof Error ? cause.message : "Gagal memuat data fasilitas.",
+      );
+    } finally {
+      setFacilitiesLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
         const data = await getDestination(id);
-        console.log(data);
         setDestination(data);
+        setFacilityRows(storedFacilityRows(toStoredFacilityInputs(data)));
+        await loadFacilityRows();
       } catch (err: unknown) {
         setError(getApiErrorMessage(err));
       } finally {
@@ -70,7 +134,7 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
     }
 
     fetchData();
-  }, [id]);
+  }, [id, loadFacilityRows]);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,11 +158,24 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
         );
         if (!res.ok) return;
         const json = await res.json();
-        const d = json.data;
+        const d = json.data as
+          | {
+              groupBreakdown?: AceshTreeData["groupBreakdown"];
+              indicators?: Array<{
+                id: string;
+                code: string;
+                name: string;
+                group: string;
+                weight: number;
+                score?: { value?: number } | null;
+              }>;
+              evidenceRecords?: AceshTreeData["evidenceRecords"];
+            }
+          | null;
         if (!cancelled && d) {
           setAceshTree({
             groupBreakdown: d.groupBreakdown ?? [],
-            indicators: (d.indicators ?? []).map((ind: any) => ({
+            indicators: (d.indicators ?? []).map((ind) => ({
               id: ind.id,
               code: ind.code,
               name: ind.name,
@@ -322,6 +399,13 @@ export function DestinationDetail({ id }: DestinationDetailProps) {
               </div>
             </CardContent>
           </Card>
+
+          <DestinationFacilityTable
+            rows={facilityRows}
+            loading={facilitiesLoading}
+            error={facilitiesError}
+            onRefresh={loadFacilityRows}
+          />
 
           <Card className="border-none shadow-sm ring-1 ring-border/50">
             <CardHeader>

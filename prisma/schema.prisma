@@ -377,6 +377,17 @@ model PhotoMetadata {
   @@map("photo_metadata")
 }
 
+/// Runtime switch for extracting and validating EXIF metadata on image evidence.
+model PhotoValidationConfig {
+  id                      String   @id @default("default")
+  isExifValidationEnabled Boolean  @default(true) @map("is_exif_validation_enabled")
+  updatedBy               String?  @map("updated_by")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("photo_validation_configs")
+}
+
 model HalalFacility {
   id             String   @id @default(uuid())
   name           String
@@ -781,10 +792,18 @@ model AiIntentLog {
   payload      Json?    @map("payload")
   isValid      Boolean  @default(true) @map("is_valid")
   errorMessage String?  @map("error_message")
+  feature      String   @default("ROUTE_FINDER") @map("feature")
+  provider     String?
+  model        String?
+  status       String?
+  latencyMs    Int?     @map("latency_ms")
+  attemptCount Int      @default(0) @map("attempt_count")
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([intent])
   @@index([createdAt])
+  @@index([feature])
+  @@index([status])
   @@map("ai_intent_logs")
 }
 
